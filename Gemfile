@@ -6,4 +6,6 @@ gem 'logstasher', '0.5.0'
 
 group :development, :test do
   gem 'rspec-rails', '2.14.2'
+  gem 'simplecov', '0.8.2', :require => false
+  gem 'simplecov-rcov', '0.2.3', :require => false
 end
