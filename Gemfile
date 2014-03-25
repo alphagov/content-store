@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.17'
 
 gem 'logstasher', '0.5.0'
+gem 'airbrake', '3.1.15'
 
 group :development, :test do
   gem 'rspec-rails', '2.14.2'
