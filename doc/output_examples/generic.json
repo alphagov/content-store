@@ -1,0 +1,16 @@
+{
+  "base_path": "/path-on-gov-uk",
+  "title": "Content Title",
+  "description": "Short description of content",
+  "format": "the format of this content",
+  "need_ids": ["array", "of", "need", "ids"],
+  "updated_at": "2014-03-04T13:58:11+00:00",
+  "details": {
+    "app": "or format",
+    "specific": "data..."
+  },
+  "tags": "TBC",
+
+  // Is this needed?
+  "id": "https://www.gov.uk/api/content/path-on-gov-uk",
+}
