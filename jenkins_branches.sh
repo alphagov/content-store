@@ -1,7 +1,10 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
-[ -x .venv/bin/pip ] || virtualenv .venv
-. .venv/bin/activate
+VENV_PATH="${HOME}/venv/${JOB_NAME}"
+
+[ -x ${VENV_PATH}/bin/pip ] || virtualenv ${VENV_PATH}
+. ${VENV_PATH}/bin/activate
 
 pip install -q ghtools
 
