@@ -1,16 +1,16 @@
 
-## Needed things:
+## Needed things
 
-### Controller:
+### Controller
 
 * Format
 
 ### View
 
-Everything from basic_formats plus:
+Everything from basic formats plus:
 
-* lgsl_code
-* lgil_override - (optional)
+* `lgsl_code`
+* `lgil_override` - (optional)
 
 ## Details
 

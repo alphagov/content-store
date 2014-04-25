@@ -1,8 +1,8 @@
 
-## Needed things:
+## Needed things
 
 ### View
 
 * countries
-** updated_at
-** synonyms
+* `updated_at`
+* synonyms
