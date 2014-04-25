@@ -1,13 +1,13 @@
 
-## Needed things:
+## Needed things
 
-### Controller:
+### Controller
 
 * Format
 
 ### View
 
-* API url
+* API URL
 * Breadcrumb section links
 * Title
 * Body (HTML)
@@ -18,10 +18,10 @@
 
 ## Deprecated fields to be removed
 
-* business_proposition - If this is still needed it should be implemented as a tag
-* need_extended_font - was for a feature that was never fully implemented.
-* alternative_title - The only place this is used is in submitting content to rummager - it's added to indexable_content.
-  This will be the concern of the publishing tools in future - they'll construct indexable_content themselves.
+* `business_proposition` - If this is still needed it should be implemented as a tag.
+* `need_extended_font` - This was for a feature that was never fully implemented.
+* `alternative_title` - The only place this is used is in submitting content to rummager - it's added to `indexable_content`.
+  This will be the concern of the publishing tools in future - they'll construct `indexable_content` themselves.
 
 ## Things to be provided
 

@@ -1,15 +1,15 @@
 
-## Needed things:
+## Needed things
 
-### Controller:
+### Controller
 
 * Format
 
 ### View
 
-Everything from basic_formats plus:
+Everything from basic formats plus:
 
-* place_type - slug of data set in Imminence
+* `place_type` - slug of data set in Imminence
 
 ## Notes
 
