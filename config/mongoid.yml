@@ -1,0 +1,25 @@
+# This file is overwritten on deploy
+development:
+  sessions:
+    default:
+      database: content_store_development
+      hosts:
+        - localhost:27017
+      options:
+        safe:
+          w: 1
+        consistency: :strong
+test:
+  sessions:
+    default:
+      database: content_store_development_test
+      hosts:
+        - localhost:27017
+      options:
+        safe:
+          w: 1
+        consistency: :strong
+        # In the test environment we lower the retries and retry interval to
+        # low amounts for fast failures.
+        max_retries: 1
+        retry_interval: 0
