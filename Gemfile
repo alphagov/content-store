@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.17'
 gem 'rails-api', '0.2.0'
 
+gem 'mongoid', '3.1.6'
+
 gem 'logstasher', '0.5.0'
 gem 'airbrake', '3.1.15'
 
