@@ -59,5 +59,7 @@ module ContentStore
     # parameters by using an attr_accessible or attr_protected declaration.
     # config.active_record.whitelist_attributes = true
 
+    # Disable Rack::Cache
+    config.action_dispatch.rack_cache = nil
   end
 end
