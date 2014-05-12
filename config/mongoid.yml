@@ -5,6 +5,7 @@ development:
       hosts:
         - localhost:27017
       options:
+        safe: true
         consistency: :strong
 test:
   sessions:
@@ -13,6 +14,7 @@ test:
       hosts:
         - localhost:27017
       options:
+        safe: true
         consistency: :strong
         # In the test environment we lower the retries and retry interval to
         # low amounts for fast failures.
