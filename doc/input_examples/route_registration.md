@@ -25,16 +25,21 @@ The following routes would be created:
     /foo/subpath (prefix) => frontend
     /foo/other/path (exact) => frontend
 
-### Redirects
+### Redirects for subpaths
 
-The content-store can also create redirects (again constrained to be under the base path).  Redirects can
-optionally specify a destination path - if ommitted, this will default to the base_path.
+The content-store can also create redirects for paths under the base_path.  This is intended to support
+cases where the structure within a piece of content has changed (eg a part of a guide no longer exists.)
 
-e.g. given the following:
+**Note:** it is invalid for the redirects array to include the base_path.  The only exception is redirect items,
+which are described in redirect_item.md.
+
+Redirects are specified in the redirects array.  These optionally specify a destination path, which if
+ommitted defaults to the base_path.
+
+e.g. given an item including the following fields:
 
     {
       "base_path": "/foo",
-      "rendering_app": "frontend",
       "redirects": [
         {"path": "/foo.json", "type": "exact", "destination": "/api/foo.json"},
         {"path": "/foo/obsolete-part", "type": "exact"}
