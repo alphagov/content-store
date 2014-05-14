@@ -7,7 +7,6 @@ describe ContentItem do
     end
 
     context "on base_path" do
-
       it "should be required" do
         @item.base_path = nil
         expect(@item).not_to be_valid
