@@ -48,9 +48,28 @@ describe "submitting an item to the content store" do
     expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
   end
 
-  it "does not allow updating the base_path of an item"
+  it "does not allow updating the base_path of an item" do
+    item = create(:content_item, :base_path => "/existing-path")
+    @data["base_path"] = "/changed-path"
+    put_json "/content/existing-path", @data
 
-  it "returns a bad request when given invalid json"
+    item.reload
+    expect(item.base_path).to eq("/existing-path")
+  end
 
-  it "returns a validation error when given an invalid item"
+  it "returns a bad request when given invalid json" do
+    put "/content/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
+    expect(response.status).to eq(400)
+  end
+
+  it "returns a validation error when given an invalid item" do
+    @data["title"] = ""
+    put_json "/content/vat-rates", @data
+
+    expect(response.status).to eq(422)
+
+    data = JSON.parse(response.body)
+    expect(data["title"]).to eq("")
+    expect(data["errors"]).to eq({"title" => ["can't be blank"]})
+  end
 end

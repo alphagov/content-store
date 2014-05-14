@@ -72,9 +72,26 @@ describe ContentItem do
     end
   end
 
-  it "does not include internal fields in json representation" do
-    item = build(:content_item)
+  describe "json representation" do
+    before :each do
+      @item = build(:content_item)
+    end
 
-    expect(item.as_json.keys).not_to include("_id", "updated_at", "created_at")
+    it "does not include internal fields" do
+      expect(@item.as_json.keys).not_to include("_id", "updated_at", "created_at")
+    end
+
+    it "includes details of any errors" do
+      @item.title = ""
+      @item.valid?
+
+      json_hash = @item.as_json
+      expect(json_hash).to have_key("errors")
+      expect(json_hash["errors"]).to eq({"title" => ["can't be blank"]})
+    end
+
+    it "does not include the 'errors' key if there are no errors" do
+      expect(@item.as_json).not_to have_key("errors")
+    end
   end
 end

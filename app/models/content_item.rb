@@ -12,12 +12,16 @@ class ContentItem
 
   index({:base_path => 1}, {:unique => true})
 
+  attr_protected :base_path
+
   validates :base_path, :uniqueness => true
   validate :validate_base_path
   validates :title, :format, :presence => true
 
   def as_json(options = nil)
-    super.except('_id', 'updated_at', 'created_at')
+    super.except('_id', 'updated_at', 'created_at').tap do |hash|
+      hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
+    end
   end
 
   private
