@@ -71,4 +71,10 @@ describe ContentItem do
       end
     end
   end
+
+  it "does not include internal fields in json representation" do
+    item = build(:content_item)
+
+    expect(item.as_json.keys).not_to include("_id", "updated_at", "created_at")
+  end
 end

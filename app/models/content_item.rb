@@ -16,6 +16,10 @@ class ContentItem
   validate :validate_base_path
   validates :title, :format, :presence => true
 
+  def as_json(options = nil)
+    super.except('_id', 'updated_at', 'created_at')
+  end
+
   private
 
   def validate_base_path
