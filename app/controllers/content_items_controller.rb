@@ -13,11 +13,8 @@ class ContentItemsController < ApplicationController
       item.base_path = params[:base_path]
     end
     status_to_use = item.new_record? ? :created : :ok
-    if item.update_attributes(@request_data)
-      head status_to_use
-    else
-      render :json => item, :status => :unprocessable_entity
-    end
+    item.update_attributes(@request_data) or status_to_use = :unprocessable_entity
+    render :json => item, :status => status_to_use
   end
 
   private

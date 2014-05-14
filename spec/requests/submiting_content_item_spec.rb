@@ -28,6 +28,9 @@ describe "submitting an item to the content store" do
     expect(item.need_ids).to eq(["100123", "100124"])
     expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
     expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
+
+    response_data = JSON.parse(response.body)
+    expect(response_data["title"]).to eq(item.title)
   end
 
   it "updates the relevant content item" do
@@ -46,6 +49,9 @@ describe "submitting an item to the content store" do
     expect(item.need_ids).to eq(["100123", "100124"])
     expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
     expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
+
+    response_data = JSON.parse(response.body)
+    expect(response_data["title"]).to eq(item.title)
   end
 
   it "does not allow updating the base_path of an item" do
