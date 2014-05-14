@@ -15,5 +15,9 @@ describe "Fetching a content item" do
     expect(data['base_path']).to eq('/foo/bar')
   end
 
-  it "should 404 for a non-existent item"
+  it "should 404 for a non-existent item" do
+
+    get "/content/non-existent"
+    expect(response).to be_missing
+  end
 end
