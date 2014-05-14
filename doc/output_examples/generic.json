@@ -4,7 +4,7 @@
   "description": "Short description of content",
   "format": "the format of this content",
   "need_ids": ["array", "of", "need", "ids"],
-  "updated_at": "2014-03-04T13:58:11+00:00",
+  "public_updated_at": "2014-03-04T13:58:11+00:00",
   "details": {
     "app": "or format",
     "specific": "data..."

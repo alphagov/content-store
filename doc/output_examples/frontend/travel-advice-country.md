@@ -6,7 +6,7 @@
 * Breadcrumb
 * Country name
 * Parts
-* `updated_at`
+* `public_updated_at`
 * `reviewed_at`
 * `change_description`
 * image details
