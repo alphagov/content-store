@@ -4,5 +4,5 @@
 ### View
 
 * countries
-* `updated_at`
+* `public_updated_at`
 * synonyms

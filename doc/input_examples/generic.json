@@ -1,0 +1,15 @@
+// Everything in output_examples/generic.json plus:
+{
+  "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.new.find(publishing_app)
+  "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.new.find(rendering_app)
+  "routes": [
+    {"path": "/base-path/subpath", "type": "prefix"},
+    {"path": "/base-path/other/path", "type": "exact"}
+  ],
+  "redirects": [
+    {"path": "/base-path/obsolete-path", "type": "exact"}
+  ],
+  // one of 'major', 'minor', 'republish'.
+  // Others can be added in future, content-store will just pass them through to the fanout.
+  "update_type": "republish"
+}
