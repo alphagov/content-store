@@ -10,6 +10,8 @@ class ContentItem
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
 
+  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
+
   index({:base_path => 1}, {:unique => true})
 
   attr_protected :base_path
@@ -19,7 +21,7 @@ class ContentItem
   validates :title, :format, :presence => true
 
   def as_json(options = nil)
-    super(options).except('_id', 'updated_at', 'created_at').tap do |hash|
+    super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
       hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
     end
   end

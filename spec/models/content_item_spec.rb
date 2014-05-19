@@ -77,8 +77,8 @@ describe ContentItem do
       @item = build(:content_item)
     end
 
-    it "does not include internal fields" do
-      expect(@item.as_json.keys).not_to include("_id", "updated_at", "created_at")
+    it "only includes public attributes" do
+      expect(@item.as_json.keys).to match_array(ContentItem::PUBLIC_ATTRIBUTES)
     end
 
     it "includes details of any errors" do
