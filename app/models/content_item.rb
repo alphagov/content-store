@@ -19,7 +19,7 @@ class ContentItem
   validates :title, :format, :presence => true
 
   def as_json(options = nil)
-    super.except('_id', 'updated_at', 'created_at').tap do |hash|
+    super(options).except('_id', 'updated_at', 'created_at').tap do |hash|
       hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
     end
   end
