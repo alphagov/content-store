@@ -28,7 +28,7 @@ describe "Fetching a content item" do
     expect(data['public_updated_at']).to eq(item.public_updated_at.iso8601)
     expect(data['details']).to eq({"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
 
-    expected_keys = %w(base_path title description format need_ids public_updated_at details)
+    expected_keys = ContentItem::PUBLIC_ATTRIBUTES
     expect(data.keys - expected_keys).to eq([])
   end
 
