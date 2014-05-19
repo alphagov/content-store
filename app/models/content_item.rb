@@ -12,8 +12,7 @@ class ContentItem
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
 
-  validates :base_path, :uniqueness => true
-  validate :validate_base_path
+  validates :base_path, uniqueness: true, absolute_path: true
   validates :title, :format, :presence => true
 
   def as_json(options = nil)
@@ -21,21 +20,5 @@ class ContentItem
       hash["base_path"] = self.base_path
       hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
     end
-  end
-
-  private
-
-  def validate_base_path
-    unless valid_absolute_url_path?(self.base_path)
-      errors[:base_path] << "is not a valid absolute URL path"
-    end
-  end
-
-  def valid_absolute_url_path?(path)
-    return false unless path.present? and path.starts_with?("/")
-    uri = URI.parse(path)
-    uri.path == path && path !~ %r{//} && path !~ %r{./\z}
-  rescue URI::InvalidURIError
-    false
   end
 end

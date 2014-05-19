@@ -6,7 +6,7 @@ describe ContentItem do
       @item = build(:content_item)
     end
 
-    context "on base_path" do
+    context "#base_path" do
       it "should be required" do
         @item.base_path = nil
         expect(@item).not_to be_valid
@@ -17,42 +17,12 @@ describe ContentItem do
         expect(@item).to have(1).error_on(:base_path)
       end
 
-      it "should be a valid absolute URL path" do
-        [
-          "/",
-          "/foo",
-          "/foo/bar",
-          "/foo-bar/baz",
-          "/foo/BAR",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).to be_valid
-        end
+      it "should be an absolute path" do
+        @item.base_path = '/valid/absolute/path'
+        expect(@item).to be_valid
 
-        [
-          "not a URL path",
-          "http://foo.example.com/bar",
-          "bar/baz",
-          "/foo/bar?baz=qux",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).not_to be_valid
-          expect(@item).to have(1).error_on(:base_path)
-        end
-      end
-
-      it "should reject url paths with consecutive slashes or trailing slashes" do
-        [
-          "/foo//bar",
-          "/foo/bar///",
-          "//bar/baz",
-          "//",
-          "/foo/bar/",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).not_to be_valid
-          expect(@item).to have(1).error_on(:base_path)
-        end
+        @item.base_path = 'invalid//absolute/path/'
+        expect(@item).to_not be_valid
       end
 
       it "should be unique" do
