@@ -15,7 +15,7 @@ describe "Fetching a content item" do
 
     get "/content/vat-rates"
 
-    expect(response).to be_success
+    expect(response.status).to eq(200)
     expect(response.content_type).to eq("application/json")
 
     data = JSON.parse(response.body)
@@ -34,6 +34,6 @@ describe "Fetching a content item" do
 
   it "should 404 for a non-existent item" do
     get "/content/non-existent"
-    expect(response).to be_missing
+    expect(response.status).to eq(404)
   end
 end
