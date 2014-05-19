@@ -10,7 +10,4 @@
     "specific": "data..."
   },
   "tags": "TBC",
-
-  // Is this needed?
-  "id": "https://www.gov.uk/api/content/path-on-gov-uk",
 }
