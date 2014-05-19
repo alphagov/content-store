@@ -81,6 +81,10 @@ describe ContentItem do
       expect(@item.as_json.keys).to match_array(ContentItem::PUBLIC_ATTRIBUTES)
     end
 
+    it "outputs the base_path correctly" do
+      expect(@item.as_json["base_path"]).to eq(@item.base_path)
+    end
+
     it "includes details of any errors" do
       @item.title = ""
       @item.valid?
