@@ -9,11 +9,12 @@ class ContentItem
   field :need_ids, :type => Array, :default => []
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
+  field :rendering_app, :type => String
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
 
   validates :base_path, uniqueness: true, absolute_path: true
-  validates :title, :format, :presence => true
+  validates :title, :format, :rendering_app, presence: true
 
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|

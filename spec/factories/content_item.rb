@@ -4,5 +4,6 @@ FactoryGirl.define do
     sequence(:base_path) {|n| "/test-content-#{n}" }
     format "answer"
     title "Test content"
+    rendering_app 'frontent'
   end
 end

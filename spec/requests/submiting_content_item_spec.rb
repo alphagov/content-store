@@ -9,6 +9,7 @@ describe "submitting an item to the content store" do
       "format" => "answer",
       "need_ids" => ["100123", "100124"],
       "public_updated_at" => "2014-05-14T13:00:06Z",
+      "rendering_app" => "frontend",
       "details" => {
         "body" => "<p>Some body text</p>\n",
       },
