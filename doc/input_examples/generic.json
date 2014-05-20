@@ -1,4 +1,4 @@
-// Everything in output_examples/generic.json plus:
+// Everything in output_examples/generic.json (excluding updated_at) plus:
 {
   "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.new.find(publishing_app)
   "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.new.find(rendering_app)
