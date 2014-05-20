@@ -10,7 +10,7 @@ class ContentItem
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
 
-  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
+  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
   index({:base_path => 1}, {:unique => true})
 
