@@ -2,7 +2,7 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :base_path, :type => String
+  field :_id, :as => :base_path, :type => String
   field :title, :type => String
   field :description, :type => String
   field :format, :type => String
@@ -12,16 +12,13 @@ class ContentItem
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
 
-  index({:base_path => 1}, {:unique => true})
-
-  attr_protected :base_path
-
   validates :base_path, :uniqueness => true
   validate :validate_base_path
   validates :title, :format, :presence => true
 
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
+      hash["base_path"] = self.base_path
       hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
     end
   end
