@@ -22,7 +22,7 @@ group :development, :test do
   gem 'rspec-rails', '2.14.2'
   gem 'database_cleaner', '1.2.0'
   gem 'factory_girl', '4.4.0'
-  gem 'webmock', '~> 1.18.0'
+  gem 'webmock', '~> 1.18.0', :require => false
 
   gem 'simplecov', '0.8.2', :require => false
   gem 'simplecov-rcov', '0.2.3', :require => false

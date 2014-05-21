@@ -26,14 +26,18 @@ describe ContentItem do
       end
 
       it "should be unique" do
+        stub_route_registration('/foo', 'exact', 'frontend')
         create(:content_item, :base_path => "/foo")
+
         @item.base_path = "/foo"
         expect(@item).not_to be_valid
         expect(@item).to have(1).error_on(:base_path)
       end
 
       it "should have a db level uniqueness constraint" do
+        stub_route_registration('/foo', 'exact', 'frontend')
         create(:content_item, :base_path => "/foo")
+
         @item.base_path = "/foo"
         expect {
           @item.save! :validate => false

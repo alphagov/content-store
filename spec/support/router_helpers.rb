@@ -1,5 +1,6 @@
-module RouterHelpers
+require 'gds_api/test_helpers/router'
 
+module RouterHelpers
   def expect_registration_of_routes(*routes)
     routes.each do |route_params|
       Rails.application.router_api.should_receive(:add_route).with(*route_params, skip_commit: true).ordered
@@ -8,4 +9,7 @@ module RouterHelpers
   end
 end
 
-RSpec.configuration.include RouterHelpers
+RSpec.configure do |config|
+  config.include(RouterHelpers)
+  config.include(GdsApi::TestHelpers::Router)
+end

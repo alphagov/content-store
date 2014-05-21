@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "submitting an item to the content store" do
   before :each do
+    stub_route_registration('/vat-rates', 'exact', 'frontend')
     @data = {
       "base_path" => "/vat-rates",
       "title" => "VAT rates",
@@ -56,6 +57,7 @@ describe "submitting an item to the content store" do
   end
 
   it "does not allow updating the base_path of an item" do
+    stub_route_registration('/existing-path', 'exact', 'frontend')
     item = create(:content_item, :base_path => "/existing-path")
     @data["base_path"] = "/changed-path"
     put_json "/content/existing-path", @data
