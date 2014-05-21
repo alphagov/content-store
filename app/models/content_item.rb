@@ -10,6 +10,7 @@ class ContentItem
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
   field :rendering_app, :type => String
+  field :registered_routes, :type => Array, :default => []
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
 
@@ -17,7 +18,7 @@ class ContentItem
   validates :title, :format, :rendering_app, presence: true
   validate :route_set_is_valid
 
-  before_save :register_routes
+  before_save :register_and_store_routes
 
   # Setter for defining routes to the content item.
   #
@@ -69,7 +70,8 @@ private
     end
   end
 
-  def register_routes
+  def register_and_store_routes
     registerable_route_set.register!
+    self.registered_routes = registerable_routes.map { |r| { 'path' => r.path, 'type' => r.type } }
   end
 end

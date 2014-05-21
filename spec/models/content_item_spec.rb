@@ -111,13 +111,17 @@ describe ContentItem do
 
   context 'when saved' do
     before do
-      routes = [
+      @routes = [
         { 'path' => '/a-path', 'type' => 'exact' },
         { 'path' => '/a-path.json', 'type' => 'exact' },
         { 'path' => '/a-path/subpath', 'type' => 'prefix' }
       ]
 
-      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: routes)
+      @routes.each do |route|
+        stub_route_registration(route['path'], route['type'], 'an-app')
+      end
+
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
     end
 
     it 'registers the assigned routes' do
@@ -128,6 +132,12 @@ describe ContentItem do
       )
 
       @item.save!
+    end
+
+    it 'saves the registered routes to the store' do
+      @item.save!
+
+      expect(@item.registered_routes).to match_array(@routes)
     end
   end
 
