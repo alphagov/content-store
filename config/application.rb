@@ -15,6 +15,9 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+require 'plek'
+require 'gds_api/router'
+
 module ContentStore
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -62,5 +65,9 @@ module ContentStore
 
     # Disable Rack::Cache
     config.action_dispatch.rack_cache = nil
+
+    def router_api
+      @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
+    end
   end
 end

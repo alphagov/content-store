@@ -15,11 +15,61 @@ class ContentItem
 
   validates :base_path, uniqueness: true, absolute_path: true
   validates :title, :format, :rendering_app, presence: true
+  validate :route_set_is_valid
+
+  before_save :register_routes
+
+  # Setter for defining routes to the content item.
+  #
+  # +route_attrs+ should be an array of hashes containing both a 'path' and a
+  # 'type' key. 'path' defines the absolute URL path to the content and 'type'
+  # is either 'exact' or 'prefix', depending on the type of route. For example:
+  #
+  #   [ { 'path' => '/content', 'type' => 'exact' },
+  #     { 'path' => '/content.json', 'type' => 'exact' },
+  #     { 'path' => '/content/subpath', 'type' => 'prefix' } ]
+  #
+  # All paths must be below the +base_path+ of the content item.
+  # The specified routes will be registerd with the router when the content
+  # item is saved.
+  def routes=(route_attrs)
+    attrs_with_base_route = route_attrs | [base_path_route_attrs]
+    @registerable_route_set = initialise_registerable_route_set(attrs_with_base_route)
+  end
+
+  # Array of +RegisterableRoutes+ currently set for this content item
+  def registerable_routes
+    registerable_route_set.registerable_routes
+  end
 
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
       hash["base_path"] = self.base_path
       hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
     end
+  end
+
+private
+
+  def registerable_route_set
+    @registerable_route_set ||= initialise_registerable_route_set([base_path_route_attrs])
+  end
+
+  def initialise_registerable_route_set(attrs)
+    RegisterableRouteSet.from_route_attributes(attrs, base_path, rendering_app)
+  end
+
+  def base_path_route_attrs
+    { 'path' => base_path, 'type' => 'exact' }
+  end
+
+  def route_set_is_valid
+    unless base_path.present? && registerable_route_set.valid?
+      errors[:routes] += registerable_route_set.errors.full_messages
+    end
+  end
+
+  def register_routes
+    registerable_route_set.register!
   end
 end

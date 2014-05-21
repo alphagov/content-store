@@ -40,6 +40,91 @@ describe ContentItem do
         }.to raise_error(Moped::Errors::OperationFailure)
       end
     end
+
+    context 'with a route that is not below the base path' do
+      before do
+        @item.routes= [ { 'path' => '/wrong-path', 'type' => 'exact' } ]
+      end
+
+      it 'should be invalid' do
+        expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:routes)
+      end
+    end
+
+    context 'with an invalid type of route' do
+      before do
+        @item.routes= [ { 'path' => @item.base_path, 'type' => 'unsupported' } ]
+      end
+
+      it 'should be invalid' do
+        expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:routes)
+      end
+    end
+  end
+
+  describe "#registerable_routes" do
+    before(:each) do
+      @item = build(:content_item, base_path: '/path', rendering_app: 'frontend')
+    end
+
+    it "implicitly includes the base_path as a route" do
+      expected_routes = [
+        RegisterableRoute.new('/path', 'exact', 'frontend')
+      ]
+
+      expect(@item.registerable_routes).to match_array(expected_routes)
+    end
+
+    it "includes explicitly set routes" do
+      @item.routes = [{ 'path' => '/path.json', 'type' => 'exact' }]
+
+      expected_routes = [
+        RegisterableRoute.new('/path', 'exact', 'frontend'),
+        RegisterableRoute.new('/path.json', 'exact', 'frontend')
+      ]
+
+      expect(@item.registerable_routes).to match_array(expected_routes)
+    end
+
+    it "does not duplicate the base route if already present in explicit routes" do
+      @item.routes = [
+        { 'path' => '/path', 'type' => 'exact' },
+        { 'path' => '/path.json', 'type' => 'exact' },
+        { 'path' => '/path/subpath', 'type' => 'prefix' }
+      ]
+
+      expected_routes = [
+        RegisterableRoute.new('/path', 'exact', 'frontend'),
+        RegisterableRoute.new('/path.json', 'exact', 'frontend'),
+        RegisterableRoute.new('/path/subpath', 'prefix', 'frontend')
+      ]
+
+      expect(@item.registerable_routes).to match_array(expected_routes)
+    end
+  end
+
+  context 'when saved' do
+    before do
+      routes = [
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: routes)
+    end
+
+    it 'registers the assigned routes' do
+      expect_registration_of_routes(
+        ['/a-path', 'exact', 'an-app'],
+        ['/a-path.json', 'exact', 'an-app'],
+        ['/a-path/subpath', 'prefix', 'an-app']
+      )
+
+      @item.save!
+    end
   end
 
   describe "json representation" do
