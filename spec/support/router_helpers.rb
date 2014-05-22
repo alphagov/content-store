@@ -2,17 +2,27 @@ require 'gds_api/test_helpers/router'
 
 module RouterHelpers
   def stub_all_route_registration
-    router_api_endpoint = Plek.current.find('router-api')
-
     stub_request(:put, "#{router_api_endpoint}/routes")
     stub_request(:post, "#{router_api_endpoint}/routes/commit")
   end
 
-  def expect_registration_of_routes(*routes)
+  def assert_routes_registered(routes, times=1)
     routes.each do |route_params|
-      Rails.application.router_api.should_receive(:add_route).with(*route_params, skip_commit: true).ordered
+      request_param = { route: {
+          incoming_path: route_params[0],
+          route_type: route_params[1],
+          handler: 'backend',
+          backend_id: route_params[2] }
+      }
+      assert_requested(:put, "#{router_api_endpoint}/routes", :body => request_param, times: times)
     end
-    Rails.application.router_api.should_receive(:commit_routes).ordered
+    assert_requested(:post, "#{router_api_endpoint}/routes/commit", times: times)
+  end
+
+private
+
+  def router_api_endpoint
+    Plek.current.find('router-api')
   end
 end
 

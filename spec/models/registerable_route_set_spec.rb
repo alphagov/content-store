@@ -91,12 +91,14 @@ describe RegisterableRouteSet do
         RegisterableRoute.new('/path/sub/path', 'prefix', 'frontend')
       ]
       @route_set = RegisterableRouteSet.new(@routes, '/path', 'frontend')
+      @route_set.register!
     end
 
     it 'registers and commits all registeragble routes' do
-      expect_registration_of_routes(['/path', 'exact', 'frontend'], ['/path/sub/path', 'prefix', 'frontend'])
-
-      @route_set.register!
+      assert_routes_registered([
+        ['/path', 'exact', 'frontend'],
+        ['/path/sub/path', 'prefix', 'frontend']
+      ])
     end
   end
 end

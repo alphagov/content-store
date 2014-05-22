@@ -115,22 +115,18 @@ describe ContentItem do
         { 'path' => '/a-path/subpath', 'type' => 'prefix' }
       ]
 
-      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item = create(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
     end
 
     it 'registers the assigned routes' do
-      expect_registration_of_routes(
+      assert_routes_registered([
         ['/a-path', 'exact', 'an-app'],
         ['/a-path.json', 'exact', 'an-app'],
         ['/a-path/subpath', 'prefix', 'an-app']
-      )
-
-      @item.save!
+      ])
     end
 
     it 'saves the registered routes to the store' do
-      @item.save!
-
       expect(@item.registered_routes).to match_array(@routes)
     end
   end
