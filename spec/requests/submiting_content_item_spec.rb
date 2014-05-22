@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "submitting an item to the content store" do
   before :each do
-    stub_route_registration('/vat-rates', 'exact', 'frontend')
     @data = {
       "base_path" => "/vat-rates",
       "title" => "VAT rates",

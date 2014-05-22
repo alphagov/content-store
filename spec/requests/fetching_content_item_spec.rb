@@ -3,7 +3,6 @@ require 'spec_helper'
 describe "Fetching a content item" do
 
   it "should return details for the requested item" do
-    stub_route_registration('/vat-rates', 'exact', 'frontend')
     item = create(:content_item,
                  :base_path => "/vat-rates",
                  :title => "VAT rates",

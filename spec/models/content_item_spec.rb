@@ -26,7 +26,6 @@ describe ContentItem do
       end
 
       it "should be unique" do
-        stub_route_registration('/foo', 'exact', 'frontend')
         create(:content_item, :base_path => "/foo")
 
         @item.base_path = "/foo"
@@ -35,7 +34,6 @@ describe ContentItem do
       end
 
       it "should have a db level uniqueness constraint" do
-        stub_route_registration('/foo', 'exact', 'frontend')
         create(:content_item, :base_path => "/foo")
 
         @item.base_path = "/foo"
@@ -116,10 +114,6 @@ describe ContentItem do
         { 'path' => '/a-path.json', 'type' => 'exact' },
         { 'path' => '/a-path/subpath', 'type' => 'prefix' }
       ]
-
-      @routes.each do |route|
-        stub_route_registration(route['path'], route['type'], 'an-app')
-      end
 
       @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
     end
