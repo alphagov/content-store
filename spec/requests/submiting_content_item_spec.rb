@@ -13,6 +13,9 @@ describe "content item write API" do
       "details" => {
         "body" => "<p>Some body text</p>\n",
       },
+      "routes" => [
+        { "path" => "/vat-rates", "type" => 'exact' }
+      ],
     }
   end
 
@@ -80,23 +83,6 @@ describe "content item write API" do
 
     it "updates routes for the content item" do
       assert_routes_registered([['/vat-rates', 'exact', 'frontend']], 2)
-    end
-  end
-
-  context "updating a content item with a different base path" do
-    before(:each) do
-      @item = create(:content_item, :base_path => "/existing-path")
-      @data["base_path"] = "/changed-path"
-      put_json "/content/existing-path", @data
-    end
-
-    it "responds with an OK status" do
-      expect(response.status).to eq(200)
-    end
-
-    it "does not change the base_path of the item" do
-      @item.reload
-      expect(@item.base_path).to eq("/existing-path")
     end
   end
 

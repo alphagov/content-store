@@ -34,7 +34,7 @@ describe ContentItem do
       end
 
       it "should have a db level uniqueness constraint" do
-        create(:content_item, :base_path => "/foo")
+        item = create(:content_item, :base_path => "/foo")
 
         @item.base_path = "/foo"
         expect {
@@ -45,7 +45,10 @@ describe ContentItem do
 
     context 'with a route that is not below the base path' do
       before do
-        @item.routes= [ { 'path' => '/wrong-path', 'type' => 'exact' } ]
+        @item.routes= [
+          { 'path' => @item.base_path, 'type' => 'exact' },
+          { 'path' => '/wrong-path', 'type' => 'exact' },
+        ]
       end
 
       it 'should be invalid' do
@@ -63,47 +66,6 @@ describe ContentItem do
         expect(@item).to_not be_valid
         expect(@item).to have(1).error_on(:routes)
       end
-    end
-  end
-
-  describe "#registerable_routes" do
-    before(:each) do
-      @item = build(:content_item, base_path: '/path', rendering_app: 'frontend')
-    end
-
-    it "implicitly includes the base_path as a route" do
-      expected_routes = [
-        RegisterableRoute.new('/path', 'exact', 'frontend')
-      ]
-
-      expect(@item.registerable_routes).to match_array(expected_routes)
-    end
-
-    it "includes explicitly set routes" do
-      @item.routes = [{ 'path' => '/path.json', 'type' => 'exact' }]
-
-      expected_routes = [
-        RegisterableRoute.new('/path', 'exact', 'frontend'),
-        RegisterableRoute.new('/path.json', 'exact', 'frontend')
-      ]
-
-      expect(@item.registerable_routes).to match_array(expected_routes)
-    end
-
-    it "does not duplicate the base route if already present in explicit routes" do
-      @item.routes = [
-        { 'path' => '/path', 'type' => 'exact' },
-        { 'path' => '/path.json', 'type' => 'exact' },
-        { 'path' => '/path/subpath', 'type' => 'prefix' }
-      ]
-
-      expected_routes = [
-        RegisterableRoute.new('/path', 'exact', 'frontend'),
-        RegisterableRoute.new('/path.json', 'exact', 'frontend'),
-        RegisterableRoute.new('/path/subpath', 'prefix', 'frontend')
-      ]
-
-      expect(@item.registerable_routes).to match_array(expected_routes)
     end
   end
 
@@ -128,6 +90,21 @@ describe ContentItem do
 
     it 'saves the registered routes to the store' do
       expect(@item.registered_routes).to match_array(@routes)
+    end
+  end
+
+  context 'when loaded from the content store' do
+    before do
+      create(:content_item, base_path: '/base_path', routes: [{ 'path' => '/base_path', 'type' => 'exact' }])
+      @item = ContentItem.last
+    end
+
+    it "should be valid" do
+      expect(@item).to be_valid
+    end
+
+    it 'it shoud initialise the registered routes' do
+      assert_equal [RegisterableRoute.new('/base_path', 'exact', @item.rendering_app)], @item.registerable_routes
     end
   end
 
