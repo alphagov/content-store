@@ -1,9 +1,9 @@
 class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rendering_app)
   include ActiveModel::Validations
 
-  validate :registerable_routes_validate,
-           :base_path_is_a_registerable_route,
-           :routes_are_beneath_base_path
+  validate :registerable_routes_are_valid,
+           :registerable_routes_include_base_path,
+           :all_routes_are_beneath_base_path
 
   def self.from_route_attributes(route_attributes, base_path, rendering_app)
     registerable_routes = route_attributes.map do |attrs|
@@ -28,25 +28,40 @@ private
     Rails.application.router_api.commit_routes
   end
 
-  def route_paths
-    registerable_routes.map(&:path)
-  end
-
-  def registerable_routes_validate
+  def registerable_routes_are_valid
     unless registerable_routes.all?(&:valid?)
       errors[:base] << "are invalid"
     end
   end
 
-  def base_path_is_a_registerable_route
+  def registerable_routes_include_base_path
+    route_paths = registerable_routes.map(&:path)
+
     unless route_paths.include?(base_path)
       errors[:base] << 'must include the base_path'
     end
   end
 
-  def routes_are_beneath_base_path
-    unless route_paths.all? {|path| path.starts_with?(base_path) }
+  def all_routes_are_beneath_base_path
+    unless registerable_routes.all? {|route| base_path_with_extension?(route) || beneath_base_path?(route) }
       errors[:base] << 'must be below the base path'
     end
+  end
+
+  def base_path_with_extension?(route)
+    route.path.match(%r(^#{base_path}\.\w+\z))
+  end
+
+  def beneath_base_path?(route)
+    base_segments = segments_for(route.path)[0,base_path_segments.size]
+    base_segments == base_path_segments
+  end
+
+  def base_path_segments
+    @base_path_segments ||= segments_for(base_path)
+  end
+
+  def segments_for(path)
+    path.split('/').reject(&:blank?)
   end
 end

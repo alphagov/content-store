@@ -22,35 +22,62 @@ describe RegisterableRouteSet do
     end
   end
 
+  it 'is valid with an "exact" route matching the base_path' do
+    routes    = [ RegisterableRoute.new('/base_path', 'exact', 'frontend') ]
+    route_set = RegisterableRouteSet.new(routes, '/base_path', 'frontend')
+    expect(route_set).to be_valid
+  end
+
+  it 'is valid with a "prefix" route matching the base_path' do
+    routes    = [ RegisterableRoute.new('/base_path', 'prefix', 'frontend') ]
+    route_set = RegisterableRouteSet.new(routes, '/base_path', 'frontend')
+    expect(route_set).to be_valid
+  end
+
   it 'is valid with a valid set of registerable routes' do
     routes = [
       RegisterableRoute.new('/path', 'exact', 'frontend'),
       RegisterableRoute.new('/path.json', 'exact', 'frontend'),
-      RegisterableRoute.new('/path/sub/path', 'prefix', 'frontend')
+      RegisterableRoute.new('/path/exact-subpath', 'exact', 'frontend'),
+      RegisterableRoute.new('/path/sub/path-prefix', 'prefix', 'frontend')
     ]
     route_set = RegisterableRouteSet.new(routes, '/path', 'frontend')
 
     expect(route_set).to be_valid
   end
 
-  it 'is invalid when registerable routes are invalid' do
+  it 'is invalid when a registerable route is not a valid "type"' do
     routes = [RegisterableRoute.new('/path', 'invalid', 'frontend')]
     route_set = RegisterableRouteSet.new(routes, '/path', 'frontend')
 
     expect(route_set).to_not be_valid
   end
 
-  it 'is invalid when there is no route matching the base_path' do
-    routes = [RegisterableRoute.new('/path', 'exact', 'frontend')]
+  it 'is invalid when there are no routes' do
+    expect(RegisterableRouteSet.new([],'/path', 'frontend')).to_not be_valid
+  end
+
+  it 'is invalid when there is no route matching the base path' do
+    routes = [RegisterableRoute.new('/base_path', 'exact', 'frontend')]
     route_set = RegisterableRouteSet.new(routes, '/another-base-path', 'frontend')
 
     expect(route_set).to_not be_valid
   end
 
-  it 'is invalid if any registerable routes are not beneath the base path' do
+  it 'is invalid with routes that are not beneath the base_path' do
     routes = [
       RegisterableRoute.new('/path', 'exact', 'frontend'),
       RegisterableRoute.new('/another/sub/path', 'prefix', 'frontend')
+    ]
+    route_set = RegisterableRouteSet.new(routes, '/path', 'frontend')
+
+    expect(route_set).to_not be_valid
+  end
+
+  it 'is invalid with routes that are a string-prefix of the base_path but not an actual subpath' do
+    routes = [
+      RegisterableRoute.new('/path', 'exact', 'frontend'),
+      RegisterableRoute.new('/path-prefix', 'prefix', 'frontend')
     ]
     route_set = RegisterableRouteSet.new(routes, '/path', 'frontend')
 
