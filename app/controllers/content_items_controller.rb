@@ -7,11 +7,7 @@ class ContentItemsController < ApplicationController
   end
 
   def update
-    item = ContentItem.where(:base_path => params[:base_path]).first
-    unless item
-      item = ContentItem.new
-      item.base_path = params[:base_path]
-    end
+    item = ContentItem.find_or_initialize_by(base_path: params[:base_path])
     status_to_use = item.new_record? ? :created : :ok
     item.update_attributes(@request_data) or status_to_use = :unprocessable_entity
     render :json => item, :status => status_to_use
@@ -20,7 +16,7 @@ class ContentItemsController < ApplicationController
   private
 
   def parse_json_request
-    @request_data = JSON.parse(request.body.read)
+    @request_data = JSON.parse(request.body.read).except('base_path')
   rescue JSON::ParserError
     head :bad_request
   end

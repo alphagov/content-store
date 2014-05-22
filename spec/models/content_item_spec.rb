@@ -6,7 +6,7 @@ describe ContentItem do
       @item = build(:content_item)
     end
 
-    context "on base_path" do
+    context "#base_path" do
       it "should be required" do
         @item.base_path = nil
         expect(@item).not_to be_valid
@@ -17,58 +17,94 @@ describe ContentItem do
         expect(@item).to have(1).error_on(:base_path)
       end
 
-      it "should be a valid absolute URL path" do
-        [
-          "/",
-          "/foo",
-          "/foo/bar",
-          "/foo-bar/baz",
-          "/foo/BAR",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).to be_valid
-        end
+      it "should be an absolute path" do
+        @item.base_path = '/valid/absolute/path'
+        expect(@item).to be_valid
 
-        [
-          "not a URL path",
-          "http://foo.example.com/bar",
-          "bar/baz",
-          "/foo/bar?baz=qux",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).not_to be_valid
-          expect(@item).to have(1).error_on(:base_path)
-        end
-      end
-
-      it "should reject url paths with consecutive slashes or trailing slashes" do
-        [
-          "/foo//bar",
-          "/foo/bar///",
-          "//bar/baz",
-          "//",
-          "/foo/bar/",
-        ].each do |path|
-          @item.base_path = path
-          expect(@item).not_to be_valid
-          expect(@item).to have(1).error_on(:base_path)
-        end
+        @item.base_path = 'invalid//absolute/path/'
+        expect(@item).to_not be_valid
       end
 
       it "should be unique" do
         create(:content_item, :base_path => "/foo")
+
         @item.base_path = "/foo"
         expect(@item).not_to be_valid
         expect(@item).to have(1).error_on(:base_path)
       end
 
       it "should have a db level uniqueness constraint" do
-        create(:content_item, :base_path => "/foo")
+        item = create(:content_item, :base_path => "/foo")
+
         @item.base_path = "/foo"
         expect {
           @item.save! :validate => false
         }.to raise_error(Moped::Errors::OperationFailure)
       end
+    end
+
+    context 'with a route that is not below the base path' do
+      before do
+        @item.routes= [
+          { 'path' => @item.base_path, 'type' => 'exact' },
+          { 'path' => '/wrong-path', 'type' => 'exact' },
+        ]
+      end
+
+      it 'should be invalid' do
+        expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:routes)
+      end
+    end
+
+    context 'with an invalid type of route' do
+      before do
+        @item.routes= [ { 'path' => @item.base_path, 'type' => 'unsupported' } ]
+      end
+
+      it 'should be invalid' do
+        expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:routes)
+      end
+    end
+  end
+
+  context 'when saved' do
+    before do
+      @routes = [
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+
+      @item = create(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+    end
+
+    it 'registers the assigned routes' do
+      assert_routes_registered([
+        ['/a-path', 'exact', 'an-app'],
+        ['/a-path.json', 'exact', 'an-app'],
+        ['/a-path/subpath', 'prefix', 'an-app']
+      ])
+    end
+
+    it 'saves the registered routes to the store' do
+      expect(@item.registered_routes).to match_array(@routes)
+    end
+  end
+
+  context 'when loaded from the content store' do
+    before do
+      create(:content_item, base_path: '/base_path', routes: [{ 'path' => '/base_path', 'type' => 'exact' }])
+      @item = ContentItem.last
+    end
+
+    it "should be valid" do
+      expect(@item).to be_valid
+    end
+
+    it 'it shoud initialise the registered routes' do
+      assert_equal [RegisterableRoute.new('/base_path', 'exact', @item.rendering_app)], @item.registerable_routes
     end
   end
 

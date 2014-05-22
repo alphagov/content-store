@@ -1,8 +1,7 @@
 ## Registering routes with the router.
 
 After saving an item, the content-store will register routes with the router.  All items listed in the
-routes array will be created as routes pointing at the rendering_app.  Additionally, if the base_path is
-not included in the routes or redirects array, an exact route will be created for it also pointing at the rendering app.
+routes array will be created as routes pointing at the rendering_app. The routes for a content item must contain a route for the base_path.
 
 All entries in the routes array must be under the base_path (ie either a subpath of the base_path, or the base_path with an extension)
 
@@ -12,6 +11,7 @@ Given an item including the following fields:
       "base_path": "/foo",
       "rendering_app": "frontend",
       "routes": [
+        {"path": "/foo", "type": "exact"},
         {"path": "/foo.json", "type": "exact"},
         {"path": "/foo/subpath", "type": "prefix"},
         {"path": "/foo/other/path", "type": "exact"}
