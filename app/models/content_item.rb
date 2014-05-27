@@ -12,7 +12,7 @@ class ContentItem
   field :rendering_app, :type => String
   field :registered_routes, :type => Array, :default => []
 
-  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids public_updated_at details).freeze
+  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
   validates :base_path, uniqueness: true, absolute_path: true
   validates :title, :format, :rendering_app, presence: true
