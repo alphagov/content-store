@@ -14,11 +14,14 @@ class ContentItem
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
-  validates :base_path, uniqueness: true, absolute_path: true
+  validates :base_path, absolute_path: true
   validates :title, :format, :rendering_app, presence: true
   validate :route_set_is_valid
 
+  # Saves and upserts trigger different sets of callbacks; to be safe, we need
+  # to register for both
   before_save :register_and_store_routes
+  before_upsert :register_and_store_routes
 
   # Setter for defining routes to the content item.
   #
