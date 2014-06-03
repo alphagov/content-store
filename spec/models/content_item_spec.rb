@@ -85,6 +85,31 @@ describe ContentItem do
     end
   end
 
+  context 'when upserted' do
+    before do
+      @routes = [
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item.upsert
+    end
+
+    it 'registers the assigned routes' do
+      assert_routes_registered([
+        ['/a-path', 'exact', 'an-app'],
+        ['/a-path.json', 'exact', 'an-app'],
+        ['/a-path/subpath', 'prefix', 'an-app']
+      ])
+    end
+
+    it 'saves the registered routes to the store' do
+      expect(@item.registered_routes).to match_array(@routes)
+    end
+  end
+
   context 'when loaded from the content store' do
     before do
       create(:content_item, base_path: '/base_path', routes: [{ 'path' => '/base_path', 'type' => 'exact' }])
