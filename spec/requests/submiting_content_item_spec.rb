@@ -28,7 +28,7 @@ describe "content item write API" do
       expect(response.status).to eq(201)
     end
 
-    it "saves the content item" do
+    it "creates the content item" do
       item = ContentItem.where(:base_path => "/vat-rates").first
       expect(item).to be
       expect(item.title).to eq("VAT rates")
@@ -93,6 +93,23 @@ describe "content item write API" do
 
     it "returns a Bad Request status" do
       expect(response.status).to eq(400)
+    end
+  end
+
+  context "given a partial update" do
+    before(:each) do
+      @item = create(:content_item, :base_path => "/vat-rates")
+
+      put_json "/content/vat-rates", @data.except("title")
+    end
+
+    it "returns a Unprocessable Entity status" do
+      expect(response.status).to eq(422)
+    end
+
+    it "includes validation error messages in the response" do
+      data = JSON.parse(response.body)
+      expect(data["errors"]).to eq({"title" => ["can't be blank"]})
     end
   end
 

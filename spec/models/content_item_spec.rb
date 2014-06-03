@@ -25,14 +25,6 @@ describe ContentItem do
         expect(@item).to_not be_valid
       end
 
-      it "should be unique" do
-        create(:content_item, :base_path => "/foo")
-
-        @item.base_path = "/foo"
-        expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:base_path)
-      end
-
       it "should have a db level uniqueness constraint" do
         item = create(:content_item, :base_path => "/foo")
 
@@ -69,7 +61,7 @@ describe ContentItem do
     end
   end
 
-  context 'when saved' do
+  context 'when created' do
     before do
       @routes = [
         { 'path' => '/a-path', 'type' => 'exact' },
@@ -78,6 +70,31 @@ describe ContentItem do
       ]
 
       @item = create(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+    end
+
+    it 'registers the assigned routes' do
+      assert_routes_registered([
+        ['/a-path', 'exact', 'an-app'],
+        ['/a-path.json', 'exact', 'an-app'],
+        ['/a-path/subpath', 'prefix', 'an-app']
+      ])
+    end
+
+    it 'saves the registered routes to the store' do
+      expect(@item.registered_routes).to match_array(@routes)
+    end
+  end
+
+  context 'when upserted' do
+    before do
+      @routes = [
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item.upsert
     end
 
     it 'registers the assigned routes' do
