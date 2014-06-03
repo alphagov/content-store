@@ -1,6 +1,6 @@
 class ContentItem
   include Mongoid::Document
-  include Mongoid::Timestamps
+  include Mongoid::Timestamps::Updated
 
   field :_id, :as => :base_path, :type => String
   field :title, :type => String
