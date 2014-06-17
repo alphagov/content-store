@@ -24,11 +24,16 @@ class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rende
   end
 
   def register!
+    register_backend
     registerable_routes.each { |route| register_route(route) }
     commit_routes
   end
 
 private
+
+  def register_backend
+    Rails.application.router_api.add_backend(rendering_app, Plek.new.find(rendering_app, :force_http => true) + "/")
+  end
 
   def register_route(route)
     Rails.application.router_api.add_route(route.path, route.type, rendering_app, skip_commit: true)
