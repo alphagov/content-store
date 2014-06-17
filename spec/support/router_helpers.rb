@@ -1,28 +1,15 @@
 require 'gds_api/test_helpers/router'
 
 module RouterHelpers
-  def stub_all_route_registration
-    stub_request(:put, "#{router_api_endpoint}/routes")
-    stub_request(:post, "#{router_api_endpoint}/routes/commit")
-  end
+  def assert_routes_registered(rendering_app, routes)
+    # Note: WebMock stubs allow you to assert against already executed requests.
 
-  def assert_routes_registered(routes, times=1)
-    routes.each do |route_params|
-      request_param = { route: {
-          incoming_path: route_params[0],
-          route_type: route_params[1],
-          handler: 'backend',
-          backend_id: route_params[2] }
-      }
-      assert_requested(:put, "#{router_api_endpoint}/routes", :body => request_param, times: times)
+
+    routes.each do |(path, type)|
+      route_signature, _ = stub_route_registration(path, type, rendering_app)
+      assert_requested(route_signature, times: 1)
     end
-    assert_requested(:post, "#{router_api_endpoint}/routes/commit", times: times)
-  end
-
-private
-
-  def router_api_endpoint
-    Plek.current.find('router-api')
+    assert_requested(stub_router_commit, times: 1)
   end
 end
 
@@ -31,6 +18,6 @@ RSpec.configure do |config|
   config.include(GdsApi::TestHelpers::Router)
 
   config.before(:each) do
-    stub_all_route_registration
+    stub_all_router_registration
   end
 end

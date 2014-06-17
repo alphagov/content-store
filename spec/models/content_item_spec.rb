@@ -72,19 +72,19 @@ describe ContentItem do
 
     it 'registers the assigned routes when created' do
       @item.save!
-      assert_routes_registered([
-        ['/a-path', 'exact', 'an-app'],
-        ['/a-path.json', 'exact', 'an-app'],
-        ['/a-path/subpath', 'prefix', 'an-app']
+      assert_routes_registered('an-app', [
+        ['/a-path', 'exact'],
+        ['/a-path.json', 'exact'],
+        ['/a-path/subpath', 'prefix']
       ])
     end
 
     it 'registers the assigned routes when upserted' do
       @item.upsert
-      assert_routes_registered([
-        ['/a-path', 'exact', 'an-app'],
-        ['/a-path.json', 'exact', 'an-app'],
-        ['/a-path/subpath', 'prefix', 'an-app']
+      assert_routes_registered('an-app', [
+        ['/a-path', 'exact'],
+        ['/a-path.json', 'exact'],
+        ['/a-path/subpath', 'prefix']
       ])
     end
   end

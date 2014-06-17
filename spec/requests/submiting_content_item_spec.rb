@@ -47,7 +47,7 @@ describe "content item write API" do
     end
 
     it "registers routes for the content item" do
-      assert_routes_registered([['/vat-rates', 'exact', 'frontend']])
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
   end
 
@@ -82,7 +82,7 @@ describe "content item write API" do
     end
 
     it "updates routes for the content item" do
-      assert_routes_registered([['/vat-rates', 'exact', 'frontend']], 1)
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
   end
 

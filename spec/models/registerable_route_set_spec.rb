@@ -95,9 +95,9 @@ describe RegisterableRouteSet do
     end
 
     it 'registers and commits all registeragble routes' do
-      assert_routes_registered([
-        ['/path', 'exact', 'frontend'],
-        ['/path/sub/path', 'prefix', 'frontend']
+      assert_routes_registered('frontend', [
+        ['/path', 'exact'],
+        ['/path/sub/path', 'prefix']
       ])
     end
   end
