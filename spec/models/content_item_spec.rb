@@ -59,39 +59,28 @@ describe ContentItem do
     end
   end
 
-  context 'when created' do
+  describe "registering routes" do
     before do
-      @routes = [
+      routes = [
         { 'path' => '/a-path', 'type' => 'exact' },
         { 'path' => '/a-path.json', 'type' => 'exact' },
         { 'path' => '/a-path/subpath', 'type' => 'prefix' }
       ]
 
-      @item = create(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: routes)
     end
 
-    it 'registers the assigned routes' do
+    it 'registers the assigned routes when created' do
+      @item.save!
       assert_routes_registered([
         ['/a-path', 'exact', 'an-app'],
         ['/a-path.json', 'exact', 'an-app'],
         ['/a-path/subpath', 'prefix', 'an-app']
       ])
     end
-  end
 
-  context 'when upserted' do
-    before do
-      @routes = [
-        { 'path' => '/a-path', 'type' => 'exact' },
-        { 'path' => '/a-path.json', 'type' => 'exact' },
-        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
-      ]
-
-      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+    it 'registers the assigned routes when upserted' do
       @item.upsert
-    end
-
-    it 'registers the assigned routes' do
       assert_routes_registered([
         ['/a-path', 'exact', 'an-app'],
         ['/a-path.json', 'exact', 'an-app'],
