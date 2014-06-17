@@ -18,11 +18,9 @@ describe ContentItem do
       end
 
       it "should be an absolute path" do
-        @item.base_path = '/valid/absolute/path'
-        expect(@item).to be_valid
-
         @item.base_path = 'invalid//absolute/path/'
         expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:base_path)
       end
 
       it "should have a db level uniqueness constraint" do
@@ -79,10 +77,6 @@ describe ContentItem do
         ['/a-path/subpath', 'prefix', 'an-app']
       ])
     end
-
-    it 'saves the registered routes to the store' do
-      expect(@item.registered_routes).to match_array(@routes)
-    end
   end
 
   context 'when upserted' do
@@ -104,10 +98,6 @@ describe ContentItem do
         ['/a-path/subpath', 'prefix', 'an-app']
       ])
     end
-
-    it 'saves the registered routes to the store' do
-      expect(@item.registered_routes).to match_array(@routes)
-    end
   end
 
   context 'when loaded from the content store' do
@@ -118,10 +108,6 @@ describe ContentItem do
 
     it "should be valid" do
       expect(@item).to be_valid
-    end
-
-    it 'it shoud initialise the registered routes' do
-      assert_equal [RegisterableRoute.new('/base_path', 'exact', @item.rendering_app)], @item.registerable_routes
     end
   end
 

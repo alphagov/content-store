@@ -5,6 +5,16 @@ class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rende
            :registerable_routes_include_base_path,
            :all_routes_are_beneath_base_path
 
+  # +route_attributes+ should be an array of hashes containing both a 'path' and a
+  # 'type' key. 'path' defines the absolute URL path to the content and 'type'
+  # is either 'exact' or 'prefix', depending on the type of route. For example:
+  #
+  #   [ { 'path' => '/content', 'type' => 'exact' },
+  #     { 'path' => '/content.json', 'type' => 'exact' },
+  #     { 'path' => '/content/subpath', 'type' => 'prefix' } ]
+  #
+  # All paths must be below the +base_path+ and +base_path+  must be defined as
+  # a route here for the routes to be valid.
   def self.from_route_attributes(route_attributes, base_path, rendering_app)
     registerable_routes = route_attributes.map do |attrs|
       RegisterableRoute.new(attrs['path'], attrs['type'], rendering_app)
