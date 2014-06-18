@@ -47,7 +47,7 @@ describe "content item write API" do
     end
 
     it "registers routes for the content item" do
-      assert_routes_registered([['/vat-rates', 'exact', 'frontend']])
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
   end
 
@@ -59,7 +59,7 @@ describe "content item write API" do
                      :public_updated_at => Time.zone.parse("2014-03-12T14:53:54Z"),
                      :details => {"foo" => "bar"}
                     )
-
+      WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/vat-rates", @data
     end
 
@@ -82,7 +82,7 @@ describe "content item write API" do
     end
 
     it "updates routes for the content item" do
-      assert_routes_registered([['/vat-rates', 'exact', 'frontend']], 2)
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
   end
 

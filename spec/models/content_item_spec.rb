@@ -18,11 +18,9 @@ describe ContentItem do
       end
 
       it "should be an absolute path" do
-        @item.base_path = '/valid/absolute/path'
-        expect(@item).to be_valid
-
         @item.base_path = 'invalid//absolute/path/'
         expect(@item).to_not be_valid
+        expect(@item).to have(1).error_on(:base_path)
       end
 
       it "should have a db level uniqueness constraint" do
@@ -61,52 +59,33 @@ describe ContentItem do
     end
   end
 
-  context 'when created' do
+  describe "registering routes" do
     before do
-      @routes = [
+      routes = [
         { 'path' => '/a-path', 'type' => 'exact' },
         { 'path' => '/a-path.json', 'type' => 'exact' },
         { 'path' => '/a-path/subpath', 'type' => 'prefix' }
       ]
 
-      @item = create(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: routes)
     end
 
-    it 'registers the assigned routes' do
-      assert_routes_registered([
-        ['/a-path', 'exact', 'an-app'],
-        ['/a-path.json', 'exact', 'an-app'],
-        ['/a-path/subpath', 'prefix', 'an-app']
+    it 'registers the assigned routes when created' do
+      @item.save!
+      assert_routes_registered('an-app', [
+        ['/a-path', 'exact'],
+        ['/a-path.json', 'exact'],
+        ['/a-path/subpath', 'prefix']
       ])
     end
 
-    it 'saves the registered routes to the store' do
-      expect(@item.registered_routes).to match_array(@routes)
-    end
-  end
-
-  context 'when upserted' do
-    before do
-      @routes = [
-        { 'path' => '/a-path', 'type' => 'exact' },
-        { 'path' => '/a-path.json', 'type' => 'exact' },
-        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
-      ]
-
-      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+    it 'registers the assigned routes when upserted' do
       @item.upsert
-    end
-
-    it 'registers the assigned routes' do
-      assert_routes_registered([
-        ['/a-path', 'exact', 'an-app'],
-        ['/a-path.json', 'exact', 'an-app'],
-        ['/a-path/subpath', 'prefix', 'an-app']
+      assert_routes_registered('an-app', [
+        ['/a-path', 'exact'],
+        ['/a-path.json', 'exact'],
+        ['/a-path/subpath', 'prefix']
       ])
-    end
-
-    it 'saves the registered routes to the store' do
-      expect(@item.registered_routes).to match_array(@routes)
     end
   end
 
@@ -118,10 +97,6 @@ describe ContentItem do
 
     it "should be valid" do
       expect(@item).to be_valid
-    end
-
-    it 'it shoud initialise the registered routes' do
-      assert_equal [RegisterableRoute.new('/base_path', 'exact', @item.rendering_app)], @item.registerable_routes
     end
   end
 

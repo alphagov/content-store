@@ -45,7 +45,7 @@ GEM
     erubis (2.7.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
-    gds-api-adapters (10.11.1)
+    gds-api-adapters (11.0.0)
       link_header
       lrucache (~> 0.1.1)
       null_logger
@@ -155,7 +155,7 @@ DEPENDENCIES
   ci_reporter (= 1.9.2)
   database_cleaner (= 1.2.0)
   factory_girl (= 4.4.0)
-  gds-api-adapters (~> 10.11.1)
+  gds-api-adapters (~> 11.0.0)
   logstasher (= 0.5.0)
   mongoid (= 3.1.6)
   plek (~> 1.7.0)

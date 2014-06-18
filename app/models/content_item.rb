@@ -10,7 +10,7 @@ class ContentItem
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
   field :rendering_app, :type => String
-  field :registered_routes, :type => Array, :default => []
+  field :routes, :type => Array, :default => []
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
@@ -20,30 +20,8 @@ class ContentItem
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
-  before_save :register_and_store_routes
-  before_upsert :register_and_store_routes
-
-  # Setter for defining routes to the content item.
-  #
-  # +routes_attrs+ should be an array of hashes containing both a 'path' and a
-  # 'type' key. 'path' defines the absolute URL path to the content and 'type'
-  # is either 'exact' or 'prefix', depending on the type of route. For example:
-  #
-  #   [ { 'path' => '/content', 'type' => 'exact' },
-  #     { 'path' => '/content.json', 'type' => 'exact' },
-  #     { 'path' => '/content/subpath', 'type' => 'prefix' } ]
-  #
-  # All paths must be below the +base_path+ and +base_path+  must be defined as
-  # a route here for the routes to be valid.  The specified routes will be
-  # registered with the router when the content item is saved.
-  def routes=(routes_attrs)
-    @registerable_route_set = initialise_registerable_route_set(routes_attrs)
-  end
-
-  # Array of +RegisterableRoutes+ currently set for this content item
-  def registerable_routes
-    registerable_route_set.registerable_routes
-  end
+  before_save :register_routes
+  before_upsert :register_routes
 
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
@@ -55,11 +33,7 @@ class ContentItem
 private
 
   def registerable_route_set
-    @registerable_route_set ||= initialise_registerable_route_set(registered_routes)
-  end
-
-  def initialise_registerable_route_set(routes_attrs)
-    RegisterableRouteSet.from_route_attributes(routes_attrs, base_path, rendering_app)
+    @registerable_route_set ||= RegisterableRouteSet.from_route_attributes(routes, base_path, rendering_app)
   end
 
   def route_set_is_valid
@@ -68,8 +42,7 @@ private
     end
   end
 
-  def register_and_store_routes
+  def register_routes
     registerable_route_set.register!
-    self.registered_routes = registerable_routes.map { |r| { 'path' => r.path, 'type' => r.type } }
   end
 end
