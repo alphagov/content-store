@@ -36,7 +36,7 @@ private
   end
 
   def register_route(route)
-    Rails.application.router_api.add_route(route.path, route.type, rendering_app, skip_commit: true)
+    Rails.application.router_api.add_route(route.path, route.type, rendering_app)
   end
 
   def commit_routes

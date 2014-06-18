@@ -15,7 +15,7 @@ gem 'plek', '~> 1.7.0'
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', :path => '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', '~> 10.11.1'
+  gem 'gds-api-adapters', '~> 11.0.0'
 end
 
 group :development, :test do
