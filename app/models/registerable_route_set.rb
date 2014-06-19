@@ -24,9 +24,11 @@ class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rende
   end
 
   def register!
-    register_backend
-    registerable_routes.each { |route| register_route(route) }
-    commit_routes
+    if ENABLE_ROUTE_REGISTRATION
+      register_backend
+      registerable_routes.each { |route| register_route(route) }
+      commit_routes
+    end
   end
 
 private
