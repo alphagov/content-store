@@ -23,6 +23,7 @@ group :development, :test do
   gem 'database_cleaner', '1.2.0'
   gem 'factory_girl', '4.4.0'
   gem 'webmock', '~> 1.18.0', :require => false
+  gem 'timecop', '0.7.1'
 
   gem 'simplecov', '0.8.2', :require => false
   gem 'simplecov-rcov', '0.2.3', :require => false
