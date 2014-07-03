@@ -36,6 +36,7 @@ describe "content item write API" do
       expect(item.format).to eq("answer")
       expect(item.need_ids).to eq(["100123", "100124"])
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
+      expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
     end
 
@@ -53,12 +54,14 @@ describe "content item write API" do
 
   context 'updating an existing content item' do
     before(:each) do
-      @item = create(:content_item,
+      Timecop.travel(30.minutes.ago) do
+        @item = create(:content_item,
                      :base_path => "/vat-rates",
                      :need_ids => ["100321"],
                      :public_updated_at => Time.zone.parse("2014-03-12T14:53:54Z"),
                      :details => {"foo" => "bar"}
                     )
+      end
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/vat-rates", @data
     end
@@ -72,6 +75,7 @@ describe "content item write API" do
       expect(@item.title).to eq("VAT rates")
       expect(@item.need_ids).to eq(["100123", "100124"])
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
+      expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq({"body" => "<p>Some body text</p>\n"})
     end
 

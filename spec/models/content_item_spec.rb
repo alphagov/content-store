@@ -59,6 +59,16 @@ describe ContentItem do
     end
   end
 
+  it "should set updated_at on upsert" do
+    item = build(:content_item)
+    Timecop.freeze do
+      item.upsert
+      item.reload
+
+      expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
+    end
+  end
+
   describe "registering routes" do
     before do
       routes = [
