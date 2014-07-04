@@ -1,4 +1,4 @@
-class RegisterableRoute < Struct.new(:path, :type, :rendering_app)
+class RegisterableRoute < OpenStruct
   include ActiveModel::Validations
 
   validates :type, inclusion: { in: %w(exact prefix), message: 'must be either "exact" or "prefix"' }

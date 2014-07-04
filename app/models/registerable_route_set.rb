@@ -1,4 +1,4 @@
-class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rendering_app)
+class RegisterableRouteSet < OpenStruct
   include ActiveModel::Validations
 
   validate :registerable_routes_are_valid,
@@ -17,10 +17,14 @@ class RegisterableRouteSet < Struct.new(:registerable_routes, :base_path, :rende
   # a route here for the routes to be valid.
   def self.from_route_attributes(route_attributes, base_path, rendering_app)
     registerable_routes = route_attributes.map do |attrs|
-      RegisterableRoute.new(attrs['path'], attrs['type'], rendering_app)
+      RegisterableRoute.new(:path => attrs['path'], :type => attrs['type'], :rendering_app => rendering_app)
     end
 
-    new(registerable_routes, base_path, rendering_app)
+    new(
+      :registerable_routes => registerable_routes,
+      :base_path => base_path,
+      :rendering_app => rendering_app
+    )
   end
 
   def register!
