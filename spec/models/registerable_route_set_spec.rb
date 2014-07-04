@@ -2,26 +2,39 @@ require 'spec_helper'
 
 describe RegisterableRouteSet do
   describe '.from_content_item' do
-    before do
-      item = build(:content_item,
-                   :base_path => "/path",
-                   :rendering_app => "frontend",
-                   :routes => [
-                     { 'path' => '/path', 'type' => 'exact'},
-                     { 'path' => '/path.json', 'type' => 'exact'},
-                     { 'path' => '/path/subpath', 'type' => 'prefix'},
-                   ])
-      @route_set = RegisterableRouteSet.from_content_item(item)
-    end
-
-    it "constructs a set of RegisterableRoutes from the item's routes" do
+    it "constructs a route set from a non-redirect content item" do
+      item = build(:content_item, :base_path => "/path", :rendering_app => "frontend")
+      item.routes = [
+        { 'path' => '/path', 'type' => 'exact'},
+        { 'path' => '/path.json', 'type' => 'exact'},
+        { 'path' => '/path/subpath', 'type' => 'prefix'},
+      ]
+      route_set = RegisterableRouteSet.from_content_item(item)
+      expect(route_set.is_redirect).to be_false
       expected_routes = [
         RegisterableRoute.new(:path => '/path',         :type => 'exact',  :rendering_app => 'frontend'),
         RegisterableRoute.new(:path => '/path.json',    :type => 'exact',  :rendering_app => 'frontend'),
-        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix', :rendering_app => 'frontend')
+        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix', :rendering_app => 'frontend'),
+      ]
+      expect(route_set.registerable_routes).to match_array(expected_routes)
+      expect(route_set.registerable_redirects).to eq([])
+    end
+
+    it "constructs a route set from a redirect content item" do
+      item = build(:redirect_content_item, :base_path => "/path")
+      item.redirects = [
+        { "path" => "/path", "type" => 'exact', "destination" => "/somewhere" },
+        { "path" => "/path/foo", "type" => "prefix", "destination" => "/somewhere-else" },
       ]
 
-      expect(@route_set.registerable_routes).to match_array(expected_routes)
+      route_set = RegisterableRouteSet.from_content_item(item)
+      expect(route_set.is_redirect).to be_true
+      expect(route_set.registerable_routes).to eq([])
+      expected_redirects = [
+        RegisterableRedirect.new(:path => "/path", :type => "exact", :destination => "/somewhere"),
+        RegisterableRedirect.new(:path => "/path/foo", :type => "prefix", :destination => "/somewhere-else"),
+      ]
+      expect(route_set.registerable_redirects).to match_array(expected_redirects)
     end
   end
 

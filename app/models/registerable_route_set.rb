@@ -22,21 +22,31 @@ class RegisterableRouteSet < OpenStruct
   #     { 'path' => '/content.json', 'type' => 'exact' },
   #     { 'path' => '/content/subpath', 'type' => 'prefix' } ]
   #
+  # +item.redirects+ should be an array of hashes containin a 'path', 'type' and
+  # a 'destination' key.  'path' and 'type' are as above, 'destination' it the target
+  # path for the redirect.
+  #
   # All paths must be below the +base_path+ and +base_path+  must be defined as
   # a route for the routes to be valid.
   def self.from_content_item(item)
     registerable_routes = item.routes.map do |attrs|
       RegisterableRoute.new(:path => attrs['path'], :type => attrs['type'], :rendering_app => item.rendering_app)
     end
+    registerable_redirects = item.redirects.map do |attrs|
+      RegisterableRedirect.new(attrs.slice("path", "type", "destination"))
+    end
 
     new({
       :registerable_routes => registerable_routes,
+      :registerable_redirects => registerable_redirects,
       :base_path => item.base_path,
       :rendering_app => item.rendering_app,
+      :is_redirect => item.redirect?,
     })
   end
 
   def register!
+    return if is_redirect # Temporarily until redirect route registration is implemented
     register_backend
     registerable_routes.each { |route| register_route(route) }
     commit_routes
