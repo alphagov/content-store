@@ -1,17 +1,20 @@
 require 'spec_helper'
 
 describe RegisterableRouteSet do
-  describe '.from_route_attributes' do
+  describe '.from_content_item' do
     before do
-      routing_attributes = [
-        { 'path' => '/path', 'type' => 'exact'},
-        { 'path' => '/path.json', 'type' => 'exact'},
-        { 'path' => '/path/subpath', 'type' => 'prefix'},
-      ]
-      @route_set = RegisterableRouteSet.from_route_attributes(routing_attributes, '/path', 'frontend')
+      item = build(:content_item,
+                   :base_path => "/path",
+                   :rendering_app => "frontend",
+                   :routes => [
+                     { 'path' => '/path', 'type' => 'exact'},
+                     { 'path' => '/path.json', 'type' => 'exact'},
+                     { 'path' => '/path/subpath', 'type' => 'prefix'},
+                   ])
+      @route_set = RegisterableRouteSet.from_content_item(item)
     end
 
-    it 'constructs a set of RegisterableRoutes from a routes array' do
+    it "constructs a set of RegisterableRoutes from the item's routes" do
       expected_routes = [
         RegisterableRoute.new(:path => '/path',         :type => 'exact',  :rendering_app => 'frontend'),
         RegisterableRoute.new(:path => '/path.json',    :type => 'exact',  :rendering_app => 'frontend'),

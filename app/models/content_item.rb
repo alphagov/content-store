@@ -41,7 +41,7 @@ class ContentItem
 private
 
   def registerable_route_set
-    @registerable_route_set ||= RegisterableRouteSet.from_route_attributes(routes, base_path, rendering_app)
+    @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
   end
 
   def route_set_is_valid

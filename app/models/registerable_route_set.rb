@@ -5,7 +5,7 @@ class RegisterableRouteSet < OpenStruct
            :registerable_routes_include_base_path,
            :all_routes_are_beneath_base_path
 
-  # +route_attributes+ should be an array of hashes containing both a 'path' and a
+  # +item.routes+ should be an array of hashes containing both a 'path' and a
   # 'type' key. 'path' defines the absolute URL path to the content and 'type'
   # is either 'exact' or 'prefix', depending on the type of route. For example:
   #
@@ -14,17 +14,17 @@ class RegisterableRouteSet < OpenStruct
   #     { 'path' => '/content/subpath', 'type' => 'prefix' } ]
   #
   # All paths must be below the +base_path+ and +base_path+  must be defined as
-  # a route here for the routes to be valid.
-  def self.from_route_attributes(route_attributes, base_path, rendering_app)
-    registerable_routes = route_attributes.map do |attrs|
-      RegisterableRoute.new(:path => attrs['path'], :type => attrs['type'], :rendering_app => rendering_app)
+  # a route for the routes to be valid.
+  def self.from_content_item(item)
+    registerable_routes = item.routes.map do |attrs|
+      RegisterableRoute.new(:path => attrs['path'], :type => attrs['type'], :rendering_app => item.rendering_app)
     end
 
-    new(
+    new({
       :registerable_routes => registerable_routes,
-      :base_path => base_path,
-      :rendering_app => rendering_app
-    )
+      :base_path => item.base_path,
+      :rendering_app => item.rendering_app,
+    })
   end
 
   def register!
