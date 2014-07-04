@@ -25,66 +25,90 @@ describe RegisterableRouteSet do
     end
   end
 
-  it 'is valid with an "exact" route matching the base_path' do
-    routes    = [ build(:registerable_route, :path => '/base_path', :type => "exact") ]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/base_path', :rendering_app => 'frontend')
-    expect(route_set).to be_valid
-  end
+  describe "validations" do
+    context "for a non-redirect item" do
+      before :each do
+        @route_set = build(:registerable_route_set, :is_redirect => false)
+      end
 
-  it 'is valid with a "prefix" route matching the base_path' do
-    routes    = [ build(:registerable_route, :path => '/base_path', :type => "prefix") ]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/base_path', :rendering_app => 'frontend')
-    expect(route_set).to be_valid
-  end
+      it 'is valid with a valid set of registerable routes' do
+        @route_set.registerable_routes = [
+          RegisterableRoute.new(:path => "#{@route_set.base_path}", :type => 'exact',  :rendering_app => 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}.json", :type => 'exact',  :rendering_app => 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact', :rendering_app => 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix', :rendering_app => 'frontend'),
+        ]
+        expect(@route_set).to be_valid
+      end
 
-  it 'is valid with a valid set of registerable routes' do
-    routes = [
-      RegisterableRoute.new(:path => '/path', :type => 'exact',  :rendering_app => 'frontend'),
-      RegisterableRoute.new(:path => '/path.json', :type => 'exact',  :rendering_app => 'frontend'),
-      RegisterableRoute.new(:path => '/path/exact-subpath', :type => 'exact', :rendering_app => 'frontend'),
-      RegisterableRoute.new(:path => '/path/sub/path-prefix', :type => 'prefix', :rendering_app => 'frontend'),
-    ]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
+      it "requires some routes" do
+        @route_set.registerable_routes = []
+        expect(@route_set).not_to be_valid
+      end
 
-    expect(route_set).to be_valid
-  end
+      it "requires all routes to be valid" do
+        @route_set.registerable_routes.first.type = "not_a_valid_type"
+        expect(@route_set).not_to be_valid
+      end
 
-  it 'is invalid when a registerable route is not a valid "type"' do
-    routes = [build(:registerable_route, :path => '/path', :type => 'invalid')]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
+      it "requires any redirects to be valid"
 
-    expect(route_set).to_not be_valid
-  end
+      it "requires all routes to be beneath the base path" do
+        @route_set.registerable_routes << build(:registerable_route, :path => "/another-path")
+        expect(@route_set).not_to be_valid
 
-  it 'is invalid when there are no routes' do
-    expect(RegisterableRouteSet.new(:registerable_routes => [], :base_path => '/path', :rendering_app => 'frontend')).to_not be_valid
-  end
+        # string prefix of base_path is not under the base path.
+        @route_set.registerable_routes.last.path = "#{@route_set.base_path}-foo"
+        expect(@route_set).not_to be_valid
+      end
 
-  it 'is invalid when there is no route matching the base path' do
-    routes = [build(:registerable_route, :path => '/base_path')]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/another-base-path', :rendering_app => 'frontend')
+      it "requires any redirects to be beneath the base path"
 
-    expect(route_set).to_not be_valid
-  end
+      it "requires the routes to include the base path" do
+        @route_set.registerable_routes.first.path = "#{@route_set.base_path}/foo"
+        expect(@route_set).to_not be_valid
+      end
+    end
 
-  it 'is invalid with routes that are not beneath the base_path' do
-    routes = [
-      build(:registerable_route, :path => "/path"),
-      build(:registerable_route, :path => "/another/sub/path"),
-    ]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
+    context "for a redirect item" do
+      before :each do
+        @route_set = build(:registerable_route_set, :is_redirect => true)
+      end
 
-    expect(route_set).to_not be_valid
-  end
+      it 'is valid with a valid set of registerable redirects' do
+        @route_set.registerable_redirects = [
+          RegisterableRedirect.new(:path => "#{@route_set.base_path}", :type => 'exact', :destination => "/somewhere"),
+          RegisterableRedirect.new(:path => "#{@route_set.base_path}.json", :type => 'exact', :destination => "/somewhere"),
+          RegisterableRedirect.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact', :destination => "/somewhere"),
+          RegisterableRedirect.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix', :destination => "/somewhere"),
+        ]
+        expect(@route_set).to be_valid
+      end
 
-  it 'is invalid with routes that are a string-prefix of the base_path but not an actual subpath' do
-    routes = [
-      build(:registerable_route, :path => "/path"),
-      build(:registerable_route, :path => "/path-prefix"),
-    ]
-    route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
+      it "requires no routes to be present" do
+        @route_set.registerable_routes = [build(:registerable_route, :path => @route_set.base_path)]
+        expect(@route_set).not_to be_valid
+      end
 
-    expect(route_set).to_not be_valid
+      it "requires all redirects to be valid" do
+        @route_set.registerable_redirects.first.type = "not_a_valid_type"
+        expect(@route_set).not_to be_valid
+      end
+
+      it "requires all redirects to be beneath the base path" do
+        @route_set.registerable_redirects << build(:registerable_redirect, :path => "/another-path")
+        expect(@route_set).not_to be_valid
+
+        # string prefix of base_path is not under the base path.
+        @route_set.registerable_redirects.last.path = "#{@route_set.base_path}-foo"
+        expect(@route_set).not_to be_valid
+      end
+
+      it "requires the redirects to include the base path" do
+        @route_set.registerable_redirects.first.path = "#{@route_set.base_path}/foo"
+        expect(@route_set).to_not be_valid
+      end
+    end
   end
 
   describe '#register!' do
