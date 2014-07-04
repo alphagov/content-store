@@ -30,7 +30,7 @@ class RegisterableRouteSet < OpenStruct
   # a route for the routes to be valid.
   def self.from_content_item(item)
     registerable_routes = item.routes.map do |attrs|
-      RegisterableRoute.new(:path => attrs['path'], :type => attrs['type'], :rendering_app => item.rendering_app)
+      RegisterableRoute.new(attrs.slice("path", "type"))
     end
     registerable_redirects = item.redirects.map do |attrs|
       RegisterableRedirect.new(attrs.slice("path", "type", "destination"))

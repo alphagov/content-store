@@ -5,7 +5,6 @@ FactoryGirl.define do
 
     path "/foo"
     type "prefix"
-    rendering_app  "frontend"
   end
 
   factory :registerable_redirect do
@@ -26,7 +25,7 @@ FactoryGirl.define do
       if rs.is_redirect
         rs.registerable_redirects = [build(:registerable_redirect, :path => rs.base_path)]
       else
-        rs.registerable_routes = [build(:registerable_route, :path => rs.base_path, :rendering_app => rs.rendering_app)]
+        rs.registerable_routes = [build(:registerable_route, :path => rs.base_path)]
       end
     end
   end

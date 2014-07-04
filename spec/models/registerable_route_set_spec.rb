@@ -12,9 +12,9 @@ describe RegisterableRouteSet do
       route_set = RegisterableRouteSet.from_content_item(item)
       expect(route_set.is_redirect).to be_false
       expected_routes = [
-        RegisterableRoute.new(:path => '/path',         :type => 'exact',  :rendering_app => 'frontend'),
-        RegisterableRoute.new(:path => '/path.json',    :type => 'exact',  :rendering_app => 'frontend'),
-        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix', :rendering_app => 'frontend'),
+        RegisterableRoute.new(:path => '/path',         :type => 'exact'),
+        RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
+        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
       ]
       expect(route_set.registerable_routes).to match_array(expected_routes)
       expect(route_set.registerable_redirects).to eq([])
@@ -46,10 +46,10 @@ describe RegisterableRouteSet do
 
       it 'is valid with a valid set of registerable routes' do
         @route_set.registerable_routes = [
-          RegisterableRoute.new(:path => "#{@route_set.base_path}", :type => 'exact',  :rendering_app => 'frontend'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}.json", :type => 'exact',  :rendering_app => 'frontend'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact', :rendering_app => 'frontend'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix', :rendering_app => 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}", :type => 'exact'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}.json", :type => 'exact'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix'),
         ]
         expect(@route_set).to be_valid
       end
@@ -137,8 +137,8 @@ describe RegisterableRouteSet do
   describe '#register!' do
     before do
       @routes = [
-        build(:registerable_route, :path => '/path', :type => 'exact', :rendering_app => 'frontend'),
-        build(:registerable_route, :path => '/path/sub/path', :type => 'prefix', :rendering_app => 'frontend'),
+        build(:registerable_route, :path => '/path', :type => 'exact'),
+        build(:registerable_route, :path => '/path/sub/path', :type => 'prefix'),
       ]
       @route_set = RegisterableRouteSet.new(:registerable_routes => @routes, :base_path => '/path', :rendering_app => 'frontend')
       @route_set.register!
