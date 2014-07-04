@@ -68,39 +68,39 @@ private
 
   def registerable_routes_and_redirects_are_valid
     unless registerable_routes.all?(&:valid?)
-      errors[:base] << "are invalid"
+      errors[:registerable_routes] << "are invalid"
     end
     unless registerable_redirects.all?(&:valid?)
-      errors[:base] << "are invalid"
+      errors[:registerable_redirects] << "are invalid"
     end
   end
 
   def registerable_routes_include_base_path
     route_paths = registerable_routes.map(&:path)
     unless route_paths.include?(base_path)
-      errors[:base] << 'must include the base_path'
+      errors[:registerable_routes] << 'must include the base_path'
     end
   end
 
   def registerable_redirects_include_base_path
     paths = registerable_redirects.map(&:path)
     unless paths.include?(base_path)
-      errors[:base] << 'must include the base_path'
+      errors[:registerable_redirects] << 'must include the base_path'
     end
   end
 
   def all_routes_and_redirects_are_beneath_base_path
     unless registerable_routes.all? {|route| base_path_with_extension?(route) || beneath_base_path?(route) }
-      errors[:base] << 'must be below the base path'
+      errors[:registerable_routes] << 'must be below the base path'
     end
     unless registerable_redirects.all? {|redirect| base_path_with_extension?(redirect) || beneath_base_path?(redirect) }
-      errors[:base] << 'must be below the base path'
+      errors[:registerable_redirects] << 'must be below the base path'
     end
   end
 
   def redirect_cannot_have_routes
     if self.is_redirect && self.registerable_routes.any?
-      errors[:base] << 'redirect items cannot have routes'
+      errors[:registerable_routes] << 'redirect items cannot have routes'
     end
   end
 

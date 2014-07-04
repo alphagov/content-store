@@ -46,12 +46,9 @@ private
   end
 
   def route_set_is_valid
-    if self.redirect?
-      errors.add(:routes, "can't be given for a redirect item") if self.routes.present?
-    else
-      unless base_path.present? && registerable_route_set.valid?
-        errors[:routes] += registerable_route_set.errors.full_messages
-      end
+    unless base_path.present? && registerable_route_set.valid?
+      errors[:routes] += registerable_route_set.errors[:registerable_routes]
+      errors[:redirects] += registerable_route_set.errors[:registerable_redirects]
     end
   end
 

@@ -8,8 +8,9 @@ FactoryGirl.define do
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
   end
 
-  factory :redirect_content_item, :parent => :content_item do
+  factory :redirect_content_item, :class => ContentItem do
+    sequence(:base_path) {|n| "/test-redirect-#{n}" }
     format "redirect"
-    routes []
+    redirects { [{ 'path' => base_path, 'type' => 'exact', 'destination' => '/somewhere' }] }
   end
 end
