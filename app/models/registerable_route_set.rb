@@ -46,9 +46,12 @@ class RegisterableRouteSet < OpenStruct
   end
 
   def register!
-    return if is_redirect # Temporarily until redirect route registration is implemented
-    register_backend
-    registerable_routes.each { |route| register_route(route) }
+    if is_redirect
+      registerable_redirects.map(&:register!)
+    else
+      register_backend
+      registerable_routes.each { |route| route.register!(rendering_app) }
+    end
     commit_routes
   end
 
@@ -56,10 +59,6 @@ private
 
   def register_backend
     Rails.application.router_api.add_backend(rendering_app, Plek.new.find(rendering_app, :force_http => true) + "/")
-  end
-
-  def register_route(route)
-    Rails.application.router_api.add_route(route.path, route.type, rendering_app)
   end
 
   def commit_routes

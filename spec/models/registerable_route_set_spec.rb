@@ -135,20 +135,27 @@ describe RegisterableRouteSet do
   end
 
   describe '#register!' do
-    before do
-      @routes = [
+    it 'registers and commits all registeragble routes' do
+      routes = [
         build(:registerable_route, :path => '/path', :type => 'exact'),
         build(:registerable_route, :path => '/path/sub/path', :type => 'prefix'),
       ]
-      @route_set = RegisterableRouteSet.new(:registerable_routes => @routes, :base_path => '/path', :rendering_app => 'frontend')
-      @route_set.register!
-    end
-
-    it 'registers and commits all registeragble routes' do
+      route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
+      route_set.register!
       assert_routes_registered('frontend', [
         ['/path', 'exact'],
         ['/path/sub/path', 'prefix']
       ])
+    end
+
+    it 'registers and commits all registerable redirects for a redirect item' do
+      redirects = [
+        build(:registerable_redirect, :path => '/path', :type => 'exact', :destination => '/new-path'),
+        build(:registerable_redirect, :path => '/path/sub/path', :type => 'prefix', :destination => '/somewhere-else'),
+      ]
+      route_set = RegisterableRouteSet.new(:registerable_redirects => redirects, :base_path => '/path', :is_redirect => true)
+      route_set.register!
+      assert_redirect_routes_registered([['/path', 'exact', '/new-path'], ['/path/sub/path', 'prefix', '/somewhere-else']])
     end
   end
 end
