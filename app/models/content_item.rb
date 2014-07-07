@@ -11,11 +11,13 @@ class ContentItem
   field :details, :type => Hash, :default => {}
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
+  field :redirects, :type => Array, :default => []
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
   validates :base_path, absolute_path: true
-  validates :title, :format, :rendering_app, presence: true
+  validates :format, presence: true
+  validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
@@ -33,15 +35,20 @@ class ContentItem
     end
   end
 
+  def redirect?
+    self.format == "redirect"
+  end
+
 private
 
   def registerable_route_set
-    @registerable_route_set ||= RegisterableRouteSet.from_route_attributes(routes, base_path, rendering_app)
+    @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
   end
 
   def route_set_is_valid
     unless base_path.present? && registerable_route_set.valid?
-      errors[:routes] += registerable_route_set.errors.full_messages
+      errors[:routes] += registerable_route_set.errors[:registerable_routes]
+      errors[:redirects] += registerable_route_set.errors[:registerable_redirects]
     end
   end
 

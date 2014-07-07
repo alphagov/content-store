@@ -15,6 +15,16 @@ module RouterHelpers
     end
     assert_requested(stub_router_commit, times: 1)
   end
+
+  def assert_redirect_routes_registered(redirects)
+    # Note: WebMock stubs allow you to assert against already executed requests.
+
+    redirects.each do |(path, type, destination)|
+      redirect_signature, _ = stub_redirect_registration(path, type, destination, "permanent")
+      assert_requested(redirect_signature, times: 1)
+    end
+    assert_requested(stub_router_commit, times: 1)
+  end
 end
 
 RSpec.configure do |config|

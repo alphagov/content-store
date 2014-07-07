@@ -57,6 +57,36 @@ describe ContentItem do
         expect(@item).to have(1).error_on(:routes)
       end
     end
+
+    context 'special cases for a redirect item' do
+      before :each do
+        @item.format = "redirect"
+        @item.routes = []
+        @item.redirects = [{"path" => @item.base_path, "type" => "exact", "destination" => "/somewhere"}]
+      end
+
+      it "should not require a title" do
+        @item.title = nil
+        expect(@item).to be_valid
+      end
+
+      it "should not require a rendering_app" do
+        @item.rendering_app = nil
+        expect(@item).to be_valid
+      end
+
+      it "should be invalid with an invalid redirect" do
+        @item.redirects.first['type'] = "fooey"
+        expect(@item).not_to be_valid
+        expect(@item).to have(1).error_on(:redirects)
+      end
+
+      it "should be invalid if given any routes" do
+        @item.routes = [{"path" => @item.base_path, "type" => "exact" }]
+        expect(@item).not_to be_valid
+        expect(@item).to have(1).error_on(:routes)
+      end
+    end
   end
 
   it "should set updated_at on upsert" do

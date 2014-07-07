@@ -7,4 +7,10 @@ FactoryGirl.define do
     rendering_app 'frontend'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
   end
+
+  factory :redirect_content_item, :class => ContentItem do
+    sequence(:base_path) {|n| "/test-redirect-#{n}" }
+    format "redirect"
+    redirects { [{ 'path' => base_path, 'type' => 'exact', 'destination' => '/somewhere' }] }
+  end
 end
