@@ -3,6 +3,7 @@ class ContentItemsController < ApplicationController
 
   def show
     item = ContentItem.find_by(:base_path => params[:base_path])
+    expires_at config.default_ttl.from_now
     render :json => item
   end
 
