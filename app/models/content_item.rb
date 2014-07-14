@@ -28,6 +28,9 @@ class ContentItem
   # The updated_at field isn't set on upsert - https://github.com/mongoid/mongoid/issues/3716
   before_upsert :set_updated_at
 
+  after_save :publish_item
+  after_upsert :publish_item
+
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
       hash["base_path"] = self.base_path
@@ -54,5 +57,9 @@ private
 
   def register_routes
     registerable_route_set.register!
+  end
+
+  def publish_item
+    Rails.application.queue_publisher.publish(self)
   end
 end
