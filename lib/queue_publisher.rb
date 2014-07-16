@@ -6,7 +6,7 @@ class QueuePublisher
     return if @noop
     connection.start
     @channel  = connection.create_channel
-    @exchange = channel.topic("content_store")
+    @exchange = channel.topic(options.fetch(:exchange, 'content-store'))
   end
 
   def send_message(item)

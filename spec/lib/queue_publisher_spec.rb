@@ -15,7 +15,7 @@ describe QueuePublisher do
     mock_bunny = double("Bunny")
     mock_exchange = double("exchange")
     mock_channel = double("channel")
-    mock_channel.should_receive(:topic).with('content_store').and_return(mock_exchange)
+    mock_channel.should_receive(:topic).with('content-store').and_return(mock_exchange)
     mock_bunny.should_receive(:create_channel).and_return(mock_channel)
     mock_bunny.should_receive(:start)
 
