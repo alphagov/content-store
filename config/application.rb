@@ -66,6 +66,10 @@ module ContentStore
     # Disable Rack::Cache
     config.action_dispatch.rack_cache = nil
 
+    # Caching
+    config.cache_control_directive = 'public'
+    config.default_ttl = 30.minutes
+
     def router_api
       @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
     end

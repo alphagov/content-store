@@ -7,4 +7,13 @@ class ApplicationController < ActionController::API
   def error_404
     head :not_found
   end
+
+  def expires_at(expiration_time)
+    response.headers['Cache-Control'] = config.cache_control_directive
+    response.headers['Expires'] = expiration_time.httpdate
+  end
+
+  def config
+    @config ||= ContentStore::Application.config
+  end
 end
