@@ -14,8 +14,7 @@
   //  'minor' - changes which don't affect the meaning of the content, eg typo
   //            correction.
   //  'republish' - useful in situations such as when the data structure has
-  //                changed. Might also be used for content being migrated to
-  //                GOV.UK.
+  //                changed.
   //
   // Others can be added in future, content-store will just pass them through to the fanout.
   "update_type": "republish"
