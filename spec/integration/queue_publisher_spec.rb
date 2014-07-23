@@ -19,17 +19,28 @@ describe "publishing messages on the queue" do
       "update_type" => "major",
     }
   }
-  before :all do
-    @publisher = QueuePublisher.new
-    @queue = @publisher.channel.queue('content-store-test')
-    @queue.bind(@publisher.exchange, routing_key: '#')
-  end
-
-  before :each do
-    allow(Rails.application).to receive(:queue_publisher) { @publisher }
+  context 'Defining a publisher' do
+    it 'fails if exchange does not exist' do
+      config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml")).symbolize_keys
+      config[:exchange] = 'does-not-exist'
+      expect {
+        QueuePublisher.new(config)
+      }.to raise_error(/NOT_FOUND - no exchange 'does-not-exist'/)
+    end
   end
 
   context 'Creating or updating a content item'  do
+    before :all do
+      config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml")).symbolize_keys
+      @publisher = QueuePublisher.new(config)
+      @queue = @publisher.channel.queue('content-store-test')
+      @queue.bind(@publisher.exchange, routing_key: '#')
+    end
+
+    before :each do
+      allow(Rails.application).to receive(:queue_publisher) { @publisher }
+    end
+
     it 'should place a message on the queue' do
       put_json "/content/vat-rates", data
       expect(@queue.message_count).to eq(1)
