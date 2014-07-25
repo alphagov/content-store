@@ -33,6 +33,35 @@ describe ContentItem do
       end
     end
 
+    context 'fields used in message queue routing key' do
+      [
+        "format",
+        "update_type",
+      ].each do |field|
+        it "requires #{field} to be suitable as a routing_key" do
+          %w(
+            word
+            alpha12numeric
+            under_score
+            dashed-item
+            mixedCASE
+          ).each do |value|
+            @item.public_send("#{field}=", value)
+            expect(@item).to be_valid
+          end
+
+          [
+            'no spaces',
+            'puncutation!',
+          ].each do |value|
+            @item.public_send("#{field}=", value)
+            expect(@item).not_to be_valid
+            expect(@item).to have(1).error_on(field)
+          end
+        end
+      end
+    end
+
     context 'with a route that is not below the base path' do
       before do
         @item.routes= [

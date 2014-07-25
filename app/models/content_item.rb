@@ -18,6 +18,7 @@ class ContentItem
 
   validates :base_path, absolute_path: true
   validates :format, presence: true
+  validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
   validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid
 
