@@ -12,6 +12,7 @@ class ContentItem
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
+  attr_accessor :update_type
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
