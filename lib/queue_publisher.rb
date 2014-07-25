@@ -19,7 +19,7 @@ class QueuePublisher
     hash["update_type"] = item.update_type
     message = hash.to_json
     routing_key = "#{item.format}.#{item.update_type}"
-    exchange.publish(message, routing_key: routing_key, persistent: true)
+    exchange.publish(message, routing_key: routing_key, content_type: 'application/json', persistent: true)
   end
 
   private

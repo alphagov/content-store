@@ -47,8 +47,9 @@ describe "publishing messages on the queue" do
       put_json "/content/vat-rates", data
       expect(@queue.message_count).to eq(1)
       # Get message synchronously for testing purposes.
-      delivery_info, _, payload = @queue.pop
+      delivery_info, properties, payload = @queue.pop
       expect(delivery_info.routing_key).to eq('answer.major')
+      expect(properties[:content_type]).to eq('application/json')
       message = JSON.parse(payload)
       expect(message['title']).to eq('VAT rates')
     end
