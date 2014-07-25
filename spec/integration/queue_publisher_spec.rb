@@ -22,14 +22,25 @@ describe "publishing messages on the queue" do
 
   context 'Creating or updating a content item'  do
     before :all do
-      config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml")).symbolize_keys
-      @publisher = QueuePublisher.new(config)
-      @queue = @publisher.channel.queue('content-store-test')
-      @queue.bind(@publisher.exchange, routing_key: '#')
+      @config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml"))[Rails.env].symbolize_keys
+      @old_publisher, Rails.application.queue_publisher = Rails.application.queue_publisher, QueuePublisher.new(@config)
     end
 
-    before :each do
-      allow(Rails.application).to receive(:queue_publisher) { @publisher }
+    after :all do
+      Rails.application.queue_publisher = @old_publisher
+    end
+
+    around :each do |example|
+      conn = Bunny.new(@config)
+      conn.start
+      read_channel = conn.create_channel
+      ex = read_channel.topic(@config.fetch(:exchange), passive: true)
+      @queue = read_channel.queue("", :exclusive => true)
+      @queue.bind(ex, routing_key: '#')
+
+      example.run
+
+      read_channel.close
     end
 
     it 'should place a message on the queue' do
