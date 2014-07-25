@@ -19,15 +19,6 @@ describe "publishing messages on the queue" do
       "update_type" => "major",
     }
   }
-  context 'Defining a publisher' do
-    it 'fails if exchange does not exist' do
-      config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml")).symbolize_keys
-      config[:exchange] = 'does-not-exist'
-      expect {
-        QueuePublisher.new(config)
-      }.to raise_error(/NOT_FOUND - no exchange 'does-not-exist'/)
-    end
-  end
 
   context 'Creating or updating a content item'  do
     before :all do
