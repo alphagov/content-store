@@ -18,6 +18,8 @@ class ContentItem
 
   validates :base_path, absolute_path: true
   validates :format, presence: true
+  # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
+  validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
   validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid

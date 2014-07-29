@@ -33,6 +33,25 @@ describe ContentItem do
       end
     end
 
+    context 'update_type' do
+      # update_type is not persisted, so should only be validated
+      # on edit.  Otherwise items loaded from the db will be invalid
+
+      it "is required when changing a content item" do
+        @item.update_type = ''
+        expect(@item).not_to be_valid
+        expect(@item).to have(1).error_on(:update_type)
+      end
+
+      it "is not required for an item loaded from the db" do
+        @item.save!
+
+        item = ContentItem.find(@item.base_path)
+        expect(item.update_type).to be_nil
+        expect(item).to be_valid
+      end
+    end
+
     context 'fields used in message queue routing key' do
       [
         "format",
