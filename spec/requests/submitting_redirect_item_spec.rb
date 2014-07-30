@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "submitting redirect items to the content store" do
+describe "submitting redirect items to the content store", :type => :request do
 
   before :each do
     @data = {

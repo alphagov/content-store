@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routing of content_item requests" do
+describe "routing of content_item requests", :type => :routing do
   context "GET route" do
     it "should route to the controller passing on the base_path" do
       expect(:get => "/content/foo/bar").to route_to({

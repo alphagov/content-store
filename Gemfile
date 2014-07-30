@@ -21,7 +21,7 @@ else
 end
 
 group :development, :test do
-  gem 'rspec-rails', '2.14.2'
+  gem 'rspec-rails', '~> 3.0.2'
   gem 'database_cleaner', '1.2.0'
   gem 'factory_girl', '4.4.0'
   gem 'webmock', '~> 1.18.0', :require => false
