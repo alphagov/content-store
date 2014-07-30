@@ -1,4 +1,4 @@
-ContentStore::Application.routes.draw do
+Rails.application.routes.draw do
 
   with_options :format => false do |r|
     r.get "/content(*base_path)" => "content_items#show", :constraints => {:base_path => %r[/.*]}
