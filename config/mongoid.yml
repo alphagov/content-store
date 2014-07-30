@@ -5,8 +5,9 @@ development:
       hosts:
         - localhost:27017
       options:
-        safe: true
-        consistency: :strong
+        write:
+          w: 1
+        read: primary
 test:
   sessions:
     default:
@@ -14,8 +15,9 @@ test:
       hosts:
         - localhost:27017
       options:
-        safe: true
-        consistency: :strong
+        write:
+          w: 1
+        read: primary
         # In the test environment we lower the retries and retry interval to
         # low amounts for fast failures.
         max_retries: 1
