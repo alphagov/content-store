@@ -12,6 +12,7 @@ describe "Fetching a content item" do
        :need_ids => ["100136"],
        :public_updated_at => 30.minutes.ago,
        :details => {"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
+      .reload # Necessary to avoid rounding errors with timestamps etc.
     }
 
     it "should return details for the requested item" do
@@ -27,8 +28,8 @@ describe "Fetching a content item" do
       expect(data['description']).to eq("Current VAT rates")
       expect(data['format']).to eq("answer")
       expect(data['need_ids']).to eq(["100136"])
-      expect(data['updated_at']).to eq(item.updated_at.iso8601)
-      expect(data['public_updated_at']).to eq(item.public_updated_at.iso8601)
+      expect(data['updated_at']).to eq(item.updated_at.as_json)
+      expect(data['public_updated_at']).to eq(item.public_updated_at.as_json)
       expect(data['details']).to eq({"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
 
       expected_keys = ContentItem::PUBLIC_ATTRIBUTES

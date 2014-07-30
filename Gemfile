@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.18'
-gem 'rails-api', '0.2.0'
+gem 'rails', '4.1.4'
+gem 'rails-api', '0.2.1'
 
-gem 'mongoid', '3.1.6'
+gem 'mongoid', '4.0.0'
 
 gem 'logstasher', '0.5.0'
-gem 'airbrake', '3.1.15'
+gem 'airbrake', '4.0.0'
 
 gem 'unicorn', '4.8.2'
 
