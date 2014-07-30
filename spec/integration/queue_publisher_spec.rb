@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "publishing messages on the queue" do
+  include MessageQueueHelpers
+
   let(:data) {
     {
       "base_path" => "/vat-rates",
@@ -45,9 +47,7 @@ describe "publishing messages on the queue" do
 
     it 'should place a message on the queue' do
       put_json "/content/vat-rates", data
-      expect(@queue.message_count).to eq(1)
-      # Get message synchronously for testing purposes.
-      delivery_info, properties, payload = @queue.pop
+      delivery_info, properties, payload = wait_for_message_on(@queue)
       expect(delivery_info.routing_key).to eq('answer.major')
       expect(properties[:content_type]).to eq('application/json')
       message = JSON.parse(payload)
@@ -56,11 +56,11 @@ describe "publishing messages on the queue" do
 
     it 'routing key depends on format and update type' do
       put_json "/content/vat-rates", data.update({"update_type" => "minor"})
-      delivery_info, _, payload = @queue.pop
+      delivery_info, _, payload = wait_for_message_on(@queue)
       expect(delivery_info.routing_key).to eq('answer.minor')
 
       put_json "/content/vat-rates", data.update({"format" => "detailed_guide"})
-      delivery_info, _, payload = @queue.pop
+      delivery_info, _, payload = wait_for_message_on(@queue)
       expect(delivery_info.routing_key).to eq('detailed_guide.minor')
     end
 
@@ -75,7 +75,7 @@ describe "publishing messages on the queue" do
         "update_type" => "major",
       }
       put_json "/content/crb-checks", data
-      delivery_info, _, _ = @queue.pop
+      delivery_info, _, _ = wait_for_message_on(@queue)
       expect(delivery_info.routing_key).to eq('redirect.major')
     end
   end
