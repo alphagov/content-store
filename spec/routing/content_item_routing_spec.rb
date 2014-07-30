@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "routing of content_item requests", :type => :routing do
   context "GET route" do

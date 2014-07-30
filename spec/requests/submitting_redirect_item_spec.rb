@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "submitting redirect items to the content store", :type => :request do
 

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe AbsolutePathValidator, :type => :model do
   class ValidatablePath < Struct.new(:path)

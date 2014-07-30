@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe RegisterableRoute, :type => :model do
   it 'validates type is either "exact" or "prefix"' do

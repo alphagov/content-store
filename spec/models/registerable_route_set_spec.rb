@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe RegisterableRouteSet, :type => :model do
   describe '.from_content_item' do
