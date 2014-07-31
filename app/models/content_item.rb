@@ -9,6 +9,7 @@ class ContentItem
   field :need_ids, :type => Array, :default => []
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
+  field :publishing_app, :type => String
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
