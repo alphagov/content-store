@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe RegisterableRoute do
+describe RegisterableRoute, :type => :model do
   it 'validates type is either "exact" or "prefix"' do
     %w(exact prefix).each do |type|
       route = build(:registerable_route, :type => type)
@@ -10,7 +10,7 @@ describe RegisterableRoute do
     %w(invalid types).each do |type|
       route = build(:registerable_route, :type => type)
       expect(route).to_not be_valid
-      expect(route).to have(1).error_on(:type)
+      expect(route.errors[:type].size).to eq(1)
     end
   end
 
@@ -18,6 +18,6 @@ describe RegisterableRoute do
     route = build(:registerable_route, :path => 'not-absolute-path')
 
     expect(route).to_not be_valid
-    expect(route).to have(1).error_on(:path)
+    expect(route.errors[:path].size).to eq(1)
   end
 end

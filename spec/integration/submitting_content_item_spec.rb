@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "content item write API" do
+describe "content item write API", :type => :request do
   before :each do
     @data = {
       "base_path" => "/vat-rates",

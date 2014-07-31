@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "Fetching a content item" do
+describe "Fetching a content item", :type => :request do
 
   context "valid request" do
     let!(:item) {

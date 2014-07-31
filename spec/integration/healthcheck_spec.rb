@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "healthcheck path" do
+describe "healthcheck path", :type => :request do
 
   it "should respond with 'OK'" do
     get "/healthcheck"

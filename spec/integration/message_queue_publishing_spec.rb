@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "publishing messages on the queue" do
+describe "publishing messages on the queue", :type => :request do
   include MessageQueueHelpers
 
   let(:data) {

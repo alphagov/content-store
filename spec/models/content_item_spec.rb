@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe ContentItem do
+describe ContentItem, :type => :model do
   describe "validations" do
     before :each do
       @item = build(:content_item)
@@ -10,17 +10,17 @@ describe ContentItem do
       it "should be required" do
         @item.base_path = nil
         expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:base_path)
+        expect(@item.errors[:base_path].size).to eq(1)
 
         @item.base_path = ''
         expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:base_path)
+        expect(@item.errors[:base_path].size).to eq(1)
       end
 
       it "should be an absolute path" do
         @item.base_path = 'invalid//absolute/path/'
         expect(@item).to_not be_valid
-        expect(@item).to have(1).error_on(:base_path)
+        expect(@item.errors[:base_path].size).to eq(1)
       end
 
       it "should have a db level uniqueness constraint" do
@@ -40,7 +40,7 @@ describe ContentItem do
       it "is required when changing a content item" do
         @item.update_type = ''
         expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:update_type)
+        expect(@item.errors[:update_type].size).to eq(1)
       end
 
       it "is not required for an item loaded from the db" do
@@ -75,7 +75,7 @@ describe ContentItem do
           ].each do |value|
             @item.public_send("#{field}=", value)
             expect(@item).not_to be_valid
-            expect(@item).to have(1).error_on(field)
+            expect(@item.errors[field].size).to eq(1)
           end
         end
       end
@@ -91,7 +91,7 @@ describe ContentItem do
 
       it 'should be invalid' do
         expect(@item).to_not be_valid
-        expect(@item).to have(1).error_on(:routes)
+        expect(@item.errors[:routes].size).to eq(1)
       end
     end
 
@@ -102,7 +102,7 @@ describe ContentItem do
 
       it 'should be invalid' do
         expect(@item).to_not be_valid
-        expect(@item).to have(1).error_on(:routes)
+        expect(@item.errors[:routes].size).to eq(1)
       end
     end
 
@@ -126,13 +126,13 @@ describe ContentItem do
       it "should be invalid with an invalid redirect" do
         @item.redirects.first['type'] = "fooey"
         expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:redirects)
+        expect(@item.errors[:redirects].size).to eq(1)
       end
 
       it "should be invalid if given any routes" do
         @item.routes = [{"path" => @item.base_path, "type" => "exact" }]
         expect(@item).not_to be_valid
-        expect(@item).to have(1).error_on(:routes)
+        expect(@item.errors[:routes].size).to eq(1)
       end
     end
   end
