@@ -135,4 +135,21 @@ describe "content item write API", :type => :request do
       expect(data["errors"]).to eq({"title" => ["can't be blank"]})
     end
   end
+
+  context "create with extra fields in the input" do
+    before :each do
+      @data["foo"] = "bar"
+      @data["bar"] = "baz"
+      put_json "/content/vat-rates", @data
+    end
+
+    it "rejects the update" do
+      expect(response.status).to eq(422)
+    end
+
+    it "includes an error message" do
+      data = JSON.parse(response.body)
+      expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo,bar in input"]})
+    end
+  end
 end

@@ -11,6 +11,10 @@ class ContentItem
 
     item.upsert or result = false
     return result, item
+  rescue Mongoid::Errors::UnknownAttribute => e
+    extra_fields = details.keys - self.fields.keys - %w(update_type)
+    item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(',')} in input")
+    return false, item
   end
 
   field :_id, :as => :base_path, :type => String
