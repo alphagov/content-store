@@ -2,30 +2,31 @@ require 'queue_publisher'
 require 'spec_helper'
 
 describe QueuePublisher do
-  it 'does nothing when instantiated with noop' do
-    qp = QueuePublisher.new(noop: true)
-    expect(qp.channel).to be_nil
-    expect(qp.exchange).to be_nil
-    allow_message_expectations_on_nil
-    expect(qp.exchange).not_to receive(:publish)
-    qp.send_message('a message')
-  end
+  context "real mode" do
 
-  it 'sends a message with a routing key' do
-    mock_bunny = double("Bunny")
-    mock_exchange = double("exchange")
-    mock_channel = double("channel")
-    mock_channel.should_receive(:topic).with('content-store', {passive: true}).and_return(mock_exchange)
-    mock_bunny.should_receive(:create_channel).and_return(mock_channel)
-    mock_bunny.should_receive(:start)
+    it 'sends a message with a routing key' do
+      mock_exchange = double('exchange')
+      allow_any_instance_of(QueuePublisher).to receive(:setup_exchange)
 
-    allow_any_instance_of(QueuePublisher).to receive(:connection).and_return(mock_bunny)
-    qp = QueuePublisher.new
+      qp = QueuePublisher.new
+      allow(qp).to receive(:exchange).and_return(mock_exchange)
 
-    item = ContentItem.new(format: 'story', update_type: 'major')
-    expect(qp.exchange).to receive(:publish) do |message, options|
-      expect(options[:routing_key]).to eq('story.major')
+      item = build(:content_item, format: 'story', update_type: 'major')
+      expect(mock_exchange).to receive(:publish) do |message, options|
+        expect(options[:routing_key]).to eq('story.major')
+      end
+      qp.send_message(item)
     end
-    qp.send_message(item)
   end
+
+  context "noop mode" do
+    subject { QueuePublisher.new(noop: true) }
+
+    it 'does nothing when instantiated with noop' do
+      expect_any_instance_of(Bunny::Exchange).not_to receive(:publish)
+
+      subject.send_message(:something)
+    end
+  end
+
 end

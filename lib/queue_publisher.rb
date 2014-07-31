@@ -1,32 +1,29 @@
 class QueuePublisher
-  attr_reader :channel, :exchange, :noop
-
   def initialize(options = {})
     @noop = options[:noop]
     @options = options
-    return if @noop
-    connection.start
-    @channel  = connection.create_channel
-    # passive parameter ensures we don't create the exchange if it doesn't
-    # already exist.
-    @exchange = channel.topic(@options.fetch(:exchange, 'content-store'),
-                              passive: true)
+
+    setup_exchange unless @noop
   end
+
+  attr_reader :exchange
 
   def send_message(item)
     return if @noop
-    hash = item.as_json
-    hash["update_type"] = item.update_type
-    message = hash.to_json
+    hash = item.as_json.merge("update_type" => item.update_type)
     routing_key = "#{item.format}.#{item.update_type}"
-    exchange.publish(message, routing_key: routing_key, content_type: 'application/json', persistent: true)
+    exchange.publish(hash.to_json, routing_key: routing_key, content_type: 'application/json', persistent: true)
   end
 
   private
 
-  def connection
-    @connection ||= Bunny.new(@options)
-  end
+  def setup_exchange
+    connection = Bunny.new(@options)
+    connection.start
+    channel = connection.create_channel
 
+    # passive parameter ensures we don't create the exchange if it doesn't already exist.
+    @exchange = channel.topic(@options.fetch(:exchange), passive: true)
+  end
 end
 
