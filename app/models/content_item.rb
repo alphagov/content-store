@@ -2,6 +2,17 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps::Updated
 
+  def self.create_or_replace(base_path, details)
+    result = :created
+    result = :replaced if ContentItem.where(:base_path => base_path).exists?
+
+    item = ContentItem.new(:base_path => base_path)
+    item.assign_attributes(details)
+
+    item.upsert or result = false
+    return result, item
+  end
+
   field :_id, :as => :base_path, :type => String
   field :title, :type => String
   field :description, :type => String
