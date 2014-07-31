@@ -13,11 +13,15 @@ class ContentItem
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
+  attr_accessor :update_type
 
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
   validates :base_path, absolute_path: true
   validates :format, presence: true
+  # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
+  validates :update_type, presence: { if: :changed? }
+  validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
   validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid
 
@@ -28,6 +32,9 @@ class ContentItem
 
   # The updated_at field isn't set on upsert - https://github.com/mongoid/mongoid/issues/3716
   before_upsert :set_updated_at
+
+  after_save :send_message
+  after_upsert :send_message
 
   def as_json(options = nil)
     super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
@@ -55,5 +62,9 @@ private
 
   def register_routes
     registerable_route_set.register!
+  end
+
+  def send_message
+    Rails.application.queue_publisher.send_message(self)
   end
 end

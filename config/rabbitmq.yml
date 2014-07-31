@@ -1,0 +1,14 @@
+defaults: &defaults
+  host: localhost
+  port: 5672
+  vhost: /
+  user: content_store
+  pass: content_store
+
+development:
+  <<: *defaults
+  exchange: published_documents
+
+test:
+  <<: *defaults
+  exchange: published_documents_test

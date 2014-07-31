@@ -33,6 +33,54 @@ describe ContentItem do
       end
     end
 
+    context 'update_type' do
+      # update_type is not persisted, so should only be validated
+      # on edit.  Otherwise items loaded from the db will be invalid
+
+      it "is required when changing a content item" do
+        @item.update_type = ''
+        expect(@item).not_to be_valid
+        expect(@item).to have(1).error_on(:update_type)
+      end
+
+      it "is not required for an item loaded from the db" do
+        @item.save!
+
+        item = ContentItem.find(@item.base_path)
+        expect(item.update_type).to be_nil
+        expect(item).to be_valid
+      end
+    end
+
+    context 'fields used in message queue routing key' do
+      [
+        "format",
+        "update_type",
+      ].each do |field|
+        it "requires #{field} to be suitable as a routing_key" do
+          %w(
+            word
+            alpha12numeric
+            under_score
+            dashed-item
+            mixedCASE
+          ).each do |value|
+            @item.public_send("#{field}=", value)
+            expect(@item).to be_valid
+          end
+
+          [
+            'no spaces',
+            'puncutation!',
+          ].each do |value|
+            @item.public_send("#{field}=", value)
+            expect(@item).not_to be_valid
+            expect(@item).to have(1).error_on(field)
+          end
+        end
+      end
+    end
+
     context 'with a route that is not below the base path' do
       before do
         @item.routes= [
@@ -97,6 +145,16 @@ describe ContentItem do
 
       expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
     end
+  end
+
+  it "should not persist update_type" do
+    item = build(:content_item)
+    item.update_attributes!(:update_type => "minor")
+
+    expect(item.update_type).to eq("minor")
+
+    item = ContentItem.find(item.base_path)
+    expect(item.update_type).to be_nil
   end
 
   describe "registering routes" do

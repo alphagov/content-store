@@ -40,5 +40,7 @@ module ContentStore
     def router_api
       @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
     end
+
+    cattr_accessor :queue_publisher
   end
 end

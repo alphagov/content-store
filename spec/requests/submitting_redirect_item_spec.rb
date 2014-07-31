@@ -7,6 +7,7 @@ describe "submitting redirect items to the content store" do
       "base_path" => "/crb-checks",
       "format" => "redirect",
       "public_updated_at" => "2014-05-14T13:00:06Z",
+      "update_type" => "major",
       "redirects" => [
         {"path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks"},
         {"path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks"}
