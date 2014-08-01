@@ -8,16 +8,13 @@ class ContentItemsController < ApplicationController
   end
 
   def update
-    item = ContentItem.new(:base_path => params[:base_path])
-    item.assign_attributes(@request_data)
-
-    if ContentItem.where(:base_path => params[:base_path]).exists?
-      status_to_use = :ok
+    result, item = ContentItem.create_or_replace(params[:base_path], @request_data)
+    if result
+      status = (result == :created ? :created : :ok)
     else
-      status_to_use = :created
+      status = :unprocessable_entity
     end
-    item.upsert or status_to_use = :unprocessable_entity
-    render :json => item, :status => status_to_use
+    render :json => item, :status => status
   end
 
   private

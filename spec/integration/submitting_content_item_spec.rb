@@ -10,6 +10,7 @@ describe "content item write API", :type => :request do
       "need_ids" => ["100123", "100124"],
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "update_type" => "major",
+      "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "details" => {
         "body" => "<p>Some body text</p>\n",
@@ -132,6 +133,23 @@ describe "content item write API", :type => :request do
       data = JSON.parse(response.body)
       expect(data["title"]).to eq("")
       expect(data["errors"]).to eq({"title" => ["can't be blank"]})
+    end
+  end
+
+  context "create with extra fields in the input" do
+    before :each do
+      @data["foo"] = "bar"
+      @data["bar"] = "baz"
+      put_json "/content/vat-rates", @data
+    end
+
+    it "rejects the update" do
+      expect(response.status).to eq(422)
+    end
+
+    it "includes an error message" do
+      data = JSON.parse(response.body)
+      expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo,bar in input"]})
     end
   end
 end
