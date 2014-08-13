@@ -11,6 +11,7 @@ For example, given an item including the following fields:
     {
       "base_path": "/moved-foo",
       "format": "redirect",
+      "update_type" => "not_applicable",
       "redirects": [
         {"path": "/moved-foo", "type": "prefix", "destination": "/new-foo"},
         {"path": "/moved-foo.json", "type": "exact", "destination": "/api/moved-foo.json"}
