@@ -1,16 +1,20 @@
 ## Redirect items
 
-To represent content that can be found under a different base_path, the content-store will support
-items with a format of "redirect".  Items with a format of "redirect" must include a redirect for
-the base_path in their redirects array.  They may include other paths under the base_path in addition.
+To represent content that can be found under a different `base_path`, the content-store will support
+items with a format of "redirect".  These items have slightly different validation rules:
 
-For redirect items, the routes array and rendering_app will be ignored, and should be left empty.
+* They must include a redirect for the `base_path` in their redirects array.
+  They may additionally include other paths under the `base_path`.
+* The `routes` array and `rendering_app` will be ignored, and should be left empty.
+* A title is not required.
 
-For example, given an item including the following fields:
+For example, given the following item:
 
     {
       "base_path": "/moved-foo",
       "format": "redirect",
+      "publishing_app": "publisher",
+      "update_type": "major",
       "redirects": [
         {"path": "/moved-foo", "type": "prefix", "destination": "/new-foo"},
         {"path": "/moved-foo.json", "type": "exact", "destination": "/api/moved-foo.json"}
