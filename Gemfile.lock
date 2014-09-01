@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/alphagov/govuk-client-url_arbiter.git
+  revision: dfb8d6a2692639c2588a0b0960c86cd771c44916
+  specs:
+    govuk-client-url_arbiter (0.0.1)
+      multi_json (~> 1.0)
+      plek (~> 1.8)
+      rest-client (~> 1.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -83,7 +92,7 @@ GEM
     null_logger (0.0.1)
     optionable (0.2.0)
     origin (2.1.1)
-    plek (1.7.0)
+    plek (1.8.1)
     polyglot (0.3.5)
     rack (1.5.2)
     rack-test (0.6.2)
@@ -170,9 +179,10 @@ DEPENDENCIES
   database_cleaner (~> 1.2)
   factory_girl (~> 4.4.0)
   gds-api-adapters (~> 11.0.0)
+  govuk-client-url_arbiter!
   logstasher (= 0.5.0)
   mongoid (= 4.0.0)
-  plek (~> 1.7.0)
+  plek (~> 1.8)
   rails (= 4.1.5)
   rails-api (= 0.2.1)
   rspec-rails (~> 3.0.2)
