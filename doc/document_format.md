@@ -1,8 +1,7 @@
 # Document format
 
-Documents in the content store are represented by a set of fields.  Many of
-these fields are the same in all contexts, but some vary or are only present in
-some situations.  There are three contexts distinguished in this document:
+A document consists of a set key/value pairs. Different key/value pairs are
+present or required, depending on the context. The three contexts are:
 
  - storing: Documents being sent to the content store.
  - retrieving: Documents being retrieved from the content store.
@@ -18,10 +17,11 @@ content store API can be found in [`output_examples`](output_examples/).
 
 A string. Present in all contexts.
 
-The absolute path on GOV.UK for the content.  This is also used as the unique
-identifier for the content.
+The absolute path on GOV.UK for the content.  This is a unique identifier
+within the content store, used to find content in the content store to answer
+the question "what is at this URL?".
 
-## `guid` (TODO: confirm name of this field)
+## `content_id`
 
 An UUID string as described in [RFC 4122](http://www.ietf.org/rfc/rfc4122.txt).
 Present in all contexts.
@@ -78,7 +78,11 @@ Some formats are specially handled by the content store:
 An array of strings. Present in all contexts.
 
 An array of need ids associated with the content.  These should be strings
-(though will often will be integers encoded as decimal strings); eg "100001".
+(though will typically be integers encoded as decimal strings); eg "100001".
+
+Note: currently needs are not published on GOV.UK, so there won't be an entry
+in the content store for them.  If this changes in future, the `need_ids` field
+may be replaced by using the `tags` field to store this relation.
 
 ## `public_updated_at`
 
