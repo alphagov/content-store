@@ -68,7 +68,7 @@ describe "content item write API", :type => :request do
         expect(response.content_type).to eq("application/json")
         response_data = JSON.parse(response.body)
         expect(response_data["errors"]).to eq({
-          "base_path" => ["is already reserved by the different_app application"],
+          "url-arbiter registration" => ["path is already reserved by the different_app application"],
         })
       end
 
@@ -145,7 +145,7 @@ describe "content item write API", :type => :request do
         expect(response.content_type).to eq("application/json")
         response_data = JSON.parse(response.body)
         expect(response_data["errors"]).to eq({
-          "base_path" => ["is already reserved by the different_app application"],
+          "url-arbiter registration" => ["path is already reserved by the different_app application"],
         })
       end
 
@@ -217,5 +217,24 @@ describe "content item write API", :type => :request do
       data = JSON.parse(response.body)
       expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo,bar in input"]})
     end
+  end
+
+  context "url-arbiter returns validaton error" do
+    before :each do
+      url_arbiter_returns_validation_error_for("/vat-rates", "publishing_app" => ["can't be blank"])
+      #@data["publishing_app"] = ""
+      put_json "/content/vat-rates", @data
+    end
+
+    it "should return a 422 with error messages" do
+      expect(response.status).to eq(422)
+
+      data = JSON.parse(response.body)
+      expect(data["errors"]).to eq({"url-arbiter registration" => ["publishing_app can't be blank"]})
+    end
+
+    #it "should not call out to url-arbiter" do
+      #expect(@global_url_arbiter_put_stub).not_to have_been_requested
+    #end
   end
 end

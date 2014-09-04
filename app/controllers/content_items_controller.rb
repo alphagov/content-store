@@ -33,12 +33,22 @@ class ContentItemsController < ApplicationController
 
     Rails.application.url_arbiter_api.reserve_path(params["base_path"], "publishing_app" => @request_data["publishing_app"])
   rescue GOVUK::Client::Errors::Conflict => e
+    return_arbiter_error(:conflict, e)
+  rescue GOVUK::Client::Errors::UnprocessableEntity => e
+    return_arbiter_error(:unprocessable_entity, e)
+  end
+
+  def return_arbiter_error(status, exception)
     item = ContentItem.new(@request_data.merge("base_path" => params[:base_path]))
-    if e.response["errors"] and e.response["errors"]["base"]
-      item.errors.set(:base_path, e.response["errors"]["base"])
+    if exception.response["errors"]
+      exception.response["errors"].each do |field, errors|
+        errors.each do |error|
+          item.errors.add("url-arbiter registration", "#{field} #{error}")
+        end
+      end
     else
-      item.errors.add(:base_path, "url-arbiter rejected registration: #{e.response.raw_body}")
+      item.errors.add("url-arbiter registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
-    render :json => item, :status => :conflict
+    render :json => item, :status => status
   end
 end

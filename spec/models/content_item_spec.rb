@@ -33,6 +33,12 @@ describe ContentItem, :type => :model do
       end
     end
 
+    it "requires publishing_app to be set" do
+      @item.publishing_app = ''
+      expect(@item).not_to be_valid
+      expect(@item.errors[:publishing_app].size).to eq(1)
+    end
+
     context 'update_type' do
       # update_type is not persisted, so should only be validated
       # on edit.  Otherwise items loaded from the db will be invalid

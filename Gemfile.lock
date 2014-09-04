@@ -55,7 +55,7 @@ GEM
       null_logger
       plek
       rest-client (~> 1.6.3)
-    govuk-client-url_arbiter (0.0.1)
+    govuk-client-url_arbiter (0.0.2)
       multi_json (~> 1.0)
       plek (~> 1.8)
       rest-client (~> 1.6)
@@ -174,7 +174,7 @@ DEPENDENCIES
   database_cleaner (~> 1.2)
   factory_girl (~> 4.4.0)
   gds-api-adapters (~> 11.0.0)
-  govuk-client-url_arbiter (= 0.0.1)
+  govuk-client-url_arbiter (= 0.0.2)
   logstasher (= 0.5.0)
   mongoid (= 4.0.0)
   plek (~> 1.8)
