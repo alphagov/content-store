@@ -43,7 +43,7 @@ For example: `"30737dba-17f1-49b4-aff8-6dd4bff7fdca"`.
 
 TODO: confirm that it'll be present in retrieving contexts.
 
-TODO: confirm whether a `guid` is required for `redirect` and `gone` formats.
+TODO: confirm whether a `content_id` is required for `redirect` and `gone` formats.
 
 This is a unique identifier for the piece of context, allocated by the
 publishing app.
@@ -52,11 +52,11 @@ It will not change, and allows us to handle changes to paths and slugs on the
 site without breaking references.  In particular, it is used by the `tags`
 field to refer to other content.
 
-The content store does not validate that the `guid` value is unique within the
-store.  This is because a single piece of content may be published to multiple
-paths at once (though this should usually only be done temporarily, giving time
-to ensure that content is available at a new path before replacing the content
-at the old path with a redirect)
+The content store does not validate that the `content_id` value is unique
+within the store.  This is because a single piece of content may be published
+to multiple paths at once (though this should usually only be done temporarily,
+giving time to ensure that content is available at a new path before replacing
+the content at the old path with a redirect)
 
 ## `title`
 
@@ -125,11 +125,11 @@ store will preserve the order.
 In the `storing` context, the items are UUID strings.
 
 In the `notifying` context, the items are hashes containing: (TODO: confirm)
- - `guid`: The GUID of the tagged document
+ - `content_id`: The Content ID of the tagged document
  - `base_path`: The base path of the document
 
 In the `retrieving` context, the items are hashes containing: (TODO: confirm)
- - `guid`: The GUID of the document
+ - `content_id`: The Content ID of the document
  - `base_path`: The base path of the document
  - `title`: The title of the document
  - In future, there may be optional API parameters to request that other fields
