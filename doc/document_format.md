@@ -21,6 +21,19 @@ The absolute path on GOV.UK for the content.  This is a unique identifier
 within the content store, used to find content in the content store to answer
 the question "what is at this URL?".
 
+## `format`
+
+A string. Present in all contexts.
+
+The format of the content.  This determines how the contents of the `details`
+field should be interpreted by the owning app.
+
+Some formats are specially handled by the content store, and expect a different
+set of fields than those listed below.
+
+ - `gone`: A document which has [gone away](input_examples/gone_item.md)
+ - `redirect`: A document which has [been redirected](input_examples/redirect_item.md)
+
 ## `content_id`
 
 An UUID string as described in [RFC 4122](http://www.ietf.org/rfc/rfc4122.txt).
@@ -60,18 +73,6 @@ A string. Present in all contexts.
 The description for the content.  This will be used, for example, for the HTML
 meta-description of the content when formatted as HTML, but may also be used
 when linking to the content (eg, in search results).
-
-## `format`
-
-A string. Present in all contexts.
-
-The format of the content.  This determines how the contents of the `details`
-field should be interpreted by the owning app.
-
-Some formats are specially handled by the content store:
-
- - `gone`: A document which has [gone away](input_examples/gone_item.md)
- - `redirect`: A document which has [been redirected](input_examples/redirect_item.md)
 
 ## `need_ids`
 
@@ -172,6 +173,9 @@ contains a path and a routing type.  See
 ## `redirects`
 
 An array of hashes.  Present only in storing context.
+
+TODO: this field may only be valid for documents of format `redirect`; decision to be
+made.
 
 The redirects from old paths associated with the document.  Each hash in the
 array contains an original path, a routing type, and an optional destination
