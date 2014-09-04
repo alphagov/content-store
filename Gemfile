@@ -10,7 +10,7 @@ gem 'airbrake', '4.0.0'
 
 gem 'unicorn', '4.8.2'
 
-gem 'plek', '~> 1.7.0'
+gem 'plek', '~> 1.8'
 
 gem 'bunny', '~> 1.3.1'
 
@@ -18,6 +18,12 @@ if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', :path => '../gds-api-adapters'
 else
   gem 'gds-api-adapters', '~> 11.0.0'
+end
+
+if ENV['URL_ARBITER_DEV']
+  gem 'govuk-client-url_arbiter', :path => '../govuk-client-url_arbiter'
+else
+  gem 'govuk-client-url_arbiter', '0.0.2'
 end
 
 group :development, :test do

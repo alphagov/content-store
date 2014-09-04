@@ -7,6 +7,7 @@ describe "submitting redirect items to the content store", :type => :request do
       "base_path" => "/crb-checks",
       "format" => "redirect",
       "public_updated_at" => "2014-05-14T13:00:06Z",
+      "publishing_app" => "publisher",
       "update_type" => "major",
       "redirects" => [
         {"path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks"},

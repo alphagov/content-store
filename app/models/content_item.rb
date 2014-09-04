@@ -33,7 +33,7 @@ class ContentItem
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
   validates :base_path, absolute_path: true
-  validates :format, presence: true
+  validates :format, :publishing_app, presence: true
   # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
   validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
