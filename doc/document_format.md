@@ -110,19 +110,27 @@ content store (or items which will be in the content store once published).
 For example, links to mainstream browse pages, topics, organisations and other
 things associated with the content.
 
-The tags hash is keyed by the type of the link (for example, "topics"), and the
-value is a list of associated items.  The order of items in the tags hash may
-be significant; the content store will preserve the order.
+For example:
 
-In the `storing` context, the values are UUID strings.
+    "tags": {
+      "organisations": ['ORG-CONTENT-ID', 'ANOTHER-ORG-CONTENT-ID'],
+      "topics": ['TOPIC-CONTENT-ID'],
+    }
 
-In the `notifying` context, the values are hashes containing: (TODO: confirm)
+The keys here represent the type of the tag (for example, "topics").  The value
+is a list of associated items, in which order may be significant; the content
+store will preserve the order.
+
+In the `storing` context, the items are UUID strings.
+
+In the `notifying` context, the items are hashes containing: (TODO: confirm)
  - `guid`: The GUID of the tagged document
  - `base_path`: The base path of the document
 
-In the `retrieving` context, the values are hashes containing: (TODO: confirm)
+In the `retrieving` context, the items are hashes containing: (TODO: confirm)
  - `guid`: The GUID of the document
  - `base_path`: The base path of the document
+ - `title`: The title of the document
  - In future, there may be optional API parameters to request that other fields
    from the linked document are included in this hash (eg, title, description).
 
