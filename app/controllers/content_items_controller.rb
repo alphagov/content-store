@@ -43,11 +43,11 @@ class ContentItemsController < ApplicationController
     if exception.response["errors"]
       exception.response["errors"].each do |field, errors|
         errors.each do |error|
-          item.errors.add("url-arbiter registration", "#{field} #{error}")
+          item.errors.add("url_arbiter_registration", "#{field} #{error}")
         end
       end
     else
-      item.errors.add("url-arbiter registration", "#{exception.response.code}: #{exception.response.raw_body}")
+      item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
     render :json => item, :status => status
   end
