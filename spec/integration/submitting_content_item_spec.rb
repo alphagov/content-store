@@ -68,7 +68,7 @@ describe "content item write API", :type => :request do
         expect(response.content_type).to eq("application/json")
         response_data = JSON.parse(response.body)
         expect(response_data["errors"]).to eq({
-          "url-arbiter registration" => ["path is already reserved by the different_app application"],
+          "url_arbiter_registration" => ["path is already reserved by the different_app application"],
         })
       end
 
@@ -145,7 +145,7 @@ describe "content item write API", :type => :request do
         expect(response.content_type).to eq("application/json")
         response_data = JSON.parse(response.body)
         expect(response_data["errors"]).to eq({
-          "url-arbiter registration" => ["path is already reserved by the different_app application"],
+          "url_arbiter_registration" => ["path is already reserved by the different_app application"],
         })
       end
 
@@ -230,7 +230,7 @@ describe "content item write API", :type => :request do
       expect(response.status).to eq(422)
 
       data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"url-arbiter registration" => ["publishing_app can't be blank"]})
+      expect(data["errors"]).to eq({"url_arbiter_registration" => ["publishing_app can't be blank"]})
     end
 
     #it "should not call out to url-arbiter" do
