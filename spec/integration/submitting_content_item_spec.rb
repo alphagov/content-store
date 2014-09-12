@@ -222,7 +222,6 @@ describe "content item write API", :type => :request do
   context "url-arbiter returns validaton error" do
     before :each do
       url_arbiter_returns_validation_error_for("/vat-rates", "publishing_app" => ["can't be blank"])
-      #@data["publishing_app"] = ""
       put_json "/content/vat-rates", @data
     end
 
@@ -232,9 +231,5 @@ describe "content item write API", :type => :request do
       data = JSON.parse(response.body)
       expect(data["errors"]).to eq({"url_arbiter_registration" => ["publishing_app can't be blank"]})
     end
-
-    #it "should not call out to url-arbiter" do
-      #expect(@global_url_arbiter_put_stub).not_to have_been_requested
-    #end
   end
 end
