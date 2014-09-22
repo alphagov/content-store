@@ -6,6 +6,7 @@ describe "Fetching a content item", :type => :request do
     let!(:item) {
       create(:content_item,
        :base_path => "/vat-rates",
+       :content_id => SecureRandom.uuid,
        :title => "VAT rates",
        :description => "Current VAT rates",
        :format => "answer",
@@ -46,6 +47,12 @@ describe "Fetching a content item", :type => :request do
     it "should set a cache-control header with value public" do
       get "/content/vat-rates"
       expect(response.headers["Cache-Control"]).to eq('public')
+    end
+
+    it "should not return the content ID" do
+      get "/content/vat-rates"
+      data = JSON.parse(response.body)
+      expect(data).not_to include("content_id")
     end
   end
 
