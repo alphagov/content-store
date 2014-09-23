@@ -49,7 +49,7 @@ This is a unique identifier for the piece of context, allocated by the
 publishing app.
 
 It will not change, and allows us to handle changes to paths and slugs on the
-site without breaking references.  In particular, it is used by the `tags`
+site without breaking references.  In particular, it is used by the `links`
 field to refer to other content.
 
 The content store does not validate that the `content_id` value is unique
@@ -83,7 +83,7 @@ An array of need ids associated with the content.  These should be strings
 
 Note: currently needs are not published on GOV.UK, so there won't be an entry
 in the content store for them.  If this changes in future, the `need_ids` field
-may be replaced by using the `tags` field to store this relation.
+may be replaced by using the `links` field to store this relation.
 
 ## `public_updated_at`
 
@@ -102,30 +102,30 @@ meaning of the data here is dependent on the value of the `format` field.  The
 interpretation of keys which exist here should be consistent for a given format
 (though there may be optional ones for each format).
 
-## `tags`
+## `links`
 
 A hash.  Present in all contexts, but representations vary.
 
-Tags represent links from items in the content store to other items in the
+Links are made from items in the content store to other items in the
 content store (or items which will be in the content store once published).
 For example, links to mainstream browse pages, topics, organisations and other
 things associated with the content.
 
 For example:
 
-    "tags": {
+    "links": {
       "organisations": ['ORG-CONTENT-ID', 'ANOTHER-ORG-CONTENT-ID'],
       "topics": ['TOPIC-CONTENT-ID'],
     }
 
-The keys here represent the type of the tag (for example, "topics").  The value
-is a list of associated items, in which order may be significant; the content
-store will preserve the order.
+The keys here represent the type of the link (for example, "topics").  The
+value is a list of associated items, in which order may be significant; the
+content store will preserve the order.
 
 In the `storing` context, the items are UUID strings.
 
 In the `notifying` context, the items are hashes containing: (TODO: confirm)
- - `content_id`: The Content ID of the tagged document
+ - `content_id`: The Content ID of the linked document
  - `base_path`: The base path of the document
 
 In the `retrieving` context, the items are hashes containing: (TODO: confirm)
