@@ -39,6 +39,25 @@ describe ContentItem, :type => :model do
       expect(@item.errors[:publishing_app].size).to eq(1)
     end
 
+    context 'content_id' do
+      # The fact that the content ID is optional is implicit in the factory
+
+      it "accepts a UUID" do
+        @item.content_id = "a7c48dac-f1c6-45a8-b5c1-5c407d45826f"
+        expect(@item).to be_valid
+      end
+
+      it "does not accept an arbitrary string" do
+        @item.content_id = "bacon"
+        expect(@item).not_to be_valid
+      end
+
+      it "does not accept an empty string" do
+        @item.content_id = ""
+        expect(@item).not_to be_valid
+      end
+    end
+
     context 'update_type' do
       # update_type is not persisted, so should only be validated
       # on edit.  Otherwise items loaded from the db will be invalid

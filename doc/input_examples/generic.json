@@ -1,5 +1,6 @@
 // Everything in output_examples/generic.json (excluding updated_at) plus:
 {
+  "content_id": "a5d86183-7252-4426-aad2-3f732f7f2581",
   "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.new.find(publishing_app)
   "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.new.find(rendering_app)
   "routes": [

@@ -1,5 +1,6 @@
 {
   "base_path": "/vat-rates",
+  "content_id": "a5d86183-7252-4426-aad2-3f732f7f2581",
   "title": "VAT rates",
   "description": "Current VAT rates - standard 20% and rates for reduced rate and zero-rated items",
   "format": "answer",

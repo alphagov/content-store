@@ -4,6 +4,7 @@ describe "content item write API", :type => :request do
   before :each do
     @data = {
       "base_path" => "/vat-rates",
+      "content_id" => SecureRandom.uuid,
       "title" => "VAT rates",
       "description" => "Current VAT rates",
       "format" => "answer",
@@ -79,6 +80,17 @@ describe "content item write API", :type => :request do
 
         item = ContentItem.where(:base_path => "/vat-rates").first
         expect(item).to be_nil
+      end
+    end
+
+    context "with no content ID" do
+      before :each do
+        @data.delete "content_id"
+      end
+
+      it "responds with a CREATED status" do
+        put_json "/content/vat-rates", @data
+        expect(response.status).to eq(201)
       end
     end
   end
