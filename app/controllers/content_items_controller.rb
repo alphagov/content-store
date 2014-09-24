@@ -29,8 +29,6 @@ class ContentItemsController < ApplicationController
   end
 
   def register_with_url_arbiter
-    return unless ENABLE_URL_ARBITER
-
     Rails.application.url_arbiter_api.reserve_path(params["base_path"], "publishing_app" => @request_data["publishing_app"])
   rescue GOVUK::Client::Errors::Conflict => e
     return_arbiter_error(:conflict, e)
