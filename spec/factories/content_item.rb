@@ -12,6 +12,10 @@ FactoryGirl.define do
     trait :with_content_id do
       content_id { SecureRandom.uuid }
     end
+
+    trait :with_blank_title do
+      title ""
+    end
   end
 
   factory :redirect_content_item, :class => ContentItem do

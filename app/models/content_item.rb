@@ -31,8 +31,6 @@ class ContentItem
   field :redirects, :type => Array, :default => []
   attr_accessor :update_type
 
-  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
-
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
   validates :format, :publishing_app, presence: true
@@ -54,9 +52,10 @@ class ContentItem
   after_upsert :send_message
 
   def as_json(options = nil)
-    super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
-      hash["base_path"] = self.base_path
-      hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
+    # We want to refer to this as `base_path` everywhere, rather than its
+    # internal name of `_id`.
+    super(options).tap do |hash|
+      hash["base_path"] = hash.delete("_id")
     end
   end
 

@@ -222,31 +222,4 @@ describe ContentItem, :type => :model do
       expect(@item).to be_valid
     end
   end
-
-  describe "json representation" do
-    before :each do
-      @item = build(:content_item)
-    end
-
-    it "only includes public attributes" do
-      expect(@item.as_json.keys).to match_array(ContentItem::PUBLIC_ATTRIBUTES)
-    end
-
-    it "outputs the base_path correctly" do
-      expect(@item.as_json["base_path"]).to eq(@item.base_path)
-    end
-
-    it "includes details of any errors" do
-      @item.title = ""
-      @item.valid?
-
-      json_hash = @item.as_json
-      expect(json_hash).to have_key("errors")
-      expect(json_hash["errors"]).to eq({"title" => ["can't be blank"]})
-    end
-
-    it "does not include the 'errors' key if there are no errors" do
-      expect(@item.as_json).not_to have_key("errors")
-    end
-  end
 end

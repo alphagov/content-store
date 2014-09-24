@@ -33,7 +33,7 @@ describe "Fetching a content item", :type => :request do
       expect(data['public_updated_at']).to eq(item.public_updated_at.as_json)
       expect(data['details']).to eq({"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
 
-      expected_keys = ContentItem::PUBLIC_ATTRIBUTES
+      expected_keys = PublicContentItemPresenter::PUBLIC_ATTRIBUTES
       expect(data.keys - expected_keys).to eq([])
     end
 

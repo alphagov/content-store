@@ -7,7 +7,7 @@ class ContentItemsController < ApplicationController
   def show
     item = ContentItem.find_by(:base_path => params[:base_path])
     expires_at config.default_ttl.from_now
-    render :json => item
+    render :json => PublicContentItemPresenter.new(item)
   end
 
   def update
@@ -17,7 +17,7 @@ class ContentItemsController < ApplicationController
     else
       status = :unprocessable_entity
     end
-    render :json => item, :status => status
+    render :json => PrivateContentItemPresenter.new(item), :status => status
   end
 
   private
@@ -47,6 +47,6 @@ class ContentItemsController < ApplicationController
     else
       item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
-    render :json => item, :status => status
+    render :json => PrivateContentItemPresenter.new(item), :status => status
   end
 end
