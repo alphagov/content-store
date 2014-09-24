@@ -116,7 +116,7 @@ describe ContentItem, :type => :model do
 
       it 'should be invalid' do
         expect(@item).to_not be_valid
-        expect(@item.errors[:routes].size).to eq(1)
+        expect(@item.errors[:routes]).to eq(["must be below the base path"])
       end
     end
 
@@ -127,7 +127,7 @@ describe ContentItem, :type => :model do
 
       it 'should be invalid' do
         expect(@item).to_not be_valid
-        expect(@item.errors[:routes].size).to eq(1)
+        expect(@item.errors[:routes]).to eq(["are invalid"])
       end
     end
 
@@ -151,13 +151,13 @@ describe ContentItem, :type => :model do
       it "should be invalid with an invalid redirect" do
         @item.redirects.first['type'] = "fooey"
         expect(@item).not_to be_valid
-        expect(@item.errors[:redirects].size).to eq(1)
+        expect(@item.errors[:redirects]).to eq(["are invalid"])
       end
 
       it "should be invalid if given any routes" do
         @item.routes = [{"path" => @item.base_path, "type" => "exact" }]
         expect(@item).not_to be_valid
-        expect(@item.errors[:routes].size).to eq(1)
+        expect(@item.errors[:routes]).to eq(["redirect items cannot have routes"])
       end
     end
   end

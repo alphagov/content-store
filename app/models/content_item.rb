@@ -72,8 +72,8 @@ private
 
   def route_set_is_valid
     unless base_path.present? && registerable_route_set.valid?
-      errors[:routes] += registerable_route_set.errors[:registerable_routes]
-      errors[:redirects] += registerable_route_set.errors[:registerable_redirects]
+      errors.set(:routes, registerable_route_set.errors[:registerable_routes])
+      errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
     end
   end
 
