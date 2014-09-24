@@ -8,6 +8,10 @@ FactoryGirl.define do
     rendering_app 'frontend'
     update_type 'minor'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+
+    trait :with_content_id do
+      content_id { SecureRandom.uuid }
+    end
   end
 
   factory :redirect_content_item, :class => ContentItem do
