@@ -78,7 +78,7 @@ private
   end
 
   def register_routes
-    registerable_route_set.register!
+    registerable_route_set.register! unless self.format == "placeholder"
   end
 
   def send_message

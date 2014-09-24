@@ -25,6 +25,17 @@ module RouterHelpers
     end
     assert_requested(stub_router_commit, times: 1)
   end
+
+  def refute_routes_registered(rendering_app, routes)
+    be_signature = stub_router_backend_registration(rendering_app, "http://#{rendering_app}.test.gov.uk/")
+    assert_not_requested(be_signature)
+
+    routes.each do |(path, type)|
+      route_signature, _ = stub_route_registration(path, type, rendering_app)
+      assert_not_requested(route_signature)
+    end
+    assert_not_requested(stub_router_commit)
+  end
 end
 
 RSpec.configure do |config|
