@@ -53,6 +53,12 @@ describe "publishing messages on the queue", :type => :request do
       expect(properties[:content_type]).to eq('application/json')
       message = JSON.parse(payload)
       expect(message['title']).to eq('VAT rates')
+
+      # Check for a private field
+      expect(message).to include('publishing_app')
+
+      # Check specifically for the update type
+      expect(message).to include('update_type')
     end
 
     it 'routing key depends on format and update type' do

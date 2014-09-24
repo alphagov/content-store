@@ -20,6 +20,10 @@ describe PrivateContentItemPresenter do
     expect(presenter.as_json.keys).to include("publishing_app", "rendering_app", "routes")
   end
 
+  it "includes an update type" do
+    expect(presenter.as_json["update_type"]).to eq("minor")
+  end
+
   context "with validation errors" do
     let(:item) { build(:content_item, :with_blank_title).tap(&:valid?) }
 
