@@ -7,7 +7,14 @@ class ContentItemsController < ApplicationController
   def show
     item = ContentItem.find_by(:base_path => params[:base_path])
     expires_at config.default_ttl.from_now
-    render :json => PublicContentItemPresenter.new(item)
+
+    # The presenter needs context about routes and host names from controller
+    # to know how to generate API URLs, so we can take the Rails helper and
+    # pass that in as a callable
+    generate_api_url = method(:content_item_url)
+    presenter = PublicContentItemPresenter.new(item, generate_api_url)
+
+    render :json => presenter
   end
 
   def update

@@ -2,7 +2,10 @@ require 'rails_helper'
 
 describe PublicContentItemPresenter do
   let(:item) { build(:content_item) }
-  let(:presenter) { PublicContentItemPresenter.new(item) }
+  let(:generate_api_url) do
+    lambda { |base_path| "http://api.example.com/content#{base_path}" }
+  end
+  let(:presenter) { PublicContentItemPresenter.new(item, generate_api_url) }
 
   it "includes public attributes" do
     expected_fields = PublicContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
@@ -33,11 +36,10 @@ describe PublicContentItemPresenter do
     end
 
     it "links to the API URL for each item" do
-      api_root = Plek.current.find("content-store")
       expect(related.map { |item| item["api_url"] }).to eq(
         [
-          "#{api_root}/content#{linked_item1.base_path}",
-          "#{api_root}/content#{linked_item2.base_path}",
+          "http://api.example.com/content#{linked_item1.base_path}",
+          "http://api.example.com/content#{linked_item2.base_path}",
         ]
       )
     end

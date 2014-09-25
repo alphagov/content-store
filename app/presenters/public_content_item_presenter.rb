@@ -3,8 +3,9 @@
 class PublicContentItemPresenter
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
-  def initialize(item)
+  def initialize(item, api_url_method)
     @item = item
+    @api_url_method = api_url_method
   end
 
   def as_json(options = nil)
@@ -29,7 +30,7 @@ private
   end
 
   def api_url(item)
-    Plek.current.find("content-store") + "/content" + item.base_path
+    @api_url_method.call(item.base_path)
   end
 
   def web_url(item)
