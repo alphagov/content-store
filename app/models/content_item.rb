@@ -55,6 +55,13 @@ class ContentItem
   after_save :send_message
   after_upsert :send_message
 
+  # We want to look up related items by their content ID, excluding those that
+  # are redirects; when multiple items exist, we take the most recent one, and
+  # we need its base_path and its title. By indexing all these fields, we can
+  # get hold of these related items purely from the index, without having to go
+  # and fetch the entire document.
+  index({:content_id => 1, :format => 1, :updated_at => -1, :title => 1, :_id => 1})
+
   def as_json(options = nil)
     # We want to refer to this as `base_path` everywhere, rather than its
     # internal name of `_id`.
@@ -71,8 +78,10 @@ class ContentItem
   def linked_items
     links.each_with_object({}) do |(link_type, content_ids), items|
       items[link_type] = content_ids.map { |content_id|
+        # This query is designed to be entirely covered by the index above
         ContentItem.excluding_redirects
                    .where(:content_id => content_id)
+                   .only(:base_path, :title)
                    .sort(:updated_at => 1)
                    .last
       }.compact
