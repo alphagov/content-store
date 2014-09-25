@@ -14,8 +14,10 @@ describe PublicContentItemPresenter do
   end
 
   context "with related links" do
-    let(:linked_items) { create_list(:content_item, 2, :with_content_id) }
-    let(:item) { build(:content_item, :links => {"related" => linked_items.map(&:content_id)}) }
+    let(:linked_item1) { create(:content_item, :with_content_id) }
+    let(:linked_item2) { create(:content_item, :with_content_id) }
+    let(:item) { build(:content_item, :links => {"related" => [linked_item1.content_id, linked_item2.content_id]}) }
+    let(:related) { presenter.as_json["links"]["related"] }
 
     it "includes the link type" do
       expect(presenter.as_json).to have_key("links")
@@ -23,12 +25,31 @@ describe PublicContentItemPresenter do
     end
 
     it "includes each linked item" do
-      expect(presenter.as_json["links"]["related"].size).to be(2)
+      expect(related.size).to be(2)
     end
 
     it "includes the path and title for each item" do
-      related = presenter.as_json["links"]["related"]
       expect(related).to all include("base_path", "title")
+    end
+
+    it "links to the API URL for each item" do
+      api_root = Plek.current.find("content-store")
+      expect(related.map { |item| item["api_url"] }).to eq(
+        [
+          "#{api_root}/content#{linked_item1.base_path}",
+          "#{api_root}/content#{linked_item2.base_path}",
+        ]
+      )
+    end
+
+    it "links to the web URL for each item" do
+      site_root = Plek.current.website_root
+      expect(related.map { |item| item["web_url"] }).to eq(
+        [
+          "#{site_root}#{linked_item1.base_path}",
+          "#{site_root}#{linked_item2.base_path}",
+        ]
+      )
     end
   end
 end

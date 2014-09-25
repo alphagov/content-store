@@ -20,6 +20,19 @@ private
   end
 
   def present_linked_item(linked_item)
-    { "title" => linked_item.title, "base_path" => linked_item.base_path }
+    {
+      "title" => linked_item.title,
+      "base_path" => linked_item.base_path,
+      "api_url" => api_url(linked_item),
+      "web_url" => web_url(linked_item),
+    }
+  end
+
+  def api_url(item)
+    Plek.current.find("content-store") + "/content" + item.base_path
+  end
+
+  def web_url(item)
+    Plek.current.website_root + item.base_path
   end
 end
