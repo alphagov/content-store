@@ -8,6 +8,18 @@ class PublicContentItemPresenter
   end
 
   def as_json(options = nil)
-    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES)
+    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge("links" => links)
+  end
+
+private
+
+  def links
+    @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
+      items[link_type] = linked_items.map { |i| present_linked_item(i) }
+    end
+  end
+
+  def present_linked_item(linked_item)
+    { "title" => linked_item.title, "base_path" => linked_item.base_path }
   end
 end

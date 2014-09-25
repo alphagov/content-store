@@ -21,8 +21,6 @@ describe "links between items", :type => :request do
   end
 
   it "looks up links to published items" do
-    pending "link lookups"
-
     # Create two published items and one unpublished item
     linked_ids = [@linked_a, @linked_b].map(&:content_id) + [SecureRandom.uuid]
     data_with_links = @data.merge({
