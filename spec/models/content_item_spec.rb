@@ -58,6 +58,48 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'links' do
+      # We expect links to be hashes of type `{String => [UUID]}`. For example:
+      #
+      # {
+      #   "related" => [
+      #     "8242a29f-8ad1-4fbe-9f71-f9e57ea5f1ea",
+      #     "9f99d6d0-8f3b-4ad1-aac0-4811be80de47"
+      #   ]
+      # }
+      #
+      # Mongoid will reject anything that isn't a Hash with an error, so we
+      # needn't test those cases for now
+
+      it 'allows hashes from strings to lists' do
+        @item.links = {"related" => [SecureRandom.uuid]}
+        expect(@item).to be_valid
+      end
+
+      it 'allows an empty list of content IDs' do
+        @item.links = {"related" => []}
+        expect(@item).to be_valid
+      end
+
+      it 'rejects non-string keys' do
+        @item.links = {12 => []}
+        expect(@item).not_to be_valid
+        expect(@item.errors).to include(:links)
+      end
+
+      it 'rejects non-list values' do
+        @item.links = {"related" => SecureRandom.uuid}
+        expect(@item).not_to be_valid
+        expect(@item.errors).to include(:links)
+      end
+
+      it 'rejects non-UUID content IDs' do
+        @item.links = {"related" => [SecureRandom.uuid, "/vat-rates"]}
+        expect(@item).not_to be_valid
+        expect(@item.errors).to include(:links)
+      end
+    end
+
     context 'update_type' do
       # update_type is not persisted, so should only be validated
       # on edit.  Otherwise items loaded from the db will be invalid

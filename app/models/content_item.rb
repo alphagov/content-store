@@ -29,6 +29,7 @@ class ContentItem
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
+  field :links, :type => Hash, :default => {}
   attr_accessor :update_type
 
   validates :base_path, absolute_path: true
@@ -39,6 +40,7 @@ class ContentItem
   validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
   validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid
+  validate :links_are_valid
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
@@ -73,6 +75,27 @@ private
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
       errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
+    end
+  end
+
+  def links_are_valid
+    # Test that the `links` attribute, if set, is a hash from strings to lists
+    # of UUIDs
+    return if links.empty?
+
+    bad_keys = links.keys.reject { |key| key.is_a? String }
+    if bad_keys.any?
+      errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
+    end
+
+    bad_values = links.values.reject { |value|
+      value.is_a?(Array) && value.all? { |content_id|
+        UUIDValidator::UUID_PATTERN.match(content_id)
+      }
+    }
+
+    if bad_values.any?
+      errors[:links] = "must map to lists of UUIDs"
     end
   end
 
