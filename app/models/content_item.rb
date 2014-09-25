@@ -32,6 +32,8 @@ class ContentItem
   field :links, :type => Hash, :default => {}
   attr_accessor :update_type
 
+  scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
+
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
   validates :format, :publishing_app, presence: true
@@ -69,7 +71,7 @@ class ContentItem
   def linked_items
     links.each_with_object({}) do |(link_type, content_ids), items|
       items[link_type] = content_ids.map { |content_id|
-        ContentItem.where(content_id: content_id).first
+        ContentItem.excluding_redirects.where(:content_id => content_id).first
       }.compact
     end
   end

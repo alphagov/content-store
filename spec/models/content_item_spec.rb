@@ -310,12 +310,46 @@ describe ContentItem, :type => :model do
 
     context 'with an unpublished linked item' do
       before :each do
-        @item = build(:content_item)
-        @item.links = {"related" => [SecureRandom.uuid]}
+        @item = build(
+          :content_item,
+          :links => {"related" => [SecureRandom.uuid]}
+        )
       end
 
       it 'should not include the item' do
         expect(@item.linked_items["related"]).to eq([])
+      end
+    end
+
+    context 'with a published item and redirects' do
+      before :each do
+        shared_content_id = SecureRandom.uuid
+
+        # Creating two redirects, one before and one after the content item, so
+        # we don't accidentally pass this test by taking the first or last item
+        create(
+          :redirect_content_item,
+          :base_path => '/a',
+          :content_id => shared_content_id
+        )
+        @linked_item = create(
+          :content_item,
+          :base_path => '/b',
+          :content_id => shared_content_id
+        )
+        create(
+          :redirect_content_item,
+          :base_path => '/c',
+          :content_id => shared_content_id
+        )
+        @item = build(
+          :content_item,
+          :links => {"related" => [shared_content_id]}
+        )
+      end
+
+      it 'links to the content item' do
+        expect(@item.linked_items["related"]).to eq([@linked_item])
       end
     end
   end
