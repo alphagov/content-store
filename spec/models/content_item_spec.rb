@@ -264,4 +264,59 @@ describe ContentItem, :type => :model do
       expect(@item).to be_valid
     end
   end
+
+  describe '#linked_items' do
+
+    context 'with no link types' do
+      before :each do
+        @item = build(:content_item)
+      end
+
+      it 'should return an empty hash' do
+        expect(@item.linked_items).to eq({})
+      end
+    end
+
+    context 'with an empty link type' do
+      before :each do
+        @item = build(:content_item)
+        @item.links = {"related" => []}
+      end
+
+      it 'should include the key' do
+        expect(@item.linked_items.keys).to eq(["related"])
+      end
+
+      it 'should have an empty list' do
+        expect(@item.linked_items["related"]).to eq([])
+      end
+    end
+
+    context 'with a published linked item' do
+      before :each do
+        @linked_item = create(:content_item, :with_content_id)
+        @item = build(:content_item)
+        @item.links = {"related" => [@linked_item.content_id]}
+      end
+
+      it 'should include the key' do
+        expect(@item.linked_items.keys).to eq(["related"])
+      end
+
+      it 'should include the linked item' do
+        expect(@item.linked_items["related"]).to eq([@linked_item])
+      end
+    end
+
+    context 'with an unpublished linked item' do
+      before :each do
+        @item = build(:content_item)
+        @item.links = {"related" => [SecureRandom.uuid]}
+      end
+
+      it 'should not include the item' do
+        expect(@item.linked_items["related"]).to eq([])
+      end
+    end
+  end
 end

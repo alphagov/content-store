@@ -65,6 +65,15 @@ class ContentItem
     self.format == "redirect"
   end
 
+  # Return a Hash of link types to lists of related items
+  def linked_items
+    links.each_with_object({}) do |(link_type, content_ids), items|
+      items[link_type] = content_ids.map { |content_id|
+        ContentItem.where(content_id: content_id).first
+      }.compact
+    end
+  end
+
 private
 
   def registerable_route_set
