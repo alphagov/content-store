@@ -71,7 +71,10 @@ class ContentItem
   def linked_items
     links.each_with_object({}) do |(link_type, content_ids), items|
       items[link_type] = content_ids.map { |content_id|
-        ContentItem.excluding_redirects.where(:content_id => content_id).first
+        ContentItem.excluding_redirects
+                   .where(:content_id => content_id)
+                   .sort(:updated_at => 1)
+                   .last
       }.compact
     end
   end

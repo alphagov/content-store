@@ -352,5 +352,29 @@ describe ContentItem, :type => :model do
         expect(@item.linked_items["related"]).to eq([@linked_item])
       end
     end
+
+    context 'with multiple published items' do
+      before :each do
+        shared_content_id = SecureRandom.uuid
+        Timecop.travel(-10.seconds) do
+          create(:content_item, :base_path => '/a', :content_id => shared_content_id)
+          create(:content_item, :base_path => '/c', :content_id => shared_content_id)
+        end
+        @newer_linked_item = create(
+          :content_item,
+          :base_path => '/b',
+          :content_id => shared_content_id
+        )
+
+        @item = build(
+          :content_item,
+          :links => {"related" => [shared_content_id]}
+        )
+      end
+
+      it 'takes the most recent' do
+        expect(@item.linked_items["related"]).to eq([@newer_linked_item])
+      end
+    end
   end
 end
