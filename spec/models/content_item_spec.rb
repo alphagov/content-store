@@ -84,19 +84,19 @@ describe ContentItem, :type => :model do
       it 'rejects non-string keys' do
         @item.links = {12 => []}
         expect(@item).not_to be_valid
-        expect(@item.errors).to include(:links)
+        expect(@item.errors[:links]).to eq(["Invalid link types: 12"])
       end
 
       it 'rejects non-list values' do
         @item.links = {"related" => SecureRandom.uuid}
         expect(@item).not_to be_valid
-        expect(@item.errors).to include(:links)
+        expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
       end
 
       it 'rejects non-UUID content IDs' do
         @item.links = {"related" => [SecureRandom.uuid, "/vat-rates"]}
         expect(@item).not_to be_valid
-        expect(@item.errors).to include(:links)
+        expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
       end
     end
 
