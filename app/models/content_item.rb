@@ -106,8 +106,8 @@ private
     # of UUIDs
     return if links.empty?
 
-    bad_keys = links.keys.reject { |key| key.is_a? String }
-    if bad_keys.any?
+    bad_keys = links.keys.reject { |key| key.is_a?(String) && key =~ /\A[a-z0-9_]+\z/ }
+    unless bad_keys.empty?
       errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
     end
 
@@ -116,8 +116,7 @@ private
         UUIDValidator::UUID_PATTERN.match(content_id)
       }
     }
-
-    if bad_values.any?
+    unless bad_values.empty?
       errors[:links] = "must map to lists of UUIDs"
     end
   end

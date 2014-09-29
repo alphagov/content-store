@@ -81,22 +81,55 @@ describe ContentItem, :type => :model do
         expect(@item).to be_valid
       end
 
-      it 'rejects non-string keys' do
-        @item.links = {12 => []}
-        expect(@item).not_to be_valid
-        expect(@item.errors[:links]).to eq(["Invalid link types: 12"])
+      describe "validating keys" do
+        it 'rejects non-string keys' do
+          @item.links = {12 => []}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["Invalid link types: 12"])
+
+          @item.links = {nil => []}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["Invalid link types: "])
+        end
+
+        it "allows string keys that are underscored alphanumeric" do
+          [
+            'word',
+            'word2word',
+            'word_word',
+          ].each do |key|
+            @item.links = {key => []}
+            expect(@item).to be_valid, "expected item to be valid with links key '#{key}'"
+          end
+        end
+
+        it "rejects keys keys with non-allowed characters" do
+          [
+            'Uppercase',
+            'space space',
+            'dash-ed',
+            'punctuation!',
+            '',
+          ].each do |key|
+            @item.links = {key => []}
+            expect(@item).not_to be_valid, "expected item not to be valid with links key '#{key}'"
+            expect(@item.errors[:links]).to eq(["Invalid link types: #{key}"])
+          end
+        end
       end
 
-      it 'rejects non-list values' do
-        @item.links = {"related" => SecureRandom.uuid}
-        expect(@item).not_to be_valid
-        expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
-      end
+      describe "validating values" do
+        it 'rejects non-list values' do
+          @item.links = {"related" => SecureRandom.uuid}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        end
 
-      it 'rejects non-UUID content IDs' do
-        @item.links = {"related" => [SecureRandom.uuid, "/vat-rates"]}
-        expect(@item).not_to be_valid
-        expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        it 'rejects non-UUID content IDs' do
+          @item.links = {"related" => [SecureRandom.uuid, "/vat-rates"]}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        end
       end
     end
 
