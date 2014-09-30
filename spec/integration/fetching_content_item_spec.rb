@@ -52,7 +52,7 @@ describe "Fetching a content item", :type => :request do
     it "should not return the content ID" do
       get "/content/vat-rates"
       data = JSON.parse(response.body)
-      expect(data).not_to include("content_id")
+      expect(data).not_to have_key("content_id")
     end
   end
 
