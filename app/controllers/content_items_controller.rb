@@ -7,7 +7,14 @@ class ContentItemsController < ApplicationController
   def show
     item = ContentItem.find_by(:base_path => params[:base_path])
     expires_at config.default_ttl.from_now
-    render :json => item
+
+    # The presenter needs context about routes and host names from controller
+    # to know how to generate API URLs, so we can take the Rails helper and
+    # pass that in as a callable
+    api_url_method = method(:content_item_url)
+    presenter = PublicContentItemPresenter.new(item, api_url_method)
+
+    render :json => presenter
   end
 
   def update
@@ -17,7 +24,7 @@ class ContentItemsController < ApplicationController
     else
       status = :unprocessable_entity
     end
-    render :json => item, :status => status
+    render :json => PrivateContentItemPresenter.new(item), :status => status
   end
 
   private
@@ -47,6 +54,6 @@ class ContentItemsController < ApplicationController
     else
       item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
-    render :json => item, :status => status
+    render :json => PrivateContentItemPresenter.new(item), :status => status
   end
 end

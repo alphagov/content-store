@@ -58,6 +58,81 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'links' do
+      # We expect links to be hashes of type `{String => [UUID]}`. For example:
+      #
+      # {
+      #   "related" => [
+      #     "8242a29f-8ad1-4fbe-9f71-f9e57ea5f1ea",
+      #     "9f99d6d0-8f3b-4ad1-aac0-4811be80de47"
+      #   ]
+      # }
+      #
+      # Mongoid will reject anything that isn't a Hash with an error, so we
+      # needn't test those cases for now
+
+      it 'allows hashes from strings to lists' do
+        @item.links = {"related" => [SecureRandom.uuid]}
+        expect(@item).to be_valid
+      end
+
+      it 'allows an empty list of content IDs' do
+        @item.links = {"related" => []}
+        expect(@item).to be_valid
+      end
+
+      describe "validating keys" do
+        it 'rejects non-string keys' do
+          @item.links = {12 => []}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["Invalid link types: 12"])
+
+          @item.links = {nil => []}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["Invalid link types: "])
+        end
+
+        it "allows string keys that are underscored alphanumeric" do
+          [
+            'word',
+            'word2word',
+            'word_word',
+          ].each do |key|
+            @item.links = {key => []}
+            expect(@item).to be_valid, "expected item to be valid with links key '#{key}'"
+          end
+        end
+
+        it "rejects keys keys with non-allowed characters" do
+          [
+            'Uppercase',
+            'space space',
+            'dash-ed',
+            'punctuation!',
+            '',
+          ].each do |key|
+            @item.links = {key => []}
+            expect(@item).not_to be_valid, "expected item not to be valid with links key '#{key}'"
+            expect(@item.errors[:links]).to eq(["Invalid link types: #{key}"])
+          end
+        end
+      end
+
+      describe "validating values" do
+        it 'rejects non-list values' do
+          @item.links = {"related" => SecureRandom.uuid}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        end
+
+        it 'rejects non-UUID content IDs' do
+          @item.links = {"related" => [SecureRandom.uuid, "/vat-rates"]}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        end
+      end
+    end
+
     context 'update_type' do
       # update_type is not persisted, so should only be validated
       # on edit.  Otherwise items loaded from the db will be invalid
@@ -223,30 +298,116 @@ describe ContentItem, :type => :model do
     end
   end
 
-  describe "json representation" do
-    before :each do
-      @item = build(:content_item)
+  describe '#linked_items' do
+
+    context 'with no link types' do
+      before :each do
+        @item = build(:content_item)
+      end
+
+      it 'should return an empty hash' do
+        expect(@item.linked_items).to eq({})
+      end
     end
 
-    it "only includes public attributes" do
-      expect(@item.as_json.keys).to match_array(ContentItem::PUBLIC_ATTRIBUTES)
+    context 'with an empty link type' do
+      before :each do
+        @item = build(:content_item)
+        @item.links = {"related" => []}
+      end
+
+      it 'should include the key' do
+        expect(@item.linked_items.keys).to eq(["related"])
+      end
+
+      it 'should have an empty list' do
+        expect(@item.linked_items["related"]).to eq([])
+      end
     end
 
-    it "outputs the base_path correctly" do
-      expect(@item.as_json["base_path"]).to eq(@item.base_path)
+    context 'with a published linked item' do
+      before :each do
+        @linked_item = create(:content_item, :with_content_id)
+        @item = build(:content_item)
+        @item.links = {"related" => [@linked_item.content_id]}
+      end
+
+      it 'should include the key' do
+        expect(@item.linked_items.keys).to eq(["related"])
+      end
+
+      it 'should include the linked item' do
+        expect(@item.linked_items["related"]).to eq([@linked_item])
+      end
     end
 
-    it "includes details of any errors" do
-      @item.title = ""
-      @item.valid?
+    context 'with an unpublished linked item' do
+      before :each do
+        @item = build(
+          :content_item,
+          :links => {"related" => [SecureRandom.uuid]}
+        )
+      end
 
-      json_hash = @item.as_json
-      expect(json_hash).to have_key("errors")
-      expect(json_hash["errors"]).to eq({"title" => ["can't be blank"]})
+      it 'should not include the item' do
+        expect(@item.linked_items["related"]).to eq([])
+      end
     end
 
-    it "does not include the 'errors' key if there are no errors" do
-      expect(@item.as_json).not_to have_key("errors")
+    context 'with a published item and redirects' do
+      before :each do
+        shared_content_id = SecureRandom.uuid
+
+        # Creating two redirects, one before and one after the content item, so
+        # we don't accidentally pass this test by taking the first or last item
+        create(
+          :redirect_content_item,
+          :base_path => '/a',
+          :content_id => shared_content_id
+        )
+        @linked_item = create(
+          :content_item,
+          :base_path => '/b',
+          :content_id => shared_content_id
+        )
+        create(
+          :redirect_content_item,
+          :base_path => '/c',
+          :content_id => shared_content_id
+        )
+        @item = build(
+          :content_item,
+          :links => {"related" => [shared_content_id]}
+        )
+      end
+
+      it 'links to the content item' do
+        expect(@item.linked_items["related"]).to eq([@linked_item])
+      end
+    end
+
+    context 'with multiple published items' do
+      before :each do
+        shared_content_id = SecureRandom.uuid
+        Timecop.travel(-10.seconds) do
+          create(:content_item, :base_path => '/a', :content_id => shared_content_id)
+          create(:content_item, :base_path => '/c', :content_id => shared_content_id)
+        end
+        @newer_linked_item = create(
+          :content_item,
+          :base_path => '/b',
+          :content_id => shared_content_id
+        )
+
+        @item = build(
+          :content_item,
+          :links => {"related" => [shared_content_id]}
+        )
+      end
+
+      it 'takes the most recent' do
+        expect(@item.linked_items["related"]).to eq([@newer_linked_item])
+      end
     end
   end
 end

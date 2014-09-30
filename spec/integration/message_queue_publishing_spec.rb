@@ -46,13 +46,23 @@ describe "publishing messages on the queue", :type => :request do
       read_channel.close
     end
 
-    it 'should place a message on the queue' do
+    it 'should place a message on the queue using the private representation of the content item' do
       put_json "/content/vat-rates", data
-      delivery_info, properties, payload = wait_for_message_on(@queue)
-      expect(delivery_info.routing_key).to eq('answer.major')
+      _, properties, payload = wait_for_message_on(@queue)
       expect(properties[:content_type]).to eq('application/json')
       message = JSON.parse(payload)
       expect(message['title']).to eq('VAT rates')
+
+      # Check for a private field
+      expect(message).to have_key('publishing_app')
+    end
+
+    it 'should include the update_type in the output json' do
+      put_json "/content/vat-rates", data
+      _, _, payload = wait_for_message_on(@queue)
+      message = JSON.parse(payload)
+
+      expect(message).to have_key('update_type')
     end
 
     it 'routing key depends on format and update type' do

@@ -33,8 +33,8 @@ describe "Fetching a content item", :type => :request do
       expect(data['public_updated_at']).to eq(item.public_updated_at.as_json)
       expect(data['details']).to eq({"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
 
-      expected_keys = ContentItem::PUBLIC_ATTRIBUTES
-      expect(data.keys - expected_keys).to eq([])
+      expected_keys = PublicContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
+      expect(data.keys).to match_array(expected_keys)
     end
 
     it "should set a 30 minutes Expires header in response" do
@@ -52,7 +52,7 @@ describe "Fetching a content item", :type => :request do
     it "should not return the content ID" do
       get "/content/vat-rates"
       data = JSON.parse(response.body)
-      expect(data).not_to include("content_id")
+      expect(data).not_to have_key("content_id")
     end
   end
 

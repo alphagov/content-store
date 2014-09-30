@@ -10,9 +10,13 @@ class QueuePublisher
 
   def send_message(item)
     return if @noop
-    hash = item.as_json.merge("update_type" => item.update_type)
     routing_key = "#{item.format}.#{item.update_type}"
-    exchange.publish(hash.to_json, routing_key: routing_key, content_type: 'application/json', persistent: true)
+    exchange.publish(
+      item_json(item),
+      routing_key: routing_key,
+      content_type: 'application/json',
+      persistent: true
+    )
   end
 
   private
@@ -24,6 +28,10 @@ class QueuePublisher
 
     # passive parameter ensures we don't create the exchange if it doesn't already exist.
     @exchange = channel.topic(@options.fetch(:exchange), passive: true)
+  end
+
+  def item_json(item)
+    PrivateContentItemPresenter.new(item).to_json
   end
 end
 

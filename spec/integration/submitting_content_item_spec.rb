@@ -49,6 +49,14 @@ describe "content item write API", :type => :request do
       expect(response_data["title"]).to eq(item.title)
     end
 
+    it "responds with all the fields in the content item" do
+      # Because this is still publishing-side, we include everything
+      put_json "/content/vat-rates", @data
+      response_data = JSON.parse(response.body)
+
+      expect(response_data.keys).to include(*@data.keys - ["update_type"])
+    end
+
     it "registers routes for the content item" do
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [['/vat-rates', 'exact']])

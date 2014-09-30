@@ -29,9 +29,10 @@ class ContentItem
   field :rendering_app, :type => String
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
+  field :links, :type => Hash, :default => {}
   attr_accessor :update_type
 
-  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
+  scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
 
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
@@ -41,6 +42,7 @@ class ContentItem
   validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
   validates :title, :rendering_app, presence: true, unless: :redirect?
   validate :route_set_is_valid
+  validate :links_are_valid
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
@@ -53,15 +55,37 @@ class ContentItem
   after_save :send_message
   after_upsert :send_message
 
+  # We want to look up related items by their content ID, excluding those that
+  # are redirects; when multiple items exist, we take the most recent one, and
+  # we need its base_path and its title. By indexing all these fields, we can
+  # get hold of these related items purely from the index, without having to go
+  # and fetch the entire document.
+  index({:content_id => 1, :format => 1, :updated_at => -1, :title => 1, :_id => 1})
+
+  # We want to force the JSON representation to use "base_path" instead of
+  # "_id" to prevent "_id" being exposed outside of the model.
   def as_json(options = nil)
-    super(options).slice(*PUBLIC_ATTRIBUTES).tap do |hash|
-      hash["base_path"] = self.base_path
-      hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
+    super(options).tap do |hash|
+      hash["base_path"] = hash.delete("_id")
     end
   end
 
   def redirect?
     self.format == "redirect"
+  end
+
+  # Return a Hash of link types to lists of related items
+  def linked_items
+    links.each_with_object({}) do |(link_type, content_ids), items|
+      items[link_type] = content_ids.map { |content_id|
+        # This query is designed to be entirely covered by the index above
+        ContentItem.excluding_redirects
+                   .where(:content_id => content_id)
+                   .only(:base_path, :title)
+                   .sort(:updated_at => 1)
+                   .last
+      }.compact
+    end
   end
 
 private
@@ -74,6 +98,26 @@ private
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
       errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
+    end
+  end
+
+  def links_are_valid
+    # Test that the `links` attribute, if set, is a hash from strings to lists
+    # of UUIDs
+    return if links.empty?
+
+    bad_keys = links.keys.reject { |key| key.is_a?(String) && key =~ /\A[a-z0-9_]+\z/ }
+    unless bad_keys.empty?
+      errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
+    end
+
+    bad_values = links.values.reject { |value|
+      value.is_a?(Array) && value.all? { |content_id|
+        UUIDValidator::UUID_PATTERN.match(content_id)
+      }
+    }
+    unless bad_values.empty?
+      errors[:links] = "must map to lists of UUIDs"
     end
   end
 
