@@ -1,5 +1,8 @@
-# A site-facing presenter for content items, which looks up information for
-# published linked items
+# Presenter for generating the public-facing representation of content items.
+#
+# Any linked content items that exist in the content store are expanded out to
+# include their title, base_path, api_url and web_url. See doc/output_examples
+# for an example of what this representation looks like.
 class PublicContentItemPresenter
   PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids updated_at public_updated_at details).freeze
 
