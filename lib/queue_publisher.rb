@@ -12,7 +12,7 @@ class QueuePublisher
     return if @noop
     routing_key = "#{item.format}.#{item.update_type}"
     exchange.publish(
-      item_hash(item).to_json,
+      item_json(item),
       routing_key: routing_key,
       content_type: 'application/json',
       persistent: true
@@ -30,8 +30,8 @@ class QueuePublisher
     @exchange = channel.topic(@options.fetch(:exchange), passive: true)
   end
 
-  def item_hash(item)
-    PrivateContentItemPresenter.new(item).as_json
+  def item_json(item)
+    PrivateContentItemPresenter.new(item).to_json
   end
 end
 
