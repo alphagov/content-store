@@ -10,5 +10,22 @@
     "app": "or format",
     "specific": "data..."
   },
-  "tags": "TBC",
+  "links": {
+    "related_things": [
+      {
+        "title": "Title of related thing",
+        "base_path": "/path/of/related-thing"
+        "api_url": "https://content-store.production.alphagov.co.uk/content/path/of/related-thing"
+        "web_url": "https://www.gov.uk/path/of/related-thing"
+      }
+    ],
+    "more_related_things": [
+      {
+        "title": "Another of related thing",
+        "base_path": "/path/to/another-related-thing"
+        "api_url": "https://content-store.production.alphagov.co.uk/content/path/to/another-related-thing"
+        "web_url": "https://www.gov.uk/path/to/another-related-thing"
+      }
+    ]
+  }
 }
