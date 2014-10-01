@@ -8,6 +8,9 @@ class QueuePublisher
 
   attr_reader :exchange, :channel
 
+  class PublishFailedError < StandardError
+  end
+
   def send_message(item)
     return if @noop
     routing_key = "#{item.format}.#{item.update_type}"
@@ -20,7 +23,7 @@ class QueuePublisher
     success = channel.wait_for_confirms
     if !success
       Airbrake.notify_or_ignore(
-        Exception.new("Publishing message failed"),
+        PublishFailedError.new("Publishing message failed"),
         parameters: {
           routing_key: routing_key,
           message_body: hash,
@@ -35,6 +38,8 @@ class QueuePublisher
     connection = Bunny.new(@options)
     connection.start
     @channel = connection.create_channel
+
+    # Enable publisher confirms, so we get acks back after publishes.
     channel.confirm_select
 
     # passive parameter ensures we don't create the exchange.
