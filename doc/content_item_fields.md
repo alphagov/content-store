@@ -33,8 +33,8 @@ rendering the content on GOV.UK.
 Some formats are explicitly handled by the content store, and expect a different
 set of fields than those listed below.
 
- - `gone`: A content item which has [gone away](input_examples/gone_item.md)
- - `redirect`: A content item which has [been redirected](input_examples/redirect_item.md)
+ - `gone`: A content item which has [gone away](doc/gone_item.md)
+ - `redirect`: A content item which has [been redirected](doc/redirect_item.md)
 
 ## `content_id`
 
