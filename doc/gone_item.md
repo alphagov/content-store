@@ -14,6 +14,7 @@ For example, given an item including the following fields:
       "base_path": "/gone-foo",
       "format": "gone",
       "routes": [
+        {"path": "/gone-foo", "type": "exact"},
         {"path": "/gone-foo/bar", "type": "exact"}
       ]
     }

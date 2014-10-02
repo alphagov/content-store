@@ -1,5 +1,5 @@
-# A tool-facing presenter for content items, which includes an update type and
-# information about validation errors
+# Presenter for generating the private representation of content items as seen
+# by publishing tools. includes errors and update_type where applicable.
 class PrivateContentItemPresenter
 
   def initialize(item)
