@@ -11,6 +11,10 @@ describe QueuePublisher do
       qp = QueuePublisher.new
       allow(qp).to receive(:exchange).and_return(mock_exchange)
 
+      mock_channel = double('channel')
+      allow(qp).to receive(:channel).and_return(mock_channel)
+      expect(mock_channel).to receive(:wait_for_confirms).and_return(true)
+
       item = build(:content_item, format: 'story', update_type: 'major')
       expect(mock_exchange).to receive(:publish) do |message, options|
         expect(options[:routing_key]).to eq('story.major')
