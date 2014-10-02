@@ -113,9 +113,9 @@ For example:
       "topics": ['TOPIC-CONTENT-ID'],
     }
 
-The keys here represent the format type of the link (for example, "topics").
-The value is a list of associated items, the order of which may be significant;
-content store preserves the order.
+The keys identify the type of related content, which may or may not match a
+format type. The value is a list of associated items, the order of which may be
+significant; content store preserves the order.
 
 In the `storing` context, the items are UUID strings.
 
@@ -126,7 +126,7 @@ In the `notifying` context, the items are hashes containing: (TODO: confirm)
 In the `retrieving` context, the items are hashes containing:
  - `title`: The title of the content item
  - `base_path`: The base path of the content
- - `api_url`: The URL from at which content item is retrievable from the content
+ - `api_url`: The URL at which the content item is retrievable from the content
               store
  - `web_url`: The public-facing URL for the piece of content
 
