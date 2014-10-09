@@ -146,7 +146,7 @@ A string. Present only in storing context.
 
 This is the name of the application responsible for publishing the content to
 the content store. This should be resolvable with
-`Plek.new.find(publishing_app)`.
+`Plek.find(publishing_app)`.
 
 ## `rendering_app`
 
@@ -154,7 +154,7 @@ A string. Present only in storing context.
 
 The is the name of the application responsible for rendering the content on
 GOV.UK. It is passed to the router when the content store registers the routes
-for the content. This should be resolvable with `Plek.new.find(rendering_app)`.
+for the content. This should be resolvable with `Plek.find(rendering_app)`.
 
 ## `routes`
 

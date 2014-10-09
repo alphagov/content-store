@@ -58,7 +58,7 @@ class RegisterableRouteSet < OpenStruct
 private
 
   def register_backend
-    Rails.application.router_api.add_backend(rendering_app, Plek.new.find(rendering_app, :force_http => true) + "/")
+    Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app, :force_http => true) + "/")
   end
 
   def commit_routes

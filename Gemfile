@@ -10,7 +10,7 @@ gem 'airbrake', '4.0.0'
 
 gem 'unicorn', '4.8.2'
 
-gem 'plek', '~> 1.8'
+gem 'plek', '~> 1.9'
 
 gem 'bunny', '~> 1.3.1'
 

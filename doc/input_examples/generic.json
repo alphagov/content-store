@@ -6,8 +6,8 @@
   "format": "the format of this content",
   "need_ids": ["array", "of", "need", "ids"],
   "public_updated_at": "2014-03-04T13:58:11+00:00", // the time the content was updated.
-  "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.new.find(publishing_app)
-  "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.new.find(rendering_app)
+  "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.find(publishing_app)
+  "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.find(rendering_app)
   "details": {
     "app": "or format",
     "specific": "data..."
