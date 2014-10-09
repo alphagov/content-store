@@ -33,9 +33,9 @@ rendering the content on GOV.UK.
 Some formats are explicitly handled by the content store, and expect a different
 set of fields than those listed below.
 
- - `gone`: A content item which has [gone away](doc/gone_item.md)
- - `redirect`: A content item which has [been redirected](doc/redirect_item.md)
- - `placeholder`: A temporary [placeholder](doc/placeholder_item.md) for a content item.
+ - `gone`: A content item which has [gone away](gone_item.md)
+ - `redirect`: A content item which has [been redirected](redirect_item.md)
+ - `placeholder`: A temporary [placeholder](placeholder_item.md) for a content item.
 
 ## `content_id`
 
@@ -163,7 +163,7 @@ An array of hashes. Present only in storing context.
 
 This holds the routes associated with the content item. Each hash in the array
 contains a path and a routing type. See
-[`route_registration`](doc/route_registration.md) for more details.
+[`route_registration`](route_registration.md) for more details.
 
 ## `redirects`
 
@@ -171,7 +171,7 @@ An array of hashes. Present only in storing context.
 
 The redirects from old paths associated with the content item. Each hash in the
 array contains an original path, a routing type, and an optional destination
-path. See [`route_registration`](doc/route_registration.md) for
+path. See [`route_registration`](route_registration.md) for
 more details.
 
 TODO: Currently, redirects for normal content can be registered with the
