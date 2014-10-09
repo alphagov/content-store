@@ -35,6 +35,7 @@ set of fields than those listed below.
 
  - `gone`: A content item which has [gone away](doc/gone_item.md)
  - `redirect`: A content item which has [been redirected](doc/redirect_item.md)
+ - `placeholder`: A temporary [placeholder](doc/placeholder_item.md) for a content item.
 
 ## `content_id`
 
