@@ -1,25 +1,25 @@
-# Content Store
+# The content store
 
 The central storage of *published* content on GOV.UK.
 
-Content Store maps public-facing URLs to published items of content, represented
+The content store maps public-facing URLs to published items of content, represented
 as JSON data. It will replace [content API](https://github.com/alphagov/govuk_content_api)
 in time.
 
-Publishing applications add content to Content Store; public-facing
-applications read content from Content Store and render them on GOV.UK.
+Publishing applications add content to the content store; public-facing
+applications read content from the content store and render them on GOV.UK.
 
 ## Content items
 
-`ContentItem` is the base unit of content in Content Store. They have both a
+`ContentItem` is the base unit of content in the content store. They have both a
 private and public-facing JSON representation. More details on these
 representations and the meanings of the individual fields can be found in
 [doc/content_item_fields.md](doc/content_item_fields.md).
 
-## Writing content items to Content Store
+## Writing content items to the content store
 
 Publishing applications will "publish" content on GOV.UK by sending them to
-Content Store. To add or update a piece of content in Content Store, make a PUT
+the content store. To add or update a piece of content in the content store, make a PUT
 request:
 
 ``` sh
@@ -37,9 +37,9 @@ in [gds-api-adapters](https://github.com/alphagov/gds-api-adapters) for writing
 content to content-store, although it is likely that this will soon be extracted
 to a separate gem.
 
-## Reading content from Content Store
+## Reading content from the content store
 
-To retrieve content from Content Store, make a GET request:
+To retrieve content from the content store, make a GET request:
 
 ``` sh
   curl https://content-store.production.alphagov.co.uk/content<base_path>
