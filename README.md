@@ -32,6 +32,11 @@ where `<base_path>` is the path on GOV.UK where the content lives (for example
 `/vat-rates`) and `<content_item_json>` is the JSON for the content item as
 outlined in [doc/input_examples](doc/input_examples).
 
+There is currently an [API adapter](https://github.com/alphagov/gds-api-adapters/blob/master/lib/gds_api/publishing_api.rb)
+in [gds-api-adapters](https://github.com/alphagov/gds-api-adapters) for writing
+content to content-store, although it is likely that this will soon be extracted
+to a separate gem.
+
 ## Reading content from Content Store
 
 To retrieve content from Content Store, make a GET request:
