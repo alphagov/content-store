@@ -118,6 +118,9 @@ The keys identify the type of related content, which may or may not match a
 format type. The value is a list of associated items, the order of which may be
 significant; content store preserves the order.
 
+The link types currently in use are:
+ - `related`: for non-specific related items
+
 In the `storing` context, the items are UUID strings.
 
 In the `notifying` context, the items are hashes containing: (TODO: confirm)
