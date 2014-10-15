@@ -12,7 +12,7 @@ gem 'unicorn', '4.8.2'
 
 gem 'plek', '~> 1.9'
 
-gem 'bunny', '~> 1.3.1'
+gem 'bunny', '~> 1.5.0'
 
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', :path => '../gds-api-adapters'
