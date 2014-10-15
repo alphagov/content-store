@@ -1,5 +1,7 @@
 RSpec.configure do |config|
   config.before(:suite) do
-    ::Mongoid::Tasks::Database.create_indexes
+    silence_stream(STDOUT) do
+      ::Mongoid::Tasks::Database.create_indexes
+    end
   end
 end
