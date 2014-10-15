@@ -22,7 +22,7 @@ namespace :queue do
     end
 
     puts "Listening for messages"
-    q.subscribe(:block => true, :ack => true) do |delivery_info, properties, payload|
+    q.subscribe(:block => true) do |delivery_info, properties, payload|
       puts <<-EOT
 ----- New Message -----
 Routing_key: #{delivery_info.routing_key}
