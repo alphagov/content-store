@@ -1,6 +1,6 @@
 ## Registering routes with the router.
 
-After saving an item, the content-store will register routes with the router.  All items listed in the
+After saving an item, the content store will register routes with the router.  All items listed in the
 routes array will be created as routes pointing at the rendering_app. The routes for a content item must contain a route for the base_path.
 
 All entries in the routes array must be under the base_path (ie either a subpath of the base_path, or the base_path with an extension)
@@ -32,7 +32,7 @@ the router.  The routes will still be validated though.
 
 ### Redirects for subpaths
 
-The content-store can also create redirects for paths under the base_path.  This is intended to support
+The content store can also create redirects for paths under the base_path.  This is intended to support
 cases where the structure within a piece of content has changed (eg a part of a guide no longer exists.)
 
 **Note:** it is invalid for the redirects array to include the base_path.  The only exception is redirect items,

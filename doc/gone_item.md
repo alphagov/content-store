@@ -1,6 +1,6 @@
 ## Gone items
 
-To represent content that is no longer available, the content-store will support items with a format
+To represent content that is no longer available, the content store will support items with a format
 of "gone".  These will cause a gone route to be setup in the router so that the item returns a 410
 HTTP status.
 

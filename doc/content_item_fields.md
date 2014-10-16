@@ -116,7 +116,7 @@ For example:
 
 The keys identify the type of related content, which may or may not match a
 format type. The value is a list of associated items, the order of which may be
-significant; content store preserves the order.
+significant; the content store preserves the order.
 
 The link types currently in use are:
  - `related`: for non-specific related items
@@ -194,5 +194,5 @@ It must be one of:
  - 'republish' - useful in situations such as when the data
    structure has changed.
 
-Other types may be added in future, content-store will just pass them through
+Other types may be added in future, the content store will just pass them through
 to the fanout.
