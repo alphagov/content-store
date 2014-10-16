@@ -114,9 +114,10 @@ For example:
       "topics": ['TOPIC-CONTENT-ID'],
     }
 
-The keys identify the type of related content, which may or may not match a
-format type. The value is a list of associated items, the order of which may be
-significant; the content store preserves the order.
+The keys identify the relationship between the current item and the linked
+items: this may or may not match a format type. Each value is a list of
+associated items, the order of which may be significant; the content store
+preserves the order.
 
 The link types currently in use are:
  - `related`: for non-specific related items
