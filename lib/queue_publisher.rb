@@ -1,12 +1,18 @@
 class QueuePublisher
   def initialize(options = {})
     @noop = options[:noop]
-    @options = options
+    return if @noop
 
-    setup_exchange unless @noop
+    @exchange_name = options.fetch(:exchange)
+    @options = options.except(:exchange)
+
+    @connection = Bunny.new(@options)
+    @connection.start
   end
 
-  attr_reader :exchange, :channel
+  def exchange
+    @exchange ||= connect_to_exchange
+  end
 
   class PublishFailedError < StandardError
   end
@@ -20,7 +26,7 @@ class QueuePublisher
       content_type: 'application/json',
       persistent: true
     )
-    success = channel.wait_for_confirms
+    success = exchange.wait_for_confirms
     if !success
       Airbrake.notify_or_ignore(
         PublishFailedError.new("Publishing message failed"),
@@ -34,16 +40,14 @@ class QueuePublisher
 
   private
 
-  def setup_exchange
-    connection = Bunny.new(@options)
-    connection.start
-    @channel = connection.create_channel
+  def connect_to_exchange
+    @channel = @connection.create_channel
 
     # Enable publisher confirms, so we get acks back after publishes.
-    channel.confirm_select
+    @channel.confirm_select
 
     # passive parameter ensures we don't create the exchange.
-    @exchange = channel.topic(@options.fetch(:exchange), passive: true)
+    @channel.topic(@exchange_name, passive: true)
   end
 
   def item_json(item)
