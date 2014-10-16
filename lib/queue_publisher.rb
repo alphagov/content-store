@@ -14,8 +14,9 @@ class QueuePublisher
   def send_message(item)
     return if @noop
     routing_key = "#{item.format}.#{item.update_type}"
+    body_data = presented_item(item)
     exchange.publish(
-      item_json(item),
+      body_data.to_json,
       routing_key: routing_key,
       content_type: 'application/json',
       persistent: true
@@ -26,7 +27,7 @@ class QueuePublisher
         PublishFailedError.new("Publishing message failed"),
         parameters: {
           routing_key: routing_key,
-          message_body: hash,
+          message_body: body_data,
         },
       )
     end
@@ -46,8 +47,8 @@ class QueuePublisher
     @exchange = channel.topic(@options.fetch(:exchange), passive: true)
   end
 
-  def item_json(item)
-    PrivateContentItemPresenter.new(item).to_json
+  def presented_item(item)
+    PrivateContentItemPresenter.new(item).as_json
   end
 end
 
