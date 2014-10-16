@@ -116,8 +116,11 @@ For example:
 
 The keys identify the relationship between the current item and the linked
 items: this may or may not match a format type. Each value is a list of
-associated items, the order of which may be significant; the content store
-preserves the order.
+associated items. The content store preserves the order, although if the order
+implies something more significant (such as a primary organisation or section),
+this relationship should be expressed in its own link type, because linked
+content items will be left out of the `retrieving` context if they are not yet
+published.
 
 The link types currently in use are:
  - `related`: for non-specific related items
