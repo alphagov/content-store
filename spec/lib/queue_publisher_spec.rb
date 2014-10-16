@@ -1,19 +1,17 @@
 require 'queue_publisher'
-require 'spec_helper'
+require 'rails_helper'
 
 describe QueuePublisher do
   context "real mode" do
 
     it 'sends a message with a routing key' do
       mock_exchange = double('exchange')
-      allow_any_instance_of(QueuePublisher).to receive(:setup_exchange)
+      allow_any_instance_of(QueuePublisher).to receive(:setup_connection)
 
       qp = QueuePublisher.new
-      allow(qp).to receive(:exchange).and_return(mock_exchange)
+      allow(qp).to receive(:with_exchange).and_yield(mock_exchange)
 
-      mock_channel = double('channel')
-      allow(qp).to receive(:channel).and_return(mock_channel)
-      expect(mock_channel).to receive(:wait_for_confirms).and_return(true)
+      expect(mock_exchange).to receive(:wait_for_confirms).and_return(true)
 
       item = build(:content_item, format: 'story', update_type: 'major')
       expect(mock_exchange).to receive(:publish) do |message, options|
