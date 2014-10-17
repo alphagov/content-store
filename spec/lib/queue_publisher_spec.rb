@@ -93,12 +93,54 @@ describe QueuePublisher do
           end
         end
 
-        context "when communication with rabbitmq fails" do
+        shared_examples "closes channel and raises exception" do |expected_exception_class|
+          before :each do
+            allow(mock_channel).to receive_messages(:close => nil, :open? => true)
+          end
 
-          it "raises the exception"
+          it "closes the channel" do
+            expect(mock_channel).to receive(:close)
 
-          it "closes the channel"
+            begin
+              queue_publisher.send_message(item)
+            rescue # Swallow exception
+            end
+          end
 
+          it "raises the exception" do
+            expect {
+              queue_publisher.send_message(item)
+            }.to raise_error(expected_exception_class)
+          end
+
+          it "creates a new channel for subsequent messages" do
+            begin
+              queue_publisher.send_message(item)
+            rescue # Swallow exception
+            end
+
+            expect(mock_session).to receive(:create_channel).and_return(mock_channel).ordered
+            expect(mock_channel).to receive(:confirm_select).ordered
+            expect(mock_channel).to receive(:topic).with(options[:exchange], :passive => true).and_return(mock_exchange).ordered
+
+            queue_publisher.exchange
+          end
+        end
+
+        context "when sending the message fails" do
+          before :each do
+            allow(mock_exchange).to receive(:publish).and_raise(Bunny::Exception)
+          end
+
+          it_behaves_like "closes channel and raises exception", Bunny::Exception
+        end
+
+        context "when sending the message times out" do
+          before :each do
+            allow(mock_exchange).to receive(:publish).and_raise(Timeout::Error)
+          end
+
+          it_behaves_like "closes channel and raises exception", Timeout::Error
         end
       end
     end

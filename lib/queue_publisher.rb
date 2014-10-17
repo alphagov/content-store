@@ -37,6 +37,9 @@ class QueuePublisher
         }
       )
     end
+  rescue Timeout::Error, Bunny::Exception
+    reset_channel
+    raise
   end
 
   private
@@ -49,6 +52,12 @@ class QueuePublisher
 
     # passive parameter ensures we don't create the exchange.
     @channel.topic(@exchange_name, passive: true)
+  end
+
+  def reset_channel
+    @exchange = nil
+    @channel.close if @channel and @channel.open?
+    @channel = nil
   end
 
   def presented_item(item)
