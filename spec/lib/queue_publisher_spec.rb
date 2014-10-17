@@ -68,22 +68,38 @@ describe QueuePublisher do
 
         queue_publisher.send_message(item)
       end
-    end
 
-    describe "error handling" do
+      describe "error handling" do
 
-      context "when message delivery is not acknowledged positively" do
+        context "when message delivery is not acknowledged positively" do
+          before :each do
+            allow(mock_exchange).to receive(:wait_for_confirms).and_return(false)
+          end
 
-        it "notifies errbit with the message details"
+          it "notifies errbit of the error" do
+            expect(Airbrake).to receive(:notify_or_ignore).with(an_instance_of(QueuePublisher::PublishFailedError), anything())
 
-      end
+            queue_publisher.send_message(item)
+          end
 
-      context "when communication with rabbitmq fails" do
+          it "includes the message details in the notification" do
+            expected_data = PrivateContentItemPresenter.new(item).as_json
+            expect(Airbrake).to receive(:notify_or_ignore).with(
+              anything(),
+              :parameters => {:message_body => expected_data, :routing_key => "#{item.format}.#{item.update_type}"}
+            )
 
-        it "raises the exception"
+            queue_publisher.send_message(item)
+          end
+        end
 
-        it "closes the channel"
+        context "when communication with rabbitmq fails" do
 
+          it "raises the exception"
+
+          it "closes the channel"
+
+        end
       end
     end
   end
