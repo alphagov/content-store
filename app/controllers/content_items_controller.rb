@@ -5,7 +5,10 @@ class ContentItemsController < ApplicationController
   before_filter :register_with_url_arbiter, :only => [:update]
 
   def show
-    item = ContentItem.find_by(:base_path => params[:base_path])
+    item = Rails.application.statsd.time('show.find_by') do
+      ContentItem.find_by(:base_path => params[:base_path])
+    end
+
     expires_at config.default_ttl.from_now
 
     # The presenter needs context about routes and host names from controller
@@ -18,7 +21,10 @@ class ContentItemsController < ApplicationController
   end
 
   def update
-    result, item = ContentItem.create_or_replace(params[:base_path], @request_data)
+    result, item = Rails.application.statsd.time('update.create_or_replace') do
+      ContentItem.create_or_replace(params[:base_path], @request_data)
+    end
+
     if result
       status = (result == :created ? :created : :ok)
     else
