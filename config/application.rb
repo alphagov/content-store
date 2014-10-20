@@ -15,6 +15,7 @@ Bundler.require(*Rails.groups)
 require 'plek'
 require 'gds_api/router'
 require 'govuk/client/url_arbiter'
+require 'statsd-ruby'
 
 module ContentStore
   class Application < Rails::Application
@@ -40,6 +41,10 @@ module ContentStore
 
     def router_api
       @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
+    end
+
+    def statsd
+      @statsd ||= Statsd.new('localhost', 8125).tap { |s| s.namespace = 'content-store' }
     end
 
     def url_arbiter_api

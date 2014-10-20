@@ -18,8 +18,10 @@ class PublicContentItemPresenter
 private
 
   def links
-    @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
-      items[link_type] = linked_items.map { |i| present_linked_item(i) }
+    Rails.application.statsd.time('public_content_item_presenter.links') do
+      @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
+        items[link_type] = linked_items.map { |i| present_linked_item(i) }
+      end
     end
   end
 
