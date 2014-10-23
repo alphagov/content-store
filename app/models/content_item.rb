@@ -13,7 +13,10 @@ class ContentItem
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
     extra_fields = details.keys - self.fields.keys - %w(update_type)
-    item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(',')} in input")
+    item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
+    return false, item
+  rescue Mongoid::Errors::InvalidValue => e
+    item.errors.add(:base, e.message)
     return false, item
   end
 

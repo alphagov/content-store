@@ -235,7 +235,24 @@ describe "content item write API", :type => :request do
 
     it "includes an error message" do
       data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo,bar in input"]})
+      expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo, bar in input"]})
+    end
+  end
+
+  context "create with value of incorrect type" do
+    before :each do
+      @data["routes"] = 12
+      put_json "/content/vat-rates", @data
+    end
+
+    it "rejects the update" do
+      expect(response.status).to eq(422)
+    end
+
+    it "includes an error message" do
+      data = JSON.parse(response.body)
+      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, @data['routes'].class).message
+      expect(data["errors"]).to eq({"base" => [expected_error_message]})
     end
   end
 

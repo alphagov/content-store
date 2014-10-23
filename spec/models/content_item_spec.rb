@@ -237,6 +237,42 @@ describe ContentItem, :type => :model do
     end
   end
 
+  describe ".create_or_replace" do
+    context "exceptions" do
+      before :each do
+        @item = build(:content_item)
+      end
+
+      context "when unknown attributes are provided" do
+        it "handles Mongoid::Errors::UnknownAttribute" do
+          result = item = nil
+
+          expect {
+            result, item = ContentItem.create_or_replace(@item.base_path, { foo: 'foo', bar: 'bar' })
+          }.to_not raise_error
+
+          expect(result).to be false
+          expect(item.errors[:base]).to include('unrecognised field(s) foo, bar in input')
+        end
+      end
+
+      context "when assigning a value of incorrect type" do
+        it "handles Mongoid::Errors::InvalidValue" do
+          result = item = nil
+
+          expect {
+            # routes should be of type Array
+            result, item = ContentItem.create_or_replace(@item.base_path, { routes: 12 })
+          }.to_not raise_error
+
+          expect(result).to be false
+          expected_error_message = Mongoid::Errors::InvalidValue.new(Array, 12.class).message
+          expect(item.errors[:base]).to include(expected_error_message)
+        end
+      end
+    end
+  end
+
   it "should set updated_at on upsert" do
     item = build(:content_item)
     Timecop.freeze do
