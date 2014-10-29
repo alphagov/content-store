@@ -73,3 +73,6 @@ yourself. Once RabbitMQ is installed, visit http://localhost:15672 and 1) add a
 A more detailed specification of how to configure RabbitMQ can be found in the
 [puppet manifest](https://github.gds/gds/puppet/blob/master/modules/govuk/manifests/apps/content_store/rabbitmq.pp)
 for content store.
+
+Publishing to the message queue can be disabled by setting the
+`DISABLE_QUEUE_PUBLISHER` environment variable.
