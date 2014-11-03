@@ -8,14 +8,14 @@ module MongoInstrumentation
 
     def append_info_to_payload(payload)
       super
-      payload[:mongo_runtime] = MongoInstrumentation::MopedSubscriber.runtime || 0
+      payload[:db_runtime] = MongoInstrumentation::MopedSubscriber.runtime || 0
       MongoInstrumentation::MopedSubscriber.reset_runtime
     end
 
     module ClassMethods
       def log_process_action(payload)
         super.tap do |messages|
-          runtime = payload[:mongo_runtime]
+          runtime = payload[:db_runtime]
           messages << ("Mongo: %.1fms" % runtime.to_f)
         end
       end
