@@ -17,7 +17,8 @@ describe HeartbeatGenerator do
       expected_data = JSON.generate(
         {
           timestamp: Time.now.utc.iso8601,
-          hostname: "example-hostname"
+          hostname: "example-hostname",
+          routing_key: "heartbeat.major",
         }
       )
 

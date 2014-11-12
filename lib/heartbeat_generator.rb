@@ -12,11 +12,14 @@ class HeartbeatGenerator
 
 private
 
+  ROUTING_KEY = "heartbeat.major"
+
   def heartbeat_message
     JSON.generate(
       {
         timestamp: Time.now.utc.iso8601,
-        hostname: Socket.gethostname
+        hostname: Socket.gethostname,
+        routing_key: ROUTING_KEY
       }
     )
   end

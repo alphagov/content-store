@@ -27,5 +27,6 @@ describe "sending a heartbeat message on the queue", :type => :request do
 
     expect(properties.content_type).to eq("application/x-heartbeat")
     expect(message.fetch("hostname")).to eq(Socket.gethostname)
+    expect(message.fetch("routing_key")).to eq("heartbeat.major")
   end
 end
