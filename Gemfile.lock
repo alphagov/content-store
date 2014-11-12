@@ -38,6 +38,7 @@ GEM
     builder (3.2.2)
     bunny (1.5.0)
       amq-protocol (>= 1.9.2)
+    chronic (0.10.2)
     ci_reporter (1.9.2)
       builder (>= 2.1.2)
     connection_pool (2.0.0)
@@ -164,6 +165,8 @@ GEM
     webmock (1.18.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
+    whenever (0.9.4)
+      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
@@ -188,3 +191,4 @@ DEPENDENCIES
   timecop (= 0.7.1)
   unicorn (= 4.8.2)
   webmock (~> 1.18.0)
+  whenever (~> 0.9.4)
