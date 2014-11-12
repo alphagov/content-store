@@ -6,6 +6,6 @@ namespace :heartbeat_messages do
 
     puts "Sending heartbeat message..."
     HeartbeatGenerator.new(heartbeat_exchange).generate
-    puts "Heartbeat sent..."
+    puts "Heartbeat sent."
   end
 end

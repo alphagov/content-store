@@ -22,7 +22,7 @@ require 'whenever'
 # Learn more: http://github.com/javan/whenever
 
 set :output, "log/heartbeat_log.log"
-job_type :rake, "cd :path && govuk_setenv content-store bundle exec rake heartbeat_messages:send"
+job_type :rake, "cd :path && govuk_setenv content-store bundle exec rake :task --silent :output"
 
 every 1.minute do
   rake "heartbeat_messages:send"
