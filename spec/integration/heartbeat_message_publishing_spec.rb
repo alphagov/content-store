@@ -19,7 +19,8 @@ describe "sending a heartbeat message on the queue", :type => :request do
   end
 
   it "should place a heartbeat message on the queue" do
-    heartbeat_exchange = GovukExchange.new(@config.fetch(:exchange), config: @config)
+    exchange_name = @config.delete(:exchange)
+    heartbeat_exchange = GovukExchange.new(exchange_name, config: @config)
     HeartbeatGenerator.new(heartbeat_exchange).generate
 
     _, properties, payload = wait_for_message_on(@queue)
