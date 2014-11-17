@@ -12,7 +12,7 @@ describe "sending a heartbeat message on the queue", :type => :request do
     read_channel = conn.create_channel
     ex = read_channel.topic(@config.fetch(:exchange), passive: true)
     @queue = read_channel.queue("", :exclusive => true)
-    @queue.bind(ex, routing_key: '#')
+    @queue.bind(ex, routing_key: 'heartbeat.major')
     example.run
 
     read_channel.close
@@ -23,11 +23,11 @@ describe "sending a heartbeat message on the queue", :type => :request do
     heartbeat_exchange = GovukExchange.new(exchange_name, config: @config)
     HeartbeatGenerator.new(heartbeat_exchange).generate
 
-    _, properties, payload = wait_for_message_on(@queue)
+    delivery_info, properties, payload = wait_for_message_on(@queue)
     message = JSON.parse(payload)
 
     expect(properties.content_type).to eq("application/x-heartbeat")
+    expect(delivery_info.routing_key).to eq("heartbeat.major")
     expect(message.fetch("hostname")).to eq(Socket.gethostname)
-    expect(message.fetch("routing_key")).to eq("heartbeat.major")
   end
 end
