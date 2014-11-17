@@ -14,14 +14,17 @@ describe HeartbeatGenerator do
         {
           timestamp: Time.now.utc.iso8601,
           hostname: "example-hostname",
-          routing_key: "heartbeat.major",
         }
       )
 
       HeartbeatGenerator.new(mock_exchange).generate
 
       expect(mock_exchange).to have_received(:publish).
-        with(expected_data, headers: { :content_type => "application/x-heartbeat" })
+        with(expected_data, {
+          routing_key: "heartbeat.major",
+          content_type: "application/x-heartbeat",
+          persistent: false,
+        })
     end
   end
 end

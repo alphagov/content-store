@@ -7,7 +7,7 @@ class HeartbeatGenerator
   end
 
   def generate
-    @exchange.publish(heartbeat_message, headers: message_headers)
+    @exchange.publish(heartbeat_message, message_options)
   end
 
 private
@@ -15,16 +15,17 @@ private
   ROUTING_KEY = "heartbeat.major"
 
   def heartbeat_message
-    JSON.generate(
-      {
-        timestamp: Time.now.utc.iso8601,
-        hostname: Socket.gethostname,
-        routing_key: ROUTING_KEY
-      }
-    )
+    {
+      timestamp: Time.now.utc.iso8601,
+      hostname: Socket.gethostname,
+    }.to_json
   end
 
-  def message_headers
-    { content_type: "application/x-heartbeat" }
+  def message_options
+    {
+      routing_key: ROUTING_KEY,
+      content_type: "application/x-heartbeat",
+      persistent: false,
+    }
   end
 end

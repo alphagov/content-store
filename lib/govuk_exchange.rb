@@ -4,9 +4,9 @@ class GovukExchange
     @config = config
   end
 
-  def publish(message, headers: {})
+  def publish(message, options = {})
     start_connection
-    exchange.publish message, headers
+    exchange.publish message, options
     wait_for_confirmation
     close_channel_and_connection
   end
