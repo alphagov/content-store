@@ -25,4 +25,12 @@ FactoryGirl.define do
     update_type 'minor'
     redirects { [{ 'path' => base_path, 'type' => 'exact', 'destination' => '/somewhere' }] }
   end
+
+  factory :gone_content_item, :class => ContentItem do
+    sequence(:base_path) {|n| "/dodo-sanctuary-#{n}" }
+    format "gone"
+    publishing_app 'publisher'
+    update_type 'minor'
+    routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+  end
 end

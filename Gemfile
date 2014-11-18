@@ -20,7 +20,7 @@ gem 'whenever', '~> 0.9.4', :require => false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', :path => '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', '~> 11.0.0'
+  gem 'gds-api-adapters', '~> 16.3.1'
 end
 
 if ENV['URL_ARBITER_DEV']

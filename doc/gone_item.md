@@ -1,9 +1,7 @@
-## Gone items (not implemented)
-
-**Note:** this is not implemented and is an intended feature for this application.
+## Gone items
 
 To represent content that is no longer available, the content store will support items with a format
-of "gone".  These will cause a gone route to be setup in the router so that the item returns a 410
+of "gone". These will cause a gone route to be setup in the router so that the item returns a 410
 HTTP status.
 
 Items with a format of gone will have all routes setup in the same way as other item types (described in
@@ -15,6 +13,8 @@ For example, given an item including the following fields:
     {
       "base_path": "/gone-foo",
       "format": "gone",
+      "publishing_app": "publisher",
+      "update_type": "major",
       "routes": [
         {"path": "/gone-foo", "type": "exact"},
         {"path": "/gone-foo/bar", "type": "exact"}

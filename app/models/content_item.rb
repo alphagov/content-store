@@ -43,7 +43,7 @@ class ContentItem
   # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
   validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_-]+\z/i, allow_blank: true }
-  validates :title, :rendering_app, presence: true, unless: :redirect?
+  validates :title, :rendering_app, presence: true, if: :renderable_content?
   validate :route_set_is_valid
   validate :links_are_valid
 
@@ -75,6 +75,10 @@ class ContentItem
 
   def redirect?
     self.format == "redirect"
+  end
+
+  def gone?
+    self.format == "gone"
   end
 
   # Return a Hash of link types to lists of related items
@@ -130,5 +134,9 @@ private
 
   def send_message
     Rails.application.queue_publisher.send_message(self)
+  end
+
+  def renderable_content?
+    !(redirect? || gone?)
   end
 end

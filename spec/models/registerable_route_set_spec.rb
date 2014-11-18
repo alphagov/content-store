@@ -36,6 +36,25 @@ describe RegisterableRouteSet, :type => :model do
       ]
       expect(route_set.registerable_redirects).to match_array(expected_redirects)
     end
+
+    it "constructs a route set from a gone content item" do
+      item = build(:gone_content_item, :base_path => "/path")
+      item.routes = [
+        { 'path' => '/path', 'type' => 'exact'},
+        { 'path' => '/path.json', 'type' => 'exact'},
+        { 'path' => '/path/subpath', 'type' => 'prefix'},
+      ]
+
+      route_set = RegisterableRouteSet.from_content_item(item)
+      expect(route_set.is_gone).to eq(true)
+      expected_routes = [
+        RegisterableGoneRoute.new(:path => '/path',         :type => 'exact'),
+        RegisterableGoneRoute.new(:path => '/path.json',    :type => 'exact'),
+        RegisterableGoneRoute.new(:path => '/path/subpath', :type => 'prefix'),
+      ]
+      expect(route_set.registerable_routes).to match_array(expected_routes)
+      expect(route_set.registerable_redirects).to eq([])
+    end
   end
 
   describe "validations" do

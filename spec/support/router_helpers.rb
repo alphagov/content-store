@@ -16,6 +16,16 @@ module RouterHelpers
     assert_requested(stub_router_commit, times: 1)
   end
 
+  def assert_gone_routes_registered(routes)
+    # Note: WebMock stubs allow you to assert against already executed requests.
+
+    routes.each do |(path, type)|
+      route_signature, _ = stub_gone_route_registration(path, type)
+      assert_requested(route_signature, times: 1)
+    end
+    assert_requested(stub_router_commit, times: 1)
+  end
+
   def assert_redirect_routes_registered(redirects)
     # Note: WebMock stubs allow you to assert against already executed requests.
 
