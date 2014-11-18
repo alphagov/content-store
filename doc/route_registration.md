@@ -27,8 +27,8 @@ The following routes would be created:
 
 ### Placeholder items
 
-Items with a format of "placeholder" will not have the routes registered with
-the router.  The routes will still be validated though.
+Items with a format starting with "placeholder" will not have the routes
+registered with the router.  The routes will still be validated though.
 
 ### Redirects for subpaths
 
