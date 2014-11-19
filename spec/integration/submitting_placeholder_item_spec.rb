@@ -61,6 +61,27 @@ describe "submitting placeholder items to the content store", :type => :request 
     end
   end
 
+  context "an item with a format prefixed with 'placeholder_'" do
+    before :each do
+      @data["format"] = "placeholder_answer"
+    end
+
+    it "creates the content item" do
+      put_json "/content/vat-rates", @data
+      item = ContentItem.where(:base_path => "/vat-rates").first
+      expect(item).to be
+      expect(item.title).to eq("VAT rates")
+      expect(item.description).to eq("Current VAT rates")
+      expect(item.format).to eq("placeholder_answer")
+    end
+
+    it "does not register routes for the content item" do
+      put_json "/content/vat-rates", @data
+      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
+    end
+
+  end
+
   context "create with an invalid routes" do
     before(:each) do
       @data["routes"] << {"path" => "/not-vat-rates", "type" => "exact"}
