@@ -30,7 +30,8 @@ class RegisterableRouteSet < OpenStruct
   # a route for the routes to be valid.
   def self.from_content_item(item)
     registerable_routes = item.routes.map do |attrs|
-      RegisterableRoute.new(attrs.slice("path", "type"))
+      route_type = item.gone? ? RegisterableGoneRoute : RegisterableRoute
+      route_type.new(attrs.slice("path", "type"))
     end
     registerable_redirects = item.redirects.map do |attrs|
       RegisterableRedirect.new(attrs.slice("path", "type", "destination"))
@@ -42,14 +43,17 @@ class RegisterableRouteSet < OpenStruct
       :base_path => item.base_path,
       :rendering_app => item.rendering_app,
       :is_redirect => item.redirect?,
+      :is_gone => item.gone?,
     })
   end
 
   def register!
     if is_redirect
       registerable_redirects.map(&:register!)
+    elsif is_gone
+      registerable_routes.map(&:register!)
     else
-      register_backend
+      register_rendering_app
       registerable_routes.each { |route| route.register!(rendering_app) }
     end
     commit_routes
@@ -57,7 +61,7 @@ class RegisterableRouteSet < OpenStruct
 
 private
 
-  def register_backend
+  def register_rendering_app
     Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app, :force_http => true) + "/")
   end
 

@@ -50,11 +50,12 @@ GEM
     erubis (2.7.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
-    gds-api-adapters (11.0.0)
+    gds-api-adapters (16.3.1)
       link_header
       lrucache (~> 0.1.1)
       null_logger
       plek
+      rack-cache
       rest-client (~> 1.6.3)
     govuk-client-url_arbiter (0.0.2)
       multi_json (~> 1.0)
@@ -89,6 +90,8 @@ GEM
     origin (2.1.1)
     plek (1.9.0)
     rack (1.5.2)
+    rack-cache (1.2)
+      rack (>= 0.4)
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.1.7)
@@ -172,7 +175,7 @@ DEPENDENCIES
   ci_reporter (= 1.9.2)
   database_cleaner (~> 1.2)
   factory_girl (~> 4.4.0)
-  gds-api-adapters (~> 11.0.0)
+  gds-api-adapters (~> 16.3.1)
   govuk-client-url_arbiter (= 0.0.2)
   logstasher (= 0.5.0)
   mongoid (= 4.0.0)
