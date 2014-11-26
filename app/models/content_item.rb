@@ -37,6 +37,7 @@ class ContentItem
   attr_accessor :update_type
 
   scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
+  scope :renderable_content, -> { where(:format.nin => %w(redirect gone)) }
 
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true

@@ -4,6 +4,7 @@ gem 'rails', '4.1.7'
 gem 'rails-api', '0.2.1'
 
 gem 'mongoid', '4.0.0'
+gem 'mongoid_rails_migrations', '1.0.1'
 
 gem 'logstasher', '0.5.0'
 gem 'airbrake', '4.0.0'
