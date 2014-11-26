@@ -2,6 +2,8 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps::Updated
 
+  NON_RENDERABLE_FORMATS = %w(redirect gone)
+
   def self.create_or_replace(base_path, details)
     result = :created
     result = :replaced if ContentItem.where(:base_path => base_path).exists?
@@ -25,6 +27,7 @@ class ContentItem
   field :title, :type => String
   field :description, :type => String
   field :format, :type => String
+  field :locale, :type => String, :default => I18n.default_locale.to_s
   field :need_ids, :type => Array, :default => []
   field :public_updated_at, :type => DateTime
   field :details, :type => Hash, :default => {}
@@ -36,6 +39,7 @@ class ContentItem
   attr_accessor :update_type
 
   scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
+  scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
@@ -46,6 +50,10 @@ class ContentItem
   validates :title, :rendering_app, presence: true, if: :renderable_content?
   validate :route_set_is_valid
   validate :links_are_valid
+  validates :locale,
+            inclusion: { in: I18n.available_locales.map(&:to_s),
+                         message: 'must be a supported locale' },
+            if: :renderable_content?
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
@@ -137,6 +145,6 @@ private
   end
 
   def renderable_content?
-    !(redirect? || gone?)
+    !NON_RENDERABLE_FORMATS.include?(format)
   end
 end

@@ -82,6 +82,14 @@ Note: currently needs are not published on GOV.UK, so there won't be an entry
 in the content store for them. If this changes in future, the `need_ids` field
 may be replaced by using the `links` field to store this relation.
 
+## `locale`
+
+The I18n locale code for the content item. Present in all contexts.
+
+This specifies the language of the content. It is an optional field when adding
+content items to the content store, but the content store will default it to
+the default language (English) if it is not explicitly set.
+
 ## `public_updated_at`
 
 ISO 8601 formatted timestamp. Present in all contexts.

@@ -9,6 +9,7 @@ describe "content item write API", :type => :request do
       "description" => "Current VAT rates",
       "format" => "answer",
       "need_ids" => ["100123", "100124"],
+      "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "update_type" => "major",
       "publishing_app" => "publisher",
@@ -36,6 +37,7 @@ describe "content item write API", :type => :request do
       expect(item.description).to eq("Current VAT rates")
       expect(item.format).to eq("answer")
       expect(item.need_ids).to eq(["100123", "100124"])
+      expect(item.locale).to eq("en")
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
@@ -100,6 +102,23 @@ describe "content item write API", :type => :request do
         put_json "/content/vat-rates", @data
         expect(response.status).to eq(201)
       end
+    end
+  end
+
+  describe "creating a non-English content item" do
+    it "creates the content item" do
+      foreign_data = @data.merge("title" => "Taux de TVA",
+                                 "locale" => 'fr',
+                                 "base_path" => "/vat-rates.fr",
+                                 "routes" => [
+                                   { "path" => "/vat-rates.fr", "type" => 'exact' }
+                                ])
+
+      put_json "/content/vat-rates.fr", foreign_data
+      item = ContentItem.where(:base_path => "/vat-rates.fr").first
+      expect(item).to be
+      expect(item.title).to eq("Taux de TVA")
+      expect(item.locale).to eq("fr")
     end
   end
 
