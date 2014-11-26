@@ -152,6 +152,24 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context "locale" do
+      it "defaults to the default I18n locale" do
+        expect(ContentItem.new.locale).to eq(I18n.default_locale.to_s)
+      end
+
+      it "can be set as a supported I18n locale" do
+        @item.locale = 'fr'
+        expect(@item).to be_valid
+        expect(@item.locale).to eq('fr')
+      end
+
+      it "rejects non-supported locales" do
+        @item.locale = 'xyz'
+        expect(@item).to_not be_valid
+        expect(@item.errors[:locale].first).to eq('must be a supported locale')
+      end
+    end
+
     context 'fields used in message queue routing key' do
       [
         "format",
