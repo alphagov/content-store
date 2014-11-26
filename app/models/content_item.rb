@@ -2,6 +2,8 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps::Updated
 
+  NON_RENDERABLE_FORMATS = %w(redirect gone)
+
   def self.create_or_replace(base_path, details)
     result = :created
     result = :replaced if ContentItem.where(:base_path => base_path).exists?
@@ -37,7 +39,7 @@ class ContentItem
   attr_accessor :update_type
 
   scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
-  scope :renderable_content, -> { where(:format.nin => %w(redirect gone)) }
+  scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
@@ -143,6 +145,6 @@ private
   end
 
   def renderable_content?
-    !(redirect? || gone?)
+    !NON_RENDERABLE_FORMATS.include?(format)
   end
 end
