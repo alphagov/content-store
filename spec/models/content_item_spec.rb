@@ -507,5 +507,27 @@ describe ContentItem, :type => :model do
         end
       end
     end
+
+    context 'with translations of the content item' do
+      let(:shared_content_id) { SecureRandom.uuid }
+      let!(:item_en) { create(:content_item, locale: 'en', content_id: shared_content_id) }
+      let!(:item_fr) { create(:content_item, locale: 'fr', content_id: shared_content_id) }
+
+      it 'should include list of available translations' do
+        expect(item_en.linked_items["available_translations"]).to eq([item_fr])
+      end
+
+      context 'with multiple translations in the same locale' do
+        let!(:item_fr_new) {
+          Timecop.travel(10.seconds) do
+            create(:content_item, locale: 'fr', content_id: shared_content_id)
+          end
+        }
+
+        it 'should prefer the newest item' do
+          expect(item_en.linked_items["available_translations"]).to eq([item_fr_new])
+        end
+      end
+    end
   end
 end

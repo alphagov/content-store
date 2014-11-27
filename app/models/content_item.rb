@@ -91,14 +91,36 @@ class ContentItem
 
   # Return a Hash of link types to lists of related items
   def linked_items
-    links.each_with_object({}) do |(link_type, content_ids), items|
-      items[link_type] = content_ids.map { |content_id|
-        load_associated_content_item(content_id, self.locale)
-      }.compact
+    items = {}
+    links.each do |link_type, content_ids|
+      items[link_type] = load_associated_content_items(content_ids)
     end
+    items["available_translations"] = available_translations if available_translations.any?
+    items
   end
 
 private
+  def available_translations
+    @available_translations ||= load_available_translations
+  end
+
+  def load_available_translations
+    ContentItem
+      .excluding_redirects
+      .where(:content_id => content_id)
+      .where(:locale => {"$ne" => self.locale})
+      .only(:locale, :base_path, :title)
+      .sort(:updated_at => 1)
+      .group_by(&:locale)
+      .map { |locale, items| items.last }
+  end
+
+  def load_associated_content_items(content_ids)
+    content_ids.map { |content_id|
+      load_associated_content_item(content_id, self.locale)
+    }.compact
+  end
+
   def load_associated_content_item(content_id, preferred_locale)
     # This query is designed to be entirely covered by the index above
     candidate_items = ContentItem
