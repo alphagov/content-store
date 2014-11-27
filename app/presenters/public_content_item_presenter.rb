@@ -31,6 +31,7 @@ private
       "base_path" => linked_item.base_path,
       "api_url" => api_url(linked_item),
       "web_url" => web_url(linked_item),
+      "locale" => linked_item.locale,
     }
   end
 
