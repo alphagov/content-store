@@ -71,7 +71,7 @@ class ContentItem
   # we need its base_path and its title. By indexing all these fields, we can
   # get hold of these related items purely from the index, without having to go
   # and fetch the entire document.
-  index({:content_id => 1, :format => 1, :updated_at => -1, :title => 1, :_id => 1})
+  index({:content_id => 1, :locale => 1, :format => 1, :updated_at => -1, :title => 1, :_id => 1})
 
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
@@ -93,17 +93,24 @@ class ContentItem
   def linked_items
     links.each_with_object({}) do |(link_type, content_ids), items|
       items[link_type] = content_ids.map { |content_id|
-        # This query is designed to be entirely covered by the index above
-        ContentItem.excluding_redirects
-                   .where(:content_id => content_id)
-                   .only(:base_path, :title)
-                   .sort(:updated_at => 1)
-                   .last
+        load_associated_content_item(content_id, self.locale)
       }.compact
     end
   end
 
 private
+  def load_associated_content_item(content_id, preferred_locale)
+    # This query is designed to be entirely covered by the index above
+    candidate_items = ContentItem
+      .excluding_redirects
+      .where(:content_id => content_id)
+      .where(:locale => {"$in" => [I18n.default_locale.to_s, preferred_locale]})
+      .only(:locale, :base_path, :title)
+      .sort(:updated_at => 1)
+
+    candidate_items.select { |i| i.locale == preferred_locale }.last ||
+      candidate_items.select { |i| i.locale == I18n.default_locale.to_s }.last
+  end
 
   def registerable_route_set
     @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
