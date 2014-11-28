@@ -6,7 +6,7 @@ class ContentItemsController < ApplicationController
 
   def show
     item = Rails.application.statsd.time('show.find_by') do
-      ContentItem.find_by(:base_path => params[:base_path])
+      ContentItem.find_by(:base_path => encoded_base_path)
     end
 
     expires_at config.default_ttl.from_now
@@ -22,7 +22,7 @@ class ContentItemsController < ApplicationController
 
   def update
     result, item = Rails.application.statsd.time('update.create_or_replace') do
-      ContentItem.create_or_replace(params[:base_path], @request_data)
+      ContentItem.create_or_replace(encoded_base_path, @request_data)
     end
 
     if result
@@ -42,7 +42,7 @@ class ContentItemsController < ApplicationController
   end
 
   def register_with_url_arbiter
-    Rails.application.url_arbiter_api.reserve_path(params["base_path"], "publishing_app" => @request_data["publishing_app"])
+    Rails.application.url_arbiter_api.reserve_path(encoded_base_path, "publishing_app" => @request_data["publishing_app"])
   rescue GOVUK::Client::Errors::Conflict => e
     return_arbiter_error(:conflict, e)
   rescue GOVUK::Client::Errors::UnprocessableEntity => e
@@ -50,7 +50,7 @@ class ContentItemsController < ApplicationController
   end
 
   def return_arbiter_error(status, exception)
-    item = ContentItem.new(@request_data.merge("base_path" => params[:base_path]))
+    item = ContentItem.new(@request_data.merge("base_path" => encoded_base_path))
     if exception.response["errors"]
       exception.response["errors"].each do |field, errors|
         errors.each do |error|
@@ -61,5 +61,13 @@ class ContentItemsController < ApplicationController
       item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
     render :json => PrivateContentItemPresenter.new(item), :status => status
+  end
+
+  def base_path
+    params["base_path"]
+  end
+
+  def encoded_base_path
+    URI.escape(base_path)
   end
 end

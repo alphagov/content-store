@@ -275,7 +275,7 @@ describe "content item write API", :type => :request do
     end
   end
 
-  context "url-arbiter returns validaton error" do
+  context "url-arbiter returns validation error" do
     before :each do
       url_arbiter_returns_validation_error_for("/vat-rates", "publishing_app" => ["can't be blank"])
       put_json "/content/vat-rates", @data
@@ -286,6 +286,31 @@ describe "content item write API", :type => :request do
 
       data = JSON.parse(response.body)
       expect(data["errors"]).to eq({"url_arbiter_registration" => ["publishing_app can't be blank"]})
+    end
+  end
+
+  context "copes with non-ASCII paths" do
+    let(:path) { URI.encode('/news/בוט לאינד') }
+    before :each do
+      @data['base_path'] = path
+      @data['routes'][0]['path'] = path
+    end
+
+    it "should accept a request with non-ASCII path" do
+      put_json "/content/#{path}", @data
+      expect(response.status).to eq(201)
+    end
+
+    it "creates the item with encoded base_path" do
+      put_json "/content/#{path}", @data
+      item = ContentItem.where(:base_path => path).first
+      expect(item).to be
+      expect(item.base_path).to eq(path)
+    end
+
+    it "registers the item with url-arbiter" do
+      expect(Rails.application.url_arbiter_api).to receive(:reserve_path).with(path, "publishing_app" => "publisher")
+      put_json "/content/#{path}", @data
     end
   end
 end
