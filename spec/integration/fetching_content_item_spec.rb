@@ -62,4 +62,19 @@ describe "Fetching a content item", :type => :request do
     expect(response.status).to eq(404)
   end
 
+  it "returns an item with a non-ASCII path" do
+    path = URI.encode('/news/בוט לאינד')
+    create(:content_item,
+     :base_path => path,
+     :content_id => SecureRandom.uuid,
+     :title => "VAT rates",
+     :description => "Current VAT rates",
+     :format => "answer",
+     :need_ids => ["100136"],
+     :public_updated_at => 30.minutes.ago,
+     :details => {"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
+    get "/content/#{path}"
+    data = JSON.parse(response.body)
+    expect(data['title']).to eq("VAT rates")
+  end
 end
