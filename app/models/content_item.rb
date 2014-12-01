@@ -108,9 +108,8 @@ private
     ContentItem
       .excluding_redirects
       .where(:content_id => content_id)
-      .where(:locale => {"$ne" => self.locale})
       .only(:locale, :base_path, :title)
-      .sort(:updated_at => 1)
+      .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
   end
