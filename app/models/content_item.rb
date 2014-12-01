@@ -144,12 +144,18 @@ private
     end
   end
 
+  def link_key_is_valid?(link_key)
+    link_key.is_a?(String) &&
+      link_key =~ /\A[a-z0-9_]+\z/ &&
+      link_key != 'available_translations'
+  end
+
   def links_are_valid
     # Test that the `links` attribute, if set, is a hash from strings to lists
     # of UUIDs
     return if links.empty?
 
-    bad_keys = links.keys.reject { |key| key.is_a?(String) && key =~ /\A[a-z0-9_]+\z/ }
+    bad_keys = links.keys.reject { |key| link_key_is_valid?(key) }
     unless bad_keys.empty?
       errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
     end

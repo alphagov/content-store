@@ -116,6 +116,12 @@ describe ContentItem, :type => :model do
             expect(@item.errors[:links]).to eq(["Invalid link types: #{key}"])
           end
         end
+
+        it "rejects reserved link type available_translations" do
+          @item.links = {'available_translations' => []}
+          expect(@item).not_to be_valid, "expected item not to be valid with links key 'available_translations'"
+          expect(@item.errors[:links]).to eq(["Invalid link types: available_translations"])
+        end
       end
 
       describe "validating values" do
