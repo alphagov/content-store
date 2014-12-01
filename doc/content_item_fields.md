@@ -125,7 +125,10 @@ Present in all contexts, but representations vary.
 The `link_type` is a string which describes the relationship or type of
 related item.
 
-The `list_of_links` is an array of content ids, order is preserved.
+The `list_of_links` is an array of content items, order is preserved. In the
+storing context, content items are represented by their content ids. In the
+retrieving context, content items are expanded (see [below](#representation-of-content-item-links-in-different-contexts)
+for details).
 
 You may link to items which haven't been published yet (ie. which are not yet
 present in the content store). In that case, the items which are not published
@@ -158,6 +161,8 @@ content item, ordered alphabetically by locale.
 For convenience, a self-referential link is included as well. If you try to
 post a content item with `available_translations` in the `links` hash, you'll
 get an error.
+
+### Representation of content item links in different contexts
 
 In the `storing` context, the items are UUID strings.
 
