@@ -54,8 +54,9 @@ describe "End-to-end behaviour", :type => :request do
         ))
       }
 
-      it "should include all like hash keys even if empty" do
-        expect(links.keys).to match_array(["connected", "related"])
+      it "should include all link hash keys even if empty" do
+        expect(links.keys).to include("connected")
+        expect(links.keys).to include("related")
       end
 
       it "should return details of linked items" do
@@ -130,6 +131,61 @@ describe "End-to-end behaviour", :type => :request do
       it "should fall back on the english version if no item found with matching locale" do
         expect(links["related"][1]["base_path"]).to eq(linked_data_2["base_path"])
         expect(links["related"][1]["locale"]).to eq(linked_data_2["locale"])
+      end
+    end
+  end
+
+  describe "available_translations" do
+    before(:each) { create_item(data) }
+
+    subject(:links) {
+      get "/content#{data['base_path']}"
+      expect(response.status).to eq(200)
+      links = JSON.parse(response.body)["links"]
+    }
+
+    context "an item without any translation" do
+      it "should include available_translations" do
+        expect(links.keys).to include("available_translations")
+      end
+
+      it "should include a link to itself in available_translations" do
+        expect(links["available_translations"].first["title"]).to eq(data["title"])
+        expect(links["available_translations"].first["base_path"]).to eq(data["base_path"])
+        expect(links["available_translations"].first["locale"]).to eq(data["locale"])
+      end
+    end
+
+    context "an item with multiple translations" do
+      before(:each) do
+        create_item(data.merge(
+          "locale" => "fr",
+          "base_path" => "/vat-rates.fr",
+          "title" => "Taux de TVA",
+          "routes" => [
+            { "path" => "/vat-rates.fr", "type" => 'exact' }
+          ]
+        ))
+        create_item(data.merge(
+          "locale" => "de",
+          "base_path" => "/vat-rates.de",
+          "title" => "Mehrwertsteuersätze",
+          "routes" => [
+            { "path" => "/vat-rates.de", "type" => 'exact' }
+          ]
+        ))
+      end
+
+      it "should include a links to each available locale in alphabetical order" do
+        expect(links["available_translations"].map {|t| t["locale"]}).to eq(%w{de en fr})
+      end
+
+      it "should include titles of each available_translation" do
+        expect(links["available_translations"].map {|t| t["title"]}).to eq(['Mehrwertsteuersätze', 'VAT rates', 'Taux de TVA'])
+      end
+
+      it "should include base_path of each available_tranlsation" do
+        expect(links["available_translations"].map {|t| t["base_path"]}).to eq(['/vat-rates.de', '/vat-rates', '/vat-rates.fr'])
       end
     end
   end
