@@ -17,7 +17,8 @@
         "title": "Title of related thing",
         "base_path": "/path/of/related-thing"
         "api_url": "https://content-store.production.alphagov.co.uk/content/path/of/related-thing"
-        "web_url": "https://www.gov.uk/path/of/related-thing"
+        "web_url": "https://www.gov.uk/path/of/related-thing",
+        "locale": "en"
       }
     ],
     "more_related_things": [
@@ -25,7 +26,24 @@
         "title": "Another of related thing",
         "base_path": "/path/to/another-related-thing"
         "api_url": "https://content-store.production.alphagov.co.uk/content/path/to/another-related-thing"
-        "web_url": "https://www.gov.uk/path/to/another-related-thing"
+        "web_url": "https://www.gov.uk/path/to/another-related-thing",
+        "locale": "en"
+      }
+    ],
+    "available_translations": [
+      {
+        "title": "Content Title",
+        "base_path": "/path-on-gov-uk"
+        "api_url": "https://content-store.production.alphagov.co.uk/content/path-on-gov-uk"
+        "web_url": "https://www.gov.uk/path-on-gov-uk",
+        "locale": "en"
+      },
+      {
+        "title": "Titre de Contenu",
+        "base_path": "/path-on-gov-uk.fr"
+        "api_url": "https://content-store.production.alphagov.co.uk/content/path-on-gov-uk.fr"
+        "web_url": "https://www.gov.uk/path-on-gov-uk.fr",
+        "locale": "fr"
       }
     ]
   }
