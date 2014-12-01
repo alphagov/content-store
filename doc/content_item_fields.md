@@ -49,11 +49,20 @@ publishing application. It is used as the reference with which content items can
 reference other content items (see the `links` field in the input/output
 examples).
 
-The content store does not enforce the uniqueness of `content_id` values within
-the store. This is because more than one content item may exist in the content
-store for the same `content_id`. This will usually only ever be temporary
-during the creation of a redirect to ensure that the new content is available
-before the redirect replaces the old content.
+If translations of a content item exist, they should all use the same
+`content_id` and be distinguished by their `locale`. This allows the content
+store to automatically generate a list of `available_translations` for each
+content item, and to choose the most appropriate available translation of an
+item when resolving related links.
+
+The content store does not enforce the uniqueness of (`content_id`, `locale`)
+tuples within the store, so more than one content item may exist in the
+content store for the same (`content_id`, `locale`) pair. This will usually
+only ever be temporary during the creation of a redirect to ensure that the
+new content is available before the redirect replaces the old content.
+
+If duplicate items exist with the same (`content_id`, `locale`), the content
+store will serve the newest one.
 
 ## `title`
 
@@ -134,6 +143,9 @@ left out of the `retrieving` context if they are not yet published.
 
 The link types currently in use are:
  - `related`: for non-specific related items
+ - `available_translations`: available translations of this content item,
+   ordered alphabetically by locale. For convenience, a link to this content
+   item is included as well. This is automatically generated
 
 In the `storing` context, the items are UUID strings.
 
@@ -147,6 +159,7 @@ In the `retrieving` context, the items are hashes containing:
  - `api_url`: The URL at which the content item is retrievable from the content
               store
  - `web_url`: The public-facing URL for the piece of content
+ - `locale`: The 2-letter locale code of the item
 
 ## `updated_at`
 
