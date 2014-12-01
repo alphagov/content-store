@@ -17,9 +17,15 @@ describe PublicContentItemPresenter do
   end
 
   context "with related links" do
-    let(:linked_item1) { create(:content_item, :with_content_id) }
-    let(:linked_item2) { create(:content_item, :with_content_id) }
-    let(:item) { build(:content_item, :links => {"related" => [linked_item1.content_id, linked_item2.content_id]}) }
+    let(:linked_item1) { create(:content_item, :with_content_id, locale: I18n.default_locale.to_s) }
+    let(:linked_item2) { create(:content_item, :with_content_id, locale: "fr") }
+    let(:item) {
+      build(:content_item,
+        :links => {"related" => [linked_item1.content_id, linked_item2.content_id]},
+        :locale => 'fr'
+      )
+    }
+
     let(:related) { presenter.as_json["links"]["related"] }
 
     it "includes the link type" do
@@ -33,6 +39,10 @@ describe PublicContentItemPresenter do
 
     it "includes the path and title for each item" do
       expect(related).to all include("base_path", "title")
+    end
+
+    it "includes the locale for each item" do
+      expect(related.map { |item| item['locale'] }).to eq(['en', 'fr'])
     end
 
     it "links to the API URL for each item" do

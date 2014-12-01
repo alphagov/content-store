@@ -463,5 +463,49 @@ describe ContentItem, :type => :model do
         expect(@item.linked_items["related"]).to eq([@newer_linked_item])
       end
     end
+
+    context 'with multiple published items with different locales' do
+      let(:shared_content_id) { SecureRandom.uuid }
+      let!(:english_linked_item) {
+        create(:content_item, :base_path => '/a', :content_id => shared_content_id, :locale => I18n.default_locale.to_s)
+      }
+      let!(:french_linked_item) {
+        create(:content_item, :base_path => '/a.fr', :content_id => shared_content_id, :locale => "fr")
+      }
+      let(:french_item) {
+        build(
+          :content_item,
+          :locale => "fr",
+          :links => {"related" => [shared_content_id]}
+        )
+      }
+      let(:spanish_item) {
+        build(
+          :content_item,
+          :locale => "es",
+          :links => {"related" => [shared_content_id]}
+        )
+      }
+
+      it 'takes the one with matching locale if available' do
+        expect(french_item.linked_items["related"]).to eq([french_linked_item])
+      end
+
+      it 'falls back to the english item if the matching locale is not available' do
+        expect(spanish_item.linked_items["related"]).to eq([english_linked_item])
+      end
+
+      context "a newer english item exists" do
+        let!(:newer_english_linked_item) {
+          Timecop.travel(10.seconds) do
+            create(:content_item, :base_path => '/a_new', :content_id => shared_content_id, :locale => I18n.default_locale.to_s)
+          end
+        }
+
+        it 'prefers the newer linked item' do
+          expect(spanish_item.linked_items["related"]).to eq([newer_english_linked_item])
+        end
+      end
+    end
   end
 end
