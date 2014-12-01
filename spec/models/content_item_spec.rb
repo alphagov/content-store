@@ -116,6 +116,12 @@ describe ContentItem, :type => :model do
             expect(@item.errors[:links]).to eq(["Invalid link types: #{key}"])
           end
         end
+
+        it "rejects reserved link type available_translations" do
+          @item.links = {'available_translations' => []}
+          expect(@item).not_to be_valid, "expected item not to be valid with links key 'available_translations'"
+          expect(@item.errors[:links]).to eq(["Invalid link types: available_translations"])
+        end
       end
 
       describe "validating values" do
@@ -371,7 +377,7 @@ describe ContentItem, :type => :model do
       end
 
       it 'should include the key' do
-        expect(@item.linked_items.keys).to eq(["related"])
+        expect(@item.linked_items.keys).to include("related")
       end
 
       it 'should have an empty list' do
@@ -387,7 +393,7 @@ describe ContentItem, :type => :model do
       end
 
       it 'should include the key' do
-        expect(@item.linked_items.keys).to eq(["related"])
+        expect(@item.linked_items.keys).to include("related")
       end
 
       it 'should include the linked item' do
@@ -504,6 +510,38 @@ describe ContentItem, :type => :model do
 
         it 'prefers the newer linked item' do
           expect(spanish_item.linked_items["related"]).to eq([newer_english_linked_item])
+        end
+      end
+    end
+
+    describe 'available_translations' do
+      let(:shared_content_id) { SecureRandom.uuid }
+      let!(:item_fr) { create(:content_item, locale: 'fr', content_id: shared_content_id) }
+
+      context 'with no translations' do
+        it 'should include self in the list of available translations' do
+          expect(item_fr.linked_items["available_translations"]).to eq([item_fr])
+        end
+      end
+
+      context 'with one translation' do
+        let!(:item_en) { create(:content_item, locale: 'en', content_id: shared_content_id) }
+
+        it 'should include list of available translations, in alphabetical order of locale' do
+          expect(item_en.linked_items["available_translations"]).to eq([item_en, item_fr])
+        end
+      end
+
+      context 'with multiple translations in the same locale' do
+        let!(:item_en) { create(:content_item, locale: 'en', content_id: shared_content_id) }
+        let!(:item_fr_new) {
+          Timecop.travel(10.seconds) do
+            create(:content_item, locale: 'fr', content_id: shared_content_id)
+          end
+        }
+
+        it 'should prefer the newest item' do
+          expect(item_en.linked_items["available_translations"]).to eq([item_en, item_fr_new])
         end
       end
     end

@@ -91,14 +91,35 @@ class ContentItem
 
   # Return a Hash of link types to lists of related items
   def linked_items
-    links.each_with_object({}) do |(link_type, content_ids), items|
-      items[link_type] = content_ids.map { |content_id|
-        load_associated_content_item(content_id, self.locale)
-      }.compact
+    items = {}
+    links.each do |link_type, content_ids|
+      items[link_type] = load_associated_content_items(content_ids)
     end
+    items["available_translations"] = available_translations if available_translations.any?
+    items
   end
 
 private
+  def available_translations
+    @available_translations ||= load_available_translations
+  end
+
+  def load_available_translations
+    ContentItem
+      .excluding_redirects
+      .where(:content_id => content_id)
+      .only(:locale, :base_path, :title)
+      .sort(:locale => 1, :updated_at => 1)
+      .group_by(&:locale)
+      .map { |locale, items| items.last }
+  end
+
+  def load_associated_content_items(content_ids)
+    content_ids.map { |content_id|
+      load_associated_content_item(content_id, self.locale)
+    }.compact
+  end
+
   def load_associated_content_item(content_id, preferred_locale)
     # This query is designed to be entirely covered by the index above
     candidate_items = ContentItem
@@ -123,12 +144,18 @@ private
     end
   end
 
+  def link_key_is_valid?(link_key)
+    link_key.is_a?(String) &&
+      link_key =~ /\A[a-z0-9_]+\z/ &&
+      link_key != 'available_translations'
+  end
+
   def links_are_valid
     # Test that the `links` attribute, if set, is a hash from strings to lists
     # of UUIDs
     return if links.empty?
 
-    bad_keys = links.keys.reject { |key| key.is_a?(String) && key =~ /\A[a-z0-9_]+\z/ }
+    bad_keys = links.keys.reject { |key| link_key_is_valid?(key) }
     unless bad_keys.empty?
       errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
     end
