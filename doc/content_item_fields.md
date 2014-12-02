@@ -94,7 +94,21 @@ The I18n locale code for the content item. Present in all contexts.
 
 This specifies the language of the content. It is an optional field when adding
 content items to the content store, but the content store will default it to
-the default language (English) if it is not explicitly set.
+the default language (English, represented by the code `en`) if it is not
+explicitly set.
+
+The field uses [IETF language
+tags](http://en.wikipedia.org/wiki/IETF_language_tag); though only a small set
+of values are allowed (defined in the `config.i18n.available_locales` setting).
+
+Locales are always in lowercase.  We use the plain 2 letter [ISO
+693-1](http://en.wikipedia.org/wiki/ISO_639-1) codes for many languages (eg,
+`en` is "English").  We append two-letter [ISO
+3166-1](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country codes in some
+cases (eg, `zh-hk` is "Chinese, Hong Kong variant with traditional characters")
+and append three-digit [UN M.49](http://en.wikipedia.org/wiki/UN_M.49)
+geographical region codes in other cases (eg, `es-419` is "Spanish appropriate
+for the Latin America and Caribbean region").
 
 ## `public_updated_at`
 
@@ -176,7 +190,7 @@ In the `retrieving` context, the items are hashes containing:
  - `api_url`: The URL at which the content item is retrievable from the content
               store
  - `web_url`: The public-facing URL for the piece of content
- - `locale`: The 2-letter locale code of the item
+ - `locale`: The locale code of the item
 
 ## `updated_at`
 
