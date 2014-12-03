@@ -1,17 +1,8 @@
 require "rails_helper"
+require 'open3'
 
 describe "sending a heartbeat message on the queue", :type => :request do
   include MessageQueueHelpers
-
-  before :all do
-    @old_publisher = Rails.application.queue_publisher
-    @config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml"))[Rails.env].symbolize_keys
-    Rails.application.queue_publisher = QueuePublisher.new(@config)
-  end
-
-  after :all do
-    Rails.application.queue_publisher = @old_publisher
-  end
 
   around :each do |example|
     @config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml"))[Rails.env].symbolize_keys
@@ -27,7 +18,8 @@ describe "sending a heartbeat message on the queue", :type => :request do
   end
 
   it "should place a heartbeat message on the queue" do
-    Rails.application.queue_publisher.send_heartbeat
+    output, status = Open3.capture2e("bundle exec rake heartbeat_messages:send")
+    expect(status.exitstatus).to eq(0), "rake task errored. output: #{output}"
 
     delivery_info, properties, payload = wait_for_message_on(@queue)
     message = JSON.parse(payload)
