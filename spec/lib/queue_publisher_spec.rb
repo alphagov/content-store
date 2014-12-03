@@ -144,6 +144,36 @@ describe QueuePublisher do
         end
       end
     end
+
+    describe "sending a heartbeat message" do
+      before :each do
+        allow(Socket).to receive(:gethostname) { "example-hostname" }
+      end
+
+      it "sends a heartbeat message" do
+        Timecop.freeze do
+          expected_data = {
+            timestamp: Time.now.utc.iso8601,
+            hostname: "example-hostname",
+          }
+          expect(mock_exchange).to receive(:publish).with(expected_data.to_json, hash_including(:content_type => "application/x-heartbeat"))
+
+          queue_publisher.send_heartbeat
+        end
+      end
+
+      it "uses a routing key of 'heartbeat.major'" do
+        expect(mock_exchange).to receive(:publish).with(anything, hash_including(:routing_key => "heartbeat.major"))
+
+        queue_publisher.send_heartbeat
+      end
+
+      it "sends the message as non-persistent" do
+        expect(mock_exchange).to receive(:publish).with(anything, hash_including(:persistent => false))
+
+        queue_publisher.send_heartbeat
+      end
+    end
   end
 
   context "noop mode" do

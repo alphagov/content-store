@@ -1,9 +1,17 @@
 require "rails_helper"
-require_relative "../../lib/heartbeat_generator"
-require_relative "../../lib/govuk_exchange"
 
 describe "sending a heartbeat message on the queue", :type => :request do
   include MessageQueueHelpers
+
+  before :all do
+    @old_publisher = Rails.application.queue_publisher
+    @config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml"))[Rails.env].symbolize_keys
+    Rails.application.queue_publisher = QueuePublisher.new(@config)
+  end
+
+  after :all do
+    Rails.application.queue_publisher = @old_publisher
+  end
 
   around :each do |example|
     @config = YAML.load_file(Rails.root.join("config", "rabbitmq.yml"))[Rails.env].symbolize_keys
@@ -19,9 +27,7 @@ describe "sending a heartbeat message on the queue", :type => :request do
   end
 
   it "should place a heartbeat message on the queue" do
-    exchange_name = @config.delete(:exchange)
-    heartbeat_exchange = GovukExchange.new(exchange_name, config: @config)
-    HeartbeatGenerator.new(heartbeat_exchange).generate
+    Rails.application.queue_publisher.send_heartbeat
 
     delivery_info, properties, payload = wait_for_message_on(@queue)
     message = JSON.parse(payload)
