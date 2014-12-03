@@ -1,6 +1,5 @@
 require "rails_helper"
-require_relative "../../lib/heartbeat_generator"
-require_relative "../../lib/govuk_exchange"
+require 'open3'
 
 describe "sending a heartbeat message on the queue", :type => :request do
   include MessageQueueHelpers
@@ -19,9 +18,8 @@ describe "sending a heartbeat message on the queue", :type => :request do
   end
 
   it "should place a heartbeat message on the queue" do
-    exchange_name = @config.delete(:exchange)
-    heartbeat_exchange = GovukExchange.new(exchange_name, config: @config)
-    HeartbeatGenerator.new(heartbeat_exchange).generate
+    output, status = Open3.capture2e("bundle exec rake heartbeat_messages:send")
+    expect(status.exitstatus).to eq(0), "rake task errored. output: #{output}"
 
     delivery_info, properties, payload = wait_for_message_on(@queue)
     message = JSON.parse(payload)

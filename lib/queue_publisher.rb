@@ -21,12 +21,24 @@ class QueuePublisher
     return if @noop
     routing_key = "#{item.format}.#{item.update_type}"
     message_data = presented_item(item)
-    exchange.publish(
-      message_data.to_json,
-      routing_key: routing_key,
-      content_type: 'application/json',
-      persistent: true
-    )
+    publish_message(routing_key, message_data, content_type: 'application/json', persistent: true)
+  end
+
+  def send_heartbeat
+    body = {
+      timestamp: Time.now.utc.iso8601,
+      hostname: Socket.gethostname,
+    }
+
+    publish_message("heartbeat.major", body, content_type: "application/x-heartbeat", persistent: false)
+  end
+
+  private
+
+  def publish_message(routing_key, message_data, options = {})
+    publish_options = options.merge(routing_key: routing_key)
+
+    exchange.publish(message_data.to_json, publish_options)
     success = exchange.wait_for_confirms
     if !success
       Airbrake.notify_or_ignore(
@@ -34,6 +46,7 @@ class QueuePublisher
         parameters: {
           routing_key: routing_key,
           message_body: message_data,
+          options: options,
         }
       )
     end
@@ -41,8 +54,6 @@ class QueuePublisher
     reset_channel
     raise
   end
-
-  private
 
   def connect_to_exchange
     @channel = @connection.create_channel
