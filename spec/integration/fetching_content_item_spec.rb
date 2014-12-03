@@ -57,7 +57,7 @@ describe "Fetching a content item", :type => :request do
         expect(response.headers["Cache-Control"]).to eq('public')
       end
 
-      describe "adjusting expiry for publish intents", :pending => true do
+      describe "adjusting expiry for publish intents" do
         it "should set the Expires header to the date of the upcoming publish_intent" do
           Timecop.freeze do
             create(:publish_intent, :base_path => "/vat-rates", :publish_time => 23.minutes.from_now)
@@ -99,7 +99,7 @@ describe "Fetching a content item", :type => :request do
       expect(response.status).to eq(404)
     end
 
-    it "should set cache headers", :pending => true do
+    it "should set cache headers" do
       Timecop.freeze do
         get "/content/non-existent"
         expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
@@ -107,7 +107,7 @@ describe "Fetching a content item", :type => :request do
       end
     end
 
-    describe "adjusting expiry for publish intents", :pending => true do
+    describe "adjusting expiry for publish intents" do
       it "should set the Expires header to the date of the upcoming publish_intent" do
         Timecop.freeze do
           create(:publish_intent, :base_path => "/non-existent", :publish_time => 23.minutes.from_now)
