@@ -86,7 +86,11 @@ describe QueuePublisher do
             expected_data = PrivateContentItemPresenter.new(item).as_json
             expect(Airbrake).to receive(:notify_or_ignore).with(
               anything(),
-              :parameters => {:message_body => expected_data, :routing_key => "#{item.format}.#{item.update_type}"}
+              :parameters => {
+                :message_body => expected_data,
+                :routing_key => "#{item.format}.#{item.update_type}",
+                :options => {:content_type => "application/json", :persistent => true},
+              }
             )
 
             queue_publisher.send_message(item)

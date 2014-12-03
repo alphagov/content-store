@@ -46,6 +46,7 @@ class QueuePublisher
         parameters: {
           routing_key: routing_key,
           message_body: message_data,
+          options: options,
         }
       )
     end
