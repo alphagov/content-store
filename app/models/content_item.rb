@@ -66,6 +66,9 @@ class ContentItem
   after_save :send_message
   after_upsert :send_message
 
+  after_save :cleanup_publish_intent
+  after_upsert :cleanup_publish_intent
+
   # We want to look up related items by their content ID, excluding those that
   # are redirects; when multiple items exist, we take the most recent one, and
   # we need its base_path and its title. By indexing all these fields, we can
@@ -180,5 +183,11 @@ private
 
   def renderable_content?
     !NON_RENDERABLE_FORMATS.include?(format)
+  end
+
+  def cleanup_publish_intent
+    unless self.update_type == "republish"
+      PublishIntent.destroy_all(:base_path => self.base_path)
+    end
   end
 end

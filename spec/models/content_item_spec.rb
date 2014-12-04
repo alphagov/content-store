@@ -546,4 +546,74 @@ describe ContentItem, :type => :model do
       end
     end
   end
+
+  describe "clearing publish intents" do
+    let(:base_path) { "/foo" }
+
+    it "cleans up a corresponding publish intent after create" do
+      create(:publish_intent, :base_path => base_path)
+      item = build(:content_item, :base_path => base_path)
+      item.save!
+
+      expect(PublishIntent.where(:base_path => base_path).first).not_to be
+    end
+
+    it "does not clean up non-matching publish intents" do
+      create(:publish_intent, :base_path => "/bar")
+      create(:publish_intent, :base_path => "#{base_path}/bar")
+      item = build(:content_item, :base_path => base_path)
+      item.save!
+
+      expect(PublishIntent.where(:base_path => "/bar").first).to be
+      expect(PublishIntent.where(:base_path => "#{base_path}/bar").first).to be
+    end
+
+    describe "triggering for different update types" do
+      let!(:intent) { create(:publish_intent, :base_path => base_path) }
+      let(:item) { build(:content_item, :base_path => base_path) }
+
+      it "cleans up an intent after a major update" do
+        item.update_type = "major"
+        item.save!
+
+        expect(PublishIntent.where(:base_path => base_path).first).not_to be
+      end
+
+      it "cleans up an intent after a minor update" do
+        item.update_type = "minor"
+        item.save!
+
+        expect(PublishIntent.where(:base_path => base_path).first).not_to be
+      end
+
+      it "does not clean up the intent after a republish" do
+        item.update_type = "republish"
+        item.save!
+
+        expect(PublishIntent.where(:base_path => base_path).first).to be
+      end
+    end
+
+    describe "triggering for different update types" do
+      let(:intent) { build(:publish_intent, :base_path => base_path) }
+      let(:item) { build(:content_item, :base_path => base_path, :update_type => "minor") }
+
+      # create covered above
+
+      it "cleans up after an update" do
+        item.save!
+        intent.save!
+        item.update_attributes!(:title => "something else")
+
+        expect(PublishIntent.where(:base_path => base_path).first).not_to be
+      end
+
+      it "cleans up after an upsert" do
+        intent.save!
+        expect(item.upsert).to be_truthy # There's no upsert! method
+
+        expect(PublishIntent.where(:base_path => base_path).first).not_to be
+      end
+    end
+  end
 end
