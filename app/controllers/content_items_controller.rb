@@ -43,12 +43,6 @@ class ContentItemsController < ApplicationController
     end
   end
 
-  def parse_json_request
-    @request_data = JSON.parse(request.body.read).except('base_path')
-  rescue JSON::ParserError
-    head :bad_request
-  end
-
   def register_with_url_arbiter
     Rails.application.url_arbiter_api.reserve_path(encoded_base_path, "publishing_app" => @request_data["publishing_app"])
   rescue GOVUK::Client::Errors::Conflict => e
@@ -69,13 +63,5 @@ class ContentItemsController < ApplicationController
       item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
     end
     render :json => PrivateContentItemPresenter.new(item), :status => status
-  end
-
-  def base_path
-    params["base_path"]
-  end
-
-  def encoded_base_path
-    URI.escape(base_path)
   end
 end

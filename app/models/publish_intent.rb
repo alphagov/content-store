@@ -10,6 +10,13 @@ class PublishIntent
   validates :base_path, :absolute_path => true
   validates :publish_time, :presence => true
 
+  def as_json(options = nil)
+    super(options).tap do |hash|
+      hash["base_path"] = hash.delete("_id")
+      hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
+    end
+  end
+
   def past?
     publish_time <= PUBLISH_TIME_LEEWAY.ago
   end

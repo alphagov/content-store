@@ -40,6 +40,22 @@ describe PublishIntent, :type => :model do
     end
   end
 
+  describe "json representation" do
+    let(:intent) { build(:publish_intent) }
+
+    it "should replace the _id with base_path" do
+      expect(intent.as_json).not_to have_key("_id")
+      expect(intent.as_json["base_path"]).to eq(intent.base_path)
+    end
+
+    it "should include validation errors if present" do
+      intent.publish_time = nil
+      intent.valid?
+
+      expect(intent.as_json["errors"]).to eq({"publish_time" => ["can't be blank"]})
+    end
+  end
+
   describe "#past?" do
     let(:intent) { build(:publish_intent) }
 

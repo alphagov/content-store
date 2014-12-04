@@ -16,4 +16,14 @@ class ApplicationController < ActionController::API
   def config
     @config ||= ContentStore::Application.config
   end
+
+  def parse_json_request
+    @request_data = JSON.parse(request.body.read).except('base_path')
+  rescue JSON::ParserError
+    head :bad_request
+  end
+
+  def encoded_base_path
+    URI.escape(params[:base_path])
+  end
 end
