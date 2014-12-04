@@ -72,4 +72,32 @@ describe PublishIntent, :type => :model do
       expect(intent.past?).to eq(true)
     end
   end
+
+  describe ".cleanup_expired" do
+    before :each do
+      create(:publish_intent, :publish_time => 3.days.ago)
+      create(:publish_intent, :publish_time => 2.days.ago)
+      create(:publish_intent, :publish_time => 1.hour.ago)
+      create(:publish_intent, :publish_time => 10.minutes.from_now)
+      create(:publish_intent, :publish_time => 10.days.from_now)
+      create(:publish_intent, :publish_time => 1.year.from_now)
+    end
+
+    it "deletes all publish_intents with publish_at in the past" do
+      PublishIntent.cleanup_expired
+
+      expect(PublishIntent.count).to eq(3)
+      expect(PublishIntent.where(:publish_time.gte => Time.zone.now).count).to eq(3)
+    end
+
+
+    it "does not delete very recently passed intents" do
+      recent = create(:publish_intent, :publish_time => 30.seconds.ago)
+
+      PublishIntent.cleanup_expired
+
+      expect(PublishIntent.where(:base_path => recent.base_path).first).to be
+      expect(PublishIntent.count).to eq(4)
+    end
+  end
 end
