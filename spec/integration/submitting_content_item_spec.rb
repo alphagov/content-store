@@ -38,7 +38,7 @@ describe "content item write API", :type => :request do
       expect(item.format).to eq("answer")
       expect(item.need_ids).to eq(["100123", "100124"])
       expect(item.locale).to eq("en")
-      expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
+      expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
     end
@@ -194,6 +194,30 @@ describe "content item write API", :type => :request do
         @item.reload
         expect(@item.title).to eq("Original title")
       end
+    end
+  end
+
+  describe "cleaning up publish intents after update" do
+    before :each do
+      create(:publish_intent, :base_path => @data["base_path"], :publish_time => 1.minute.from_now)
+    end
+
+    it "cleans up an intent after a major update" do
+      put_json "/content#{@data["base_path"]}", @data
+
+      expect(PublishIntent.where(:base_path => @data["base_path"]).first).not_to be
+    end
+
+    it "cleans up an intent after a minor update" do
+      put_json "/content#{@data["base_path"]}", @data.merge("update_type" => "minor")
+
+      expect(PublishIntent.where(:base_path => @data["base_path"]).first).not_to be
+    end
+
+    it "does not clean up the intent after a republish" do
+      put_json "/content#{@data["base_path"]}", @data.merge("update_type" => "republish")
+
+      expect(PublishIntent.where(:base_path => @data["base_path"]).first).to be
     end
   end
 

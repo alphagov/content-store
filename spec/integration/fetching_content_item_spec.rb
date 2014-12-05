@@ -13,7 +13,6 @@ describe "Fetching a content item", :type => :request do
        :need_ids => ["100136"],
        :public_updated_at => 30.minutes.ago,
        :details => {"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
-      .reload # Necessary to avoid rounding errors with timestamps etc.
     }
 
     it "should return details for the requested item" do
@@ -30,24 +29,12 @@ describe "Fetching a content item", :type => :request do
       expect(data['format']).to eq("answer")
       expect(data['need_ids']).to eq(["100136"])
       expect(data['locale']).to eq("en")
-      expect(data['updated_at']).to eq(item.updated_at.as_json)
-      expect(data['public_updated_at']).to eq(item.public_updated_at.as_json)
+      expect(data['updated_at']).to match_datetime(item.updated_at)
+      expect(data['public_updated_at']).to match_datetime(item.public_updated_at)
       expect(data['details']).to eq({"body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n"})
 
       expected_keys = PublicContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
       expect(data.keys).to match_array(expected_keys)
-    end
-
-    it "should set a 30 minutes Expires header in response" do
-      Timecop.freeze do
-        get "/content/vat-rates"
-        expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
-      end
-    end
-
-    it "should set a cache-control header with value public" do
-      get "/content/vat-rates"
-      expect(response.headers["Cache-Control"]).to eq('public')
     end
 
     it "should not return the content ID" do
@@ -55,11 +42,103 @@ describe "Fetching a content item", :type => :request do
       data = JSON.parse(response.body)
       expect(data).not_to have_key("content_id")
     end
+
+    describe "setting cache headers" do
+      it "should set a 30 minutes Expires header in response" do
+        Timecop.freeze do
+          get "/content/vat-rates"
+          expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+        end
+      end
+
+      it "should set a cache-control header with value public" do
+        get "/content/vat-rates"
+        expect(response.headers["Cache-Control"]).to eq('public')
+      end
+
+      describe "adjusting expiry for publish intents" do
+        it "should set the Expires header to the date of the upcoming publish_intent" do
+          Timecop.freeze do
+            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 23.minutes.from_now)
+            get "/content/vat-rates"
+            expect(response.headers["Expires"]).to eq(23.minutes.from_now.httpdate)
+          end
+        end
+
+        it "should set the Expires header to 30 mins with publish_intent more than 30 mins away" do
+          Timecop.freeze do
+            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 40.minutes.from_now)
+            get "/content/vat-rates"
+            expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+          end
+        end
+
+        it "should set the Expires header to 30 mins with a publish_intent in the past" do
+          Timecop.freeze do
+            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 10.minutes.ago)
+            get "/content/vat-rates"
+            expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+          end
+        end
+
+        it "should set an Expires header in the past with a publish_intent that's very recently in the past" do
+          Timecop.freeze do
+            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 10.seconds.ago)
+            get "/content/vat-rates"
+            expect(response.headers["Expires"]).to eq(10.seconds.ago.httpdate)
+          end
+        end
+      end
+    end
   end
 
-  it "should 404 for a non-existent item" do
-    get "/content/non-existent"
-    expect(response.status).to eq(404)
+  describe "handling non-existent entries" do
+    it "should 404 for a non-existent item" do
+      get "/content/non-existent"
+      expect(response.status).to eq(404)
+    end
+
+    it "should set cache headers" do
+      Timecop.freeze do
+        get "/content/non-existent"
+        expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+        expect(response.headers["Cache-Control"]).to eq('public')
+      end
+    end
+
+    describe "adjusting expiry for publish intents" do
+      it "should set the Expires header to the date of the upcoming publish_intent" do
+        Timecop.freeze do
+          create(:publish_intent, :base_path => "/non-existent", :publish_time => 23.minutes.from_now)
+          get "/content/non-existent"
+          expect(response.headers["Expires"]).to eq(23.minutes.from_now.httpdate)
+        end
+      end
+
+      it "should set the Expires header to 30 mins with publish_intent more than 30 mins away" do
+        Timecop.freeze do
+          create(:publish_intent, :base_path => "/non-existent", :publish_time => 40.minutes.from_now)
+          get "/content/non-existent"
+          expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+        end
+      end
+
+      it "should set the Expires header to 30 mins with a publish_intent in the past" do
+        Timecop.freeze do
+          create(:publish_intent, :base_path => "/non-existent", :publish_time => 10.minutes.ago)
+          get "/content/non-existent"
+          expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
+        end
+      end
+
+      it "should set an Expires header in the past with a publish_intent that's very recently in the past" do
+        Timecop.freeze do
+          create(:publish_intent, :base_path => "/non-existent", :publish_time => 10.seconds.ago)
+          get "/content/non-existent"
+          expect(response.headers["Expires"]).to eq(10.seconds.ago.httpdate)
+        end
+      end
+    end
   end
 
   it "returns an item with a non-ASCII path" do
