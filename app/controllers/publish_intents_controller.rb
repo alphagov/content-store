@@ -8,11 +8,14 @@ class PublishIntentsController < ApplicationController
   end
 
   def update
-    intent = PublishIntent.find_or_initialize_by(:base_path => encoded_base_path)
-    status_to_use = intent.new_record? ? :created : :ok
-    intent.update_attributes(@request_data) or status_to_use = :unprocessable_entity
+    result, intent = PublishIntent.create_or_update(encoded_base_path, @request_data)
 
-    render :json => intent, :status => status_to_use
+    if result
+      status = (result == :created ? :created : :ok)
+    else
+      status = :unprocessable_entity
+    end
+    render :json => intent, :status => status
   end
 
   def destroy
