@@ -38,7 +38,7 @@ describe "content item write API", :type => :request do
       expect(item.format).to eq("answer")
       expect(item.need_ids).to eq(["100123", "100124"])
       expect(item.locale).to eq("en")
-      expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
+      expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
     end

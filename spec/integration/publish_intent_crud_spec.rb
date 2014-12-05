@@ -3,7 +3,7 @@ require 'rails_helper'
 describe "CRUD of publish intents", :type => :request do
 
   describe "submitting a publish intent" do
-    let(:publish_time) { 40.minutes.from_now.to_time }
+    let(:publish_time) { 40.minutes.from_now }
     let(:data) {{
       "base_path" => "/vat-rates",
       "publish_time" => publish_time,
@@ -15,7 +15,7 @@ describe "CRUD of publish intents", :type => :request do
 
         intent = PublishIntent.where(:base_path => "/vat-rates").first
         expect(intent).to be
-        expect(intent.publish_time.as_json).to eq(publish_time.as_json)
+        expect(intent.publish_time).to match_datetime(publish_time)
       end
 
       it "responds with a created status, and the intent as json" do
@@ -25,7 +25,7 @@ describe "CRUD of publish intents", :type => :request do
 
         data = JSON.parse(response.body)
         expect(data['base_path']).to eq('/vat-rates')
-        expect(data['publish_time']).to eq(publish_time.to_time.as_json)
+        expect(data['publish_time']).to match_datetime(publish_time)
       end
     end
 
@@ -36,7 +36,7 @@ describe "CRUD of publish intents", :type => :request do
         put_json "/publish-intent/vat-rates", data
 
         intent.reload
-        expect(intent.publish_time.as_json).to eq(publish_time.as_json)
+        expect(intent.publish_time).to match_datetime(publish_time)
       end
 
       it "responds with an ok status, and the intent as json" do
@@ -46,7 +46,7 @@ describe "CRUD of publish intents", :type => :request do
 
         data = JSON.parse(response.body)
         expect(data['base_path']).to eq('/vat-rates')
-        expect(data['publish_time']).to eq(publish_time.to_time.as_json)
+        expect(data['publish_time']).to match_datetime(publish_time)
       end
     end
 
@@ -97,7 +97,7 @@ describe "CRUD of publish intents", :type => :request do
       data = JSON.parse(response.body)
       expect(data['base_path']).to eq('/vat-rates')
 
-      expect(data['publish_time']).to eq(intent.publish_time.as_json)
+      expect(data['publish_time']).to match_datetime(intent.publish_time)
     end
 
     it "handles non-ascii paths" do
@@ -132,7 +132,7 @@ describe "CRUD of publish intents", :type => :request do
 
       data = JSON.parse(response.body)
       expect(data['base_path']).to eq('/vat-rates')
-      expect(data['publish_time']).to eq(intent.publish_time.to_time.as_json)
+      expect(data['publish_time']).to match_datetime(intent.publish_time)
     end
 
     it "returns 404 for non-existent intent" do
