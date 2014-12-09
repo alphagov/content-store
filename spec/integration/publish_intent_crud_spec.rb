@@ -126,6 +126,15 @@ describe "CRUD of publish intents", :type => :request do
       expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo, bar in input"]})
     end
 
+    it "returns 422 and an error message with fields of the wrong type in the input" do
+      put_json "/publish-intent/vat-rates", data.merge("routes" => "not an array")
+
+      expect(response.status).to eq(422)
+      data = JSON.parse(response.body)
+      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, String).message
+      expect(data["errors"]).to eq({"base" => [expected_error_message]})
+    end
+
     it "returns a 400 with bad json" do
       put "/publish-intent/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
       expect(response.status).to eq(400)

@@ -12,6 +12,9 @@ class PublishIntent
     extra_fields = details.keys - self.fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, intent
+  rescue Mongoid::Errors::InvalidValue => e
+    intent.errors.add(:base, e.message)
+    return false, intent
   end
 
   PUBLISH_TIME_LEEWAY = 1.minute
