@@ -58,6 +58,9 @@ class ContentItem
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
+  #
+  # This is before save not after so that we can guarantee that the item is
+  # live on the site once the save has completed
   before_save :register_routes
   before_upsert :register_routes
 
