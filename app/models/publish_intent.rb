@@ -30,6 +30,8 @@ class PublishIntent
   validates :rendering_app, :presence => true, :format => /\A[a-z0-9-]*\z/
   validate :route_set_is_valid
 
+  after_save :register_routes
+
   def as_json(options = nil)
     super(options).tap do |hash|
       hash["base_path"] = hash.delete("_id")
@@ -56,5 +58,9 @@ class PublishIntent
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
     end
+  end
+
+  def register_routes
+    registerable_route_set.register!
   end
 end

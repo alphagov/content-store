@@ -55,7 +55,7 @@ describe "CRUD of publish intents", :type => :request do
       end
     end
 
-    describe "registering routes for the intent", :skip => true do
+    describe "registering routes for the intent" do
       context "with no corresponding content-item" do
         it "registers routes for the publish intent" do
           put_json "/publish-intent/vat-rates", data
@@ -63,7 +63,7 @@ describe "CRUD of publish intents", :type => :request do
         end
       end
 
-      context "with a corresponding content-item" do
+      context "with a corresponding content-item", :skip => true do
         before :each do
           create(:content_item,
             :base_path => "/vat-rates",
