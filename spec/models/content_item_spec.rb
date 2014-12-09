@@ -39,6 +39,35 @@ describe ContentItem, :type => :model do
       expect(@item.errors[:publishing_app].size).to eq(1)
     end
 
+    context "on rendering_app" do
+      it "is required" do
+        @item.rendering_app = ''
+        expect(@item).not_to be_valid
+        expect(@item.errors[:rendering_app].size).to eq(1)
+      end
+
+      it "must be a valid DNS hostname" do
+        %w(
+            word
+            alpha12numeric
+            dashed-item
+        ).each do |value|
+          @item.rendering_app = value
+          expect(@item).to be_valid
+        end
+
+        [
+          'no spaces',
+          'puncutation!',
+          'mixedCASE',
+        ].each do |value|
+          @item.rendering_app = value
+          expect(@item).not_to be_valid
+          expect(@item.errors[:rendering_app].size).to eq(1)
+        end
+      end
+    end
+
     context 'content_id' do
       # The fact that the content ID is optional is implicit in the factory
 

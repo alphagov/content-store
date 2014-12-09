@@ -47,7 +47,8 @@ class ContentItem
   # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
   validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_]+\z/i, allow_blank: true }
-  validates :title, :rendering_app, presence: true, if: :renderable_content?
+  validates :title, presence: true, if: :renderable_content?
+  validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
   validate :route_set_is_valid
   validate :links_are_valid
   validates :locale,
