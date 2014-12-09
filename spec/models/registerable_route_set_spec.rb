@@ -11,6 +11,7 @@ describe RegisterableRouteSet, :type => :model do
       ]
       route_set = RegisterableRouteSet.from_content_item(item)
       expect(route_set.is_redirect).to eq(false)
+      expect(route_set.is_gone).to eq(false)
       expected_routes = [
         RegisterableRoute.new(:path => '/path',         :type => 'exact'),
         RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
@@ -51,6 +52,27 @@ describe RegisterableRouteSet, :type => :model do
         RegisterableGoneRoute.new(:path => '/path',         :type => 'exact'),
         RegisterableGoneRoute.new(:path => '/path.json',    :type => 'exact'),
         RegisterableGoneRoute.new(:path => '/path/subpath', :type => 'prefix'),
+      ]
+      expect(route_set.registerable_routes).to match_array(expected_routes)
+      expect(route_set.registerable_redirects).to eq([])
+    end
+  end
+
+  describe '.from_publish_intent' do
+    it "constructs a route set from a publish intent" do
+      intent = build(:publish_intent, :base_path => "/path", :rendering_app => "frontend")
+      intent.routes = [
+        { 'path' => '/path', 'type' => 'exact'},
+        { 'path' => '/path.json', 'type' => 'exact'},
+        { 'path' => '/path/subpath', 'type' => 'prefix'},
+      ]
+      route_set = RegisterableRouteSet.from_publish_intent(intent)
+      expect(route_set.is_redirect).to be_falsey
+      expect(route_set.is_gone).to be_falsey
+      expected_routes = [
+        RegisterableRoute.new(:path => '/path',         :type => 'exact'),
+        RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
+        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
       ]
       expect(route_set.registerable_routes).to match_array(expected_routes)
       expect(route_set.registerable_redirects).to eq([])

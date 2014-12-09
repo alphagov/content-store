@@ -27,6 +27,8 @@ class PublishIntent
 
   validates :base_path, :absolute_path => true
   validates :publish_time, :presence => true
+  validates :rendering_app, :presence => true, :format => /\A[a-z0-9-]*\z/
+  validate :route_set_is_valid
 
   def as_json(options = nil)
     super(options).tap do |hash|
@@ -42,5 +44,17 @@ class PublishIntent
   # Called nightly from a cron job
   def self.cleanup_expired
     where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago).delete_all
+  end
+
+  private
+
+  def registerable_route_set
+    @registerable_route_set ||= RegisterableRouteSet.from_publish_intent(self)
+  end
+
+  def route_set_is_valid
+    unless base_path.present? && registerable_route_set.valid?
+      errors.set(:routes, registerable_route_set.errors[:registerable_routes])
+    end
   end
 end

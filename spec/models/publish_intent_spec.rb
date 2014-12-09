@@ -38,6 +38,43 @@ describe PublishIntent, :type => :model do
         expect(intent.errors[:publish_time].size).to eq(1)
       end
     end
+
+    context "on rendering_app" do
+      it "requires a rendering_app" do
+        intent.rendering_app = ''
+        expect(intent).not_to be_valid
+        expect(intent.errors[:rendering_app].size).to eq(1)
+      end
+
+      it "requires rendering_app to be a valid DNS hostname" do
+        %w(
+            word
+            alpha12numeric
+            dashed-item
+        ).each do |value|
+          intent.rendering_app = value
+          expect(intent).to be_valid
+        end
+
+        [
+          'no spaces',
+          'puncutation!',
+          'mixedCASE',
+        ].each do |value|
+          intent.rendering_app = value
+          expect(intent).not_to be_valid
+          expect(intent.errors[:rendering_app].size).to eq(1)
+        end
+      end
+    end
+
+    context "routes" do
+      it "requires the route set to be valid" do
+        intent.routes = [ { 'path' => '/foo', 'type' => 'invalid' } ]
+        expect(intent).not_to be_valid
+        expect(intent.errors[:routes].size).to be >= 1
+      end
+    end
   end
 
   describe "json representation" do

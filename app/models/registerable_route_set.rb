@@ -47,6 +47,17 @@ class RegisterableRouteSet < OpenStruct
     })
   end
 
+  def self.from_publish_intent(intent)
+    registerable_routes = intent.routes.map do |attrs|
+      RegisterableRoute.new(attrs.slice("path", "type"))
+    end
+    new({
+      :registerable_routes => registerable_routes,
+      :base_path => intent.base_path,
+      :rendering_app => intent.rendering_app,
+    })
+  end
+
   def register!
     if is_redirect
       registerable_redirects.map(&:register!)
