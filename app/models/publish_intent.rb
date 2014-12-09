@@ -18,6 +18,9 @@ class PublishIntent
 
   field :_id, :as => :base_path, :type => String
   field :publish_time, :type => DateTime
+  field :publishing_app, :type => String
+  field :rendering_app, :type => String
+  field :routes, :type => Array, :default => []
 
   validates :base_path, :absolute_path => true
   validates :publish_time, :presence => true

@@ -46,6 +46,12 @@ module RouterHelpers
     end
     assert_not_requested(stub_router_commit)
   end
+
+  def assert_no_routes_registered_for_path(path)
+    route_stub = stub_http_request(:put, "#{GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT}/routes").
+      with(:body => {"route" => hash_including("incoming_path" => "/vat-rates")})
+    assert_not_requested(route_stub)
+  end
 end
 
 RSpec.configure do |config|
