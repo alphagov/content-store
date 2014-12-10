@@ -74,6 +74,12 @@ describe PublishIntent, :type => :model do
         expect(intent).not_to be_valid
         expect(intent.errors[:routes].size).to be >= 1
       end
+
+      it 'is invalid with extra keys in a route entry' do
+        intent.routes.first['foo'] = 'bar'
+        expect(intent).not_to be_valid
+        expect(intent.errors[:routes].size).to be >= 1
+      end
     end
   end
 

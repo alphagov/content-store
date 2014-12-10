@@ -50,6 +50,7 @@ class ContentItem
   validates :title, presence: true, if: :renderable_content?
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
   validate :route_set_is_valid
+  validate :no_extra_route_keys
   validate :links_are_valid
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
@@ -148,6 +149,15 @@ private
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
       errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
+    end
+  end
+
+  def no_extra_route_keys
+    if routes.any? { |r| (r.keys - %w(path type)).any? }
+      errors.add(:routes, "are invalid")
+    end
+    if redirects.any? { |r| (r.keys - %w(path type destination)).any? }
+      errors.add(:redirects, "are invalid")
     end
   end
 

@@ -29,6 +29,7 @@ class PublishIntent
   validates :publish_time, :presence => true
   validates :rendering_app, :presence => true, :format => /\A[a-z0-9-]*\z/
   validate :route_set_is_valid
+  validate :no_extra_route_keys
 
   after_save :register_routes
 
@@ -61,6 +62,12 @@ class PublishIntent
   def route_set_is_valid
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
+    end
+  end
+
+  def no_extra_route_keys
+    if routes.any? { |r| (r.keys - %w(path type)).any? }
+      errors.add(:routes, "are invalid")
     end
   end
 
