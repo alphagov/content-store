@@ -59,23 +59,71 @@ describe RegisterableRouteSet, :type => :model do
   end
 
   describe '.from_publish_intent' do
-    it "constructs a route set from a publish intent" do
-      intent = build(:publish_intent, :base_path => "/path", :rendering_app => "frontend")
-      intent.routes = [
-        { 'path' => '/path', 'type' => 'exact'},
-        { 'path' => '/path.json', 'type' => 'exact'},
-        { 'path' => '/path/subpath', 'type' => 'prefix'},
-      ]
-      route_set = RegisterableRouteSet.from_publish_intent(intent)
-      expect(route_set.is_redirect).to be_falsey
-      expect(route_set.is_gone).to be_falsey
-      expected_routes = [
-        RegisterableRoute.new(:path => '/path',         :type => 'exact'),
-        RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
-        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
-      ]
-      expect(route_set.registerable_routes).to match_array(expected_routes)
-      expect(route_set.registerable_redirects).to eq([])
+    context "without a corresponding content item" do
+      it "constructs a route set from a publish intent" do
+        intent = build(:publish_intent, :base_path => "/path", :rendering_app => "frontend")
+        intent.routes = [
+          { 'path' => '/path', 'type' => 'exact'},
+          { 'path' => '/path.json', 'type' => 'exact'},
+          { 'path' => '/path/subpath', 'type' => 'prefix'},
+        ]
+        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        expect(route_set.is_redirect).to be_falsey
+        expect(route_set.is_gone).to be_falsey
+        expect(route_set.is_supplimentary_set).to be_falsey
+        expected_routes = [
+          RegisterableRoute.new(:path => '/path',         :type => 'exact'),
+          RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
+          RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
+        ]
+        expect(route_set.registerable_routes).to match_array(expected_routes)
+        expect(route_set.registerable_redirects).to eq([])
+
+        expect(route_set).to be_valid
+      end
+    end
+
+    context "with a corresponding content item" do
+      let!(:item) {
+        create(:content_item, :base_path => "/path", :routes => [{"path" => "/path", "type" => "exact"}])
+      }
+
+      it "constructs a supplimentary route set for the intent" do
+        intent = build(:publish_intent, :base_path => "/path", :rendering_app => "frontend")
+        intent.routes = [
+          { 'path' => '/path', 'type' => 'exact'},
+          { 'path' => '/path.json', 'type' => 'exact'},
+          { 'path' => '/path/subpath', 'type' => 'prefix'},
+        ]
+
+        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        expect(route_set.is_redirect).to be_falsey
+        expect(route_set.is_gone).to be_falsey
+        expect(route_set.is_supplimentary_set).to be_truthy
+        expected_routes = [
+          RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
+          RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
+        ]
+        expect(route_set.registerable_routes).to match_array(expected_routes)
+        expect(route_set.registerable_redirects).to eq([])
+
+        expect(route_set).to be_valid
+      end
+
+      it "contains no routes if the content item already has all the routes in the intent" do
+        intent = build(:publish_intent, :base_path => "/path", :rendering_app => "frontend")
+        intent.routes = [ { 'path' => '/path', 'type' => 'exact'} ]
+
+        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        expect(route_set.is_redirect).to be_falsey
+        expect(route_set.is_gone).to be_falsey
+        expect(route_set.is_supplimentary_set).to be_truthy
+
+        expect(route_set.registerable_routes).to eq([])
+        expect(route_set.registerable_redirects).to eq([])
+
+        expect(route_set).to be_valid
+      end
     end
   end
 
@@ -122,6 +170,12 @@ describe RegisterableRouteSet, :type => :model do
         @route_set.registerable_routes.first.path = "#{@route_set.base_path}/foo"
         expect(@route_set).to_not be_valid
         expect(@route_set.errors[:registerable_routes].size).to eq(1)
+      end
+
+      it "does not require a supplimentary route set to include the base path" do
+        @route_set.registerable_routes.first.path = "#{@route_set.base_path}/foo"
+        @route_set.is_supplimentary_set = true
+        expect(@route_set).to be_valid
       end
     end
 
@@ -183,6 +237,15 @@ describe RegisterableRouteSet, :type => :model do
         ['/path', 'exact'],
         ['/path/sub/path', 'prefix']
       ])
+    end
+
+    it 'is a no-op with no routes or redirects' do
+      expect(Rails.application.router_api).not_to receive(:add_backend)
+      expect(Rails.application.router_api).not_to receive(:add_route)
+      expect(Rails.application.router_api).not_to receive(:commit_routes)
+
+      route_set = RegisterableRouteSet.new(:base_path => '/path', :rendering_app => 'frontend')
+      route_set.register!
     end
 
     it 'registers and commits all registerable redirects for a redirect item' do

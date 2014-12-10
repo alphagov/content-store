@@ -63,7 +63,7 @@ describe "CRUD of publish intents", :type => :request do
         end
       end
 
-      context "with a corresponding content-item", :skip => true do
+      context "with a corresponding content-item" do
         before :each do
           create(:content_item,
             :base_path => "/vat-rates",

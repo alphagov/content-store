@@ -43,6 +43,10 @@ class PublishIntent
     publish_time <= PUBLISH_TIME_LEEWAY.ago
   end
 
+  def content_item
+    ContentItem.where(:base_path => self.base_path).first
+  end
+
   # Called nightly from a cron job
   def self.cleanup_expired
     where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago).delete_all
