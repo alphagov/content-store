@@ -186,7 +186,6 @@ describe ContentItem, :type => :model do
             word
             alpha12numeric
             under_score
-            dashed-item
             mixedCASE
           ).each do |value|
             @item.public_send("#{field}=", value)
@@ -195,6 +194,7 @@ describe ContentItem, :type => :model do
 
           [
             'no spaces',
+            'dashed-item',
             'puncutation!',
           ].each do |value|
             @item.public_send("#{field}=", value)
