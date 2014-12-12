@@ -11,7 +11,7 @@ class RegisterableRouteSet < OpenStruct
   validate :registerable_routes_and_redirects_are_valid,
            :all_routes_and_redirects_are_beneath_base_path,
            :redirect_cannot_have_routes
-  validate :registerable_routes_include_base_path, :unless => :is_redirect
+  validate :registerable_routes_include_base_path, :if => :base_path_route_required?
   validate :registerable_redirects_include_base_path, :if => :is_redirect
 
   # +item.routes+ should be an array of hashes containing both a 'path' and a
@@ -47,7 +47,26 @@ class RegisterableRouteSet < OpenStruct
     })
   end
 
+  def self.from_publish_intent(intent)
+    route_set = new({
+      :base_path => intent.base_path,
+      :rendering_app => intent.rendering_app,
+    })
+    route_attrs = intent.routes
+    if item = intent.content_item
+      # if a content item exists we only want to register the set of routes
+      # that don't already exist on the item
+      route_attrs -= item.routes
+      route_set.is_supplimentary_set = true
+    end
+    route_set.registerable_routes = route_attrs.map do |attrs|
+      RegisterableRoute.new(attrs.slice("path", "type"))
+    end
+    route_set
+  end
+
   def register!
+    return unless registerable_routes.any? || registerable_redirects.any?
     if is_redirect
       registerable_redirects.map(&:register!)
     elsif is_gone
@@ -60,6 +79,10 @@ class RegisterableRouteSet < OpenStruct
   end
 
 private
+
+  def base_path_route_required?
+    ! self.is_redirect && ! self.is_supplimentary_set
+  end
 
   def register_rendering_app
     Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app, :force_http => true) + "/")

@@ -39,6 +39,35 @@ describe ContentItem, :type => :model do
       expect(@item.errors[:publishing_app].size).to eq(1)
     end
 
+    context "on rendering_app" do
+      it "is required" do
+        @item.rendering_app = ''
+        expect(@item).not_to be_valid
+        expect(@item.errors[:rendering_app].size).to eq(1)
+      end
+
+      it "must be a valid DNS hostname" do
+        %w(
+            word
+            alpha12numeric
+            dashed-item
+        ).each do |value|
+          @item.rendering_app = value
+          expect(@item).to be_valid
+        end
+
+        [
+          'no spaces',
+          'puncutation!',
+          'mixedCASE',
+        ].each do |value|
+          @item.rendering_app = value
+          expect(@item).not_to be_valid
+          expect(@item.errors[:rendering_app].size).to eq(1)
+        end
+      end
+    end
+
     context 'content_id' do
       # The fact that the content ID is optional is implicit in the factory
 
@@ -230,6 +259,17 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'with extra keys in a route entry' do
+      before do
+        @item.routes= [ { 'path' => @item.base_path, 'type' => 'exact', 'foo' => 'bar' } ]
+      end
+
+      it 'should be invalid' do
+        expect(@item).to_not be_valid
+        expect(@item.errors[:routes]).to eq(["are invalid"])
+      end
+    end
+
     context 'special cases for a redirect item' do
       before :each do
         @item.format = "redirect"
@@ -249,6 +289,12 @@ describe ContentItem, :type => :model do
 
       it "should be invalid with an invalid redirect" do
         @item.redirects.first['type'] = "fooey"
+        expect(@item).not_to be_valid
+        expect(@item.errors[:redirects]).to eq(["are invalid"])
+      end
+
+      it "should be invalid with extra keys in a redirect entry" do
+        @item.redirects.first['foo'] = "bar"
         expect(@item).not_to be_valid
         expect(@item.errors[:redirects]).to eq(["are invalid"])
       end

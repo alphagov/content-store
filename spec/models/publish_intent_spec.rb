@@ -38,6 +38,49 @@ describe PublishIntent, :type => :model do
         expect(intent.errors[:publish_time].size).to eq(1)
       end
     end
+
+    context "on rendering_app" do
+      it "requires a rendering_app" do
+        intent.rendering_app = ''
+        expect(intent).not_to be_valid
+        expect(intent.errors[:rendering_app].size).to eq(1)
+      end
+
+      it "requires rendering_app to be a valid DNS hostname" do
+        %w(
+            word
+            alpha12numeric
+            dashed-item
+        ).each do |value|
+          intent.rendering_app = value
+          expect(intent).to be_valid
+        end
+
+        [
+          'no spaces',
+          'puncutation!',
+          'mixedCASE',
+        ].each do |value|
+          intent.rendering_app = value
+          expect(intent).not_to be_valid
+          expect(intent.errors[:rendering_app].size).to eq(1)
+        end
+      end
+    end
+
+    context "routes" do
+      it "requires the route set to be valid" do
+        intent.routes = [ { 'path' => '/foo', 'type' => 'invalid' } ]
+        expect(intent).not_to be_valid
+        expect(intent.errors[:routes].size).to be >= 1
+      end
+
+      it 'is invalid with extra keys in a route entry' do
+        intent.routes.first['foo'] = 'bar'
+        expect(intent).not_to be_valid
+        expect(intent.errors[:routes].size).to be >= 1
+      end
+    end
   end
 
   describe "json representation" do
@@ -86,6 +129,26 @@ describe PublishIntent, :type => :model do
 
       intent.publish_time = 5.months.ago
       expect(intent.past?).to eq(true)
+    end
+  end
+
+  describe "registering routes" do
+    let(:routes) {[
+      { 'path' => '/a-path', 'type' => 'exact' },
+      { 'path' => '/a-path.json', 'type' => 'exact' },
+      { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+    ]}
+    let(:intent) {
+      build(:publish_intent, :base_path => "/a-path", :rendering_app => "an-app", :routes => routes)
+    }
+
+    it "registers the assigned routes when created" do
+      intent.save!
+      assert_routes_registered('an-app', [
+        ['/a-path', 'exact'],
+        ['/a-path.json', 'exact'],
+        ['/a-path/subpath', 'prefix']
+      ])
     end
   end
 

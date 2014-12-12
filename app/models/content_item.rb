@@ -47,8 +47,10 @@ class ContentItem
   # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
   validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_]+\z/i, allow_blank: true }
-  validates :title, :rendering_app, presence: true, if: :renderable_content?
+  validates :title, presence: true, if: :renderable_content?
+  validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
   validate :route_set_is_valid
+  validate :no_extra_route_keys
   validate :links_are_valid
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
@@ -57,6 +59,9 @@ class ContentItem
 
   # Saves and upserts trigger different sets of callbacks; to be safe, we need
   # to register for both
+  #
+  # This is before save not after so that we can guarantee that the item is
+  # live on the site once the save has completed
   before_save :register_routes
   before_upsert :register_routes
 
@@ -144,6 +149,15 @@ private
     unless base_path.present? && registerable_route_set.valid?
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
       errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
+    end
+  end
+
+  def no_extra_route_keys
+    if routes.any? { |r| (r.keys - %w(path type)).any? }
+      errors.add(:routes, "are invalid")
+    end
+    if redirects.any? { |r| (r.keys - %w(path type destination)).any? }
+      errors.add(:redirects, "are invalid")
     end
   end
 

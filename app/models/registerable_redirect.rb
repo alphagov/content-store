@@ -1,9 +1,6 @@
-class RegisterableRedirect < OpenStruct
-  include ActiveModel::Validations
+class RegisterableRedirect < RegisterableRoute
 
-  validates :type, inclusion: { in: %w(exact prefix), message: 'must be either "exact" or "prefix"' }
-  validates :path, :destination, absolute_path: true
-  validates :path, :type, :destination, presence: true
+  validates :destination, presence: true, absolute_path: true
 
   def register!
     Rails.application.router_api.add_redirect_route(path, type, destination)
