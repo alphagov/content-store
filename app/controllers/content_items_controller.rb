@@ -37,10 +37,18 @@ class ContentItemsController < ApplicationController
   def set_cache_headers
     intent = PublishIntent.where(:base_path => encoded_base_path).first
     if intent && ! intent.past?
-      expires_at [config.default_ttl.from_now, intent.publish_time].min
+      expires_at bounded_expiry(intent.publish_time)
     else
       expires_at config.default_ttl.from_now
     end
+  end
+
+  # Calculate the TTL based on the publish_time but constrained to be within
+  # the default_ttl and minimum_ttl.
+  def bounded_expiry(publish_time)
+    expiry = [config.default_ttl.from_now, publish_time].min
+    min_expiry = config.minimum_ttl.from_now
+    expiry >= min_expiry ? expiry : min_expiry
   end
 
   def register_with_url_arbiter

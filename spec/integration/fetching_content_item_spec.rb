@@ -81,11 +81,11 @@ describe "Fetching a content item", :type => :request do
           end
         end
 
-        it "should set an Expires header in the past with a publish_intent that's very recently in the past" do
+        it "should set an Expires header to 5 seconds with a publish_intent that's very recently in the past" do
           Timecop.freeze do
             create(:publish_intent, :base_path => "/vat-rates", :publish_time => 10.seconds.ago)
             get "/content/vat-rates"
-            expect(response.headers["Expires"]).to eq(10.seconds.ago.httpdate)
+            expect(response.headers["Expires"]).to eq(5.seconds.from_now.httpdate)
           end
         end
       end
@@ -131,11 +131,11 @@ describe "Fetching a content item", :type => :request do
         end
       end
 
-      it "should set an Expires header in the past with a publish_intent that's very recently in the past" do
+      it "should set an Expires header to 5 seconds with a publish_intent that's very recently in the past" do
         Timecop.freeze do
           create(:publish_intent, :base_path => "/non-existent", :publish_time => 10.seconds.ago)
           get "/content/non-existent"
-          expect(response.headers["Expires"]).to eq(10.seconds.ago.httpdate)
+          expect(response.headers["Expires"]).to eq(5.seconds.from_now.httpdate)
         end
       end
     end
