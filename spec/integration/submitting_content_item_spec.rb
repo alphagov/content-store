@@ -197,30 +197,6 @@ describe "content item write API", :type => :request do
     end
   end
 
-  describe "cleaning up publish intents after update" do
-    before :each do
-      create(:publish_intent, :base_path => @data["base_path"], :publish_time => 1.minute.from_now)
-    end
-
-    it "cleans up an intent after a major update" do
-      put_json "/content#{@data["base_path"]}", @data
-
-      expect(PublishIntent.where(:base_path => @data["base_path"]).first).not_to be
-    end
-
-    it "cleans up an intent after a minor update" do
-      put_json "/content#{@data["base_path"]}", @data.merge("update_type" => "minor")
-
-      expect(PublishIntent.where(:base_path => @data["base_path"]).first).not_to be
-    end
-
-    it "does not clean up the intent after a republish" do
-      put_json "/content#{@data["base_path"]}", @data.merge("update_type" => "republish")
-
-      expect(PublishIntent.where(:base_path => @data["base_path"]).first).to be
-    end
-  end
-
   context "given invalid JSON data" do
     before(:each) do
       put "/content/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
