@@ -44,6 +44,7 @@ module ContentStore
     # Caching
     config.cache_control_directive = 'public'
     config.default_ttl = 30.minutes
+    config.minimum_ttl = 5.seconds
 
     def router_api
       @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
