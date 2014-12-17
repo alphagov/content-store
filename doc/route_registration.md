@@ -1,9 +1,12 @@
 ## Registering routes with the router.
 
-After saving an item, the content store will register routes with the router.  All items listed in the
-routes array will be created as routes pointing at the rendering_app. The routes for a content item must contain a route for the base_path.
+After saving an item, the content store will register routes with the router.
+All items listed in the routes array will be created as routes pointing at the
+`rendering_app`. The routes for a content item must contain a route for the
+`base_path`.
 
-All entries in the routes array must be under the base_path (ie either a subpath of the base_path, or the base_path with an extension)
+All entries in the routes array must be under the `base_path` (ie either a
+subpath of the `base_path`, or the `base_path` with an extension)
 
 Given an item including the following fields:
 
