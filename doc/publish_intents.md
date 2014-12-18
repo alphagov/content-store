@@ -11,7 +11,7 @@ accordingly.  If no content-item exists for the publish intent, content-store
 will return a 404, but will still set the cache headers accordingly.
 
 The downstream apps respect content-store's cache headers, so this will be
-propogated out.
+propagated out.
 
 ## Publish intent format
 
