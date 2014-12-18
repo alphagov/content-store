@@ -96,15 +96,38 @@ class ContentItem
 
   # Return a Hash of link types to lists of related items
   def linked_items
-    items = {}
-    links.each do |link_type, content_ids|
-      items[link_type] = load_associated_content_items(content_ids)
-    end
+    items = load_linked_items
     items["available_translations"] = available_translations if available_translations.any?
     items
   end
 
 private
+
+  def load_linked_items
+    # For each linked content_id find all non-redirect content items with
+    # matching content_id in either this item's locale, or the default locale
+    # with the most recently updated first.
+    potential_items_by_id = ContentItem
+      .excluding_redirects
+      .where(:content_id => {"$in" => links.values.flatten.uniq})
+      .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
+      .only(:content_id, :locale, :base_path, :title)
+      .sort(:updated_at => -1)
+      .group_by(&:content_id)
+
+    # For each set of items for a given content_id, pick the first one that
+    # matches this item's locale, or fall back to the first one matching the
+    # default locale.
+    required_items = potential_items_by_id.each_with_object({}) do |(content_id, items), results|
+      results[content_id] = items.find {|i| i.locale == self.locale } || items.find {|i| i.locale == I18n.default_locale.to_s }
+    end
+
+    # build up the links hash using the selected items above
+    links.each_with_object({}) do |(link_type, content_ids), result|
+      result[link_type] = content_ids.map {|id| required_items[id] }.compact
+    end
+  end
+
   def available_translations
     @available_translations ||= load_available_translations
   end
@@ -117,25 +140,6 @@ private
       .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
-  end
-
-  def load_associated_content_items(content_ids)
-    content_ids.map { |content_id|
-      load_associated_content_item(content_id, self.locale)
-    }.compact
-  end
-
-  def load_associated_content_item(content_id, preferred_locale)
-    # This query is designed to be entirely covered by the index above
-    candidate_items = ContentItem
-      .excluding_redirects
-      .where(:content_id => content_id)
-      .where(:locale => {"$in" => [I18n.default_locale.to_s, preferred_locale]})
-      .only(:locale, :base_path, :title)
-      .sort(:updated_at => 1)
-
-    candidate_items.select { |i| i.locale == preferred_locale }.last ||
-      candidate_items.select { |i| i.locale == I18n.default_locale.to_s }.last
   end
 
   def registerable_route_set
