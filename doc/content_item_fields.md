@@ -114,9 +114,9 @@ for the Latin America and Caribbean region").
 
 ISO 8601 formatted timestamp. Present in all contexts.
 
-This is the time at which the content was last publicly visibly updated. This
-can be used for sorting by update date, but will not be changed for minor
-updates.
+This is the update date that should be surfaced to the user. This is used for
+sorting documents by update date. It should change when there is a major
+update and should not change for a minor update.
 
 ## `details`
 
