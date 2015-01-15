@@ -10,6 +10,7 @@ class RegisterableRouteSet < OpenStruct
 
   validate :registerable_routes_and_redirects_are_valid,
            :all_routes_and_redirects_are_beneath_base_path,
+           :all_routes_and_redirects_have_unique_paths,
            :redirect_cannot_have_routes
   validate :registerable_routes_include_base_path, :if => :base_path_route_required?
   validate :registerable_redirects_include_base_path, :if => :is_redirect
@@ -121,6 +122,18 @@ private
     end
     unless registerable_redirects.all? {|redirect| base_path_with_extension?(redirect) || beneath_base_path?(redirect) }
       errors[:registerable_redirects] << 'must be below the base path'
+    end
+  end
+
+  def all_routes_and_redirects_have_unique_paths
+    paths = registerable_routes.map(&:path)
+    unless paths == paths.uniq
+      errors[:registerable_routes] << 'must have unique paths'
+    end
+
+    paths = registerable_redirects.map(&:path)
+    unless paths == paths.uniq
+      errors[:registerable_redirects] << 'must have unique paths'
     end
   end
 
