@@ -155,6 +155,13 @@ describe RegisterableRouteSet, :type => :model do
         expect(@route_set.errors[:registerable_routes].size).to eq(1)
       end
 
+      it "requires all routes to have a unique path" do
+        @route_set.registerable_routes << build(:registerable_route, :path => @route_set.base_path)
+
+        expect(@route_set).not_to be_valid
+        expect(@route_set.errors[:registerable_routes].size).to eq(1)
+      end
+
       it "requires all routes to be beneath the base path" do
         @route_set.registerable_routes << build(:registerable_route, :path => "/another-path")
         expect(@route_set).not_to be_valid
@@ -202,6 +209,13 @@ describe RegisterableRouteSet, :type => :model do
 
       it "requires all redirects to be valid" do
         @route_set.registerable_redirects.first.type = "not_a_valid_type"
+        expect(@route_set).not_to be_valid
+        expect(@route_set.errors[:registerable_redirects].size).to eq(1)
+      end
+
+      it "requires all redirects to have a unique path" do
+        @route_set.registerable_redirects << build(:registerable_redirect, :path => @route_set.base_path)
+
         expect(@route_set).not_to be_valid
         expect(@route_set.errors[:registerable_redirects].size).to eq(1)
       end
