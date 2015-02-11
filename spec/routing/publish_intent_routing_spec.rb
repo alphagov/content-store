@@ -13,6 +13,10 @@ describe "routing of publish_intent requests", :type => :routing do
     it "should not match a base_path without a leading /" do
       expect(:get => "/publish-intentfoo").not_to be_routable
     end
+
+    it "should require a base_path" do
+      expect(:get => "/publish-intent").not_to be_routable
+    end
   end
 
   context "PUT route" do
@@ -27,6 +31,10 @@ describe "routing of publish_intent requests", :type => :routing do
     it "should not match a base_path without a leading /" do
       expect(:put => "/publish-intentfoo").not_to be_routable
     end
+
+    it "should require a base_path" do
+      expect(:put => "/publish-intent").not_to be_routable
+    end
   end
 
   context "DELETE route" do
@@ -40,6 +48,10 @@ describe "routing of publish_intent requests", :type => :routing do
 
     it "should not match a base_path without a leading /" do
       expect(:delete => "/publish-intentfoo").not_to be_routable
+    end
+
+    it "should require a base_path" do
+      expect(:delete => "/publish-intent").not_to be_routable
     end
   end
 end
