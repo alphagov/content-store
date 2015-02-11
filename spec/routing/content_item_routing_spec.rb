@@ -13,6 +13,10 @@ describe "routing of content_item requests", :type => :routing do
     it "should not match a base_path without a leading /" do
       expect(:get => "/contentfoo").not_to be_routable
     end
+
+    it "should require a base_path" do
+      expect(:get => "/content").not_to be_routable
+    end
   end
 
   context "PUT route" do
@@ -26,6 +30,10 @@ describe "routing of content_item requests", :type => :routing do
 
     it "should not match a base_path without a leading /" do
       expect(:put => "/contentfoo").not_to be_routable
+    end
+
+    it "should require a base_path" do
+      expect(:put => "/content").not_to be_routable
     end
   end
 end
