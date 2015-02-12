@@ -411,8 +411,8 @@ describe ContentItem, :type => :model do
         @item = build(:content_item)
       end
 
-      it 'should return an empty hash' do
-        expect(@item.linked_items).to eq({})
+      it 'should not return any linked items' do
+        expect(@item.linked_items.except("available_translations")).to eq({})
       end
     end
 
@@ -588,6 +588,20 @@ describe ContentItem, :type => :model do
 
         it 'should prefer the newest item' do
           expect(item_en.linked_items["available_translations"]).to eq([item_en, item_fr_new])
+        end
+      end
+
+      context 'for an item without a content_id' do
+        let!(:item_en) { create(:content_item, locale: 'en', content_id: nil) }
+        let!(:other_item_fr) { create(:content_item, locale: 'fr', content_id: nil) }
+        let!(:item_en_new) {
+          Timecop.travel(10.seconds.from_now) do
+            create(:content_item, locale: 'en', content_id: nil)
+          end
+        }
+
+        it 'should return only itself' do
+          expect(item_en.linked_items["available_translations"]).to eq([item_en])
         end
       end
     end

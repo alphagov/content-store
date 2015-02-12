@@ -133,6 +133,7 @@ private
   end
 
   def load_available_translations
+    return [self] if self.content_id.blank?
     ContentItem
       .excluding_redirects
       .where(:content_id => content_id)
