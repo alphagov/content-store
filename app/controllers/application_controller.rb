@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
   end
 
   def parse_json_request
-    @request_data = JSON.parse(request.body.read).except('base_path')
+    @request_data = JSON.parse(request.body.read)
   rescue JSON::ParserError
     head :bad_request
   end

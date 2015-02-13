@@ -275,6 +275,23 @@ describe "content item write API", :type => :request do
     end
   end
 
+  context "create with a mismatched slug" do
+    before :each do
+      @data["base_path"] = "/not-about-vat-rates"
+      put_json "/content/vat-rates", @data
+    end
+
+    it "rejects the update" do
+      expect(response.status).to eq(422)
+    end
+
+    it "includes an error message" do
+      data = JSON.parse(response.body)
+      expected_error_message = "mismatch with path supplied in request URL"
+      expect(data["errors"]).to eq({"base_path" => [expected_error_message]})
+    end
+  end
+
   context "url-arbiter returns validation error" do
     before :each do
       url_arbiter_returns_validation_error_for("/vat-rates", "publishing_app" => ["can't be blank"])

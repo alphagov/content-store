@@ -6,10 +6,12 @@ class PublishIntent
     intent = PublishIntent.find_or_initialize_by(:base_path => base_path)
     result = intent.new_record? ? :created : :replaced
 
-    intent.update_attributes(attributes) or result = false
+    assignable_attributes = attributes.except('base_path')
+    intent.update_attributes(assignable_attributes) or result = false
+
     return result, intent
   rescue Mongoid::Errors::UnknownAttribute => e
-    extra_fields = attributes.keys - self.fields.keys
+    extra_fields = assignable_attributes.keys - self.fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, intent
   rescue Mongoid::Errors::InvalidValue => e

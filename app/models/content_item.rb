@@ -9,12 +9,19 @@ class ContentItem
     result = :replaced if ContentItem.where(:base_path => base_path).exists?
 
     item = ContentItem.new(:base_path => base_path)
-    item.assign_attributes(attributes)
+
+    if base_path != attributes['base_path']
+      item.errors.add(:base_path, "mismatch with path supplied in request URL")
+      return false, item
+    end
+
+    assignable_attributes = attributes.except('base_path')
+    item.assign_attributes(assignable_attributes)
 
     item.upsert or result = false
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
-    extra_fields = attributes.keys - self.fields.keys - %w(update_type)
+    extra_fields = assignable_attributes.keys - self.fields.keys - %w(update_type)
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, item
   rescue Mongoid::Errors::InvalidValue => e
