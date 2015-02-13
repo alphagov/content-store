@@ -4,17 +4,17 @@ class ContentItem
 
   NON_RENDERABLE_FORMATS = %w(redirect gone)
 
-  def self.create_or_replace(base_path, details)
+  def self.create_or_replace(base_path, attributes)
     result = :created
     result = :replaced if ContentItem.where(:base_path => base_path).exists?
 
     item = ContentItem.new(:base_path => base_path)
-    item.assign_attributes(details)
+    item.assign_attributes(attributes)
 
     item.upsert or result = false
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
-    extra_fields = details.keys - self.fields.keys - %w(update_type)
+    extra_fields = attributes.keys - self.fields.keys - %w(update_type)
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, item
   rescue Mongoid::Errors::InvalidValue => e

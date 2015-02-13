@@ -2,14 +2,14 @@ class PublishIntent
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  def self.create_or_update(base_path, details)
+  def self.create_or_update(base_path, attributes)
     intent = PublishIntent.find_or_initialize_by(:base_path => base_path)
     result = intent.new_record? ? :created : :replaced
 
-    intent.update_attributes(details) or result = false
+    intent.update_attributes(attributes) or result = false
     return result, intent
   rescue Mongoid::Errors::UnknownAttribute => e
-    extra_fields = details.keys - self.fields.keys
+    extra_fields = attributes.keys - self.fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, intent
   rescue Mongoid::Errors::InvalidValue => e
