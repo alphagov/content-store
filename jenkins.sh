@@ -6,4 +6,4 @@ export RAILS_ENV=test
 git clean -fdx
 bundle install --path "${HOME}/bundles/${JOB_NAME}" --deployment
 bundle exec rake db:mongoid:drop
-bundle exec rake ci:setup:rspec default
+COVERAGE=on bundle exec rake ci:setup:rspec default
