@@ -318,7 +318,7 @@ describe ContentItem, :type => :model do
           result = item = nil
 
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, { foo: 'foo', bar: 'bar' })
+            result, item = ContentItem.create_or_replace(@item.base_path, 'base_path' => @item.base_path, 'foo' => 'foo', 'bar' => 'bar' )
           }.to_not raise_error
 
           expect(result).to be false
@@ -332,7 +332,7 @@ describe ContentItem, :type => :model do
 
           expect {
             # routes should be of type Array
-            result, item = ContentItem.create_or_replace(@item.base_path, { routes: 12 })
+            result, item = ContentItem.create_or_replace(@item.base_path, 'base_path' => @item.base_path, 'routes' => 12 )
           }.to_not raise_error
 
           expect(result).to be false
