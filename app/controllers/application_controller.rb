@@ -18,6 +18,8 @@ class ApplicationController < ActionController::API
   end
 
   def parse_json_request
+    # FIXME base_path in the request body is deprecated and will be considered
+    # an error once all clients have been updated.
     @request_data = JSON.parse(request.body.read).except('base_path')
   rescue JSON::ParserError
     head :bad_request

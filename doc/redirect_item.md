@@ -8,10 +8,10 @@ items with a format of "redirect".  These items have slightly different validati
 * The `routes` array and `rendering_app` will be ignored, and should be left empty.
 * A title is not required.
 
-For example, given the following item:
+For example, given the following request:
 
+    PUT /content/moved-foo
     {
-      "base_path": "/moved-foo",
       "format": "redirect",
       "publishing_app": "publisher",
       "update_type": "major",

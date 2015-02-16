@@ -17,7 +17,8 @@ propagated out.
 
 A publish intent has the following fields:
 
-* `base_path` - The path of the item that will be published.
+* `base_path` - The path of the item that will be published. Found in the
+request URL of write requests and the response body for read requests.
 * `publish_time` - ISO 8601 formatted timestamp. The time the corresponding
   content item will be published.
 * `publishing_app` - The publishing app that owns this content (see
@@ -31,8 +32,8 @@ A publish intent has the following fields:
 For example:
 
 ``` js
+PUT /publish-intent/vat-rates
 {
-  "base_path": "/vat-rates",
   "publish_time": "2015-01-05T09:00:00+00:00",
   "publishing_app": "publisher",
   "rendering_app": "frontend",
