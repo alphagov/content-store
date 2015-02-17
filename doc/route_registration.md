@@ -8,10 +8,10 @@ All items listed in the routes array will be created as routes pointing at the
 All entries in the routes array must be under the `base_path` (ie either a
 subpath of the `base_path`, or the `base_path` with an extension)
 
-Given an item including the following fields:
+Given the following request:
 
+    PUT /content/foo
     {
-      "base_path": "/foo",
       "rendering_app": "frontend",
       "routes": [
         {"path": "/foo", "type": "exact"},
@@ -44,10 +44,10 @@ which are described in redirect_item.md.
 Redirects are specified in the redirects array.  These optionally specify a destination path, which if
 ommitted defaults to the base_path.
 
-e.g. given an item including the following fields:
+e.g. given the following request:
 
+    PUT /content/foo
     {
-      "base_path": "/foo",
       "redirects": [
         {"path": "/foo.json", "type": "exact", "destination": "/api/foo.json"},
         {"path": "/foo/obsolete-part", "type": "exact"}

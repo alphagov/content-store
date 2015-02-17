@@ -8,10 +8,10 @@ Items with a format of gone will have all routes setup in the same way as other 
 route_registration.md), with the exception that instead of routing to the rendering_app, routes will be
 created as gone routes.
 
-For example, given an item including the following fields:
+For example, given the following request:
 
+    PUT /content/gone-foo
     {
-      "base_path": "/gone-foo",
       "format": "gone",
       "publishing_app": "publisher",
       "update_type": "major",

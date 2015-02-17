@@ -16,7 +16,8 @@ from the content store API can be found in
 
 ## `base_path`
 
-A string. Present in all contexts.
+A string. Present in the request URL in the storing context and included in the
+document in all other contexts.
 
 The absolute path of the content on GOV.UK. This uniquely identifies the
 content within the content store and allows the content store to answer the
