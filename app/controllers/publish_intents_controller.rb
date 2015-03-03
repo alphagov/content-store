@@ -15,13 +15,15 @@ class PublishIntentsController < ApplicationController
     else
       status = :unprocessable_entity
     end
-    render :json => intent, :status => status
+    response_body = {}
+    response_body[:errors] = intent.errors.as_json if intent.errors.any?
+    render :json => response_body, :status => status
   end
 
   def destroy
     intent = PublishIntent.find_by(:base_path => encoded_base_path)
     intent.destroy
 
-    render :json => intent
+    render :json => {}
   end
 end
