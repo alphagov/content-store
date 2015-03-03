@@ -43,20 +43,9 @@ describe "content item write API", :type => :request do
       expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
     end
 
-    it "responds with the content item as JSON in the body" do
+    it "responds with an empty JSON document in the body" do
       put_json "/content/vat-rates", @data
-      item = ContentItem.where(:base_path => "/vat-rates").first
-      response_data = JSON.parse(response.body)
-
-      expect(response_data["title"]).to eq(item.title)
-    end
-
-    it "responds with all the fields in the content item" do
-      # Because this is still publishing-side, we include everything
-      put_json "/content/vat-rates", @data
-      response_data = JSON.parse(response.body)
-
-      expect(response_data.keys).to include(*@data.keys - ["update_type"])
+      expect(response.body).to eq('{}')
     end
 
     it "registers routes for the content item" do
@@ -156,13 +145,6 @@ describe "content item write API", :type => :request do
         expect(@item.details).to eq({"body" => "<p>Some body text</p>\n"})
       end
 
-      it "responds with the content item as JSON in the body" do
-        put_json "/content/vat-rates", @data
-        @item.reload
-        response_data = JSON.parse(response.body)
-        expect(response_data["title"]).to eq(@item.title)
-      end
-
       it "updates routes for the content item" do
         put_json "/content/vat-rates", @data
         assert_routes_registered("frontend", [['/vat-rates', 'exact']])
@@ -236,7 +218,6 @@ describe "content item write API", :type => :request do
 
     it "includes validation error messages in the response" do
       data = JSON.parse(response.body)
-      expect(data["title"]).to eq("")
       expect(data["errors"]).to eq({"title" => ["can't be blank"]})
     end
   end

@@ -29,7 +29,9 @@ class ContentItemsController < ApplicationController
     else
       status = :unprocessable_entity
     end
-    render :json => PrivateContentItemPresenter.new(item), :status => status
+    response_body = {}
+    response_body[:errors] = item.errors.as_json if item.errors.any?
+    render :json => response_body, :status => status
   end
 
   private
@@ -60,16 +62,15 @@ class ContentItemsController < ApplicationController
   end
 
   def return_arbiter_error(status, exception)
-    item = ContentItem.new(@request_data.merge("base_path" => encoded_base_path))
+    response_errors = {}
     if exception.response["errors"]
+      response_errors["url_arbiter_registration"] = []
       exception.response["errors"].each do |field, errors|
-        errors.each do |error|
-          item.errors.add("url_arbiter_registration", "#{field} #{error}")
-        end
+        response_errors["url_arbiter_registration"] += errors.map { |error| "#{field} #{error}" }
       end
     else
-      item.errors.add("url_arbiter_registration", "#{exception.response.code}: #{exception.response.raw_body}")
+      response_errors["url_arbiter_registration"] = ["#{exception.response.code}: #{exception.response.raw_body}"]
     end
-    render :json => PrivateContentItemPresenter.new(item), :status => status
+    render :json => { "errors" => response_errors }, :status => status
   end
 end
