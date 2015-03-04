@@ -270,6 +270,25 @@ describe "content item write API", :type => :request do
     end
   end
 
+  context "url-arbiter returns an unexpected response code (or another unexpected exception is raised)" do
+    before :each do
+      stub_request(:put, "#{GOVUK::Client::TestHelpers::URLArbiter::URL_ARBITER_ENDPOINT}/paths/vat-rates").to_return do |request|
+        {
+          status: 502, body: "<html>Welcome to nginx</html>", :headers => { content_type: "application/html" }
+        }
+      end
+
+      put_json "/content/vat-rates", @data
+    end
+
+    it "should return 500 with error messages" do
+      expect(response.status).to eq(500)
+
+      data = JSON.parse(response.body)
+      expect(data["errors"]).to eq({"url_arbiter_registration" => ["502: <html>Welcome to nginx</html>"]})
+    end
+  end
+
   context "copes with non-ASCII paths" do
     let(:path) { URI.encode('/news/בוט לאינד') }
     before :each do

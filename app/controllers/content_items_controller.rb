@@ -59,6 +59,8 @@ class ContentItemsController < ApplicationController
     return_arbiter_error(:conflict, e)
   rescue GOVUK::Client::Errors::UnprocessableEntity => e
     return_arbiter_error(:unprocessable_entity, e)
+  rescue GOVUK::Client::Errors::BaseError => e
+    return_arbiter_error(:server_error, e)
   end
 
   def return_arbiter_error(status, exception)
