@@ -28,14 +28,8 @@ describe "submitting gone items to the content store", :type => :request do
       expect(item.format).to eq("gone")
     end
 
-    it "responds with the item as JSON in the body" do
-      response_data = JSON.parse(response.body)
-      expect(response_data["format"]).to eq("gone")
-    end
-
     it "registers gone routes for the item" do
       assert_gone_routes_registered([['/dodo-sanctuary', 'prefix'], ['/dodo-sanctuary.json', 'exact']])
     end
   end
-
 end

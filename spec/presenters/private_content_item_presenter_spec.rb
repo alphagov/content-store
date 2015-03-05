@@ -23,14 +23,4 @@ describe PrivateContentItemPresenter do
   it "includes an update type" do
     expect(presenter.as_json["update_type"]).to eq("minor")
   end
-
-  context "with validation errors" do
-    let(:item) { build(:content_item, :with_blank_title).tap(&:valid?) }
-
-    it "includes details of any errors" do
-      json_hash = presenter.as_json
-      expect(json_hash).to have_key("errors")
-      expect(json_hash["errors"]).to eq({"title" => ["can't be blank"]})
-    end
-  end
 end

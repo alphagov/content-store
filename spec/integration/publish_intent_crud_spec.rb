@@ -23,14 +23,11 @@ describe "CRUD of publish intents", :type => :request do
         expect(intent.publish_time).to match_datetime(publish_time)
       end
 
-      it "responds with a created status, and the intent as json" do
+      it "responds with a created status and an empty JSON document" do
         put_json "/publish-intent/vat-rates", data
 
         expect(response.status).to eq(201)
-
-        data = JSON.parse(response.body)
-        expect(data['base_path']).to eq('/vat-rates')
-        expect(data['publish_time']).to match_datetime(publish_time)
+        expect(response.body).to eq('{}')
       end
     end
 
@@ -44,14 +41,10 @@ describe "CRUD of publish intents", :type => :request do
         expect(intent.publish_time).to match_datetime(publish_time)
       end
 
-      it "responds with an ok status, and the intent as json" do
+      it "responds with an ok status" do
         put_json "/publish-intent/vat-rates", data
 
         expect(response.status).to eq(200)
-
-        data = JSON.parse(response.body)
-        expect(data['base_path']).to eq('/vat-rates')
-        expect(data['publish_time']).to match_datetime(publish_time)
       end
     end
 
@@ -100,9 +93,6 @@ describe "CRUD of publish intents", :type => :request do
       put_json "/publish-intent#{path}", data.merge("base_path" => path, "routes" => [{"path" => path, "type" => "exact"}])
 
       expect(response.status).to eq(201)
-
-      data = JSON.parse(response.body)
-      expect(data['base_path']).to eq(path)
 
       expect(PublishIntent.where(:base_path => path).first).to be
     end
@@ -179,14 +169,10 @@ describe "CRUD of publish intents", :type => :request do
       expect(PublishIntent.where(:base_path => "/vat-rates").first).not_to be
     end
 
-    it "returns 200 with details of the deleted intent" do
+    it "returns 200" do
       delete "/publish-intent/vat-rates"
 
       expect(response.status).to eq(200)
-
-      data = JSON.parse(response.body)
-      expect(data['base_path']).to eq('/vat-rates')
-      expect(data['publish_time']).to match_datetime(intent.publish_time)
     end
 
     it "returns 404 for non-existent intent" do
