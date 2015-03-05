@@ -60,10 +60,6 @@ GEM
       plek
       rack-cache
       rest-client (~> 1.6.3)
-    govuk-client-url_arbiter (0.0.2)
-      multi_json (~> 1.0)
-      plek (~> 1.8)
-      rest-client (~> 1.6)
     hike (1.2.3)
     i18n (0.6.11)
     json (1.8.1)
@@ -188,7 +184,6 @@ DEPENDENCIES
   database_cleaner (~> 1.2)
   factory_girl (~> 4.4.0)
   gds-api-adapters (~> 16.3.1)
-  govuk-client-url_arbiter (= 0.0.2)
   logstasher (= 0.5.0)
   mongoid (= 4.0.0)
   mongoid_rails_migrations (= 1.0.1)

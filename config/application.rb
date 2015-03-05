@@ -14,7 +14,6 @@ Bundler.require(*Rails.groups)
 
 require 'plek'
 require 'gds_api/router'
-require 'govuk/client/url_arbiter'
 require 'statsd-ruby'
 
 module ContentStore
@@ -52,10 +51,6 @@ module ContentStore
 
     def statsd
       @statsd ||= Statsd.new('localhost', 8125).tap { |s| s.namespace = 'content-store' }
-    end
-
-    def url_arbiter_api
-      @url_arbiter_api ||= GOVUK::Client::URLArbiter.new
     end
 
     cattr_accessor :queue_publisher

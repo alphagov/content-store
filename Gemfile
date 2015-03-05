@@ -24,12 +24,6 @@ else
   gem 'gds-api-adapters', '~> 16.3.1'
 end
 
-if ENV['URL_ARBITER_DEV']
-  gem 'govuk-client-url_arbiter', :path => '../govuk-client-url_arbiter'
-else
-  gem 'govuk-client-url_arbiter', '0.0.2'
-end
-
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.2'
   gem 'database_cleaner', '~> 1.2'
