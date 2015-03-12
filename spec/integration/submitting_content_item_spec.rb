@@ -53,35 +53,6 @@ describe "content item write API", :type => :request do
       assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
 
-    context "url-arbiter denies use of the path" do
-      before :each do
-        url_arbiter_has_registration_for("/vat-rates", "different_app")
-      end
-
-      it "responds with a CONFLICT status" do
-        put_json "/content/vat-rates", @data
-        expect(response.status).to eq(409)
-      end
-
-      it "returns a JSON response including the error details" do
-        put_json "/content/vat-rates", @data
-        expect(response.content_type).to eq("application/json")
-        response_data = JSON.parse(response.body)
-        expect(response_data["errors"]).to eq({
-          "url_arbiter_registration" => ["path is already reserved by the different_app application"],
-        })
-      end
-
-      it "does not create a content item" do
-        expect {
-          put_json "/content/vat-rates", @data
-        }.not_to change(ContentItem, :count)
-
-        item = ContentItem.where(:base_path => "/vat-rates").first
-        expect(item).to be_nil
-      end
-    end
-
     context "with no content ID" do
       before :each do
         @data.delete "content_id"
@@ -125,57 +96,24 @@ describe "content item write API", :type => :request do
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
     end
 
-    context "url-arbiter allows use of path" do
-      before :each do
-        url_arbiter_has_registration_for("/vat-rates", "publisher")
-      end
-
-      it "responds with an OK status" do
-        put_json "/content/vat-rates", @data
-        expect(response.status).to eq(200)
-      end
-
-      it "updates the content item" do
-        put_json "/content/vat-rates", @data
-        @item.reload
-        expect(@item.title).to eq("VAT rates")
-        expect(@item.need_ids).to eq(["100123", "100124"])
-        expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
-        expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
-        expect(@item.details).to eq({"body" => "<p>Some body text</p>\n"})
-      end
-
-      it "updates routes for the content item" do
-        put_json "/content/vat-rates", @data
-        assert_routes_registered("frontend", [['/vat-rates', 'exact']])
-      end
+    it "responds with an OK status" do
+      put_json "/content/vat-rates", @data
+      expect(response.status).to eq(200)
     end
 
-    context "url-arbiter denies use of the path" do
-      before :each do
-        url_arbiter_has_registration_for("/vat-rates", "different_app")
-      end
+    it "updates the content item" do
+      put_json "/content/vat-rates", @data
+      @item.reload
+      expect(@item.title).to eq("VAT rates")
+      expect(@item.need_ids).to eq(["100123", "100124"])
+      expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
+      expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
+      expect(@item.details).to eq({"body" => "<p>Some body text</p>\n"})
+    end
 
-      it "responds with a CONFLICT status" do
-        put_json "/content/vat-rates", @data
-        expect(response.status).to eq(409)
-      end
-
-      it "returns a JSON response including the error details" do
-        put_json "/content/vat-rates", @data
-        expect(response.content_type).to eq("application/json")
-        response_data = JSON.parse(response.body)
-        expect(response_data["errors"]).to eq({
-          "url_arbiter_registration" => ["path is already reserved by the different_app application"],
-        })
-      end
-
-      it "does not update the content item" do
-        put_json "/content/vat-rates", @data
-
-        @item.reload
-        expect(@item.title).to eq("Original title")
-      end
+    it "updates routes for the content item" do
+      put_json "/content/vat-rates", @data
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
   end
 
@@ -256,39 +194,6 @@ describe "content item write API", :type => :request do
     end
   end
 
-  context "url-arbiter returns validation error" do
-    before :each do
-      url_arbiter_returns_validation_error_for("/vat-rates", "publishing_app" => ["can't be blank"])
-      put_json "/content/vat-rates", @data
-    end
-
-    it "should return a 422 with error messages" do
-      expect(response.status).to eq(422)
-
-      data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"url_arbiter_registration" => ["publishing_app can't be blank"]})
-    end
-  end
-
-  context "url-arbiter returns an unexpected response code (or another unexpected exception is raised)" do
-    before :each do
-      stub_request(:put, "#{GOVUK::Client::TestHelpers::URLArbiter::URL_ARBITER_ENDPOINT}/paths/vat-rates").to_return do |request|
-        {
-          status: 502, body: "<html>Welcome to nginx</html>", :headers => { content_type: "application/html" }
-        }
-      end
-
-      put_json "/content/vat-rates", @data
-    end
-
-    it "should return 500 with error messages" do
-      expect(response.status).to eq(500)
-
-      data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"url_arbiter_registration" => ["502: <html>Welcome to nginx</html>"]})
-    end
-  end
-
   context "copes with non-ASCII paths" do
     let(:path) { URI.encode('/news/בוט לאינד') }
     before :each do
@@ -306,11 +211,6 @@ describe "content item write API", :type => :request do
       item = ContentItem.where(:base_path => path).first
       expect(item).to be
       expect(item.base_path).to eq(path)
-    end
-
-    it "registers the item with url-arbiter" do
-      expect(Rails.application.url_arbiter_api).to receive(:reserve_path).with(path, "publishing_app" => "publisher")
-      put_json "/content/#{path}", @data
     end
   end
 end

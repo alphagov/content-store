@@ -1,8 +1,5 @@
-require 'govuk/client/url_arbiter'
-
 class ContentItemsController < ApplicationController
   before_filter :parse_json_request, :only => [:update]
-  before_filter :register_with_url_arbiter, :only => [:update]
   before_filter :set_cache_headers, :only => [:show]
 
   def show
@@ -51,28 +48,5 @@ class ContentItemsController < ApplicationController
     expiry = [config.default_ttl.from_now, publish_time].min
     min_expiry = config.minimum_ttl.from_now
     expiry >= min_expiry ? expiry : min_expiry
-  end
-
-  def register_with_url_arbiter
-    Rails.application.url_arbiter_api.reserve_path(encoded_base_path, "publishing_app" => @request_data["publishing_app"])
-  rescue GOVUK::Client::Errors::Conflict => e
-    return_arbiter_error(:conflict, e)
-  rescue GOVUK::Client::Errors::UnprocessableEntity => e
-    return_arbiter_error(:unprocessable_entity, e)
-  rescue GOVUK::Client::Errors::BaseError => e
-    return_arbiter_error(:server_error, e)
-  end
-
-  def return_arbiter_error(status, exception)
-    response_errors = {}
-    if exception.response["errors"]
-      response_errors["url_arbiter_registration"] = []
-      exception.response["errors"].each do |field, errors|
-        response_errors["url_arbiter_registration"] += errors.map { |error| "#{field} #{error}" }
-      end
-    else
-      response_errors["url_arbiter_registration"] = ["#{exception.response.code}: #{exception.response.raw_body}"]
-    end
-    render :json => { "errors" => response_errors }, :status => status
   end
 end
