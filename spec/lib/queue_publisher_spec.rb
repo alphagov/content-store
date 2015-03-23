@@ -25,7 +25,16 @@ describe QueuePublisher do
         expect(Bunny).to receive(:new).with(options.except(:exchange)).and_return(mock_session)
         expect(mock_session).to receive(:start)
 
-        queue_publisher
+        queue_publisher.connection
+      end
+
+      it "does not raise an exception from the constructor if connecting to rabbitmq fails" do
+        # This is to ensure the application can still boot when rabbitmq is unavailable.
+        allow(Bunny).to receive(:new).and_raise(Bunny::TCPConnectionFailedForAllHosts)
+
+        expect {
+          queue_publisher
+        }.not_to raise_error
       end
 
       it "creates the channel and exchange" do
