@@ -5,9 +5,11 @@ class QueuePublisher
 
     @exchange_name = options.fetch(:exchange)
     @options = options.except(:exchange)
+  end
 
-    @connection = Bunny.new(@options)
-    @connection.start
+  def connection
+    establish_connection if @connection.nil?
+    @connection
   end
 
   def exchange
@@ -55,8 +57,13 @@ class QueuePublisher
     raise
   end
 
+  def establish_connection
+    @connection = Bunny.new(@options)
+    @connection.start
+  end
+
   def connect_to_exchange
-    @channel = @connection.create_channel
+    @channel = connection.create_channel
 
     # Enable publisher confirms, so we get acks back after publishes.
     @channel.confirm_select
