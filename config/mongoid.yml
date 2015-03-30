@@ -1,7 +1,7 @@
 development:
   sessions:
     default:
-      database: content_store_development
+      database: <%= ENV['MONGO_DB_NAME'] || 'content_store_development' %>
       hosts:
         - localhost:27017
       options:
