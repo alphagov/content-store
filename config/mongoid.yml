@@ -1,19 +1,18 @@
 development:
   sessions:
     default:
-      database: <%= ENV['MONGO_DB_NAME'] || 'content_store_development' %>
-      hosts:
-        - localhost:27017
+      # MONGODB_URI includes draft_content_store_development or content_store_development
+      # depending on whether we're running content store in draft mode or not.
+      uri: <%= ENV['MONGODB_URI'] || 'mongodb://localhost/content_store_development' %>
       options:
         write:
           w: 1
         read: primary
+
 test:
   sessions:
     default:
-      database: content_store_test
-      hosts:
-        - localhost:27017
+      uri: mongodb://localhost/content_store_test
       options:
         write:
           w: 1
@@ -22,3 +21,12 @@ test:
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
+
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
+      options:
+        write:
+          w: majority
+        read: primary_preferred
