@@ -89,3 +89,17 @@ for content store.
 
 Publishing to the message queue can be disabled by setting the
 `DISABLE_QUEUE_PUBLISHER` environment variable.
+
+## Running draft-content-store in development
+
+On a development VM you may want to run an instance of content-store
+to accept draft content sent to publishing-api. You can:
+
+```
+  bowl draft-content-store
+```
+
+from the development directory to run the content-store application
+at `draft-content-store.dev.gov.uk`. This instance stores data in a
+separate database: 'draft_content_store_development', and logs to
+the same rails log file as content-store, with a tag [DRAFT].
