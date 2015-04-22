@@ -8,6 +8,7 @@ FactoryGirl.define do
     rendering_app 'frontend'
     update_type 'minor'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+    public_updated_at Time.now
 
     trait :with_content_id do
       content_id { SecureRandom.uuid }

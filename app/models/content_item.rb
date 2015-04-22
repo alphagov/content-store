@@ -49,6 +49,7 @@ class ContentItem
   validates :format, :update_type, format: { with: /\A[a-z0-9_]+\z/i, allow_blank: true }
   validates :title, presence: true, if: :renderable_content?
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
+  validates :public_updated_at, presence: true, if: :renderable_content?
   validate :route_set_is_valid
   validate :no_extra_route_keys
   validate :links_are_valid
