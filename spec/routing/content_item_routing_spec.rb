@@ -25,6 +25,7 @@ describe "routing of content_item requests", :type => :routing do
         :controller => "content_items",
         :action => "show",
         :base_path => "/foo/bar",
+        :public_api_request => true,
       })
     end
 

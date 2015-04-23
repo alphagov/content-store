@@ -10,7 +10,11 @@ class ContentItemsController < ApplicationController
     # The presenter needs context about routes and host names from controller
     # to know how to generate API URLs, so we can take the Rails helper and
     # pass that in as a callable
-    api_url_method = method(:content_item_url)
+    if params[:public_api_request]
+      api_url_method = method(:content_item_api_url)
+    else
+      api_url_method = method(:content_item_url)
+    end
     presenter = PublicContentItemPresenter.new(item, api_url_method)
 
     render :json => presenter
