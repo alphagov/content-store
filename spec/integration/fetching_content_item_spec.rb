@@ -94,6 +94,32 @@ describe "Fetching a content item", :type => :request do
     describe "expanding linked items" do
       # functional behaviour of link expansion covered in end_to_end_spec
 
+      describe "generating the API URL" do
+        let!(:linked_item) { create(:content_item, :with_content_id) }
+        before :each do
+          item.links["related"] = [linked_item.content_id]
+          item.save!
+        end
+
+        it "includes the API URL for linked items" do
+          get "/content#{item.base_path}"
+
+          expect(response.status).to eq(200)
+
+          data = JSON.parse(response.body)
+          expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/content#{linked_item.base_path}")
+        end
+
+        it "includes the public API URL when requested through the public endpoint" do
+          get "/api/content#{item.base_path}"
+
+          expect(response.status).to eq(200)
+
+          data = JSON.parse(response.body)
+          expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/api/content#{linked_item.base_path}")
+        end
+      end
+
       it "does not use N+1 queries to expand linked items" do
         item.links["related"] = []
         20.times do
