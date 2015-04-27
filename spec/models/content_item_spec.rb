@@ -165,6 +165,12 @@ describe ContentItem, :type => :model do
           expect(@item).not_to be_valid
           expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
         end
+
+        it 'rejects content IDs which are hashes' do
+          @item.links = {"related" => [{}]}
+          expect(@item).not_to be_valid
+          expect(@item.errors[:links]).to eq(["must map to lists of UUIDs"])
+        end
       end
     end
 
