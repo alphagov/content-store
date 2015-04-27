@@ -182,7 +182,7 @@ private
 
     bad_values = links.values.reject { |value|
       value.is_a?(Array) && value.all? { |content_id|
-        UUIDValidator::UUID_PATTERN.match(content_id)
+        UUIDValidator.valid?(content_id)
       }
     }
     unless bad_values.empty?
