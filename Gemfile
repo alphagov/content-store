@@ -24,7 +24,7 @@ else
   gem 'gds-api-adapters', '~> 16.3.1'
 end
 
-gem 'govuk-content-schema-test-helpers', '1.2.0'
+gem 'govuk-content-schema-test-helpers', '1.3.0'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.2'
