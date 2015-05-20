@@ -111,7 +111,7 @@ private
       .renderable_content
       .where(:content_id => {"$in" => links.values.flatten.uniq})
       .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
-      .only(:content_id, :locale, :base_path, :title)
+      .only(:content_id, :locale, :base_path, :title, :description)
       .sort(:updated_at => -1)
       .group_by(&:content_id)
 
@@ -137,7 +137,7 @@ private
     ContentItem
       .renderable_content
       .where(:content_id => content_id)
-      .only(:locale, :base_path, :title)
+      .only(:locale, :base_path, :title, :description)
       .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
