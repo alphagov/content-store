@@ -42,7 +42,7 @@ module ContentStore
 
     # Caching
     config.cache_control_directive = 'public'
-    config.default_ttl = ENV.fetch('DEFAULT_TTL', 30.minutes).to_i
+    config.default_ttl = ENV.fetch('DEFAULT_TTL', 30.minutes).to_i.seconds
     config.minimum_ttl = [config.default_ttl, 5.seconds].min
 
     def router_api
