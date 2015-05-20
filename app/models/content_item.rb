@@ -38,7 +38,6 @@ class ContentItem
   field :links, :type => Hash, :default => {}
   attr_accessor :update_type
 
-  scope :excluding_redirects, ->{ where(:format.ne => "redirect") }
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
   validates :base_path, absolute_path: true
@@ -109,7 +108,7 @@ private
     # matching content_id in either this item's locale, or the default locale
     # with the most recently updated first.
     potential_items_by_id = ContentItem
-      .excluding_redirects
+      .renderable_content
       .where(:content_id => {"$in" => links.values.flatten.uniq})
       .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
       .only(:content_id, :locale, :base_path, :title)
@@ -136,7 +135,7 @@ private
   def load_available_translations
     return [self] if self.content_id.blank?
     ContentItem
-      .excluding_redirects
+      .renderable_content
       .where(:content_id => content_id)
       .only(:locale, :base_path, :title)
       .sort(:locale => 1, :updated_at => 1)
