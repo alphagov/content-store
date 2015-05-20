@@ -498,6 +498,16 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'with non-renderable linked items' do
+      let(:redirect) { create(:redirect_content_item, :with_content_id) }
+      let(:gone) { create(:gone_content_item, :with_content_id) }
+      let(:item) { build(:content_item, :links => {"related" => [redirect.content_id, gone.content_id]}) }
+
+      it 'excludes the non-renderable items' do
+        expect(item.linked_items["related"]).to eq([])
+      end
+    end
+
     context 'with multiple published items' do
       before :each do
         shared_content_id = SecureRandom.uuid
