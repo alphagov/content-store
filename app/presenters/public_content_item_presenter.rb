@@ -29,6 +29,7 @@ private
     {
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
+      "description" => linked_item.description,
       "api_url" => api_url(linked_item),
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,

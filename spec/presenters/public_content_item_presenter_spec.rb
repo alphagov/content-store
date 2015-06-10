@@ -37,8 +37,8 @@ describe PublicContentItemPresenter do
       expect(related.size).to be(2)
     end
 
-    it "includes the path and title for each item" do
-      expect(related).to all include("base_path", "title")
+    it "includes the path, title and description for each item" do
+      expect(related).to all include("base_path", "title", "description")
     end
 
     it "includes the locale for each item" do
