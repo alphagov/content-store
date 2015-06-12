@@ -188,6 +188,7 @@ In the `notifying` context, the items are hashes containing: (TODO: confirm)
 In the `retrieving` context, the items are hashes containing:
  - `title`: The title of the content item
  - `base_path`: The base path of the content
+ - `description`: The description of the content
  - `api_url`: The URL at which the content item is retrievable from the content
               store
  - `web_url`: The public-facing URL for the piece of content
