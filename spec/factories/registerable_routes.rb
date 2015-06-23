@@ -7,7 +7,7 @@ FactoryGirl.define do
     type "prefix"
   end
 
-  factory :registerable_gone_route, parent: :registerable_route do
+  factory :registerable_gone_route, parent: :registerable_route, class: RegisterableGoneRoute do
   end
 
   factory :registerable_redirect do

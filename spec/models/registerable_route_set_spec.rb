@@ -184,6 +184,26 @@ describe RegisterableRouteSet, :type => :model do
         @route_set.is_supplimentary_set = true
         expect(@route_set).to be_valid
       end
+
+      context "a non-redirect item that includes some redirects" do
+
+        it "is valid with routes and redirects" do
+          @route_set.registerable_redirects << build(:registerable_redirect, :path => @route_set.base_path + ".json")
+          expect(@route_set).to be_valid
+        end
+
+        it "requires any redirects to be beneath the base path" do
+          @route_set.registerable_redirects << build(:registerable_redirect, :path => "/another-path")
+          expect(@route_set).not_to be_valid
+          expect(@route_set.errors[:registerable_redirects].size).to eq(1)
+        end
+
+        it "does not allow redirects to duplicate any of the routes" do
+          @route_set.registerable_redirects << build(:registerable_redirect, :path => @route_set.base_path)
+          expect(@route_set).not_to be_valid
+          expect(@route_set.errors[:registerable_redirects].size).to eq(1)
+        end
+      end
     end
 
     context "for a redirect item" do
@@ -240,17 +260,34 @@ describe RegisterableRouteSet, :type => :model do
   end
 
   describe '#register!' do
-    it 'registers and commits all registeragble routes' do
-      routes = [
-        build(:registerable_route, :path => '/path', :type => 'exact'),
-        build(:registerable_route, :path => '/path/sub/path', :type => 'prefix'),
-      ]
-      route_set = RegisterableRouteSet.new(:registerable_routes => routes, :base_path => '/path', :rendering_app => 'frontend')
-      route_set.register!
-      assert_routes_registered('frontend', [
-        ['/path', 'exact'],
-        ['/path/sub/path', 'prefix']
-      ])
+    context 'for a non-redirect route set' do
+      before :each do
+        @route_set = RegisterableRouteSet.new(:base_path => '/path', :rendering_app => 'frontend')
+        @route_set.registerable_routes = [
+          build(:registerable_route, :path => '/path', :type => 'exact'),
+          build(:registerable_route, :path => '/path/sub/path', :type => 'prefix'),
+        ]
+      end
+
+      it 'registers and commits all registerable routes' do
+        @route_set.register!
+        assert_routes_registered('frontend', [
+          ['/path', 'exact'],
+          ['/path/sub/path', 'prefix']
+        ])
+      end
+
+      it 'registers and commits all registerable routes and redirects' do
+        @route_set.registerable_redirects = [
+          build(:registerable_redirect, :path => '/path.json', :type => 'exact', :destination => '/api/content/path'),
+        ]
+        @route_set.register!
+        assert_routes_registered('frontend', [
+          ['/path', 'exact'],
+          ['/path/sub/path', 'prefix']
+        ])
+        assert_redirect_routes_registered([['/path.json', 'exact', '/api/content/path']])
+      end
     end
 
     it 'is a no-op with no routes or redirects' do
@@ -270,6 +307,16 @@ describe RegisterableRouteSet, :type => :model do
       route_set = RegisterableRouteSet.new(:registerable_redirects => redirects, :base_path => '/path', :is_redirect => true)
       route_set.register!
       assert_redirect_routes_registered([['/path', 'exact', '/new-path'], ['/path/sub/path', 'prefix', '/somewhere-else']])
+    end
+
+    it 'registers and commits all registerable gone routes for a gone item' do
+      route_set = RegisterableRouteSet.new(:base_path => '/path', :rendering_app => 'frontend', :is_gone => true)
+      route_set.registerable_routes = [
+        build(:registerable_gone_route, :path => '/path', :type => 'exact'),
+        build(:registerable_gone_route, :path => '/path/sub/path', :type => 'prefix'),
+      ]
+      route_set.register!
+      assert_gone_routes_registered([['/path', 'exact'], ['/path/sub/path', 'prefix']])
     end
   end
 end
