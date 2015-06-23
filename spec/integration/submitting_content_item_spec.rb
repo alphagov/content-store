@@ -82,7 +82,7 @@ describe "content item write API", :type => :request do
     end
   end
 
-  context 'updating an existing content item' do
+  describe 'updating an existing content item' do
     before(:each) do
       Timecop.travel(30.minutes.ago) do
         @item = create(:content_item,
@@ -114,6 +114,20 @@ describe "content item write API", :type => :request do
     it "updates routes for the content item" do
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+    end
+  end
+
+  describe "creating a content item with both routes and redirects" do
+    before :each do
+      @data["redirects"] = [
+        {"path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates"}
+      ]
+    end
+
+    it "registeres the routes and the redirects" do
+      put_json "/content/vat-rates", @data
+      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+      assert_redirect_routes_registered([['/vat-rates.json', 'exact', '/api/content/vat-rates']])
     end
   end
 

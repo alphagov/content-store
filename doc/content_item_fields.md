@@ -233,13 +233,11 @@ contains a path and a routing type. See
 An array of hashes. Present only in storing context.
 
 The redirects from old paths associated with the content item. Each hash in the
-array contains an original path, a routing type, and an optional destination
-path. See [`route_registration`](route_registration.md) for
-more details.
+array contains an original path, a routing type, and a destination path. See
+[`route_registration`](route_registration.md) for more details.
 
-TODO: Currently, redirects for normal content can be registered with the
-content item itself. We need to decide if this is what we want, or whether
-redirects are only included in `redirect` content items.
+For redirect content items, the behaviour is slightly different.  See
+redirect_item.md for details.
 
 ## `update_type`
 

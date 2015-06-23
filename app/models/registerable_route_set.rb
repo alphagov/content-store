@@ -75,6 +75,7 @@ class RegisterableRouteSet < OpenStruct
     else
       register_rendering_app
       registerable_routes.each { |route| route.register!(rendering_app) }
+      registerable_redirects.map(&:register!)
     end
     commit_routes
   end
@@ -131,7 +132,7 @@ private
       errors[:registerable_routes] << 'must have unique paths'
     end
 
-    paths = registerable_redirects.map(&:path)
+    paths += registerable_redirects.map(&:path)
     unless paths == paths.uniq
       errors[:registerable_redirects] << 'must have unique paths'
     end
