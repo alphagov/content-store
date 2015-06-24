@@ -624,6 +624,15 @@ describe ContentItem, :type => :model do
 
 
     describe 'access limiting' do
+
+      it "validates the format of the access_limited hash" do
+        content_item = build(:content_item, access_limited: { 'bad-key' => []})
+        expect(content_item).not_to be_valid
+
+        content_item = build(:content_item, access_limited: { 'users' => { 'other' => 'stuff'}})
+        expect(content_item).not_to be_valid
+      end
+
       context 'a content item that is not access limited' do
         let!(:content_item) { create(:content_item) }
 
