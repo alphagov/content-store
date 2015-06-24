@@ -47,6 +47,24 @@ To retrieve content from the content store, make a GET request:
 
 Examples of the JSON representation of content items can be found in [doc/output_examples](doc/output_examples).
 
+## Access-limited content items
+
+Retrieving an access-limited content item from the content store requires that
+an additional authentication header be provided:
+
+``` sh
+  curl -header "X-Govuk-Authenticated-User: f17150b0-7540-0131-f036-0050560123202" \
+    https://content-store.production.alphagov.co.uk/content<base_path>
+
+```
+
+If the supplied identifier is in the list of authorised users, the content item
+will be returned. If not, a 403 (Forbidden) response will be returned. For more
+details on how to create an access-limited content item, see
+[doc/content_item_fields.md#access_limited](doc/content_item_fields.md#access_limited)
+
+Note: the access-limiting behaviour should only be active on the draft stack.
+
 ## Post publishing/update notifications
 
 After a content item is added or updated, a message is published to RabbitMQ.

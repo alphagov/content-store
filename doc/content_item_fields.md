@@ -254,3 +254,24 @@ It must be one of:
 
 Other types may be added in future, the content store will just pass them through
 to the fanout.
+
+## `access_limited`
+
+A hash. Present in the storing and notifying context.
+
+This is an optional field that is used to identify access-limited content. It
+should identify the specific users that are authorised to view it. If present,
+the expected format is as follows:
+
+```
+    "access_limited": {
+      "users": ['USER-ID', 'ANOTHER-USER-ID']
+    }
+```
+
+A content item with the above fields would be treated as access-limited, and
+only the users with IDs 'USER-ID' and 'ANOTHER-USER-ID' would be authorised to
+view it.
+
+If `access_limited` is not present, or is an empty hash, the item will be
+treated as publicly visible.
