@@ -10,7 +10,7 @@ class ContentItemsController < ApplicationController
     if item.viewable_by?(authenticated_user_id)
       render :json => PublicContentItemPresenter.new(item, api_url_method)
     else
-      render forbidden_json_response
+      render :json => { }, status: 403
     end
   end
 
@@ -33,10 +33,6 @@ class ContentItemsController < ApplicationController
 
   def authenticated_user_id
     request.headers['X-Govuk-Authenticated-User']
-  end
-
-  def forbidden_json_response
-    { :json => { :errors => { base: "Unauthorised" } }, status: 403 }
   end
 
   # The presenter needs context about routes and host names from controller

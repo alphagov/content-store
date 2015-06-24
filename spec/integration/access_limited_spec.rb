@@ -13,7 +13,7 @@ describe "Fetching an access-limited content item", :type => :request do
       expect(response.status).to eq(403)
       data = JSON.parse(response.body)
 
-      expect(data['errors']).to eq({ 'base' => 'Unauthorised' })
+      expect(response.body).to eq("{}")
     end
   end
 
