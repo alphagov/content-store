@@ -36,6 +36,7 @@ class ContentItem
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
   field :links, :type => Hash, :default => {}
+  field :access_limited, :type => Hash, :default => {}
   attr_accessor :update_type
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
@@ -99,6 +100,10 @@ class ContentItem
     items = load_linked_items
     items["available_translations"] = available_translations if available_translations.any?
     items
+  end
+
+  def viewable_by?(user_id)
+    !access_limited? || access_limited['users'].include?(user_id)
   end
 
 private
