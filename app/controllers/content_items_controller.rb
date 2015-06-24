@@ -7,17 +7,21 @@ class ContentItemsController < ApplicationController
       ContentItem.find_by(:base_path => encoded_base_path)
     end
 
-    # The presenter needs context about routes and host names from controller
-    # to know how to generate API URLs, so we can take the Rails helper and
-    # pass that in as a callable
-    if params[:public_api_request]
-      api_url_method = method(:content_item_api_url)
-    else
-      api_url_method = method(:content_item_url)
-    end
-    presenter = PublicContentItemPresenter.new(item, api_url_method)
+    if item.viewable_by?(authenticated_user_id)
+      # The presenter needs context about routes and host names from controller
+      # to know how to generate API URLs, so we can take the Rails helper and
+      # pass that in as a callable
+      if params[:public_api_request]
+        api_url_method = method(:content_item_api_url)
+      else
+        api_url_method = method(:content_item_url)
+      end
+      presenter = PublicContentItemPresenter.new(item, api_url_method)
 
-    render :json => presenter
+      render :json => presenter
+    else
+      render forbidden_json_response
+    end
   end
 
   def update
@@ -36,6 +40,14 @@ class ContentItemsController < ApplicationController
   end
 
   private
+
+  def authenticated_user_id
+    request.headers['X-Govuk-Authenticated-User']
+  end
+
+  def forbidden_json_response
+    { :json => { :errors => { base: "Unauthorised" } }, status: 403 }
+  end
 
   def set_cache_headers
     intent = PublishIntent.where(:base_path => encoded_base_path).first
