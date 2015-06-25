@@ -16,7 +16,7 @@ describe "Fetching content items", :type => :request do
     end
 
     it "sets cache headers to expire in the default TTL" do
-      expect(response.headers["Expires"]).to eq(default_ttl.from_now.httpdate)
+      expect(cache_control["max-age"]).to eq(default_ttl.to_s)
     end
 
     it "sets a cache-control directive of public" do
@@ -49,7 +49,7 @@ describe "Fetching content items", :type => :request do
     end
 
     it "sets cache headers to expire in the default TTL" do
-      expect(response.headers["Expires"]).to eq(default_ttl.from_now.httpdate)
+      expect(cache_control["max-age"]).to eq(default_ttl.to_s)
     end
 
     it "sets a cache-control directive of public" do

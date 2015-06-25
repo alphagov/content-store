@@ -15,7 +15,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
     end
 
     it "sets cache headers to expire in the default TTL" do
-      expect(response.headers["Expires"]).to eq(default_ttl.from_now.httpdate)
+      expect(cache_control["max-age"]).to eq(default_ttl.to_s)
     end
 
     it "sets a cache-control directive of public" do
@@ -35,8 +35,8 @@ describe "Fetching a content item with a publish intent", :type => :request do
       expect(response.body).to eq(public_presentation(content_item))
     end
 
-    it "sets cache headers to expire in the next 5 seconds" do
-      expect(response.headers["Expires"]).to eq(5.seconds.from_now.httpdate)
+    it "sets cache headers to the minimum TTL" do
+      expect(cache_control["max-age"]).to eq(Rails.application.config.minimum_ttl.to_s)
     end
 
     it "sets a cache-control directive of public" do
@@ -57,7 +57,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
     end
 
     it "sets cache headers to expire in the default TTL" do
-      expect(response.headers["Expires"]).to eq(default_ttl.from_now.httpdate)
+      expect(cache_control["max-age"]).to eq(default_ttl.to_s)
     end
 
     it "sets a cache-control directive of public" do
@@ -78,7 +78,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
     end
 
     it "sets cache headers to expire when the publish intent is due" do
-      expect(response.headers["Expires"]).to eq(5.minutes.from_now.httpdate)
+      expect(cache_control["max-age"]).to eq(5.minutes.to_i.to_s)
     end
 
     it "sets a cache-control directive of public" do
@@ -98,7 +98,7 @@ describe "Fetching a publish intent without a content item", :type => :request d
   end
 
   it "sets cache headers to expire according to the publish intent" do
-    expect(response.headers["Expires"]).to eq(5.minutes.from_now.httpdate)
+    expect(cache_control["max-age"]).to eq(5.minutes.to_i.to_s)
   end
 
   it "sets a cache-control directive of public" do
