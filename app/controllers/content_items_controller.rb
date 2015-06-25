@@ -8,6 +8,7 @@ class ContentItemsController < ApplicationController
     end
 
     if item.viewable_by?(authenticated_user_uid)
+      set_cache_control_private if item.access_limited?
       render :json => PublicContentItemPresenter.new(item, api_url_method)
     else
       render json_forbidden_response
@@ -66,6 +67,10 @@ class ContentItemsController < ApplicationController
     else
       expires_at config.default_ttl.from_now
     end
+  end
+
+  def set_cache_control_private
+    response.headers['Cache-Control'] = 'private'
   end
 
   # Calculate the TTL based on the publish_time but constrained to be within
