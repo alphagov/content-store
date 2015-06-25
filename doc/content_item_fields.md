@@ -265,13 +265,13 @@ the expected format is as follows:
 
 ```
     "access_limited": {
-      "users": ['USER-ID', 'ANOTHER-USER-ID']
+      "users": ['USER-UID', 'ANOTHER-USER-UID']
     }
 ```
 
 A content item with the above fields would be treated as access-limited, and
-only the users with IDs 'USER-ID' and 'ANOTHER-USER-ID' would be authorised to
-view it.
+only the users with UIDs 'USER-UID' and 'ANOTHER-USER-UID' would be authorised
+to view it.
 
 If `access_limited` is not present, or is an empty hash, the item will be
 treated as publicly visible.

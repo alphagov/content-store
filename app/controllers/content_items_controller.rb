@@ -7,7 +7,7 @@ class ContentItemsController < ApplicationController
       ContentItem.find_by(:base_path => encoded_base_path)
     end
 
-    if item.viewable_by?(authenticated_user_id)
+    if item.viewable_by?(authenticated_user_uid)
       render :json => PublicContentItemPresenter.new(item, api_url_method)
     else
       render json_forbidden_response
@@ -31,7 +31,7 @@ class ContentItemsController < ApplicationController
 
   private
 
-  def authenticated_user_id
+  def authenticated_user_uid
     request.headers['X-Govuk-Authenticated-User']
   end
 

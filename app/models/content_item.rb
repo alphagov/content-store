@@ -103,13 +103,13 @@ class ContentItem
     items
   end
 
-  def viewable_by?(user_id)
-    !access_limited? || authorised_user_ids.include?(user_id)
+  def viewable_by?(user_uid)
+    !access_limited? || authorised_user_uids.include?(user_uid)
   end
 
 private
 
-  def authorised_user_ids
+  def authorised_user_uids
     access_limited['users']
   end
 
@@ -175,7 +175,7 @@ private
   end
 
   def access_limited_values_valid?
-    authorised_user_ids.is_a?(Array) && authorised_user_ids.all? { |id| id.is_a?(String) }
+    authorised_user_uids.is_a?(Array) && authorised_user_uids.all? { |id| id.is_a?(String) }
   end
 
   def no_extra_route_keys
