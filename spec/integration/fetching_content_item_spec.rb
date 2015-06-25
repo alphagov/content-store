@@ -55,40 +55,6 @@ describe "Fetching a content item", :type => :request do
         get "/content/vat-rates"
         expect(response.headers["Cache-Control"]).to eq('public')
       end
-
-      describe "adjusting expiry for publish intents" do
-        it "should set the Expires header to the date of the upcoming publish_intent" do
-          Timecop.freeze do
-            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 23.minutes.from_now)
-            get "/content/vat-rates"
-            expect(response.headers["Expires"]).to eq(23.minutes.from_now.httpdate)
-          end
-        end
-
-        it "should set the Expires header to 30 mins with publish_intent more than 30 mins away" do
-          Timecop.freeze do
-            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 40.minutes.from_now)
-            get "/content/vat-rates"
-            expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
-          end
-        end
-
-        it "should set the Expires header to 30 mins with a publish_intent in the past" do
-          Timecop.freeze do
-            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 10.minutes.ago)
-            get "/content/vat-rates"
-            expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
-          end
-        end
-
-        it "should set an Expires header to 5 seconds with a publish_intent that's very recently in the past" do
-          Timecop.freeze do
-            create(:publish_intent, :base_path => "/vat-rates", :publish_time => 10.seconds.ago)
-            get "/content/vat-rates"
-            expect(response.headers["Expires"]).to eq(5.seconds.from_now.httpdate)
-          end
-        end
-      end
     end
   end
 
@@ -103,40 +69,6 @@ describe "Fetching a content item", :type => :request do
         get "/content/non-existent"
         expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
         expect(response.headers["Cache-Control"]).to eq('public')
-      end
-    end
-
-    describe "adjusting expiry for publish intents" do
-      it "should set the Expires header to the date of the upcoming publish_intent" do
-        Timecop.freeze do
-          create(:publish_intent, :base_path => "/non-existent", :publish_time => 23.minutes.from_now)
-          get "/content/non-existent"
-          expect(response.headers["Expires"]).to eq(23.minutes.from_now.httpdate)
-        end
-      end
-
-      it "should set the Expires header to 30 mins with publish_intent more than 30 mins away" do
-        Timecop.freeze do
-          create(:publish_intent, :base_path => "/non-existent", :publish_time => 40.minutes.from_now)
-          get "/content/non-existent"
-          expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
-        end
-      end
-
-      it "should set the Expires header to 30 mins with a publish_intent in the past" do
-        Timecop.freeze do
-          create(:publish_intent, :base_path => "/non-existent", :publish_time => 10.minutes.ago)
-          get "/content/non-existent"
-          expect(response.headers["Expires"]).to eq(30.minutes.from_now.httpdate)
-        end
-      end
-
-      it "should set an Expires header to 5 seconds with a publish_intent that's very recently in the past" do
-        Timecop.freeze do
-          create(:publish_intent, :base_path => "/non-existent", :publish_time => 10.seconds.ago)
-          get "/content/non-existent"
-          expect(response.headers["Expires"]).to eq(5.seconds.from_now.httpdate)
-        end
       end
     end
   end
