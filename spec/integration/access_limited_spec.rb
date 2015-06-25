@@ -5,11 +5,14 @@ describe "Fetching an access-limited content item", :type => :request do
   let(:authorised_user_id) { access_limited_content_item.access_limited['users'].first }
 
   context "request without an authentication header" do
-    it "returns an 403 (Forbidden) response" do
+    it "returns a 403 (Forbidden) response" do
       get "content/#{access_limited_content_item.base_path}"
 
+      json = JSON.parse(response.body)
+
       expect(response.status).to eq(403)
-      expect(response.body).to eq("{}")
+      expect(json["errors"]["type"]).to eq("access_forbidden")
+      expect(json["errors"]["code"]).to eq("403")
     end
   end
 
@@ -27,12 +30,15 @@ describe "Fetching an access-limited content item", :type => :request do
   end
 
   context "request with an unauthorised user ID specified in the header" do
-    it "returns an 403 (Forbidden) response" do
+    it "returns a 403 (Forbidden) response" do
       get "content/#{access_limited_content_item.base_path}",
         {}, { 'X-Govuk-Authenticated-User' => 'unauthorised-user' }
 
+      json = JSON.parse(response.body)
+
       expect(response.status).to eq(403)
-      expect(response.body).to eq("{}")
+      expect(json["errors"]["type"]).to eq("access_forbidden")
+      expect(json["errors"]["code"]).to eq("403")
     end
   end
 end
