@@ -119,34 +119,6 @@ describe "Fetching a content item", :type => :request do
           expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/api/content#{linked_item.base_path}")
         end
       end
-
-      it "does not use N+1 queries to expand linked items" do
-        item.links["related"] = []
-        20.times do
-          linked_item = create(:content_item, :with_content_id)
-          item.links["related"] << linked_item.content_id
-        end
-        item.save!
-        reset_mongoid_query_count
-
-        get "/content#{item.base_path}"
-
-        # 5 chosen as a reasonable threshold with a little headroom.
-        expect(mongoid_query_count).to be <= 5
-      end
-
-      it "does not use N+1 queries to expand translations" do
-        I18n.available_locales.each do |locale|
-          next if locale == :en
-          create(:content_item, :content_id => item.content_id, :locale => locale.to_s)
-        end
-        reset_mongoid_query_count
-
-        get "/content#{item.base_path}"
-
-        # 5 chosen as a reasonable threshold with a little headroom.
-        expect(mongoid_query_count).to be <= 5
-      end
     end
   end
 
