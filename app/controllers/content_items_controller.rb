@@ -7,17 +7,12 @@ class ContentItemsController < ApplicationController
       ContentItem.find_by(:base_path => encoded_base_path)
     end
 
-    # The presenter needs context about routes and host names from controller
-    # to know how to generate API URLs, so we can take the Rails helper and
-    # pass that in as a callable
-    if params[:public_api_request]
-      api_url_method = method(:content_item_api_url)
+    if item.viewable_by?(authenticated_user_uid)
+      set_cache_control_private if item.access_limited?
+      render :json => PublicContentItemPresenter.new(item, api_url_method)
     else
-      api_url_method = method(:content_item_url)
+      render json_forbidden_response
     end
-    presenter = PublicContentItemPresenter.new(item, api_url_method)
-
-    render :json => presenter
   end
 
   def update
@@ -37,6 +32,34 @@ class ContentItemsController < ApplicationController
 
   private
 
+  def authenticated_user_uid
+    request.headers['X-Govuk-Authenticated-User']
+  end
+
+  def json_forbidden_response
+    {
+      :json => {
+        :errors => {
+          :type => "access_forbidden",
+          :code => "403",
+          :message => "You do not have permission to access this resource",
+        }
+      },
+      status: 403
+    }
+  end
+
+  # The presenter needs context about routes and host names from controller
+  # to know how to generate API URLs, so we can take the Rails helper and
+  # pass that in as a callable
+  def api_url_method
+    if params[:public_api_request]
+      method(:content_item_api_url)
+    else
+      method(:content_item_url)
+    end
+  end
+
   def set_cache_headers
     intent = PublishIntent.where(:base_path => encoded_base_path).first
     if intent && ! intent.past?
@@ -44,6 +67,10 @@ class ContentItemsController < ApplicationController
     else
       expires_at config.default_ttl.from_now
     end
+  end
+
+  def set_cache_control_private
+    response.headers['Cache-Control'] = 'private'
   end
 
   # Calculate the TTL based on the publish_time but constrained to be within

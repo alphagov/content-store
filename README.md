@@ -2,12 +2,13 @@
 
 The central storage of *published* content on GOV.UK.
 
-The content store maps public-facing URLs to published items of content, represented
-as JSON data. It will replace [content API](https://github.com/alphagov/govuk_content_api)
+The content store maps public-facing URLs to published items of content,
+represented as JSON data. It will replace [content API](https://github.com/alphagov/govuk_content_api)
 in time.
 
-Publishing applications add content to the content store; public-facing
-applications read content from the content store and render them on GOV.UK.
+Publishing applications add content to the content store via the Publishing API;
+public-facing applications read content from the content store and render them
+on GOV.UK.
 
 ## Content items
 
@@ -19,8 +20,8 @@ representations and the meanings of the individual fields can be found in
 ## Writing content items to the content store
 
 Publishing applications will "publish" content on GOV.UK by sending them to
-the content store. To add or update a piece of content in the content store, make a PUT
-request:
+the content store. To add or update a piece of content in the content store,
+make a PUT request:
 
 ``` sh
 curl https://content-store.production.alphagov.co.uk/content<base_path> -X PUT \
@@ -46,6 +47,26 @@ To retrieve content from the content store, make a GET request:
 ```
 
 Examples of the JSON representation of content items can be found in [doc/output_examples](doc/output_examples).
+
+## Access-limited content items
+
+Some content can be marked as [access-limited](doc/content_item_fields.md#access_limited).
+This content can only be retrieved from the content store with the right
+authorisation. Authentication details can be provided with a GET request to
+identify an authenticated user:
+
+``` sh
+  curl -header "X-Govuk-Authenticated-User: f17150b0-7540-0131-f036-0050560123202" \
+    https://content-store.production.alphagov.co.uk/content<base_path>
+
+```
+
+If the supplied identifier is in the list of authorised users, the content item
+will be returned. If not, a 403 (Forbidden) response will be returned. For more
+details on how to create an access-limited content item, see
+[doc/content_item_fields.md#access_limited](doc/content_item_fields.md#access_limited)
+
+Note: the access-limiting behaviour should only be active on the draft stack.
 
 ## Post publishing/update notifications
 
@@ -99,7 +120,7 @@ to accept draft content sent to publishing-api. You can:
   bowl draft-content-store
 ```
 
-from the development directory to run the content-store application
-at `draft-content-store.dev.gov.uk`. This instance stores data in a
-separate database: 'draft_content_store_development', and logs to
-the same rails log file as content-store, with a tag [DRAFT].
+from the development directory to run the content-store application at
+`draft-content-store.dev.gov.uk`. This instance stores data in a separate
+database: 'draft_content_store_development', and logs to the same rails log file
+as content-store, with a tag [DRAFT].

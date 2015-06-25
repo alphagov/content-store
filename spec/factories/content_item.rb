@@ -35,5 +35,12 @@ FactoryGirl.define do
       sequence(:base_path) {|n| "/dodo-sanctuary-#{n}" }
       format "gone"
     end
+
+    factory :access_limited_content_item do
+      sequence(:base_path) {|n| "/access-limited-#{n}" }
+      access_limited {
+        { "users" => [ "M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"] }
+      }
+    end
   end
 end

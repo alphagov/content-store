@@ -36,6 +36,7 @@ class ContentItem
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
   field :links, :type => Hash, :default => {}
+  field :access_limited, :type => Hash, :default => {}
   attr_accessor :update_type
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
@@ -52,6 +53,7 @@ class ContentItem
   validate :route_set_is_valid
   validate :no_extra_route_keys
   validate :links_are_valid
+  validate :access_limited_is_valid
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
                          message: 'must be a supported locale' },
@@ -101,7 +103,15 @@ class ContentItem
     items
   end
 
+  def viewable_by?(user_uid)
+    !access_limited? || authorised_user_uids.include?(user_uid)
+  end
+
 private
+
+  def authorised_user_uids
+    access_limited['users']
+  end
 
   def load_linked_items
     # For each linked content_id find all non-redirect content items with
@@ -152,6 +162,20 @@ private
       errors.set(:routes, registerable_route_set.errors[:registerable_routes])
       errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
     end
+  end
+
+  def access_limited_is_valid
+    if access_limited? && (!access_limited_keys_valid? || !access_limited_values_valid?)
+      errors.set(:access_limited, ['is not valid'])
+    end
+  end
+
+  def access_limited_keys_valid?
+    access_limited.keys == ['users']
+  end
+
+  def access_limited_values_valid?
+    authorised_user_uids.is_a?(Array) && authorised_user_uids.all? { |id| id.is_a?(String) }
   end
 
   def no_extra_route_keys

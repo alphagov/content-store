@@ -131,6 +131,27 @@ describe "content item write API", :type => :request do
     end
   end
 
+  describe "creating an access-limited content item" do
+    let(:authorised_users) { ['a-user-identifier', 'another-user-identifier'] }
+    before :each do
+      @data["access_limited"] = {
+        "users" => authorised_users
+      }
+      put_json "/content/vat-rates", @data
+    end
+
+    it "saves the access-limiting details" do
+      item = ContentItem.where(:base_path => "/vat-rates").first
+      expect(item).to be
+      expect(item.access_limited).to eq("users" => authorised_users)
+    end
+
+    it "responds with CREATED and an empty JSON response" do
+      expect(response.status).to eq(201)
+      expect(response.body).to eq('{}')
+    end
+  end
+
   context "given invalid JSON data" do
     before(:each) do
       put "/content/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
