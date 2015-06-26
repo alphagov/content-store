@@ -1,6 +1,6 @@
 class ContentItemsController < ApplicationController
   before_filter :parse_json_request, :only => [:update]
-  before_filter :set_cache_headers, :only => [:show]
+  before_filter :set_default_cache_headers, :only => [:show]
 
   def show
     item = Rails.application.statsd.time('show.find_by') do
@@ -60,24 +60,30 @@ class ContentItemsController < ApplicationController
     end
   end
 
-  def set_cache_headers
+  def set_default_cache_headers
     intent = PublishIntent.where(:base_path => encoded_base_path).first
-    if intent && ! intent.past?
-      expires_at bounded_expiry(intent.publish_time)
+    if intent && !intent.past?
+      expires_in bounded_max_age(intent.publish_time), :public => true
     else
-      expires_at config.default_ttl.from_now
+      expires_in config.default_ttl, :public => true
     end
   end
 
   def set_cache_control_private
-    response.headers['Cache-Control'] = 'private'
+    expires_in config.minimum_ttl, :public => false
   end
 
-  # Calculate the TTL based on the publish_time but constrained to be within
+  # Calculate the max-age based on the publish_time but constrained to be within
   # the default_ttl and minimum_ttl.
-  def bounded_expiry(publish_time)
-    expiry = [config.default_ttl.from_now, publish_time].min
-    min_expiry = config.minimum_ttl.from_now
-    expiry >= min_expiry ? expiry : min_expiry
+  def bounded_max_age(publish_time)
+    time_to_publish = (publish_time.to_i - Time.zone.now.to_i)
+
+    if time_to_publish > config.default_ttl
+      config.default_ttl
+    elsif time_to_publish < config.minimum_ttl
+      config.minimum_ttl
+    else
+      time_to_publish
+    end
   end
 end

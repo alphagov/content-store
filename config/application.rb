@@ -40,8 +40,7 @@ module ContentStore
       :tk, :tr, :uk, :ur, :uz, :vi, :zh, :'zh-hk', :'zh-tw'
     ]
 
-    # Caching
-    config.cache_control_directive = 'public'
+    # Caching defaults
     config.default_ttl = ENV.fetch('DEFAULT_TTL', 30.minutes).to_i.seconds
     config.minimum_ttl = [config.default_ttl, 5.seconds].min
 

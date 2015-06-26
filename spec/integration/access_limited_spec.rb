@@ -31,7 +31,7 @@ describe "Fetching an access-limited content item", :type => :request do
     end
 
     it "marks the cache-control as private" do
-      expect(response.headers["Cache-Control"]).to eq('private')
+      expect(cache_control["private"]).to eq(true)
     end
   end
 
