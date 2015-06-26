@@ -56,4 +56,22 @@ describe "Fetching content items", :type => :request do
       expect(cache_control["public"]).to eq(true)
     end
   end
+
+
+  context "a content item with linked items" do
+    let(:content_item) { create(:content_item, links: { 'related' => [linked_item.content_id] }) }
+    let(:linked_item) { create(:content_item, :with_content_id) }
+
+    before(:each) { get_content content_item }
+
+    it "returns a 200 OK response" do
+      expect(response.status).to eq(200)
+    end
+
+    it "corrrectly expands linked items with internal API URLs" do
+      data = JSON.parse(response.body)
+
+      expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/content#{linked_item.base_path}")
+    end
+  end
 end
