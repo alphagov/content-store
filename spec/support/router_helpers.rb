@@ -3,14 +3,6 @@ require 'gds_api/test_helpers/router'
 module RouterHelpers
   include GdsApi::TestHelpers::Router
 
-  def get_content(content_item)
-    get "/content#{content_item.base_path}"
-  end
-
-  def get_api_content(content_item)
-    get "/api/content#{content_item.base_path}"
-  end
-
   def assert_routes_registered(rendering_app, routes)
     # Note: WebMock stubs allow you to assert against already executed requests.
 
