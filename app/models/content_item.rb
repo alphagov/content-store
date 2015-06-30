@@ -22,7 +22,7 @@ class ContentItem
     return false, item
   end
 
-  field :_id, :as => :base_path, :type => String
+  field :_id, :as => :base_path, :type => String, :overwrite => true
   field :content_id, :type => String
   field :title, :type => String
   field :description, :type => String
