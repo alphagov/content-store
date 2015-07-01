@@ -211,6 +211,20 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context "queue publishing" do
+      it "sends the item on the message queue" do
+        expect(Rails.application.queue_publisher).to receive(:send_message)
+        item = build(:content_item)
+        item.upsert
+      end
+
+      it "does not send the item on the message queue for access_limited items" do
+        expect(Rails.application.queue_publisher).to_not receive(:send_message)
+        item = build(:access_limited_content_item)
+        item.upsert
+      end
+    end
+
     context 'fields used in message queue routing key' do
       [
         "format",

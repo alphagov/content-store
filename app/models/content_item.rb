@@ -218,7 +218,7 @@ private
   end
 
   def send_message
-    Rails.application.queue_publisher.send_message(self)
+    Rails.application.queue_publisher.send_message(self) unless access_limited?
   end
 
   def renderable_content?
