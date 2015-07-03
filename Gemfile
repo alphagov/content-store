@@ -21,7 +21,7 @@ gem 'whenever', '~> 0.9.4', :require => false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', :path => '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', '~> 16.3.1'
+  gem 'gds-api-adapters', '20.1.1'
 end
 
 gem 'govuk-content-schema-test-helpers', '1.3.0'
