@@ -27,6 +27,7 @@ class QueuePublisher
   end
 
   def send_heartbeat
+    return if @noop
     body = {
       timestamp: Time.now.utc.iso8601,
       hostname: Socket.gethostname,
