@@ -192,10 +192,16 @@ describe QueuePublisher do
   context "noop mode" do
     subject { QueuePublisher.new(noop: true) }
 
-    it 'does nothing when instantiated with noop' do
+    it 'does not send messages' do
       expect_any_instance_of(Bunny::Exchange).not_to receive(:publish)
 
       subject.send_message(:something)
+    end
+
+    it 'does not sent heartbeats' do
+      expect_any_instance_of(Bunny::Exchange).not_to receive(:publish)
+
+      subject.send_heartbeat
     end
   end
 
