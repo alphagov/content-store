@@ -363,7 +363,6 @@ describe ContentItem, :type => :model do
   end
 
   describe '#linked_items' do
-
     context 'with no link types' do
       before :each do
         @item = build(:content_item)

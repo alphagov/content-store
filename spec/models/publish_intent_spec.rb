@@ -169,7 +169,6 @@ describe PublishIntent, :type => :model do
       expect(PublishIntent.where(:publish_time.gte => Time.zone.now).count).to eq(3)
     end
 
-
     it "does not delete very recently passed intents" do
       recent = create(:publish_intent, :publish_time => 30.seconds.ago)
 

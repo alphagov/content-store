@@ -1,4 +1,3 @@
-
 namespace :housekeeping do
 
   desc "Delete any publish intents in the past"
