@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe PublicContentItemPresenter do
+describe ContentItemPresenter do
   let(:item) { build(:content_item) }
   let(:api_url_method) do
     lambda { |base_path| "http://api.example.com/content#{base_path}" }
   end
-  let(:presenter) { PublicContentItemPresenter.new(item, api_url_method) }
+  let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
 
   it "includes public attributes" do
-    expected_fields = PublicContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
+    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
     expect(presenter.as_json.keys).to match_array(expected_fields)
   end
 

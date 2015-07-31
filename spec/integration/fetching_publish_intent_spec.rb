@@ -11,7 +11,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
 
     it "sets cache headers to expire in the default TTL" do
@@ -32,7 +32,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
 
     it "sets cache headers to the minimum TTL" do
@@ -53,7 +53,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
 
     it "sets cache headers to expire in the default TTL" do
@@ -75,7 +75,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
 
     it "sets cache headers to expire when the publish intent is due" do

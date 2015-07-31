@@ -12,7 +12,7 @@ describe "Fetching content items", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
 
     it "sets cache headers to expire in the default TTL" do
@@ -36,7 +36,7 @@ describe "Fetching content items", :type => :request do
 
     it "returns the presented content item as JSON data" do
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(public_presentation(content_item))
+      expect(response.body).to eq(present(content_item))
     end
   end
 
