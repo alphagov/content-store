@@ -51,7 +51,5 @@ module ContentStore
     def statsd
       @statsd ||= Statsd.new('localhost', 8125).tap { |s| s.namespace = 'content-store' }
     end
-
-    cattr_accessor :queue_publisher
   end
 end

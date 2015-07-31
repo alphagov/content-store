@@ -174,25 +174,6 @@ describe ContentItem, :type => :model do
       end
     end
 
-    context 'update_type' do
-      # update_type is not persisted, so should only be validated
-      # on edit.  Otherwise items loaded from the db will be invalid
-
-      it "is required when changing a content item" do
-        @item.update_type = ''
-        expect(@item).not_to be_valid
-        expect(@item.errors[:update_type].size).to eq(1)
-      end
-
-      it "is not required for an item loaded from the db" do
-        @item.save!
-
-        item = ContentItem.find(@item.base_path)
-        expect(item.update_type).to be_nil
-        expect(item).to be_valid
-      end
-    end
-
     context "locale" do
       it "defaults to the default I18n locale" do
         expect(ContentItem.new.locale).to eq(I18n.default_locale.to_s)
@@ -208,49 +189,6 @@ describe ContentItem, :type => :model do
         @item.locale = 'xyz'
         expect(@item).to_not be_valid
         expect(@item.errors[:locale].first).to eq('must be a supported locale')
-      end
-    end
-
-    context "queue publishing" do
-      it "sends the item on the message queue" do
-        expect(Rails.application.queue_publisher).to receive(:send_message)
-        item = build(:content_item)
-        item.upsert
-      end
-
-      it "does not send the item on the message queue for access_limited items" do
-        expect(Rails.application.queue_publisher).to_not receive(:send_message)
-        item = build(:access_limited_content_item)
-        item.upsert
-      end
-    end
-
-    context 'fields used in message queue routing key' do
-      [
-        "format",
-        "update_type",
-      ].each do |field|
-        it "requires #{field} to be suitable as a routing_key" do
-          %w(
-            word
-            alpha12numeric
-            under_score
-            mixedCASE
-          ).each do |value|
-            @item.public_send("#{field}=", value)
-            expect(@item).to be_valid
-          end
-
-          [
-            'no spaces',
-            'dashed-item',
-            'puncutation!',
-          ].each do |value|
-            @item.public_send("#{field}=", value)
-            expect(@item).not_to be_valid
-            expect(@item.errors[field].size).to eq(1)
-          end
-        end
       end
     end
 

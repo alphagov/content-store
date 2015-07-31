@@ -5,7 +5,6 @@ present or required, depending on the context. The three contexts are:
 
  - storing: content items being sent to the content store.
  - retrieving: content items being retrieved from the content store.
- - notifying: Messages notifying listeners about changes to content items.
 
 Examples of content items as sent to the content store can be found in
 [`input_examples`](input_examples/). Examples of content items being retrieved

@@ -44,8 +44,6 @@ class ContentItem
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
   validates :format, :publishing_app, presence: true
-  # This isn't persisted, but needs to be set when making changes because it's used in the message queue.
-  validates :update_type, presence: { if: :changed? }
   validates :format, :update_type, format: { with: /\A[a-z0-9_]+\z/i, allow_blank: true }
   validates :title, presence: true, if: :renderable_content?
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
@@ -69,9 +67,6 @@ class ContentItem
 
   # The updated_at field isn't set on upsert - https://github.com/mongoid/mongoid/issues/3716
   before_upsert :set_updated_at
-
-  after_save :send_message
-  after_upsert :send_message
 
   # We want to look up related items by their content ID, excluding those that
   # are redirects; when multiple items exist, we take the most recent one, and
@@ -215,10 +210,6 @@ private
 
   def register_routes
     registerable_route_set.register! unless self.format.start_with?("placeholder")
-  end
-
-  def send_message
-    Rails.application.queue_publisher.send_message(self) unless access_limited?
   end
 
   def renderable_content?
