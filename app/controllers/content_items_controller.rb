@@ -9,7 +9,7 @@ class ContentItemsController < ApplicationController
 
     if item.viewable_by?(authenticated_user_uid)
       set_cache_control_private if item.access_limited?
-      render :json => PublicContentItemPresenter.new(item, api_url_method)
+      render :json => ContentItemPresenter.new(item, api_url_method)
     else
       render json_forbidden_response
     end

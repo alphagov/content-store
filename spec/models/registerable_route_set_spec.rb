@@ -186,7 +186,6 @@ describe RegisterableRouteSet, :type => :model do
       end
 
       context "a non-redirect item that includes some redirects" do
-
         it "is valid with routes and redirects" do
           @route_set.registerable_redirects << build(:registerable_redirect, :path => @route_set.base_path + ".json")
           expect(@route_set).to be_valid
