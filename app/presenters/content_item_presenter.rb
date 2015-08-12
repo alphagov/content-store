@@ -4,7 +4,7 @@
 # include their title, base_path, api_url and web_url. See doc/output_examples
 # for an example of what this representation looks like.
 class ContentItemPresenter
-  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids locale updated_at public_updated_at details).freeze
+  PUBLIC_ATTRIBUTES = %w(base_path title description format need_ids locale updated_at public_updated_at details phase).freeze
 
   def initialize(item, api_url_method)
     @item = item

@@ -87,6 +87,25 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'phase' do
+      it 'allows no phase' do
+        expect(@item).to be_valid
+      end
+
+      it 'is valid with an alpha or beta phase' do
+        @item.phase = 'alpha'
+        expect(@item).to be_valid
+
+        @item.phase = 'beta'
+        expect(@item).to be_valid
+      end
+
+      it 'is invalid with any other phase' do
+        @item.phase = 'not-a-correct-phase'
+        expect(@item).to_not be_valid
+      end
+    end
+
     context 'links' do
       # We expect links to be hashes of type `{String => [UUID]}`. For example:
       #
