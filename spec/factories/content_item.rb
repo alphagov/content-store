@@ -8,6 +8,7 @@ FactoryGirl.define do
     publishing_app 'publisher'
     update_type 'minor'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+    phase nil
 
     trait :with_content_id do
       content_id { SecureRandom.uuid }

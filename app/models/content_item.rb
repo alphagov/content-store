@@ -37,6 +37,7 @@ class ContentItem
   field :redirects, :type => Array, :default => []
   field :links, :type => Hash, :default => {}
   field :access_limited, :type => Hash, :default => {}
+  field :phase, :type => String
   attr_accessor :update_type
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
@@ -52,6 +53,10 @@ class ContentItem
   validate :no_extra_route_keys
   validate :links_are_valid
   validate :access_limited_is_valid
+  validates :phase,
+            inclusion: { in: ['alpha', 'beta'],
+                         allow_nil: true,
+                         message: 'must be either alpha, beta, or nil' }
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
                          message: 'must be a supported locale' },
