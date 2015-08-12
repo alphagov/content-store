@@ -26,7 +26,7 @@ private
   end
 
   def present_linked_item(linked_item)
-    {
+    presented = {
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
       "description" => linked_item.description,
@@ -34,6 +34,8 @@ private
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,
     }
+    presented["analytics_identifier"] = analytics_identifier(linked_item) if analytics_identifier(linked_item)
+    presented
   end
 
   def api_url(item)
@@ -43,4 +45,9 @@ private
   def web_url(item)
     Plek.current.website_root + item.base_path
   end
+
+  def analytics_identifier(item)
+    item.has_attribute?(:details) && item.details.key?("analytics_identifier") && item.details[:analytics_identifier]
+  end
+
 end
