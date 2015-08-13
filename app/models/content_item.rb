@@ -66,7 +66,7 @@ class ContentItem
                          message: 'must be a supported locale' },
             if: :renderable_content?
 
-  # The updated_at field isn't set on upsert - https://github.com/mongoid/mongoid/issues/3716
+  # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
 
   # We want to look up related items by their content ID, excluding those that
