@@ -6,7 +6,7 @@ describe "routing of content_item requests", :type => :routing do
       expect(:get => "/content/foo/bar").to route_to({
         :controller => "content_items",
         :action => "show",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
       })
     end
 
@@ -14,8 +14,11 @@ describe "routing of content_item requests", :type => :routing do
       expect(:get => "/contentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:get => "/content").not_to be_routable
+    it "should accept the root path" do
+      expect(get: "/content/").to route_to(
+        controller: "content_items",
+        action: "show",
+      )
     end
   end
 
@@ -24,7 +27,7 @@ describe "routing of content_item requests", :type => :routing do
       expect(:get => "/api/content/foo/bar").to route_to({
         :controller => "content_items",
         :action => "show",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
         :public_api_request => true,
       })
     end
@@ -33,8 +36,13 @@ describe "routing of content_item requests", :type => :routing do
       expect(:get => "/api/contentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:get => "/api/content").not_to be_routable
+
+    it "should accept the root path" do
+      expect(get: "/api/content/").to route_to(
+        controller: "content_items",
+        action: "show",
+        public_api_request: true,
+      )
     end
   end
 
@@ -43,7 +51,7 @@ describe "routing of content_item requests", :type => :routing do
       expect(:put => "/content/foo/bar").to route_to({
         :controller => "content_items",
         :action => "update",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
       })
     end
 
@@ -51,8 +59,12 @@ describe "routing of content_item requests", :type => :routing do
       expect(:put => "/contentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:put => "/content").not_to be_routable
+
+    it "should accept the root path" do
+      expect(put: "/content/").to route_to(
+        controller: "content_items",
+        action: "update",
+      )
     end
   end
 

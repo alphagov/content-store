@@ -49,7 +49,7 @@ private
   end
 
   def api_url(item)
-    @api_url_method.call(item.base_path)
+    @api_url_method.call(item.base_path_without_root)
   end
 
   def web_url(item)

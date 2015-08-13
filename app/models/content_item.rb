@@ -110,6 +110,10 @@ class ContentItem
     self.registerable_route_set.register!
   end
 
+  def base_path_without_root
+    base_path.sub(%r{^/}, "")
+  end
+
 protected
 
   def registerable_route_set

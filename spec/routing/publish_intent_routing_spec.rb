@@ -6,7 +6,7 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:get => "/publish-intent/foo/bar").to route_to({
         :controller => "publish_intents",
         :action => "show",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
       })
     end
 
@@ -14,8 +14,11 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:get => "/publish-intentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:get => "/publish-intent").not_to be_routable
+    it "should accept the root path" do
+      expect(get: "/publish-intent/").to route_to(
+        controller: "publish_intents",
+        action: "show",
+      )
     end
   end
 
@@ -24,7 +27,7 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:put => "/publish-intent/foo/bar").to route_to({
         :controller => "publish_intents",
         :action => "update",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
       })
     end
 
@@ -32,8 +35,11 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:put => "/publish-intentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:put => "/publish-intent").not_to be_routable
+    it "should accept the root path" do
+      expect(put: "/publish-intent/").to route_to(
+        controller: "publish_intents",
+        action: "update",
+      )
     end
   end
 
@@ -42,7 +48,7 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:delete => "/publish-intent/foo/bar").to route_to({
         :controller => "publish_intents",
         :action => "destroy",
-        :base_path => "/foo/bar",
+        :base_path_without_root => "foo/bar",
       })
     end
 
@@ -50,8 +56,11 @@ describe "routing of publish_intent requests", :type => :routing do
       expect(:delete => "/publish-intentfoo").not_to be_routable
     end
 
-    it "should require a base_path" do
-      expect(:delete => "/publish-intent").not_to be_routable
+    it "should accept the root path" do
+      expect(delete: "/publish-intent/").to route_to(
+        controller: "publish_intents",
+        action: "destroy",
+      )
     end
   end
 end
