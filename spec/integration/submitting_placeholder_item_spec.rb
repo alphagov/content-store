@@ -56,6 +56,7 @@ describe "submitting placeholder items to the content store", :type => :request 
     end
 
     it "does not update routes for the content item" do
+      @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
       put_json "/content/vat-rates", @data
       refute_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
