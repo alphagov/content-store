@@ -21,6 +21,10 @@ class ApplicationController < ActionController::API
   end
 
   def encoded_base_path
-    URI.escape(params[:base_path])
+    URI.escape(base_path)
+  end
+
+  def base_path
+    "/#{params[:base_path_without_root]}"
   end
 end
