@@ -42,6 +42,7 @@ class ContentItem
   field :links, :type => Hash, :default => {}
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String
+  field :analytics_identifier, :type => String
   attr_accessor :update_type
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }

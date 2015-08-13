@@ -106,6 +106,17 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context 'analytics_identifier' do
+      it 'is valid without an analytics_identifier' do
+        expect(@item).to be_valid
+      end
+
+      it 'is valid with an analytics identifier' do
+        @item.analytics_identifier = 'D3'
+        expect(@item).to be_valid
+      end
+    end
+
     context 'links' do
       # We expect links to be hashes of type `{String => [UUID]}`. For example:
       #
