@@ -5,13 +5,17 @@ class ContentItem
   NON_RENDERABLE_FORMATS = %w(redirect gone)
 
   def self.create_or_replace(base_path, attributes)
-    result = :created
-    result = :replaced if ContentItem.where(:base_path => base_path).exists?
+    previous_item = ContentItem.where(:base_path => base_path).first
+    result = previous_item ? :replaced : :created
 
     item = ContentItem.new(:base_path => base_path)
     item.assign_attributes(attributes)
 
-    item.upsert or result = false
+    if item.upsert
+      item.register_routes(previous_item: previous_item)
+    else
+      result = false
+    end
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
     extra_fields = attributes.keys - self.fields.keys - %w(update_type)
@@ -62,14 +66,6 @@ class ContentItem
                          message: 'must be a supported locale' },
             if: :renderable_content?
 
-  # Saves and upserts trigger different sets of callbacks; to be safe, we need
-  # to register for both
-  #
-  # This is before save not after so that we can guarantee that the item is
-  # live on the site once the save has completed
-  before_save :register_routes
-  before_upsert :register_routes
-
   # The updated_at field isn't set on upsert - https://github.com/mongoid/mongoid/issues/3716
   before_upsert :set_updated_at
 
@@ -105,6 +101,18 @@ class ContentItem
 
   def viewable_by?(user_uid)
     !access_limited? || authorised_user_uids.include?(user_uid)
+  end
+
+  def register_routes(previous_item: nil)
+    return if self.format.start_with?("placeholder")
+    return if previous_item && previous_item.registerable_route_set == self.registerable_route_set
+    self.registerable_route_set.register!
+  end
+
+protected
+
+  def registerable_route_set
+    @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
   end
 
 private
@@ -151,10 +159,6 @@ private
       .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
-  end
-
-  def registerable_route_set
-    @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
   end
 
   def route_set_is_valid
@@ -211,10 +215,6 @@ private
     unless bad_values.empty?
       errors[:links] = "must map to lists of UUIDs"
     end
-  end
-
-  def register_routes
-    registerable_route_set.register! unless self.format.start_with?("placeholder")
   end
 
   def renderable_content?
