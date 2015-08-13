@@ -129,7 +129,7 @@ private
       .renderable_content
       .where(:content_id => {"$in" => links.values.flatten.uniq})
       .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
-      .only(:content_id, :locale, :base_path, :title, :description)
+      .only(:content_id, :locale, :base_path, :title, :description, :details)
       .sort(:updated_at => -1)
       .group_by(&:content_id)
 
