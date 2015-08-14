@@ -275,6 +275,16 @@ describe ContentItem, :type => :model do
         expect(@item).to be_valid
       end
 
+      it "should be valid with a locale" do
+        @item.redirects << {"path" => @item.base_path + ".cy", "type" => "exact", "destination" => "/somewhere.cy"}
+        expect(@item).to be_valid
+      end
+
+      it "should be valid with a dashed locale" do
+        @item.redirects << {"path" => @item.base_path + ".es-419", "type" => "exact", "destination" => "/somewhere.es-419"}
+        expect(@item).to be_valid
+      end
+
       it "should be invalid with an invalid redirect" do
         @item.redirects.first['type'] = "fooey"
         expect(@item).not_to be_valid

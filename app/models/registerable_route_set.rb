@@ -145,7 +145,7 @@ private
   end
 
   def base_path_with_extension?(route)
-    route.path.match(%r(^#{base_path}\.\w+\z))
+    route.path.match(%r(^#{base_path}\.[\w-]+\z))
   end
 
   def beneath_base_path?(route)
