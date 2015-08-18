@@ -18,7 +18,7 @@ describe ContentItemPresenter do
 
   context "with related links" do
     let(:linked_item1) { create(:content_item, :with_content_id, locale: I18n.default_locale.to_s) }
-    let(:linked_item2) { create(:content_item, :with_content_id, locale: "fr") }
+    let(:linked_item2) { create(:content_item, :with_content_id, locale: "fr", analytics_identifier: "D2") }
     let(:item) {
       build(:content_item,
         :links => {"related" => [linked_item1.content_id, linked_item2.content_id]},
@@ -62,6 +62,11 @@ describe ContentItemPresenter do
           "#{site_root}#{linked_item2.base_path}",
         ]
       )
+    end
+
+    it "contains the linked analytics identifier" do
+      expect(related[1]).to have_key("analytics_identifier")
+      expect(related[1]["analytics_identifier"]).to eq('D2')
     end
   end
 end

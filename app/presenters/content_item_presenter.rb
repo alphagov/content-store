@@ -38,7 +38,7 @@ private
   end
 
   def present_linked_item(linked_item)
-    {
+    presented = {
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
       "description" => linked_item.description,
@@ -46,6 +46,10 @@ private
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,
     }
+    if linked_item.has_attribute? :analytics_identifier
+      presented["analytics_identifier"] = linked_item.analytics_identifier
+    end
+    presented
   end
 
   def api_url(item)
