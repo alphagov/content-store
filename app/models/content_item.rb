@@ -41,7 +41,7 @@ class ContentItem
   field :redirects, :type => Array, :default => []
   field :links, :type => Hash, :default => {}
   field :access_limited, :type => Hash, :default => {}
-  field :phase, :type => String
+  field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
   attr_accessor :update_type
 
@@ -60,7 +60,6 @@ class ContentItem
   validate :access_limited_is_valid
   validates :phase,
             inclusion: { in: ['alpha', 'beta', 'live'],
-                         allow_nil: true,
                          message: 'must be either alpha, beta, or live' }
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
