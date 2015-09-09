@@ -92,12 +92,11 @@ describe ContentItem, :type => :model do
         expect(@item).to be_valid
       end
 
-      it 'is valid with an alpha or beta phase' do
-        @item.phase = 'alpha'
-        expect(@item).to be_valid
-
-        @item.phase = 'beta'
-        expect(@item).to be_valid
+      %w(alpha beta live).each do |phase|
+        it "is valid with #{phase} phase" do
+          @item.phase = phase
+          expect(@item).to be_valid
+        end
       end
 
       it 'is invalid with any other phase' do

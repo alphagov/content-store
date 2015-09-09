@@ -59,9 +59,9 @@ class ContentItem
   validate :links_are_valid
   validate :access_limited_is_valid
   validates :phase,
-            inclusion: { in: ['alpha', 'beta'],
+            inclusion: { in: ['alpha', 'beta', 'live'],
                          allow_nil: true,
-                         message: 'must be either alpha, beta, or nil' }
+                         message: 'must be either alpha, beta, or live' }
   validates :locale,
             inclusion: { in: I18n.available_locales.map(&:to_s),
                          message: 'must be a supported locale' },
