@@ -645,8 +645,8 @@ describe ContentItem, :type => :model do
           end
         }
 
-        it 'should return only itself' do
-          expect(item_en.linked_items["available_translations"]).to eq([item_en])
+        it 'should not include available_translations' do
+          expect(item_en.linked_items).not_to have_key("available_translations")
         end
       end
     end
