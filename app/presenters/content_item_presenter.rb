@@ -6,6 +6,7 @@
 class ContentItemPresenter
   PUBLIC_ATTRIBUTES = %w(
     base_path
+    content_id
     title
     description
     format
@@ -39,6 +40,7 @@ private
 
   def present_linked_item(linked_item)
     presented = {
+      "content_id" => linked_item.content_id,
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
       "description" => linked_item.description,

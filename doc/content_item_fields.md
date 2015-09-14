@@ -40,7 +40,7 @@ set of fields than those listed below.
 ## `content_id`
 
 A UUID string as described in [RFC 4122](http://www.ietf.org/rfc/rfc4122.txt).
-Present only in the storing context.
+Present in all contexts.
 
 For example: `"30737dba-17f1-49b4-aff8-6dd4bff7fdca"`.
 
@@ -185,6 +185,7 @@ In the `notifying` context, the items are hashes containing: (TODO: confirm)
  - `base_path`: The base path of the content item
 
 In the `retrieving` context, the items are hashes containing:
+ - `content_id`: The Content ID of the linked content item
  - `title`: The title of the content item
  - `base_path`: The base path of the content
  - `description`: The description of the content

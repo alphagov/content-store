@@ -27,6 +27,7 @@ describe "Fetching content items", :type => :request do
 
       expect(data.keys).to match_array(%w[
         base_path
+        content_id
         title
         description
         format
@@ -42,6 +43,7 @@ describe "Fetching content items", :type => :request do
 
       expect(data).to include(
         "base_path" => "/vat-rates",
+        "content_id" => content_item.content_id,
         "title" => "VAT rates",
         "description" => "Current VAT rates",
         "format" => "answer",
@@ -122,6 +124,7 @@ describe "Fetching content items", :type => :request do
       linked_item_data = data["links"]["related"].first
       expect(linked_item_data.keys).to match_array(%w[
         base_path
+        content_id
         title
         description
         locale
@@ -131,6 +134,7 @@ describe "Fetching content items", :type => :request do
 
       expect(linked_item_data).to include(
         "base_path" => linked_item.base_path,
+        "content_id" => linked_item.content_id,
         "title" => linked_item.title,
         "description" => linked_item.description,
         "locale" => linked_item.locale,
