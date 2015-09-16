@@ -88,16 +88,21 @@ describe ContentItem, :type => :model do
     end
 
     context 'phase' do
-      it 'allows no phase' do
-        expect(@item).to be_valid
+      it 'defaults to live' do
+        expect(ContentItem.new.phase).to eq('live')
       end
 
-      it 'is valid with an alpha or beta phase' do
-        @item.phase = 'alpha'
-        expect(@item).to be_valid
+      %w(alpha beta live).each do |phase|
+        it "is valid with #{phase} phase" do
+          @item.phase = phase
+          expect(@item).to be_valid
+        end
+      end
 
-        @item.phase = 'beta'
-        expect(@item).to be_valid
+      it 'is invalid without a phase' do
+        @item.phase = nil
+        expect(@item).not_to be_valid
+        expect(@item.errors[:phase].size).to eq(1)
       end
 
       it 'is invalid with any other phase' do
