@@ -30,15 +30,15 @@ describe ContentItemPresenter do
 
     it "includes the link type" do
       expect(presenter.as_json).to have_key("links")
-      expect(presenter.as_json["links"].keys).to match_array(["available_translations", "related"])
+      expect(presenter.as_json["links"].keys).to include("related")
     end
 
     it "includes each linked item" do
       expect(related.size).to be(2)
     end
 
-    it "includes the path, title and description for each item" do
-      expect(related).to all include("base_path", "title", "description")
+    it "includes the content_id, path, title and description for each item" do
+      expect(related).to all include("content_id", "base_path", "title", "description")
     end
 
     it "includes the locale for each item" do

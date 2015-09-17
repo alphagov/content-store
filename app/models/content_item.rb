@@ -155,11 +155,11 @@ private
   end
 
   def load_available_translations
-    return [self] if self.content_id.blank?
+    return [] if self.content_id.blank?
     ContentItem
       .renderable_content
       .where(:content_id => content_id)
-      .only(:locale, :base_path, :title, :description)
+      .only(:content_id, :locale, :base_path, :title, :description)
       .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
