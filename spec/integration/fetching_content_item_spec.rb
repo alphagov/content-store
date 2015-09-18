@@ -50,7 +50,7 @@ describe "Fetching content items", :type => :request do
         "need_ids" => ["100136"],
         "locale" => "en",
         "analytics_identifier" => nil,
-        "phase" => nil,
+        "phase" => "live",
       )
       expect(data["details"]).to eq({
         "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n",
