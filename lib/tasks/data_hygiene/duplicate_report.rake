@@ -1,40 +1,20 @@
 require "csv"
+require "tasks/data_hygiene/duplicate_report"
 
 namespace :data_hygiene do
-  desc "Spit out a report of content items with duplicate content_ids"
-  task dupe_content_ids: [:environment] do
-    puts "Counting content IDs and fetching duplicate occurrences..."
-    content_id_counts = ContentItem.collection.aggregate([
-      {
-        "$group" => {
-          "_id" => "$content_id", "count" => {"$sum" => 1}
-        }
-      },
-      {
-        "$match" => { "count" => {"$gt" => 1} }
-      }
-    ])
-
-    puts "Fetching content items for duplicated content ids..."
-    content_items = content_id_counts.flat_map do |cid_count|
-      ContentItem.where(content_id: cid_count["_id"]).to_a
+  namespace :content_ids do
+    desc "Generate a report of content items with duplicate content_ids"
+    task full_report: [:environment] do
+      Tasks::DataHygiene::DuplicateReport.new.full
     end
 
-    puts "Writing content items to csv..."
-    current_time = Time.now.strftime("%Y-%m-%d-%I-%M")
-    CSV.open("tmp/duplicate_content_ids_#{current_time}.csv", 'wb') do |csv|
-      content_item_fields = [
-        "_id", "content_id", "title", "format", "locale", "publishing_app",
-        "rendering_app", "routes", "redirects", "phase", "analytics_identifier",
-        "updated_at"
-      ]
+    desc "Generate a report of content_id duplicates among items with an EN locale"
+    task en_locale: [:environment] do
+      Tasks::DataHygiene::DuplicateReport.new.scoped_to(locale: 'en')
+    end
 
-      csv << content_item_fields
-      content_items.each do |content_item|
-        csv << content_item_fields.map do |field|
-          content_item.send("#{field}")
-        end
-      end
+    task es_locale: [:environment] do
+      Tasks::DataHygiene::DuplicateReport.new.scoped_to(locale: 'es')
     end
   end
 end
