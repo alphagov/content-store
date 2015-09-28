@@ -24,6 +24,8 @@ FactoryGirl.define do
       public_updated_at Time.now
     end
 
+    factory :content_item_with_content_id, traits: [:with_content_id]
+
     factory :redirect_content_item do
       sequence(:base_path) {|n| "/test-redirect-#{n}" }
       format "redirect"
