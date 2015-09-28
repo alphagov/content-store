@@ -1,20 +1,22 @@
+require "csv"
+require "ostruct"
+
 module Tasks
   module DataHygiene
     class DuplicateReport
-      def full
-        summary.blank_content_ids = ContentItem.where(content_id: nil).count
-        duplicates = fetch_all_duplicate_content_items
-        summary.duplicates = duplicates.count
-        write_to_csv(duplicates)
-        summarise
+      attr_accessor :summary
+
+      def initialize
+        @summary = OpenStruct.new
       end
 
       def scoped_to(locale:)
+        # Count all duplicate content IDs and add count to summary
         summary.blank_content_ids = ContentItem.where(content_id: nil).count
         duplicates = fetch_all_duplicate_content_items
         summary.duplicates = duplicates.count
 
-        # Identify duplicate (content_id, locale) tuples
+        # Identify duplicate (content_id, locale) tuples and add count to summary
         duplicates.reject! { |ci| ci.locale != locale }
         content_id_counts = count_repeated_content_ids_in(duplicates)
         duplicates_for_locale = content_id_counts.flat_map do |content_id_count|
@@ -26,15 +28,20 @@ module Tasks
         summarise
       end
 
-private
-      def summary
-        @summary ||= OpenStruct.new
+      def full
+        summary.blank_content_ids = ContentItem.where(content_id: nil).count
+        duplicates = fetch_all_duplicate_content_items
+        summary.duplicates = duplicates.count
+
+        write_to_csv(duplicates)
+        summarise
       end
 
-      def fetch_all_duplicate_content_items(exclude_null_content_id: true)
+private
+      def fetch_all_duplicate_content_items
         puts "Fetching content items for duplicated content ids..."
         duplicate_content_id_aggregation.flat_map do |content_id_count|
-          next if content_id_count["_id"].blank? && exclude_null_content_id
+          next if content_id_count["_id"].blank?
           ContentItem.where(content_id: content_id_count["_id"]).to_a
         end.compact
       end
@@ -53,10 +60,11 @@ private
       end
 
       def count_repeated_content_ids_in(content_items)
-        # Produce a hash of the form { "myC00lc0ntentID" => 3 }"
-        content_items.each_with_object(Hash.new(0)) do |ci, hash|
+        # Return a hash of the form { "myC00lc0ntentID" => 3 }"
+        content_id_counts = content_items.each_with_object(Hash.new(0)) do |ci, hash|
           hash[ci.content_id] += 1
-        end.select! { |k, v| v > 1 }
+        end
+        content_id_counts.select { |k, v| v > 1 }
       end
 
       def summarise
