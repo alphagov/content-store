@@ -38,15 +38,6 @@ describe InconsistentRedirectFinder do
       expect(found_items).to be_empty
     end
 
-    it "doesn't return items that redirect to an anchor-link" do
-      stub_router(path: '/path-with-not-a-redirect-route', status: 200, body: { handler: 'redirect', redirect_to: '/some#subpage' })
-      content_item = create(:content_item, base_path: '/path-with-not-a-redirect-route')
-
-      found_items = find_inconsistent_redirects([content_item])
-
-      expect(found_items).to be_empty
-    end
-
     def find_inconsistent_redirects(content_items)
       InconsistentRedirectFinder.new(content_items).items_with_inconsistent_redirects
     end

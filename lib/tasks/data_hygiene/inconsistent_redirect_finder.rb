@@ -10,7 +10,7 @@ class InconsistentRedirectFinder
       next if content_item.format == "redirect"
 
       route = Rails.application.router_api.get_route(content_item.base_path)
-      route && route.handler == "redirect" && !route.redirect_to.to_s.include?('#')
+      route && route.handler == "redirect"
     end
   end
 end
