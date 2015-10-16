@@ -6,7 +6,6 @@ FactoryGirl.define do
     sequence(:base_path) {|n| "/test-content-#{n}" }
     format 'gone' # Using gone as it allows the smallest valid base
     publishing_app 'publisher'
-    update_type 'minor'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
 
     trait :with_content_id do

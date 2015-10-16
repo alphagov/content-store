@@ -11,7 +11,6 @@ describe "content item write API", :type => :request do
       "need_ids" => ["100123", "100124"],
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
-      "update_type" => "major",
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "details" => {

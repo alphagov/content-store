@@ -8,7 +8,6 @@ describe "submitting gone items to the content store", :type => :request do
         "base_path" => "/dodo-sanctuary",
         "format" => "gone",
         "publishing_app" => "publisher",
-        "update_type" => "major",
         "routes" => [
           {"path" => "/dodo-sanctuary", "type" => "prefix"},
           {"path" => "/dodo-sanctuary.json", "type" => "exact"}

@@ -9,7 +9,6 @@ describe "submitting placeholder items to the content store", :type => :request 
       "description" => "Current VAT rates",
       "format" => "placeholder",
       "public_updated_at" => "2014-05-14T13:00:06Z",
-      "update_type" => "major",
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "routes" => [
