@@ -8,7 +8,6 @@ describe "End-to-end behaviour", :type => :request do
     "content_id" => SecureRandom.uuid,
     "title" => "VAT rates",
     "format" => "answer",
-    "update_type" => "major",
     "publishing_app" => "publisher",
     "rendering_app" => "frontend",
     "routes" => [

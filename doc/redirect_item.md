@@ -14,7 +14,6 @@ For example, given the following request:
     {
       "format": "redirect",
       "publishing_app": "publisher",
-      "update_type": "major",
       "redirects": [
         {"path": "/moved-foo", "type": "prefix", "destination": "/new-foo"},
         {"path": "/moved-foo.json", "type": "exact", "destination": "/api/moved-foo.json"}

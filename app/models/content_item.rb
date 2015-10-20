@@ -18,7 +18,7 @@ class ContentItem
     end
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
-    extra_fields = attributes.keys - self.fields.keys - %w(update_type)
+    extra_fields = attributes.keys - self.fields.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, item
   rescue Mongoid::Errors::InvalidValue => e
@@ -43,14 +43,12 @@ class ContentItem
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
-  attr_accessor :update_type
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
   validates :base_path, absolute_path: true
   validates :content_id, uuid: true, allow_nil: true
   validates :format, :publishing_app, presence: true
-  validates :format, :update_type, format: { with: /\A[a-z0-9_]+\z/i, allow_blank: true }
   validates :title, presence: true, if: :renderable_content?
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
   validates :public_updated_at, presence: true, if: :renderable_content?

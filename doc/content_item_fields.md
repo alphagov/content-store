@@ -239,22 +239,6 @@ array contains an original path, a routing type, and a destination path. See
 For redirect content items, the behaviour is slightly different.  See
 redirect_item.md for details.
 
-## `update_type`
-
-A string. Present in storing and notifying contexts.
-
-This indicates the type of update that was made to the content item.
-It must be one of:
-
- - 'major' - major changes to a piece of content.
- - 'minor' - changes which don't affect the meaning of the
-   content, eg typo correction.
- - 'republish' - useful in situations such as when the data
-   structure has changed.
-
-Other types may be added in future, the content store will just pass them through
-to the fanout.
-
 ## `access_limited`
 
 A hash. Present in the storing and notifying context.

@@ -356,16 +356,6 @@ describe ContentItem, :type => :model do
     end
   end
 
-  it "should not persist update_type" do
-    item = build(:content_item)
-    item.update_attributes!(:update_type => "minor")
-
-    expect(item.update_type).to eq("minor")
-
-    item = ContentItem.find(item.base_path)
-    expect(item.update_type).to be_nil
-  end
-
   describe "registering routes" do
     before do
       @routes = [

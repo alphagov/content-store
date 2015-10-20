@@ -14,7 +14,6 @@ For example, given the following request:
     {
       "format": "gone",
       "publishing_app": "publisher",
-      "update_type": "major",
       "routes": [
         {"path": "/gone-foo", "type": "exact"},
         {"path": "/gone-foo/bar", "type": "exact"}
