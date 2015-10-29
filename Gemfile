@@ -36,5 +36,5 @@ group :development, :test do
   gem 'simplecov-rcov', '0.2.3', :require => false
   gem 'ci_reporter_rspec', '~> 1.0.0'
 
-  gem "byebug"
+  gem "pry-byebug"
 end
