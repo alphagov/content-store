@@ -6,6 +6,11 @@ class ContentItem
 
   def self.create_or_replace(base_path, attributes)
     previous_item = ContentItem.where(:base_path => base_path).first
+    lock = UpdateLock.new(previous_item)
+
+    version = attributes.fetch("version")
+    lock.check_availability!(version)
+
     result = previous_item ? :replaced : :created
 
     item = ContentItem.new(:base_path => base_path)
@@ -16,6 +21,7 @@ class ContentItem
     else
       result = false
     end
+
     return result, item
   rescue Mongoid::Errors::UnknownAttribute => e
     extra_fields = attributes.keys - self.fields.keys
@@ -24,6 +30,8 @@ class ContentItem
   rescue Mongoid::Errors::InvalidValue => e
     item.errors.add(:base, e.message)
     return false, item
+  rescue VersionLockError => e
+    return :stale
   end
 
   field :_id, :as => :base_path, :type => String, :overwrite => true
@@ -43,6 +51,7 @@ class ContentItem
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
+  field :version, :type => Integer
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 

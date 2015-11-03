@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'update_lock'
 
 describe ContentItem, :type => :model do
   describe ".create_or_replace" do
@@ -8,11 +9,13 @@ describe ContentItem, :type => :model do
       end
 
       context "when unknown attributes are provided" do
+        let(:attributes) { { "foo" => "foo", "bar" => "bar", "version" => 10 } }
+
         it "handles Mongoid::Errors::UnknownAttribute" do
           result = item = nil
 
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, { foo: 'foo', bar: 'bar' })
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.to_not raise_error
 
           expect(result).to be false
@@ -21,12 +24,14 @@ describe ContentItem, :type => :model do
       end
 
       context "when assigning a value of incorrect type" do
+        let(:attributes) { { "routes" => 12, "version" => 10 } }
+
         it "handles Mongoid::Errors::InvalidValue" do
           result = item = nil
 
           expect {
             # routes should be of type Array
-            result, item = ContentItem.create_or_replace(@item.base_path, { routes: 12 })
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.to_not raise_error
 
           expect(result).to be false
@@ -34,6 +39,49 @@ describe ContentItem, :type => :model do
           expect(item.errors[:base]).to include(expected_error_message)
         end
       end
+
+      context "with stale attributes" do
+        before do
+          @item.version = 20
+          @item.save!
+        end
+
+        it "returns a result of :stale" do
+          result = ContentItem.create_or_replace(@item.base_path, "version" => 10)
+          expect(result).to eq(:stale)
+        end
+      end
+
+      context "with current attributes and no previous item" do
+        let(:attributes) { @item.attributes }
+
+        it "upserts the item" do
+          result = item = nil
+          expect {
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+          }.to change(ContentItem, :count).by(1)
+          expect(result).to eq(:created)
+          expect(item.version).to eq(1)
+        end
+      end
+
+      context "with current attributes and a previous item" do
+        before do
+          @item.save!
+        end
+
+        let(:attributes) { @item.attributes.merge("version" => 2) }
+
+        it "upserts the item" do
+          result = item = nil
+          expect {
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+          }.not_to change(ContentItem, :count)
+          expect(result).to eq(:replaced)
+          expect(item.version).to eq(2)
+        end
+      end
+
     end
   end
 

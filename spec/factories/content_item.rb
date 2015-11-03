@@ -7,6 +7,7 @@ FactoryGirl.define do
     format 'gone' # Using gone as it allows the smallest valid base
     publishing_app 'publisher'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+    version 1
 
     trait :with_content_id do
       content_id { SecureRandom.uuid }
