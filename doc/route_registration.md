@@ -31,14 +31,14 @@ The following routes would be created:
 ### Placeholder items
 
 Items with a format starting with "placeholder" will not have the routes
-registered with the router.  The routes will still be validated though.
+registered with the router.
 
 ### Redirects for subpaths
 
 The content store can also create redirects for paths under the base_path.  This is intended to support
 cases where the structure within a piece of content has changed (eg a part of a guide no longer exists.)
 
-**Note:** it is invalid for the redirects array to include the base_path.  The only exception is redirect items,
+**Note:** the redirects array must not include the base_path.  The only exception is redirect items,
 which are described in redirect_item.md.
 
 Redirects are specified in the redirects array, and specify a destination as well as a path and type.

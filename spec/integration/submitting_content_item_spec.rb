@@ -168,39 +168,6 @@ describe "content item write API", :type => :request do
     end
   end
 
-  context "given a partial update" do
-    before(:each) do
-      @item = create(:content_item, :base_path => "/vat-rates")
-
-      put_json "/content/vat-rates", @data.except("title")
-    end
-
-    it "returns a Unprocessable Entity status" do
-      expect(response.status).to eq(422)
-    end
-
-    it "includes validation error messages in the response" do
-      data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"title" => ["can't be blank"]})
-    end
-  end
-
-  context "create with an invalid content item" do
-    before(:each) do
-      @data["title"] = ""
-      put_json "/content/vat-rates", @data
-    end
-
-    it "returns a Unprocessable Entity status" do
-      expect(response.status).to eq(422)
-    end
-
-    it "includes validation error messages in the response" do
-      data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"title" => ["can't be blank"]})
-    end
-  end
-
   context "create with extra fields in the input" do
     before :each do
       @data["foo"] = "bar"

@@ -79,22 +79,5 @@ describe "submitting placeholder items to the content store", :type => :request 
       put_json "/content/vat-rates", @data
       refute_routes_registered("frontend", [['/vat-rates', 'exact']])
     end
-
-  end
-
-  context "create with an invalid routes" do
-    before(:each) do
-      @data["routes"] << {"path" => "/not-vat-rates", "type" => "exact"}
-      put_json "/content/vat-rates", @data
-    end
-
-    it "returns a Unprocessable Entity status" do
-      expect(response.status).to eq(422)
-    end
-
-    it "includes validation error messages in the response" do
-      data = JSON.parse(response.body)
-      expect(data["errors"]["routes"]).to eq(["must be below the base path"])
-    end
   end
 end

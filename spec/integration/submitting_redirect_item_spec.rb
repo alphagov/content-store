@@ -67,26 +67,4 @@ describe "submitting redirect items to the content store", :type => :request do
       assert_redirect_routes_registered([['/crb-checks', 'prefix', '/dbs-checks'], ['/crb-checks.json', 'exact', '/api/content/dbs-checks']])
     end
   end
-
-  describe "exact redirect destination variants" do
-    it "allows exact redirect destinations that include a query string and fragment" do
-      @data["redirects"] = [{"path" => "/crb-checks", "type" => "exact", "destination" => "/dbs-checks?foo=bar#overview"}]
-
-      put_json "/content/crb-checks", @data
-
-      expect(response.status).to eq(201)
-
-      assert_redirect_routes_registered([['/crb-checks', 'exact', '/dbs-checks?foo=bar#overview']])
-    end
-
-    it "disallows prefix redirect destinations that include a query string and fragment" do
-      @data["redirects"] = [{"path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks?foo=bar#overview"}]
-
-      put_json "/content/crb-checks", @data
-
-      expect(response.status).to eq(422)
-
-      assert_no_routes_registered_for_path('/crb-checks')
-    end
-  end
 end

@@ -46,24 +46,6 @@ class ContentItem
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
-  validates :base_path, absolute_path: true
-  validates :content_id, uuid: true, allow_nil: true
-  validates :format, :publishing_app, presence: true
-  validates :title, presence: true, if: :renderable_content?
-  validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/,if: :renderable_content?
-  validates :public_updated_at, presence: true, if: :renderable_content?
-  validate :route_set_is_valid
-  validate :no_extra_route_keys
-  validate :links_are_valid
-  validate :access_limited_is_valid
-  validates :phase,
-            inclusion: { in: ['alpha', 'beta', 'live'],
-                         message: 'must be either alpha, beta, or live' }
-  validates :locale,
-            inclusion: { in: I18n.available_locales.map(&:to_s),
-                         message: 'must be a supported locale' },
-            if: :renderable_content?
-
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
 
@@ -161,65 +143,5 @@ private
       .sort(:locale => 1, :updated_at => 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
-  end
-
-  def route_set_is_valid
-    unless base_path.present? && registerable_route_set.valid?
-      errors.set(:routes, registerable_route_set.errors[:registerable_routes])
-      errors.set(:redirects, registerable_route_set.errors[:registerable_redirects])
-    end
-  end
-
-  def access_limited_is_valid
-    if access_limited? && (!access_limited_keys_valid? || !access_limited_values_valid?)
-      errors.set(:access_limited, ['is not valid'])
-    end
-  end
-
-  def access_limited_keys_valid?
-    access_limited.keys == ['users']
-  end
-
-  def access_limited_values_valid?
-    authorised_user_uids.is_a?(Array) && authorised_user_uids.all? { |id| id.is_a?(String) }
-  end
-
-  def no_extra_route_keys
-    if routes.any? { |r| (r.keys - %w(path type)).any? }
-      errors.add(:routes, "are invalid")
-    end
-    if redirects.any? { |r| (r.keys - %w(path type destination)).any? }
-      errors.add(:redirects, "are invalid")
-    end
-  end
-
-  def link_key_is_valid?(link_key)
-    link_key.is_a?(String) &&
-      link_key =~ /\A[a-z0-9_]+\z/ &&
-      link_key != 'available_translations'
-  end
-
-  def links_are_valid
-    # Test that the `links` attribute, if set, is a hash from strings to lists
-    # of UUIDs
-    return if links.empty?
-
-    bad_keys = links.keys.reject { |key| link_key_is_valid?(key) }
-    unless bad_keys.empty?
-      errors[:links] = "Invalid link types: #{bad_keys.to_sentence}"
-    end
-
-    bad_values = links.values.reject { |value|
-      value.is_a?(Array) && value.all? { |content_id|
-        UUIDValidator.valid?(content_id)
-      }
-    }
-    unless bad_values.empty?
-      errors[:links] = "must map to lists of UUIDs"
-    end
-  end
-
-  def renderable_content?
-    !NON_RENDERABLE_FORMATS.include?(format)
   end
 end
