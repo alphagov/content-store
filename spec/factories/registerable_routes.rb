@@ -1,23 +1,4 @@
 FactoryGirl.define do
-
-  factory :registerable_route do
-    skip_create
-
-    path "/foo"
-    type "prefix"
-  end
-
-  factory :registerable_gone_route, parent: :registerable_route, class: RegisterableGoneRoute do
-  end
-
-  factory :registerable_redirect do
-    skip_create
-
-    path "/foo"
-    type "prefix"
-    destination "/bar"
-  end
-
   factory :registerable_route_set do
     skip_create
 
@@ -26,11 +7,17 @@ FactoryGirl.define do
 
     after :build do |rs|
       if rs.is_redirect
-        rs.registerable_redirects = [build(:registerable_redirect, :path => rs.base_path)]
+        rs.registerable_redirects = [{
+          path: rs.base_path,
+          type: "prefix",
+          destination: "/bar",
+        }]
       else
-        rs.registerable_routes = [build(:registerable_route, :path => rs.base_path)]
+        rs.registerable_routes = [{
+          path: rs.base_path,
+          type: "prefix",
+        }]
       end
     end
   end
 end
-
