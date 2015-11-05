@@ -85,8 +85,8 @@ class ContentItem
 
   def register_routes(previous_item: nil)
     return if self.format.start_with?("placeholder")
-    return if previous_item && previous_item.registerable_route_set == self.registerable_route_set
-    self.registerable_route_set.register!
+    return if previous_item && previous_item.route_set == self.route_set
+    self.route_set.register!
   end
 
   def base_path_without_root
@@ -95,8 +95,8 @@ class ContentItem
 
 protected
 
-  def registerable_route_set
-    @registerable_route_set ||= RegisterableRouteSet.from_content_item(self)
+  def route_set
+    @route_set ||= RouteSet.from_content_item(self)
   end
 
 private

@@ -53,11 +53,11 @@ class PublishIntent
 
   private
 
-  def registerable_route_set
-    @registerable_route_set ||= RegisterableRouteSet.from_publish_intent(self)
+  def route_set
+    @route_set ||= RouteSet.from_publish_intent(self)
   end
 
   def register_routes
-    registerable_route_set.register!
+    route_set.register!
   end
 end
