@@ -14,6 +14,7 @@ describe UpdateLock, :type => :model do
 
     context "for a nil item" do
       let(:lockable) { nil }
+
       it "does not raise an error" do
         expect {
           subject.check_availability!(2)
@@ -38,6 +39,12 @@ describe UpdateLock, :type => :model do
       it "does not raise an error when the lock is checked with a greater value" do
         expect {
           subject.check_availability!(11)
+        }.to_not raise_error
+      end
+
+      it "does not raise an error when the lock is checked against nil" do
+        expect {
+          subject.check_availability!(nil)
         }.to_not raise_error
       end
 

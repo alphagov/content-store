@@ -241,4 +241,17 @@ describe "content item write API", :type => :request do
       expect(content_item.version).to eq(2)
     end
   end
+
+  context "without the version" do
+    before do
+      put_json "/content/vat-rates", @data.except("version")
+    end
+
+    it "creates the content item" do
+      item = ContentItem.where(:base_path => "/vat-rates").first
+      expect(item).to be
+      expect(item.title).to eq("VAT rates")
+      expect(item.version).to be_nil
+    end
+  end
 end

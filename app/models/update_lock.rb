@@ -10,6 +10,8 @@ class UpdateLock
   end
 
   def check_availability!(version)
+    return true unless version
+
     version = Integer(version)
 
     if lockable.present? && lockable.version >= version
