@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RegisterableRouteSet, type: :model do
+describe RouteSet, type: :model do
   describe '.from_content_item' do
     it "constructs a route set from a non-redirect content item" do
       item = build(:content_item, base_path: "/path", rendering_app: "frontend")
@@ -9,7 +9,7 @@ describe RegisterableRouteSet, type: :model do
         { 'path' => '/path.json', 'type' => 'exact' },
         { 'path' => '/path/subpath', 'type' => 'prefix' },
       ]
-      route_set = RegisterableRouteSet.from_content_item(item)
+      route_set = RouteSet.from_content_item(item)
       expect(route_set.is_redirect).to eq(false)
       expect(route_set.is_gone).to eq(false)
       expected_routes = [
@@ -17,9 +17,9 @@ describe RegisterableRouteSet, type: :model do
         { path: '/path.json', type: 'exact' },
         { path: '/path/subpath', type: 'prefix' },
       ]
-      expect(route_set.registerable_routes).to match_array(expected_routes)
-      expect(route_set.registerable_gone_routes).to eq([])
-      expect(route_set.registerable_redirects).to eq([])
+      expect(route_set.routes).to match_array(expected_routes)
+      expect(route_set.gone_routes).to eq([])
+      expect(route_set.redirects).to eq([])
     end
 
     it "constructs a route set from a redirect content item" do
@@ -29,15 +29,15 @@ describe RegisterableRouteSet, type: :model do
         { "path" => "/path/foo", "type" => "prefix", "destination" => "/somewhere-else" },
       ]
 
-      route_set = RegisterableRouteSet.from_content_item(item)
+      route_set = RouteSet.from_content_item(item)
       expect(route_set.is_redirect).to eq(true)
-      expect(route_set.registerable_routes).to eq([])
-      expect(route_set.registerable_gone_routes).to eq([])
+      expect(route_set.routes).to eq([])
+      expect(route_set.gone_routes).to eq([])
       expected_redirects = [
         { path: "/path", type: "exact", destination: "/somewhere" },
         { path: "/path/foo", type: "prefix", destination: "/somewhere-else" },
       ]
-      expect(route_set.registerable_redirects).to match_array(expected_redirects)
+      expect(route_set.redirects).to match_array(expected_redirects)
     end
 
     it "constructs a route set from a gone content item" do
@@ -48,16 +48,16 @@ describe RegisterableRouteSet, type: :model do
         { 'path' => '/path/subpath', 'type' => 'prefix' },
       ]
 
-      route_set = RegisterableRouteSet.from_content_item(item)
+      route_set = RouteSet.from_content_item(item)
       expect(route_set.is_gone).to eq(true)
       expected_routes = [
         { path: '/path', type: 'exact' },
         { path: '/path.json', type: 'exact' },
         { path: '/path/subpath', type: 'prefix' },
       ]
-      expect(route_set.registerable_routes).to eq([])
-      expect(route_set.registerable_gone_routes).to match_array(expected_routes)
-      expect(route_set.registerable_redirects).to eq([])
+      expect(route_set.routes).to eq([])
+      expect(route_set.gone_routes).to match_array(expected_routes)
+      expect(route_set.redirects).to eq([])
     end
   end
 
@@ -70,7 +70,7 @@ describe RegisterableRouteSet, type: :model do
           { 'path' => '/path.json', 'type' => 'exact' },
           { 'path' => '/path/subpath', 'type' => 'prefix' },
         ]
-        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        route_set = RouteSet.from_publish_intent(intent)
         expect(route_set.is_redirect).to be_falsey
         expect(route_set.is_gone).to be_falsey
         expected_routes = [
@@ -78,9 +78,9 @@ describe RegisterableRouteSet, type: :model do
           { path: '/path.json', type: 'exact' },
           { path: '/path/subpath', type: 'prefix' },
         ]
-        expect(route_set.registerable_routes).to match_array(expected_routes)
-        expect(route_set.registerable_gone_routes).to eq([])
-        expect(route_set.registerable_redirects).to eq([])
+        expect(route_set.routes).to match_array(expected_routes)
+        expect(route_set.gone_routes).to eq([])
+        expect(route_set.redirects).to eq([])
       end
     end
 
@@ -97,29 +97,29 @@ describe RegisterableRouteSet, type: :model do
           { 'path' => '/path/subpath', 'type' => 'prefix' },
         ]
 
-        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        route_set = RouteSet.from_publish_intent(intent)
         expect(route_set.is_redirect).to be_falsey
         expect(route_set.is_gone).to be_falsey
         expected_routes = [
           { path: '/path.json', type: 'exact' },
           { path: '/path/subpath', type: 'prefix' },
         ]
-        expect(route_set.registerable_routes).to match_array(expected_routes)
-        expect(route_set.registerable_gone_routes).to eq([])
-        expect(route_set.registerable_redirects).to eq([])
+        expect(route_set.routes).to match_array(expected_routes)
+        expect(route_set.gone_routes).to eq([])
+        expect(route_set.redirects).to eq([])
       end
 
       it "contains no routes if the content item already has all the routes in the intent" do
         intent = build(:publish_intent, base_path: "/path", rendering_app: "frontend")
         intent.routes = [ { 'path' => '/path', 'type' => 'exact' } ]
 
-        route_set = RegisterableRouteSet.from_publish_intent(intent)
+        route_set = RouteSet.from_publish_intent(intent)
         expect(route_set.is_redirect).to be_falsey
         expect(route_set.is_gone).to be_falsey
 
-        expect(route_set.registerable_routes).to eq([])
-        expect(route_set.registerable_gone_routes).to eq([])
-        expect(route_set.registerable_redirects).to eq([])
+        expect(route_set.routes).to eq([])
+        expect(route_set.gone_routes).to eq([])
+        expect(route_set.redirects).to eq([])
       end
     end
   end
@@ -127,8 +127,8 @@ describe RegisterableRouteSet, type: :model do
   describe '#register!' do
     context 'for a non-redirect route set' do
       before :each do
-        @route_set = RegisterableRouteSet.new(base_path: '/path', rendering_app: 'frontend')
-        @route_set.registerable_routes = [
+        @route_set = RouteSet.new(base_path: '/path', rendering_app: 'frontend')
+        @route_set.routes = [
           { path: '/path', type: 'exact' },
           { path: '/path/sub/path', type: 'prefix' },
         ]
@@ -143,7 +143,7 @@ describe RegisterableRouteSet, type: :model do
       end
 
       it 'registers and commits all registerable routes and redirects' do
-        @route_set.registerable_redirects = [
+        @route_set.redirects = [
           { path: '/path.json', type: 'exact', destination: '/api/content/path' },
         ]
         @route_set.register!
@@ -160,7 +160,7 @@ describe RegisterableRouteSet, type: :model do
       expect(Rails.application.router_api).not_to receive(:add_route)
       expect(Rails.application.router_api).not_to receive(:commit_routes)
 
-      route_set = RegisterableRouteSet.new(base_path: '/path', rendering_app: 'frontend')
+      route_set = RouteSet.new(base_path: '/path', rendering_app: 'frontend')
       route_set.register!
     end
 
@@ -169,14 +169,14 @@ describe RegisterableRouteSet, type: :model do
         { path: '/path', type: 'exact', destination: '/new-path' },
         { path: '/path/sub/path', type: 'prefix', destination: '/somewhere-else' },
       ]
-      route_set = RegisterableRouteSet.new(registerable_redirects: redirects, base_path: '/path', is_redirect: true)
+      route_set = RouteSet.new(redirects: redirects, base_path: '/path', is_redirect: true)
       route_set.register!
       assert_redirect_routes_registered([['/path', 'exact', '/new-path'], ['/path/sub/path', 'prefix', '/somewhere-else']])
     end
 
     it 'registers and commits all registerable gone routes for a gone item' do
-      route_set = RegisterableRouteSet.new(base_path: '/path', rendering_app: 'frontend', is_gone: true)
-      route_set.registerable_gone_routes = [
+      route_set = RouteSet.new(base_path: '/path', rendering_app: 'frontend', is_gone: true)
+      route_set.gone_routes = [
         { path: '/path', type: 'exact' },
         { path: '/path/sub/path', type: 'prefix' },
       ]

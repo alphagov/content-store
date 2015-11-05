@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :registerable_route_set do
+  factory :route_set do
     skip_create
 
     base_path "/foo"
@@ -7,13 +7,13 @@ FactoryGirl.define do
 
     after :build do |rs|
       if rs.is_redirect
-        rs.registerable_redirects = [{
+        rs.redirects = [{
           path: rs.base_path,
           type: "prefix",
           destination: "/bar",
         }]
       else
-        rs.registerable_routes = [{
+        rs.routes = [{
           path: rs.base_path,
           type: "prefix",
         }]
