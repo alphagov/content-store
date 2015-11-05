@@ -39,10 +39,10 @@ class RegisterableRouteSet < OpenStruct
   end
 
   def self.from_publish_intent(intent)
-    route_set = new({
-      :base_path => intent.base_path,
-      :rendering_app => intent.rendering_app,
-    })
+    route_set = new(
+      base_path: intent.base_path,
+      rendering_app: intent.rendering_app,
+    )
     route_attrs = intent.routes
     if item = intent.content_item
       # if a content item exists we only want to register the set of routes
