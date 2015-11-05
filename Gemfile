@@ -37,4 +37,5 @@ group :development, :test do
   gem 'ci_reporter_rspec', '~> 1.0.0'
 
   gem "pry-byebug"
+  gem "pact"
 end
