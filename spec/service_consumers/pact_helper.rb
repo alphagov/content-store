@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"]="test"
 require "webmock"
 require "pact/provider/rspec"
+require "rails_helper"
 
 WebMock.disable!
 
@@ -26,11 +27,32 @@ Pact.provider_states_for "Publishing API" do
     WebMock.disable!
   end
 
-  provider_state "some context" do
+  provider_state "an in-order request was sent to the content store" do
     set_up do
       DatabaseCleaner.clean_with :truncation
+      stub_request(:any, Regexp.new(Plek.find("router-api")))
 
-      # some setup
+      FactoryGirl.create(
+        :content_item,
+        content_id: "7271a331-bbdd-411e-abb9-00127b1fae86",
+        base_path: "/vat-rates",
+        transmitted_at: 1000000000.0000000
+      )
     end
   end
+
+  provider_state "an out-of-order request was sent to the content store" do
+    set_up do
+      DatabaseCleaner.clean_with :truncation
+      stub_request(:any, Regexp.new(Plek.find("router-api")))
+
+      FactoryGirl.create(
+        :content_item,
+        content_id: "7271a331-bbdd-411e-abb9-00127b1fae86",
+        base_path: "/vat-rates",
+        transmitted_at: 1000000000.0000002
+      )
+    end
+  end
+
 end

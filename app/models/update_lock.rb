@@ -10,8 +10,6 @@ class UpdateLock
   end
 
   def check_availability!(transmitted_at)
-    return true unless transmitted_at
-
     transmitted_at = Float(transmitted_at)
 
     if lockable.present? && lockable.transmitted_at >= transmitted_at

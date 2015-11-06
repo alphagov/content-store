@@ -42,10 +42,10 @@ describe UpdateLock, :type => :model do
         }.to_not raise_error
       end
 
-      it "does not raise an error when the lock is checked against nil" do
+      it "raises an error when the lock is checked against nil" do
         expect {
           subject.check_availability!(nil)
-        }.to_not raise_error
+        }.to raise_error
       end
 
       it "coerces strings to integers" do
