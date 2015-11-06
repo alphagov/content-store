@@ -8,8 +8,8 @@ class ContentItem
     previous_item = ContentItem.where(:base_path => base_path).first
     lock = UpdateLock.new(previous_item)
 
-    version = attributes["version"]
-    lock.check_availability!(version)
+    transmitted_at = attributes["transmitted_at"]
+    lock.check_availability!(transmitted_at)
 
     result = previous_item ? :replaced : :created
 
@@ -30,7 +30,7 @@ class ContentItem
   rescue Mongoid::Errors::InvalidValue => e
     item.errors.add(:base, e.message)
     return false, item
-  rescue VersionLockError => e
+  rescue OutOfOrderTransmissionError => e
     return :stale
   end
 
@@ -51,7 +51,7 @@ class ContentItem
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
-  field :version, :type => Integer
+  field :transmitted_at, :type => Float
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 

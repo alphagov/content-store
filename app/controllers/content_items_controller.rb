@@ -26,7 +26,7 @@ class ContentItemsController < ApplicationController
       status = :created
     when :stale
       status = :conflict
-      response_body = { errors: "A later version is already stored" }
+      response_body = { errors: "A later transmitted_at is already stored" }
     when false
       status = :unprocessable_entity
       response_body = { errors: item.errors.as_json }

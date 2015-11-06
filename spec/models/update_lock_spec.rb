@@ -5,7 +5,7 @@ describe UpdateLock, :type => :model do
     let(:not_lockable) { double(:not_lockable) }
 
     it "raises an error" do
-      expect { UpdateLock.new(not_lockable) }.to raise_error VersionLockError
+      expect { UpdateLock.new(not_lockable) }.to raise_error OutOfOrderTransmissionError
     end
   end
 
@@ -23,17 +23,17 @@ describe UpdateLock, :type => :model do
     end
 
     context "for a locked item" do
-      let(:lockable) { double(:lockable, version: 10) }
+      let(:lockable) { double(:lockable, transmitted_at: 10) }
       it "raises an error when the lock is checked with a lesser value" do
         expect {
           subject.check_availability!(9)
-        }.to raise_error(VersionLockError, /10 >= 9/)
+        }.to raise_error(OutOfOrderTransmissionError, /has a newer/)
       end
 
       it "raises an error when the lock is checked with an equal value" do
         expect {
           subject.check_availability!(10)
-        }.to raise_error(VersionLockError, /10 >= 10/)
+        }.to raise_error(OutOfOrderTransmissionError, /has a newer/)
       end
 
       it "does not raise an error when the lock is checked with a greater value" do

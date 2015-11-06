@@ -12,7 +12,7 @@ describe "submitting redirect items to the content store", :type => :request do
         {"path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks"},
         {"path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks"}
       ],
-      "version" => 2
+      "transmitted_at" => 2
     }
   end
 

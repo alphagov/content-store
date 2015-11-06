@@ -11,7 +11,7 @@ describe "content item write API", :type => :request do
       "need_ids" => ["100123", "100124"],
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
-      "version" => "2",
+      "transmitted_at" => "2",
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "details" => {
@@ -227,7 +227,7 @@ describe "content item write API", :type => :request do
     before do
       create(:content_item,
              :base_path => "/vat-rates",
-             :version => 2)
+             :transmitted_at => 2)
 
       put_json "/content/vat-rates", @data
     end
@@ -238,20 +238,20 @@ describe "content item write API", :type => :request do
 
     it "doesn't perform an update" do
       content_item = ContentItem.where(base_path: "/vat-rates").first
-      expect(content_item.version).to eq(2)
+      expect(content_item.transmitted_at).to eq(2)
     end
   end
 
-  context "without the version" do
+  context "without the transmitted_at" do
     before do
-      put_json "/content/vat-rates", @data.except("version")
+      put_json "/content/vat-rates", @data.except("transmitted_at")
     end
 
     it "creates the content item" do
       item = ContentItem.where(:base_path => "/vat-rates").first
       expect(item).to be
       expect(item.title).to eq("VAT rates")
-      expect(item.version).to be_nil
+      expect(item.transmitted_at).to be_nil
     end
   end
 end
