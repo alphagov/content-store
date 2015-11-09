@@ -13,8 +13,16 @@ end
 
 Pact.service_provider "Content Store" do
   honours_pact_with "Publishing API" do
-    pact_uri ENV.fetch("PUBLISHING_API_PACT_PATH", "../publishing-api/spec/pacts/publishing_api-content_store.json")
+    if ENV['USE_LOCAL_PACT']
+      pact_uri ENV.fetch('PUBLISHING_API_PACT_PATH', '../publishing-api/spec/pacts/publishing_api-content_store.json')
+    else
+      base_url = "https://pact-broker.dev.publishing.service.gov.uk/pacts/provider/#{URI.escape(name)}/consumer/#{URI.escape(consumer_name)}"
+      version_part = ENV['PUBLISHING_API_PACT_VERSION'] ? "versions/#{ENV['PUBLISHING_API_PACT_VERSION']}" : 'latest'
+
+      pact_uri "#{base_url}/#{version_part}"
+    end
   end
+
 end
 
 Pact.provider_states_for "Publishing API" do
