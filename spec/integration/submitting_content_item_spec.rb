@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'update_lock'
 
 describe "content item write API", :type => :request do
   before :each do
@@ -243,15 +244,10 @@ describe "content item write API", :type => :request do
   end
 
   context "without the transmitted_at" do
-    before do
-      put_json "/content/vat-rates", @data.except("transmitted_at")
-    end
-
     it "creates the content item" do
-      item = ContentItem.where(:base_path => "/vat-rates").first
-      expect(item).to be
-      expect(item.title).to eq("VAT rates")
-      expect(item.transmitted_at).to be_nil
+      expect {
+        put_json "/content/vat-rates", @data.except("transmitted_at")
+      }.to raise_error(MissingAttributeError, /transmitted_at/)
     end
   end
 end
