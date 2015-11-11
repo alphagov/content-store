@@ -1,6 +1,4 @@
 class UpdateLock
-  attr_reader :lockable, :locked_at
-
   def initialize(lockable)
     @lockable = lockable
 
@@ -17,11 +15,14 @@ class UpdateLock
     database_transmitted_at = Integer(lockable.transmitted_at)
 
     if database_transmitted_at >= request_transmitted_at
-      error = "Tried to process request with transmission time #{request_transmitted_at},"
-      error += " but the latest #{lockable.class} has a newer (or equal) timestamp of #{lockable.transmitted_at}"
+      error = "Tried to process request with transmitted_at #{request_transmitted_at},"
+      error += " but the latest #{lockable.class} has a newer (or equal) transmitted_at of #{lockable.transmitted_at}"
       raise OutOfOrderTransmissionError, error
     end
   end
+
+private
+  attr_reader :lockable, :locked_at
 
   class ::MissingAttributeError < StandardError; end
   class ::OutOfOrderTransmissionError < StandardError; end

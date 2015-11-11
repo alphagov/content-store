@@ -47,8 +47,10 @@ describe ContentItem, :type => :model do
         end
 
         it "returns a result of :stale" do
-          result = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => "10")
+          result, item = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => "10")
+
           expect(result).to eq(:stale)
+          expect(item.errors).to include("newer (or equal) transmitted_at")
         end
       end
 

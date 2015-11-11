@@ -237,6 +237,12 @@ describe "content item write API", :type => :request do
       expect(response.status).to eq(409)
     end
 
+    it "provides a helpful error body" do
+      expect(response.body).to include(
+        "the latest ContentItem has a newer (or equal) transmitted_at of 2"
+      )
+    end
+
     it "doesn't perform an update" do
       content_item = ContentItem.where(base_path: "/vat-rates").first
       expect(content_item.transmitted_at).to eq("2")
