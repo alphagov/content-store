@@ -5,7 +5,7 @@ describe UpdateLock, :type => :model do
     let(:not_lockable) { double(:not_lockable) }
 
     it "raises an error" do
-      expect { UpdateLock.new(not_lockable) }.to raise_error OutOfOrderTransmissionError
+      expect { UpdateLock.new(not_lockable) }.to raise_error ArgumentError
     end
   end
 

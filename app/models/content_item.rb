@@ -31,7 +31,16 @@ class ContentItem
     item.errors.add(:base, e.message)
     return false, item
   rescue OutOfOrderTransmissionError => e
-    return :stale, OpenStruct.new(errors: e.message)
+    return :conflict, OpenStruct.new(
+      errors: {
+        type: "conflict",
+        code: "409",
+        message: e.message,
+        fields: {
+          transmitted_at: [e.message],
+        }
+      }
+    )
   end
 
   field :_id, :as => :base_path, :type => String, :overwrite => true

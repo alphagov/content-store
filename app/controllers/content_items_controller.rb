@@ -24,7 +24,7 @@ class ContentItemsController < ApplicationController
     case result
     when :created
       status = :created
-    when :stale
+    when :conflict
       status = :conflict
       response_body = { errors: item.errors.as_json }
     when false

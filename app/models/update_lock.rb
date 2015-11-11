@@ -3,7 +3,7 @@ class UpdateLock
     @lockable = lockable
 
     if lockable && !lockable.respond_to?(:transmitted_at)
-      raise OutOfOrderTransmissionError.new("#{lockable.class} must implement transmitted_at")
+      raise ArgumentError.new("#{lockable.class} must implement transmitted_at")
     end
   end
 

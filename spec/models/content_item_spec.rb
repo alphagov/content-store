@@ -46,11 +46,11 @@ describe ContentItem, :type => :model do
           @item.save!
         end
 
-        it "returns a result of :stale" do
+        it "returns a result of :conflict" do
           result, item = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => "10")
 
-          expect(result).to eq(:stale)
-          expect(item.errors).to include("newer (or equal) transmitted_at")
+          expect(result).to eq(:conflict)
+          expect(item.errors[:message]).to include("newer (or equal) transmitted_at")
         end
       end
 
