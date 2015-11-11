@@ -9,7 +9,7 @@ describe ContentItem, :type => :model do
       end
 
       context "when unknown attributes are provided" do
-        let(:attributes) { { "foo" => "foo", "bar" => "bar", "transmitted_at" => 10 } }
+        let(:attributes) { { "foo" => "foo", "bar" => "bar", "transmitted_at" => "10" } }
 
         it "handles Mongoid::Errors::UnknownAttribute" do
           result = item = nil
@@ -24,7 +24,7 @@ describe ContentItem, :type => :model do
       end
 
       context "when assigning a value of incorrect type" do
-        let(:attributes) { { "routes" => 12, "transmitted_at" => 10 } }
+        let(:attributes) { { "routes" => 12, "transmitted_at" => "10" } }
 
         it "handles Mongoid::Errors::InvalidValue" do
           result = item = nil
@@ -42,12 +42,12 @@ describe ContentItem, :type => :model do
 
       context "with stale attributes" do
         before do
-          @item.transmitted_at = 20
+          @item.transmitted_at = "20"
           @item.save!
         end
 
         it "returns a result of :stale" do
-          result = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => 10)
+          result = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => "10")
           expect(result).to eq(:stale)
         end
       end
@@ -61,7 +61,7 @@ describe ContentItem, :type => :model do
             result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.to change(ContentItem, :count).by(1)
           expect(result).to eq(:created)
-          expect(item.transmitted_at).to eq(1)
+          expect(item.transmitted_at).to eq("1")
         end
       end
 
@@ -70,7 +70,7 @@ describe ContentItem, :type => :model do
           @item.save!
         end
 
-        let(:attributes) { @item.attributes.merge("transmitted_at" => 2) }
+        let(:attributes) { @item.attributes.merge("transmitted_at" => "2") }
 
         it "upserts the item" do
           result = item = nil
@@ -78,7 +78,7 @@ describe ContentItem, :type => :model do
             result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.not_to change(ContentItem, :count)
           expect(result).to eq(:replaced)
-          expect(item.transmitted_at).to eq(2)
+          expect(item.transmitted_at).to eq("2")
         end
       end
 

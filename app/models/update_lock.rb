@@ -11,10 +11,13 @@ class UpdateLock
 
   def check_availability!(transmitted_at)
     raise MissingAttributeError, "transmitted_at is mandatory" unless transmitted_at
-    transmitted_at = Float(transmitted_at)
+    return unless lockable.present?
 
-    if lockable.present? && lockable.transmitted_at >= transmitted_at
-      error = "Tried to process request with transmission time #{transmitted_at},"
+    request_transmitted_at = Integer(transmitted_at)
+    database_transmitted_at = Integer(lockable.transmitted_at)
+
+    if database_transmitted_at >= request_transmitted_at
+      error = "Tried to process request with transmission time #{request_transmitted_at},"
       error += " but the latest #{lockable.class} has a newer (or equal) timestamp of #{lockable.transmitted_at}"
       raise OutOfOrderTransmissionError, error
     end

@@ -35,7 +35,7 @@ Pact.provider_states_for "Publishing API" do
     WebMock.disable!
   end
 
-  provider_state "a content item exists with base_path /vat-rates and transmitted_at 1000000000.0000000" do
+  provider_state "a content item exists with base_path /vat-rates and transmitted_at 1000000000000000000" do
     set_up do
       DatabaseCleaner.clean_with :truncation
       stub_request(:any, Regexp.new(Plek.find("router-api")))
@@ -43,12 +43,12 @@ Pact.provider_states_for "Publishing API" do
       FactoryGirl.create(
         :content_item,
         base_path: "/vat-rates",
-        transmitted_at: 1000000000.0000000
+        transmitted_at: "1000000000000000000",
       )
     end
   end
 
-  provider_state "a content item exists with base_path /vat-rates and transmitted_at 1000000000.0000002" do
+  provider_state "a content item exists with base_path /vat-rates and transmitted_at 3000000000000000000" do
     set_up do
       DatabaseCleaner.clean_with :truncation
       stub_request(:any, Regexp.new(Plek.find("router-api")))
@@ -56,7 +56,7 @@ Pact.provider_states_for "Publishing API" do
       FactoryGirl.create(
         :content_item,
         base_path: "/vat-rates",
-        transmitted_at: 1000000000.0000002
+        transmitted_at: "3000000000000000000",
       )
     end
   end

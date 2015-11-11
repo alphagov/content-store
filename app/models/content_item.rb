@@ -51,7 +51,7 @@ class ContentItem
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
-  field :transmitted_at, :type => Float
+  field :transmitted_at, :type => String
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 

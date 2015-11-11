@@ -228,7 +228,7 @@ describe "content item write API", :type => :request do
     before do
       create(:content_item,
              :base_path => "/vat-rates",
-             :transmitted_at => 2)
+             :transmitted_at => "2")
 
       put_json "/content/vat-rates", @data
     end
@@ -239,7 +239,7 @@ describe "content item write API", :type => :request do
 
     it "doesn't perform an update" do
       content_item = ContentItem.where(base_path: "/vat-rates").first
-      expect(content_item.transmitted_at).to eq(2)
+      expect(content_item.transmitted_at).to eq("2")
     end
   end
 

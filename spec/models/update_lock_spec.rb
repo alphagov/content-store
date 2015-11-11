@@ -23,7 +23,7 @@ describe UpdateLock, :type => :model do
     end
 
     context "for a locked item" do
-      let(:lockable) { double(:lockable, transmitted_at: 10) }
+      let(:lockable) { double(:lockable, transmitted_at: "10") }
       it "raises an error when the lock is checked with a lesser value" do
         expect {
           subject.check_availability!(9)
