@@ -13,7 +13,8 @@ describe "End-to-end behaviour", :type => :request do
     "routes" => [
       { "path" => "/vat-rates", "type" => 'exact' }
     ],
-    "public_updated_at" => Time.now
+    "public_updated_at" => Time.now,
+    "transmitted_at" => "2",
   }}
 
   def create_item(data_hash)

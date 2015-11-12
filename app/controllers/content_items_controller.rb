@@ -20,14 +20,21 @@ class ContentItemsController < ApplicationController
       ContentItem.create_or_replace(encoded_base_path, @request_data)
     end
 
-    if result
-      status = (result == :created ? :created : :ok)
-    else
-      status = :unprocessable_entity
-    end
     response_body = {}
-    response_body[:errors] = item.errors.as_json if item.errors.any?
-    render :json => response_body, :status => status
+    case result
+    when :created
+      status = :created
+    when :conflict
+      status = :conflict
+      response_body = { errors: item.errors.as_json }
+    when false
+      status = :unprocessable_entity
+      response_body = { errors: item.errors.as_json }
+    else
+      status = :ok
+    end
+
+    render json: response_body, status: status
   end
 
   private
