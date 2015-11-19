@@ -3,7 +3,7 @@ class UpdateBlankContentItemContentIds < Mongoid::Migration
     content_items = []
 
     ContentItem.where(content_id: nil).each do |item|
-      item.update!(content_id: SecureRandom.uuid)
+      item.set(content_id: SecureRandom.uuid)
 
       content_items << "#{item.content_id},#{item.publishing_app},#{item.base_path}"
     end
@@ -17,7 +17,7 @@ class UpdateBlankContentItemContentIds < Mongoid::Migration
     content_items = []
 
     ContentItem.renderable_content.where(public_updated_at: nil).each do |item|
-      item.update!(public_updated_at: item.updated_at)
+      item.set(public_updated_at: item.updated_at)
       content_items << "#{item.public_updated_at},#{item.publishing_app},#{item.base_path}"
     end
 
