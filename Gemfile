@@ -24,6 +24,7 @@ else
 end
 
 gem 'govuk-content-schema-test-helpers', '1.3.0'
+gem 'uuidtools', '2.1.5'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.2'
