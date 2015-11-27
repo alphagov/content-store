@@ -37,6 +37,10 @@ class ContentItemsController < ApplicationController
     render json: response_body, status: status
   end
 
+  def destroy
+    ContentItem.find_by(base_path: base_path).destroy
+  end
+
   private
 
   def authenticated_user_uid
