@@ -65,6 +65,26 @@ describe "content item write API", :type => :request do
         expect(response.status).to eq(201)
       end
     end
+
+    context "with multiple content types" do
+      before do
+        @data.merge!("description" => [
+          { "content_type" => "text/html", "content" => "<p>content</p>" },
+          { "content_type" => "text/plain", "content" => "content" },
+        ])
+      end
+
+      it "creates the content item" do
+        put_json "/content/vat-rates", @data
+        expect(response.status).to eq(201)
+
+        item = ContentItem.where(:base_path => "/vat-rates").first
+        expect(item.description).to eq [
+          { "content_type" => "text/html", "content" => "<p>content</p>" },
+          { "content_type" => "text/plain", "content" => "content" },
+        ]
+      end
+    end
   end
 
   describe "creating a non-English content item" do

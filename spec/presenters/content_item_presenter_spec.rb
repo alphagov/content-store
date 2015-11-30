@@ -1,14 +1,17 @@
 require 'rails_helper'
 
 describe ContentItemPresenter do
-  let(:item) { build(:content_item) }
+  let(:item) { build(:content_item, links: links, locale: locale) }
+  let(:links) { {} }
+  let(:locale) { "en" }
+
   let(:api_url_method) do
     lambda { |base_path| "http://api.example.com/content/#{base_path}" }
   end
   let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
 
   it "includes public attributes" do
-    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + ["links"]
+    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(links description details)
     expect(presenter.as_json.keys).to match_array(expected_fields)
   end
 
@@ -19,13 +22,8 @@ describe ContentItemPresenter do
   context "with related links" do
     let(:linked_item1) { create(:content_item, :with_content_id, locale: I18n.default_locale.to_s) }
     let(:linked_item2) { create(:content_item, :with_content_id, locale: "fr", analytics_identifier: "D2") }
-    let(:item) {
-      build(:content_item,
-        :links => {"related" => [linked_item1.content_id, linked_item2.content_id]},
-        :locale => 'fr'
-      )
-    }
-
+    let(:links) { { "related" => [linked_item1.content_id, linked_item2.content_id] } }
+    let(:locale) { "fr" }
     let(:related) { presenter.as_json["links"]["related"] }
 
     it "includes the link type" do
@@ -67,6 +65,54 @@ describe ContentItemPresenter do
     it "contains the linked analytics identifier" do
       expect(related[1]).to have_key("analytics_identifier")
       expect(related[1]["analytics_identifier"]).to eq('D2')
+    end
+  end
+
+  describe "content type resolution" do
+    let(:item) do
+      FactoryGirl.create(
+        :content_item,
+        links: links,
+        description: [
+          { content_type: "text/html", content: "<p>content</p>" },
+          { content_type: "text/plain", content: "content" },
+        ],
+        details: {
+          body: [
+            { content_type: "text/html", content: "<p>content</p>" },
+            { content_type: "text/plain", content: "content" },
+          ],
+        }
+      )
+    end
+
+    it "inlines the 'text/html' content type in the description" do
+      expect(presenter.as_json["description"]).to eq("<p>content</p>")
+    end
+
+    it "inlines the 'text/html' content type in the details" do
+      expect(presenter.as_json["details"]).to eq(body: "<p>content</p>")
+    end
+
+    context "with related links" do
+      let(:linked_item) do
+        FactoryGirl.create(
+          :content_item,
+          :with_content_id,
+          locale: I18n.default_locale.to_s,
+          description: [
+            { content_type: "text/html", content: "<p>linked content</p>" },
+            { content_type: "text/plain", content: "linked content" },
+          ],
+        )
+      end
+
+      let(:links) { { "related" => [linked_item.content_id] } }
+
+      it "inlines the 'text/html' content type in the linked description" do
+        related = presenter.as_json["links"]["related"]
+        expect(related.first["description"]).to eq("<p>linked content</p>")
+      end
     end
   end
 end

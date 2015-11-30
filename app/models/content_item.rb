@@ -46,7 +46,7 @@ class ContentItem
   field :_id, :as => :base_path, :type => String, :overwrite => true
   field :content_id, :type => String
   field :title, :type => String
-  field :description, :type => String
+  field :description, :type => Hash, :default => { "value" => nil }
   field :format, :type => String
   field :locale, :type => String, :default => I18n.default_locale.to_s
   field :need_ids, :type => Array, :default => []
@@ -79,6 +79,25 @@ class ContentItem
   def as_json(options = nil)
     super(options).tap do |hash|
       hash["base_path"] = hash.delete("_id")
+    end
+  end
+
+  # We store the description in a hash because Publishing API can send through
+  # multiple content types.
+  def description=(value)
+    super("value" => value)
+  end
+
+  def description
+    description = super
+
+    if description.is_a?(Hash)
+      description.fetch("value")
+    else
+      # This is here to ensure backwards compatibility during data migration:
+      # db/migrate/20151130111755_description_value_hash.rb
+      # It can be removed afterwards.
+      description
     end
   end
 

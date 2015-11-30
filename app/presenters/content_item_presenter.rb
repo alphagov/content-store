@@ -4,17 +4,17 @@
 # include their title, base_path, api_url and web_url. See doc/output_examples
 # for an example of what this representation looks like.
 class ContentItemPresenter
+  RESOLVER = ContentTypeResolver.new("text/html")
+
   PUBLIC_ATTRIBUTES = %w(
     base_path
     content_id
     title
-    description
     format
     need_ids
     locale
     updated_at
     public_updated_at
-    details
     phase
     analytics_identifier
   ).freeze
@@ -25,11 +25,14 @@ class ContentItemPresenter
   end
 
   def as_json(options = nil)
-    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge("links" => links)
+    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
+      "links" => links,
+      "description" => RESOLVER.resolve(@item.description),
+      "details" => RESOLVER.resolve(@item.details),
+    )
   end
 
 private
-
   def links
     Rails.application.statsd.time('public_content_item_presenter.links') do
       @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
@@ -43,7 +46,7 @@ private
       "content_id" => linked_item.content_id,
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
-      "description" => linked_item.description,
+      "description" => RESOLVER.resolve(linked_item.description),
       "api_url" => api_url(linked_item),
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,
