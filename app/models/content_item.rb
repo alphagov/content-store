@@ -46,7 +46,7 @@ class ContentItem
   field :_id, :as => :base_path, :type => String, :overwrite => true
   field :content_id, :type => String
   field :title, :type => String
-  field :description, :type => String
+  field :description, :type => Hash, :default => { "value" => nil }
   field :format, :type => String
   field :locale, :type => String, :default => I18n.default_locale.to_s
   field :need_ids, :type => Array, :default => []
@@ -80,6 +80,16 @@ class ContentItem
     super(options).tap do |hash|
       hash["base_path"] = hash.delete("_id")
     end
+  end
+
+  # We store the description in a hash because Publishing API can send through
+  # multiple content types.
+  def description=(value)
+    super("value" => value)
+  end
+
+  def description
+    super.fetch("value")
   end
 
   def redirect?

@@ -421,4 +421,13 @@ describe ContentItem, :type => :model do
       end
     end
   end
+
+  describe "description" do
+    it "wraps the description as a hash" do
+      content_item = FactoryGirl.create(:content_item, description: "foo")
+
+      expect(content_item.description).to eq("foo")
+      expect(content_item["description"]).to eq("value" => "foo")
+    end
+  end
 end
