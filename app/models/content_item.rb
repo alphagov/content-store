@@ -89,7 +89,16 @@ class ContentItem
   end
 
   def description
-    super.fetch("value")
+    description = super
+
+    if description.is_a?(Hash)
+      description.fetch("value")
+    else
+      # This is here to ensure backwards compatibility during data migration:
+      # db/migrate/20151130111755_description_value_hash.rb
+      # It can be removed afterwards.
+      description
+    end
   end
 
   def redirect?
