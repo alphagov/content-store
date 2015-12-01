@@ -24,7 +24,7 @@ the content store. To add or update a piece of content in the content store,
 make a PUT request:
 
 ``` sh
-curl https://content-store.production.alphagov.co.uk/content<base_path> -X PUT \
+curl https://content-store.publishing.service.gov.uk/content<base_path> -X PUT \
     -H 'Content-type: application/json' \
     -d '<content_item_json>'
 ```
@@ -43,7 +43,7 @@ to a separate gem.
 To retrieve content from the content store, make a GET request:
 
 ``` sh
-  curl https://content-store.production.alphagov.co.uk/content<base_path>
+  curl https://content-store.publishing.service.gov.uk/content<base_path>
 ```
 
 Examples of the JSON representation of content items can be found in [doc/output_examples](doc/output_examples).
@@ -57,7 +57,7 @@ identify an authenticated user:
 
 ``` sh
   curl -header "X-Govuk-Authenticated-User: f17150b0-7540-0131-f036-0050560123202" \
-    https://content-store.production.alphagov.co.uk/content<base_path>
+    https://content-store.publishing.service.gov.uk/content<base_path>
 
 ```
 

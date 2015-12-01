@@ -61,7 +61,7 @@ Publishing applications will submit an intent to publish by sending them to the
 content store. To add or update an intent make a PUT request:
 
 ``` sh
-curl https://content-store.production.alphagov.co.uk/publish_intents<base_path> \
+curl https://content-store.publishing.service.gov.uk/publish_intents<base_path> \
   -X PUT \
   -H 'Content-type: application/json' \
   -d '<publish_intent_json>'
@@ -81,7 +81,7 @@ return a 409 if the `base_path` is already registered to a different
 Details of a publish intent can be queried by making a GET request:
 
 ``` sh
-curl https://content-store.production.alphagov.co.uk/publish_intents<base_path>
+curl https://content-store.publishing.service.gov.uk/publish_intents<base_path>
 ```
 
 This will return a 200 along with the details of the intent as JSON, ot a 404
@@ -97,7 +97,7 @@ example if an editor cancels a scheduled publishing) by sending a DELETE
 request:
 
 ``` sh
-curl https://content-store.production.alphagov.co.uk/publish_intents<base_path> -X DELETE
+curl https://content-store.publishing.service.gov.uk/publish_intents<base_path> -X DELETE
 ```
 
 This will remove the intent for the corresponding `base_path`.  It will return
