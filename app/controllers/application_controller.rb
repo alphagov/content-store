@@ -27,4 +27,15 @@ class ApplicationController < ActionController::API
   def base_path
     "/#{params[:base_path_without_root]}"
   end
+
+  # The presenter needs context about routes and host names from controller
+  # to know how to generate API URLs, so we can take the Rails helper and
+  # pass that in as a callable
+  def api_url_method
+    if params[:public_api_request]
+      method(:content_item_api_url)
+    else
+      method(:content_item_url)
+    end
+  end
 end
