@@ -26,7 +26,6 @@ class LinkedItemPresenter
   end
 
 private
-
   def api_url(item)
     @api_url_method.call(item.base_path_without_root)
   end
