@@ -42,26 +42,6 @@ private
   end
 
   def present_linked_item(linked_item)
-    presented = {
-      "content_id" => linked_item.content_id,
-      "title" => linked_item.title,
-      "base_path" => linked_item.base_path,
-      "description" => RESOLVER.resolve(linked_item.description),
-      "api_url" => api_url(linked_item),
-      "web_url" => web_url(linked_item),
-      "locale" => linked_item.locale,
-    }
-    if linked_item.has_attribute? :analytics_identifier
-      presented["analytics_identifier"] = linked_item.analytics_identifier
-    end
-    presented
-  end
-
-  def api_url(item)
-    @api_url_method.call(item.base_path_without_root)
-  end
-
-  def web_url(item)
-    Plek.current.website_root + item.base_path
+    LinkedItemPresenter.new(linked_item, @api_url_method).present
   end
 end
