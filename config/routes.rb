@@ -7,6 +7,9 @@ Rails.application.routes.draw do
     put "/content(/*base_path_without_root)" => "content_items#update"
     delete "/content(/*base_path_without_root)" => "content_items#destroy"
 
+    get "/incoming-links(/*base_path_without_root)" => "linked_items#incoming_links"
+    get "/api/incoming-links(/*base_path_without_root)" => "linked_items#incoming_links", :public_api_request => true
+
     get "/publish-intent(/*base_path_without_root)" => "publish_intents#show"
     put "/publish-intent(/*base_path_without_root)" => "publish_intents#update"
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"

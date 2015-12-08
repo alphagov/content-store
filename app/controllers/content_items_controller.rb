@@ -60,17 +60,6 @@ class ContentItemsController < ApplicationController
     }
   end
 
-  # The presenter needs context about routes and host names from controller
-  # to know how to generate API URLs, so we can take the Rails helper and
-  # pass that in as a callable
-  def api_url_method
-    if params[:public_api_request]
-      method(:content_item_api_url)
-    else
-      method(:content_item_url)
-    end
-  end
-
   def set_default_cache_headers
     intent = PublishIntent.where(:base_path => encoded_base_path).first
     if intent && !intent.past?

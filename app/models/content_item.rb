@@ -116,6 +116,10 @@ class ContentItem
     items
   end
 
+  def incoming_links(type)
+    ContentItem.where("links.#{type}" => { "$in" => [ content_id ]})
+  end
+
   def viewable_by?(user_uid)
     !access_limited? || authorised_user_uids.include?(user_uid)
   end
