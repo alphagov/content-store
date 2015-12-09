@@ -1,6 +1,6 @@
 namespace :data_hygiene do
   namespace :draft_content_id_cleanup do
-    def report(cleanup: false)
+    def run(cleanup: false)
       unless ENV["MONGODB_URI"] && ENV["MONGODB_URI"].include?("draft")
         raise "This should only be run against the draft content store"
       end
@@ -36,12 +36,12 @@ namespace :data_hygiene do
 
     desc "Report on content_id for items that mismatch with the given file"
     task report: [:environment] do
-      report
+      run
     end
 
     desc "Clean the content_id for items that mismatch with the given file"
     task cleanup: [:environment] do
-      report(cleanup: true)
+      run(cleanup: true)
     end
   end
 end
