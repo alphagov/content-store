@@ -53,7 +53,7 @@ namespace :data_hygiene do
     ContentItem.where(public_updated_at: nil).each do |item|
       item.set(public_updated_at: item.updated_at)
 
-      content_items << "#{item.public_updated_at},#{item.public_updated_at},#{item.publishing_app},#{item.base_path}"
+      content_items << "#{item.content_id},#{item.public_updated_at},#{item.publishing_app},#{item.base_path}"
     end
 
     write_file("./tmp/assigned_public_updated_at.txt", content_items)
