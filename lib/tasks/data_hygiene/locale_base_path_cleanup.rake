@@ -28,20 +28,20 @@ namespace :data_hygiene do
     end
 
     def routes_with_locale(item)
-      routes = item.routes.dup
+      routes = []
 
-      routes.each do |hash|
-        hash["path"] = "#{hash["path"]}.#{item.locale}"
+      item.routes.each do |hash|
+        routes.push(hash.merge("path" => "#{hash["path"]}.#{item.locale}"))
       end
 
       routes
     end
 
     def redirects_with_locale(item)
-      redirects = item.redirects.dup
+      redirects = []
 
-      redirects.each do |hash|
-        hash["path"] = "#{hash["path"]}.#{item.locale}"
+      item.redirects.each do |hash|
+        redirects.push(hash.merge("path" => "#{hash["path"]}.#{item.locale}"))
       end
 
       redirects
