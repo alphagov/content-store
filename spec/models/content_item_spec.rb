@@ -386,38 +386,37 @@ describe ContentItem, :type => :model do
         end
       end
     end
+  end
 
+  describe 'access limiting' do
+    context 'a content item that is not access limited' do
+      let!(:content_item) { create(:content_item) }
 
-    describe 'access limiting' do
-      context 'a content item that is not access limited' do
-        let!(:content_item) { create(:content_item) }
-
-        it 'is not access limited' do
-          expect(content_item.access_limited?).to be(false)
-        end
-
-        it 'is viewable by all' do
-          expect(content_item.viewable_by?(nil)).to be(true)
-          expect(content_item.viewable_by?('a-user-uid')).to be(true)
-        end
+      it 'is not access limited' do
+        expect(content_item.access_limited?).to be(false)
       end
 
-      context 'an access-limited content item' do
-        let!(:content_item) { create(:access_limited_content_item) }
-        let(:authorised_user_uid) { content_item.access_limited['users'].first }
+      it 'is viewable by all' do
+        expect(content_item.viewable_by?(nil)).to be(true)
+        expect(content_item.viewable_by?('a-user-uid')).to be(true)
+      end
+    end
 
-        it 'is access limited' do
-          expect(content_item.access_limited?).to be(true)
-        end
+    context 'an access-limited content item' do
+      let!(:content_item) { create(:access_limited_content_item) }
+      let(:authorised_user_uid) { content_item.access_limited['users'].first }
 
-        it 'is viewable by an authorised user' do
-          expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
-        end
+      it 'is access limited' do
+        expect(content_item.access_limited?).to be(true)
+      end
 
-        it 'is not viewable by an unauthorised user' do
-          expect(content_item.viewable_by?('unauthorised-user')).to be(false)
-          expect(content_item.viewable_by?(nil)).to be(false)
-        end
+      it 'is viewable by an authorised user' do
+        expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
+      end
+
+      it 'is not viewable by an unauthorised user' do
+        expect(content_item.viewable_by?('unauthorised-user')).to be(false)
+        expect(content_item.viewable_by?(nil)).to be(false)
       end
     end
   end
