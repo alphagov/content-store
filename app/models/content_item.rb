@@ -131,6 +131,8 @@ class ContentItem
   end
 
   def base_path_without_root
+    return nil unless base_path
+
     base_path.sub(%r{^/}, "")
   end
 
@@ -147,12 +149,14 @@ private
   end
 
   def load_linked_items
+    content_ids = links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
+
     # For each linked content_id find all non-redirect content items with
     # matching content_id in either this item's locale, or the default locale
     # with the most recently updated first.
     potential_items_by_id = ContentItem
       .renderable_content
-      .where(:content_id => {"$in" => links.values.flatten.uniq})
+      .where(:content_id => {"$in" => content_ids})
       .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
       .only(:content_id, :locale, :base_path, :title, :description, :analytics_identifier)
       .sort(:updated_at => -1)
@@ -167,7 +171,12 @@ private
 
     # build up the links hash using the selected items above
     links.each_with_object({}) do |(link_type, content_ids), result|
-      result[link_type] = content_ids.map {|id| required_items[id] }.compact
+      passthrough_hashes, content_ids = content_ids.partition { |link| link.is_a?(Hash) }
+      passthrough_content_items = passthrough_hashes.map {|attributes|
+        ContentItem.new(attributes)
+      }
+
+      result[link_type] = content_ids.map {|id| required_items[id] }.compact + passthrough_content_items
     end
   end
 

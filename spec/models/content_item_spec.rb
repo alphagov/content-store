@@ -386,6 +386,51 @@ describe ContentItem, :type => :model do
         end
       end
     end
+
+    context "if a link hash is provided for pass-through" do
+      let(:passthrough_link_hash) {
+        {
+          content_id: "some-content-id",
+          title: "A title",
+          description: "A description",
+          base_path: nil,
+          locale: "fr",
+        }
+      }
+
+      let!(:content_item) {
+        create(:content_item, links: {
+          passthrough_links: [passthrough_link_hash]
+        })
+      }
+
+      it "creates a ContentItem with matching fields" do
+        linked_content_item = content_item.linked_items[:passthrough_links].first
+
+        expect(linked_content_item.content_id).to eq("some-content-id")
+        expect(linked_content_item.locale).to eq("fr")
+        expect(linked_content_item.title).to eq("A title")
+        expect(linked_content_item.description).to eq("A description")
+        expect(linked_content_item.base_path).to eq(nil)
+        expect(linked_content_item.base_path_without_root).to eq(nil)
+      end
+
+      context "without a locale specified" do
+        let(:passthrough_link_hash) {
+          {
+            content_id: "some-content-id",
+            title: "A title",
+            base_path: nil,
+          }
+        }
+
+        it "defaults the locale to 'en'" do
+          linked_content_item = content_item.linked_items[:passthrough_links].first
+
+          expect(linked_content_item.locale).to eq("en")
+        end
+      end
+    end
   end
 
   describe 'access limiting' do
