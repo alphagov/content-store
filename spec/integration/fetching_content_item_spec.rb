@@ -142,7 +142,7 @@ describe "Fetching content items", :type => :request do
       )
     end
 
-    it "corrrectly expands linked items with internal API URLs" do
+    it "correctly expands linked items with internal API URLs" do
       data = JSON.parse(response.body)
 
       expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/content#{linked_item.base_path}")
