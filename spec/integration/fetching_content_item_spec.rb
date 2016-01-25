@@ -142,10 +142,67 @@ describe "Fetching content items", :type => :request do
       )
     end
 
-    it "corrrectly expands linked items with internal API URLs" do
+    it "correctly expands linked items with internal API URLs" do
       data = JSON.parse(response.body)
 
       expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/content#{linked_item.base_path}")
+    end
+  end
+
+  context "a content item with mixed linked items and passthrough hashes" do
+    let(:content_item) {
+      create(:content_item, links: {
+        'related' => [
+          linked_item.content_id,
+          {
+            content_id: "passthrough-content-id",
+            title: "Passthrough title",
+          }
+        ]
+      })
+    }
+    let(:linked_item) { create(:content_item, :with_content_id) }
+
+    before(:each) { get_content content_item }
+
+    it "returns a 200 OK response" do
+      expect(response.status).to eq(200)
+    end
+
+    it "includes the correct data in the expanded representation of the linked items" do
+      data = JSON.parse(response.body)
+
+      data["links"]["related"].each do |linked_item_data|
+        expect(linked_item_data.keys).to match_array(%w[
+          base_path
+          content_id
+          title
+          description
+          locale
+          api_url
+          web_url
+        ])
+      end
+
+      first_linked_item_data = data["links"]["related"].first
+      expect(first_linked_item_data).to include(
+        "base_path" => linked_item.base_path,
+        "content_id" => linked_item.content_id,
+        "title" => linked_item.title,
+        "description" => linked_item.description,
+        "locale" => linked_item.locale,
+        "web_url" => Plek.new.website_root + linked_item.base_path,
+      )
+
+      second_linked_item_data = data["links"]["related"].second
+      expect(second_linked_item_data).to include(
+        "base_path" => nil,
+        "content_id" => "passthrough-content-id",
+        "title" => "Passthrough title",
+        "description" => nil,
+        "locale" => "en",
+        "web_url" => nil,
+      )
     end
   end
 end

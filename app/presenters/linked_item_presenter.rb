@@ -27,10 +27,14 @@ class LinkedItemPresenter
 
 private
   def api_url(item)
+    return nil unless item.base_path
+
     @api_url_method.call(item.base_path_without_root)
   end
 
   def web_url(item)
+    return nil unless item.base_path
+
     Plek.current.website_root + item.base_path
   end
 end

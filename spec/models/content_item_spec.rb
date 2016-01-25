@@ -387,37 +387,81 @@ describe ContentItem, :type => :model do
       end
     end
 
+    context "if a link hash is provided for pass-through" do
+      let(:passthrough_link_hash) {
+        {
+          content_id: "some-content-id",
+          title: "A title",
+          description: "A description",
+          base_path: nil,
+          locale: "fr",
+        }
+      }
 
-    describe 'access limiting' do
-      context 'a content item that is not access limited' do
-        let!(:content_item) { create(:content_item) }
+      let!(:content_item) {
+        create(:content_item, links: {
+          passthrough_links: [passthrough_link_hash]
+        })
+      }
 
-        it 'is not access limited' do
-          expect(content_item.access_limited?).to be(false)
-        end
+      it "creates a ContentItem with matching fields" do
+        linked_content_item = content_item.linked_items[:passthrough_links].first
 
-        it 'is viewable by all' do
-          expect(content_item.viewable_by?(nil)).to be(true)
-          expect(content_item.viewable_by?('a-user-uid')).to be(true)
-        end
+        expect(linked_content_item.content_id).to eq("some-content-id")
+        expect(linked_content_item.locale).to eq("fr")
+        expect(linked_content_item.title).to eq("A title")
+        expect(linked_content_item.description).to eq("A description")
+        expect(linked_content_item.base_path).to eq(nil)
+        expect(linked_content_item.base_path_without_root).to eq(nil)
       end
 
-      context 'an access-limited content item' do
-        let!(:content_item) { create(:access_limited_content_item) }
-        let(:authorised_user_uid) { content_item.access_limited['users'].first }
+      context "without a locale specified" do
+        let(:passthrough_link_hash) {
+          {
+            content_id: "some-content-id",
+            title: "A title",
+            base_path: nil,
+          }
+        }
 
-        it 'is access limited' do
-          expect(content_item.access_limited?).to be(true)
-        end
+        it "defaults the locale to 'en'" do
+          linked_content_item = content_item.linked_items[:passthrough_links].first
 
-        it 'is viewable by an authorised user' do
-          expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
+          expect(linked_content_item.locale).to eq("en")
         end
+      end
+    end
+  end
 
-        it 'is not viewable by an unauthorised user' do
-          expect(content_item.viewable_by?('unauthorised-user')).to be(false)
-          expect(content_item.viewable_by?(nil)).to be(false)
-        end
+  describe 'access limiting' do
+    context 'a content item that is not access limited' do
+      let!(:content_item) { create(:content_item) }
+
+      it 'is not access limited' do
+        expect(content_item.access_limited?).to be(false)
+      end
+
+      it 'is viewable by all' do
+        expect(content_item.viewable_by?(nil)).to be(true)
+        expect(content_item.viewable_by?('a-user-uid')).to be(true)
+      end
+    end
+
+    context 'an access-limited content item' do
+      let!(:content_item) { create(:access_limited_content_item) }
+      let(:authorised_user_uid) { content_item.access_limited['users'].first }
+
+      it 'is access limited' do
+        expect(content_item.access_limited?).to be(true)
+      end
+
+      it 'is viewable by an authorised user' do
+        expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
+      end
+
+      it 'is not viewable by an unauthorised user' do
+        expect(content_item.viewable_by?('unauthorised-user')).to be(false)
+        expect(content_item.viewable_by?(nil)).to be(false)
       end
     end
   end
