@@ -173,7 +173,8 @@ describe "Fetching content items", :type => :request do
       data = JSON.parse(response.body)
 
       data["links"]["related"].each do |linked_item_data|
-        expect(linked_item_data.keys).to match_array(%w[
+        keys = linked_item_data.keys - %w[links] # links are optional
+        expect(keys).to match_array(%w[
           base_path
           content_id
           title

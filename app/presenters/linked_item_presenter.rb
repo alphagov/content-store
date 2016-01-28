@@ -18,8 +18,8 @@ class LinkedItemPresenter
       "locale" => linked_item.locale,
     }
 
-    if linked_item.has_attribute?(:analytics_identifier)
-      presented["analytics_identifier"] = linked_item.analytics_identifier
+    %i(analytics_identifier links).each do |attr|
+      presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
     end
 
     presented

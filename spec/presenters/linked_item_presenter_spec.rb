@@ -26,7 +26,8 @@ describe LinkedItemPresenter do
         "description" => "<p>A HTML description.</p>",
         "api_url" => "http://api.example.com/content/my-page",
         "web_url" => "https://www.test.gov.uk/my-page",
-        "locale" => "en"
+        "locale" => "en",
+        "links" => {},
       })
     end
 
@@ -39,5 +40,34 @@ describe LinkedItemPresenter do
 
       expect(presenter.present['analytics_identifier']).to eql('UA-123123')
     end
+
+    it "adds links if present" do
+      content_item = create(:content_item,
+        links: {
+          parent: [
+            {
+              content_id: "794cdd3c-6633-47b4-9e25-fe6a3aa96fa9",
+              title: "The parent section",
+              web_url: "/browse/parent-section",
+            }
+          ]
+        },
+      )
+
+      presenter = LinkedItemPresenter.new(content_item, api_url_method)
+
+      expect(presenter.present['links']).to eql(
+        {
+          :parent =>[
+            {
+              :content_id => "794cdd3c-6633-47b4-9e25-fe6a3aa96fa9",
+              :title => "The parent section",
+              :web_url => "/browse/parent-section"
+            }
+          ]
+        }
+      )
+    end
+
   end
 end
