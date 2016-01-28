@@ -92,7 +92,7 @@ describe "Fetching a publish intent without a content item", :type => :request d
   before(:each) do
     Timecop.freeze
     create(:publish_intent, :base_path => "/some/future/thing", :publish_time => 5.minutes.from_now)
-    get "content/some/future/thing"
+    get "/content/some/future/thing"
   end
 
   it "returns a 404 Not Found response" do

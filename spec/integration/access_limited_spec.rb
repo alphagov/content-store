@@ -6,7 +6,7 @@ describe "Fetching an access-limited content item", :type => :request do
 
   context "request without an authentication header" do
     it "returns a 403 (Forbidden) response" do
-      get "content/#{access_limited_content_item.base_path}"
+      get "/content/#{access_limited_content_item.base_path}"
 
       json = JSON.parse(response.body)
 
@@ -37,7 +37,7 @@ describe "Fetching an access-limited content item", :type => :request do
 
   context "request with an unauthorised user ID specified in the header" do
     it "returns a 403 (Forbidden) response" do
-      get "content/#{access_limited_content_item.base_path}",
+      get "/content/#{access_limited_content_item.base_path}",
         {}, { 'X-Govuk-Authenticated-User' => 'unauthorised-user' }
 
       json = JSON.parse(response.body)
