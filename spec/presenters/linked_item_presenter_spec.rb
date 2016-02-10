@@ -6,8 +6,8 @@ describe LinkedItemPresenter do
   end
 
   describe "#present" do
-    it "presents the correct data" do
-      content_item = create(:content_item,
+    let(:content_item) do
+      build(:content_item,
         content_id: 'AN-ID',
         title: "My Title",
         base_path: '/my-page',
@@ -16,10 +16,14 @@ describe LinkedItemPresenter do
           { content_type: "text/plain", content: "Short description." },
         ],
       )
+    end
 
-      presenter = LinkedItemPresenter.new(content_item, api_url_method)
+    let(:presenter) { LinkedItemPresenter.new(content_item, api_url_method) }
 
-      expect(presenter.present).to eql({
+    subject(:presented_item) { presenter.present }
+
+    it do
+      is_expected.to eql({
         "content_id" => "AN-ID",
         "title" => "My Title",
         "base_path" => "/my-page",
@@ -31,19 +35,19 @@ describe LinkedItemPresenter do
       })
     end
 
-    it "adds the analytics identifier if present" do
-      content_item = create(:content_item,
-        analytics_identifier: 'UA-123123',
-      )
+    context "for a content item with an analytics_identifier" do
+      before do
+        content_item.analytics_identifier = "UA-123123"
+      end
 
-      presenter = LinkedItemPresenter.new(content_item, api_url_method)
-
-      expect(presenter.present['analytics_identifier']).to eql('UA-123123')
+      it "includes the analytics_identifier" do
+        expect(presented_item["analytics_identifier"]).to eq("UA-123123")
+      end
     end
 
-    it "adds links if present" do
-      content_item = create(:content_item,
-        links: {
+    context "for a content item with links" do
+      before do
+        content_item.links = {
           parent: [
             {
               content_id: "794cdd3c-6633-47b4-9e25-fe6a3aa96fa9",
@@ -51,23 +55,22 @@ describe LinkedItemPresenter do
               web_url: "/browse/parent-section",
             }
           ]
-        },
-      )
-
-      presenter = LinkedItemPresenter.new(content_item, api_url_method)
-
-      expect(presenter.present['links']).to eql(
-        {
-          :parent =>[
-            {
-              :content_id => "794cdd3c-6633-47b4-9e25-fe6a3aa96fa9",
-              :title => "The parent section",
-              :web_url => "/browse/parent-section"
-            }
-          ]
         }
-      )
-    end
+      end
 
+      it "adds one level of links" do
+        expect(presented_item['links']).to eql(
+          {
+            parent: [
+              {
+                content_id: "794cdd3c-6633-47b4-9e25-fe6a3aa96fa9",
+                title: "The parent section",
+                web_url: "/browse/parent-section",
+              }
+            ]
+          }
+        )
+      end
+    end
   end
 end
