@@ -72,5 +72,42 @@ describe LinkedItemPresenter do
         )
       end
     end
+
+    context "with a topical_event link" do
+      let(:content_item) do
+        build(:content_item, format: "topical_event", details: {
+          start_date: "2015-11-25T00:00:00.000+00:00",
+          end_date: "2015-11-30T00:00:00.000+00:00",
+        })
+      end
+
+      it "adds the start and end date from the details hash" do
+        expect(presented_item['details']).to eql(
+          {
+            "start_date" => "2015-11-25T00:00:00.000+00:00",
+            "end_date" => "2015-11-30T00:00:00.000+00:00",
+          }
+        )
+      end
+    end
+
+    # TODO: Remove when topical_events are migrated
+    context "with a placeholder_topical_event link" do
+      let(:content_item) do
+        build(:content_item, format: "placeholder_topical_event", details: {
+          start_date: "2015-11-25T00:00:00.000+00:00",
+          end_date: "2015-11-30T00:00:00.000+00:00",
+        })
+      end
+
+      it "adds the start and end date from the details hash" do
+        expect(presented_item['details']).to eql(
+          {
+            "start_date" => "2015-11-25T00:00:00.000+00:00",
+            "end_date" => "2015-11-30T00:00:00.000+00:00",
+          }
+        )
+      end
+    end
   end
 end

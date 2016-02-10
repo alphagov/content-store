@@ -130,6 +130,7 @@ describe "Fetching content items", :type => :request do
         locale
         api_url
         web_url
+        links
       ])
 
       expect(linked_item_data).to include(
@@ -139,6 +140,7 @@ describe "Fetching content items", :type => :request do
         "description" => linked_item.description,
         "locale" => linked_item.locale,
         "web_url" => Plek.new.website_root + linked_item.base_path,
+        "links" => {}
       )
     end
 
