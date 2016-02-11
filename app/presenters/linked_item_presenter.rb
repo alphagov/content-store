@@ -22,6 +22,12 @@ class LinkedItemPresenter
       presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
     end
 
+    case linked_item.format
+    # TODO: Remove placeholder case when Topical Events are migrated.
+    when /(placeholder_)?topical_event/
+      presented["details"] = linked_item.details.slice(:start_date, :end_date).stringify_keys
+    end
+
     presented
   end
 
