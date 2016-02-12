@@ -6,11 +6,6 @@ class ContentItem
 
   def self.create_or_replace(base_path, attributes)
     previous_item = ContentItem.where(:base_path => base_path).first
-    lock = UpdateLock.new(previous_item)
-
-    transmitted_at = attributes["transmitted_at"]
-    lock.check_availability!(transmitted_at)
-
     result = previous_item ? :replaced : :created
 
     item = ContentItem.new(:base_path => base_path)
@@ -30,17 +25,6 @@ class ContentItem
   rescue Mongoid::Errors::InvalidValue => e
     item.errors.add(:base, e.message)
     return false, item
-  rescue OutOfOrderTransmissionError => e
-    return :conflict, OpenStruct.new(
-      errors: {
-        type: "conflict",
-        code: "409",
-        message: e.message,
-        fields: {
-          transmitted_at: [e.message],
-        }
-      }
-    )
   end
 
   field :_id, :as => :base_path, :type => String, :overwrite => true
@@ -60,7 +44,6 @@ class ContentItem
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
-  field :transmitted_at, :type => String
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
