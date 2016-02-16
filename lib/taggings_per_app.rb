@@ -14,6 +14,6 @@ class TaggingsPerApp
 private
 
   def relevant_content_items
-    ContentItem.where(publishing_app: @app_name)
+    ContentItem.renderable_content.where(publishing_app: @app_name)
   end
 end

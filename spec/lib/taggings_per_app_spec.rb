@@ -23,5 +23,15 @@ describe TaggingsPerApp do
         }
       )
     end
+
+    it "does not return unrenderable items like redirects" do
+      renderable = create(:content_item, content_id: SecureRandom.uuid, format: 'topic', publishing_app: 'publisher')
+      redirect = create(:content_item, content_id: SecureRandom.uuid, format: 'redirect', publishing_app: 'publisher')
+
+      taggings = TaggingsPerApp.new('publisher').taggings
+
+      expect(taggings.keys).to include(renderable.content_id)
+      expect(taggings.keys).not_to include(redirect.content_id)
+    end
   end
 end
