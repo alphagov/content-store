@@ -5,7 +5,7 @@ class ContentItem
   NON_RENDERABLE_FORMATS = %w(redirect gone)
 
   def self.create_or_replace(base_path, attributes)
-    previous_item = ContentItem.where(:base_path => base_path).first
+    previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
     transmitted_at = attributes["transmitted_at"]
@@ -13,7 +13,7 @@ class ContentItem
 
     result = previous_item ? :replaced : :created
 
-    item = ContentItem.new(:base_path => base_path)
+    item = ContentItem.new(base_path: base_path)
     item.assign_attributes(attributes)
 
     if item.upsert
@@ -43,25 +43,25 @@ class ContentItem
     )
   end
 
-  field :_id, :as => :base_path, :type => String, :overwrite => true
-  field :content_id, :type => String
-  field :title, :type => String
-  field :description, :type => Hash, :default => { "value" => nil }
-  field :format, :type => String
-  field :locale, :type => String, :default => I18n.default_locale.to_s
-  field :need_ids, :type => Array, :default => []
-  field :public_updated_at, :type => DateTime
-  field :details, :type => Hash, :default => {}
-  field :publishing_app, :type => String
-  field :rendering_app, :type => String
-  field :routes, :type => Array, :default => []
-  field :redirects, :type => Array, :default => []
-  field :links, :type => Hash, :default => {}
-  field :access_limited, :type => Hash, :default => {}
-  field :phase, :type => String, :default => 'live'
-  field :analytics_identifier, :type => String
-  field :transmitted_at, :type => String
-  field :receipt_order, :type => Integer
+  field :_id, as: :base_path, type: String, overwrite: true
+  field :content_id, type: String
+  field :title, type: String
+  field :description, type: Hash, default: { "value" => nil }
+  field :format, type: String
+  field :locale, type: String, default: I18n.default_locale.to_s
+  field :need_ids, type: Array, default: []
+  field :public_updated_at, type: DateTime
+  field :details, type: Hash, default: {}
+  field :publishing_app, type: String
+  field :rendering_app, type: String
+  field :routes, type: Array, default: []
+  field :redirects, type: Array, default: []
+  field :links, type: Hash, default: {}
+  field :access_limited, type: Hash, default: {}
+  field :phase, type: String, default: 'live'
+  field :analytics_identifier, type: String
+  field :transmitted_at, type: String
+  field :receipt_order, type: Integer
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
@@ -157,9 +157,9 @@ private
     # with the most recently updated first.
     potential_items_by_id = ContentItem
       .renderable_content
-      .where(:content_id => {"$in" => content_ids})
-      .where(:locale => {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
-      .sort(:updated_at => -1)
+      .where(content_id: {"$in" => content_ids})
+      .where(locale: {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
+      .sort(updated_at: -1)
       .group_by(&:content_id)
 
     # For each set of items for a given content_id, pick the first one that
@@ -188,8 +188,8 @@ private
     return [] if self.content_id.blank?
     ContentItem
       .renderable_content
-      .where(:content_id => content_id)
-      .sort(:locale => 1, :updated_at => 1)
+      .where(content_id: content_id)
+      .sort(locale: 1, updated_at: 1)
       .group_by(&:locale)
       .map { |locale, items| items.last }
   end
