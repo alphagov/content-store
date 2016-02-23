@@ -61,6 +61,7 @@ class ContentItem
   field :phase, type: String, default: 'live'
   field :analytics_identifier, type: String
   field :transmitted_at, type: String
+  field :payload_version, type: Integer
 
   scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
 
