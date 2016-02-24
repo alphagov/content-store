@@ -8,6 +8,7 @@ FactoryGirl.define do
     publishing_app 'publisher'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
     transmitted_at "1"
+    payload_version 0
 
     trait :with_content_id do
       content_id { SecureRandom.uuid }
