@@ -269,11 +269,19 @@ describe "content item write API", :type => :request do
     end
   end
 
-  context "without the transmitted_at" do
-    it "creates the content item" do
+  context "without transmitted_at" do
+    before do
+      create(
+        :content_item,
+        :base_path => "/vat-rates",
+          :transmitted_at => "2"
+      )
+    end
+
+    it "raises a MissingAttributeError" do
       expect {
         put_json "/content/vat-rates", @data.except("transmitted_at")
-      }.to raise_error(MissingAttributeError, /transmitted_at/)
+      }.to raise_error(MissingAttributeError)
     end
   end
 end
