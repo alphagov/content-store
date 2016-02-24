@@ -7,7 +7,8 @@ class UpdateLock
     end
   end
 
-  def check_availability!(transmitted_at)
+  def check_availability!(attributes)
+    transmitted_at = attributes.with_indifferent_access[:transmitted_at]
     raise MissingAttributeError, "transmitted_at is mandatory" unless transmitted_at
     return unless lockable.present?
 

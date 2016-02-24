@@ -8,8 +8,7 @@ class ContentItem
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
-    transmitted_at = attributes["transmitted_at"]
-    lock.check_availability!(transmitted_at)
+    lock.check_availability!(attributes)
 
     result = previous_item ? :replaced : :created
 
