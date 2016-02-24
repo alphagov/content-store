@@ -13,6 +13,7 @@ describe "content item write API", :type => :request do
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "transmitted_at" => "2",
+      "payload_version" => 1,
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "details" => {
@@ -246,41 +247,73 @@ describe "content item write API", :type => :request do
 
   context "with stale attributes" do
     before do
-      create(:content_item,
-             :base_path => "/vat-rates",
-             :transmitted_at => "2")
-
-      put_json "/content/vat-rates", @data
+        create(
+          :content_item,
+          :base_path => "/vat-rates",
+          :transmitted_at => "2",
+          :payload_version => "2"
+        )
     end
 
-    it "responds with a HTTP 'conflict' status" do
-      expect(response.status).to eq(409)
+    context "transmitted_at based" do
+      before do
+        put_json "/content/vat-rates", @data.except("payload_version")
+      end
+
+      it "responds with a HTTP 'conflict' status" do
+        expect(response.status).to eq(409)
+      end
+
+      it "provides a helpful error body" do
+        expect(response.body).to include(
+          "the latest ContentItem has a newer (or equal) transmitted_at of 2"
+        )
+      end
+
+      it "doesn't perform an update" do
+        content_item = ContentItem.where(base_path: "/vat-rates").first
+        expect(content_item.transmitted_at).to eq("2")
+      end
     end
 
-    it "provides a helpful error body" do
-      expect(response.body).to include(
-        "the latest ContentItem has a newer (or equal) transmitted_at of 2"
-      )
-    end
+    context "payload_version based" do
+      before do
+        put_json "/content/vat-rates", @data.except("transmitted_at")
+      end
 
-    it "doesn't perform an update" do
-      content_item = ContentItem.where(base_path: "/vat-rates").first
-      expect(content_item.transmitted_at).to eq("2")
+      it "responds with a HTTP 'conflict' status" do
+        expect(response.status).to eq(409)
+      end
+
+      it "provides a helpful error body" do
+        expect(response.body).to include(
+          "the latest ContentItem has a newer (or equal) payload_version of 2"
+        )
+      end
+
+      it "doesn't perform an update" do
+        content_item = ContentItem.where(base_path: "/vat-rates").first
+        expect(content_item.payload_version).to eq(2)
+      end
     end
   end
 
-  context "without transmitted_at" do
+  context "without transmitted_at or payload_version" do
     before do
       create(
         :content_item,
         :base_path => "/vat-rates",
-          :transmitted_at => "2"
+        :transmitted_at => "2",
+        :payload_version => "1"
       )
     end
 
     it "raises a MissingAttributeError" do
       expect {
-        put_json "/content/vat-rates", @data.except("transmitted_at")
+        put_json "/content/vat-rates", @data.except(
+          "transmitted_at",
+          "payload_version"
+        )
       }.to raise_error(MissingAttributeError)
     end
   end
