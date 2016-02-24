@@ -10,6 +10,7 @@ describe "submitting placeholder items to the content store", :type => :request 
       "format" => "placeholder",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "transmitted_at" => "2",
+      "payload_version" => "1",
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "routes" => [

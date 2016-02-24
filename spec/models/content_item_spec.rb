@@ -3,13 +3,15 @@ require 'update_lock'
 
 describe ContentItem, :type => :model do
   describe ".create_or_replace" do
-    context "exceptions" do
+    describe "exceptions" do
       before :each do
         @item = build(:content_item)
+        allow_any_instance_of(UpdateLock)
+          .to receive(:check_availability!)
       end
 
       context "when unknown attributes are provided" do
-        let(:attributes) { { "foo" => "foo", "bar" => "bar", "transmitted_at" => "10" } }
+        let(:attributes) { { "foo" => "foo", "bar" => "bar", "transmitted_at" => 12 } }
 
         it "handles Mongoid::Errors::UnknownAttribute" do
           result = item = nil
@@ -24,7 +26,7 @@ describe ContentItem, :type => :model do
       end
 
       context "when assigning a value of incorrect type" do
-        let(:attributes) { { "routes" => 12, "transmitted_at" => "10" } }
+        let(:attributes) { { "routes" => 12 , "transmitted_at" => 12} }
 
         it "handles Mongoid::Errors::InvalidValue" do
           result = item = nil
@@ -40,17 +42,18 @@ describe ContentItem, :type => :model do
         end
       end
 
-      context "with stale attributes" do
+      context "when UpdateLock raises an OutOfOrderTransmissionError" do
         before do
-          @item.transmitted_at = "20"
-          @item.save!
+          allow_any_instance_of(UpdateLock)
+            .to receive(:check_availability!)
+            .and_raise(OutOfOrderTransmissionError, "Booyah")
         end
 
         it "returns a result of :conflict" do
-          result, item = ContentItem.create_or_replace(@item.base_path, "transmitted_at" => "10")
+          result, item = ContentItem.create_or_replace(@item.base_path, {})
 
           expect(result).to eq(:conflict)
-          expect(item.errors[:message]).to include("newer (or equal) transmitted_at")
+          expect(item.errors[:message]).to include("Booyah")
         end
       end
 

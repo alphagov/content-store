@@ -17,41 +17,111 @@ describe UpdateLock, :type => :model do
 
       it "does not raise an error" do
         expect {
-          subject.check_availability!(2)
+          subject.check_availability!(transmitted_at: "1")
         }.to_not raise_error
       end
     end
 
     context "for a locked item" do
-      let(:lockable) { double(:lockable, transmitted_at: "10") }
-      it "raises an error when the lock is checked with a lesser value" do
-        expect {
-          subject.check_availability!(9)
-        }.to raise_error(OutOfOrderTransmissionError, /has a newer/)
+      let(:lockable) {
+        double(
+          :lockable,
+          transmitted_at: "10",
+          payload_version: "20"
+
+        )
+      }
+      context "with neither transmitted_at or payload_version" do
+        let(:attributes){ {} }
+        it "raises an error" do
+          expect {
+            subject.check_availability!(attributes)
+          }.to raise_error(
+            MissingAttributeError
+          )
+        end
       end
 
-      it "raises an error when the lock is checked with an equal value" do
-        expect {
-          subject.check_availability!(10)
-        }.to raise_error(OutOfOrderTransmissionError, /has a newer/)
+      context "with transmitted_at" do
+        context "where existing is higher" do
+          let(:attributes){ { transmitted_at: "9" } }
+
+          it "raises an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to raise_error(
+              OutOfOrderTransmissionError,
+              /has a newer \(or equal\) transmitted_at/
+            )
+          end
+        end
+
+        context "where existing is equal" do
+          let(:attributes){ { transmitted_at: "10" } }
+
+          it "raises an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to raise_error(
+              OutOfOrderTransmissionError,
+              /has a newer \(or equal\) transmitted_at/
+            )
+          end
+        end
+
+        context "where existing is lower" do
+          let(:attributes){ { transmitted_at: "12" } }
+          it "does not raise an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to_not raise_error
+          end
+        end
       end
 
-      it "does not raise an error when the lock is checked with a greater value" do
-        expect {
-          subject.check_availability!(11)
-        }.to_not raise_error
+      context "with payload_version" do
+        context "where existing is higher" do
+          let(:attributes){ { payload_version: "19" } }
+
+          it "raises an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to raise_error(
+              OutOfOrderTransmissionError,
+              /has a newer \(or equal\) payload_version/
+            )
+          end
+        end
+
+        context "where existing is equal" do
+          let(:attributes){ { payload_version: "20" } }
+
+          it "raises an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to raise_error(
+              OutOfOrderTransmissionError,
+              /has a newer \(or equal\) payload_version/)
+          end
+        end
+
+        context "where existing is lower" do
+          let(:attributes){ { payload_version: "21" } }
+          it "does not raise an error" do
+            expect {
+              subject.check_availability!(attributes)
+            }.to_not raise_error
+          end
+        end
       end
 
-      it "raises an error when the lock is checked against nil" do
-        expect {
-          subject.check_availability!(nil)
-        }.to raise_error
-      end
-
-      it "coerces strings to integers" do
-        expect {
-          subject.check_availability!("11")
-        }.to_not raise_error
+      context "with both transmitted_at and payload_version" do
+        let(:attributes){ { transmitted_at: "5", payload_version: "21"} }
+        it "prefers payload_version does not raise" do
+          expect {
+            subject.check_availability!(attributes)
+          }.to_not raise_error
+        end
       end
     end
   end
