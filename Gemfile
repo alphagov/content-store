@@ -39,4 +39,6 @@ group :development, :test do
 
   gem "pry-byebug"
   gem "pact"
+
+  gem "govuk-lint"
 end
