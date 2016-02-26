@@ -435,6 +435,17 @@ describe ContentItem, type: :model do
     end
   end
 
+  describe '#incoming_links' do
+    before :each do
+      @item = create(:content_item, :with_content_id)
+      @other_item = create(:content_item, :with_content_id, links: { "related" => [@item.content_id] })
+    end
+
+    it 'should return the linking item' do
+      expect(@item.incoming_links("related")).to eq([@other_item])
+    end
+  end
+
   describe 'access limiting' do
     context 'a content item that is not access limited' do
       let!(:content_item) { create(:content_item) }
