@@ -72,7 +72,7 @@ class ContentItem
   # we need its base_path and its title. By indexing all these fields, we can
   # get hold of these related items purely from the index, without having to go
   # and fetch the entire document.
-  index({:content_id => 1, :locale => 1, :format => 1, :updated_at => -1, :title => 1, :_id => 1})
+  index(content_id: 1, locale: 1, format: 1, updated_at: -1, title: 1, _id: 1)
 
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
@@ -117,7 +117,7 @@ class ContentItem
   end
 
   def incoming_links(type)
-    ContentItem.where("links.#{type}" => { "$in" => [ content_id ]})
+    ContentItem.where("links.#{type}" => { "$in" => [content_id] })
   end
 
   def viewable_by?(user_uid)
@@ -156,8 +156,8 @@ private
     # with the most recently updated first.
     potential_items_by_id = ContentItem
       .renderable_content
-      .where(content_id: {"$in" => content_ids})
-      .where(locale: {"$in" => [I18n.default_locale.to_s, self.locale].uniq})
+      .where(content_id: { "$in" => content_ids })
+      .where(locale: { "$in" => [I18n.default_locale.to_s, self.locale].uniq })
       .sort(updated_at: -1)
       .group_by(&:content_id)
 
@@ -165,7 +165,7 @@ private
     # matches this item's locale, or fall back to the first one matching the
     # default locale.
     required_items = potential_items_by_id.each_with_object({}) do |(content_id, items), results|
-      results[content_id] = items.find {|i| i.locale == self.locale } || items.find {|i| i.locale == I18n.default_locale.to_s }
+      results[content_id] = items.find { |i| i.locale == self.locale } || items.find { |i| i.locale == I18n.default_locale.to_s }
     end
 
     # build up the links hash using the selected items above
@@ -175,7 +175,7 @@ private
         ContentItem.new(attributes)
       }
 
-      result[link_type] = content_ids.map {|id| required_items[id] }.compact + passthrough_content_items
+      result[link_type] = content_ids.map { |id| required_items[id] }.compact + passthrough_content_items
     end
   end
 
@@ -190,6 +190,6 @@ private
       .where(content_id: content_id)
       .sort(locale: 1, updated_at: 1)
       .group_by(&:locale)
-      .map { |locale, items| items.last }
+      .map { |_locale, items| items.last }
   end
 end

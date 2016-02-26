@@ -14,6 +14,7 @@ class ContentTypeResolver
   end
 
 private
+
   def resolve_hash(hash)
     hash.inject({}) do |hash, (key, value)|
       hash.merge(key => resolve(value))

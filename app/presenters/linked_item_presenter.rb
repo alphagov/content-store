@@ -32,6 +32,7 @@ class LinkedItemPresenter
   end
 
 private
+
   def api_url(item)
     return nil unless item.base_path
 

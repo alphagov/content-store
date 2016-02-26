@@ -1,10 +1,10 @@
 class PublishIntentsController < ApplicationController
-  before_filter :parse_json_request, :only => [:update]
+  before_filter :parse_json_request, only: [:update]
 
   def show
-    intent = PublishIntent.find_by(:base_path => encoded_base_path)
+    intent = PublishIntent.find_by(base_path: encoded_base_path)
 
-    render :json => intent
+    render json: intent
   end
 
   def update
@@ -17,13 +17,13 @@ class PublishIntentsController < ApplicationController
     end
     response_body = {}
     response_body[:errors] = intent.errors.as_json if intent.errors.any?
-    render :json => response_body, :status => status
+    render json: response_body, status: status
   end
 
   def destroy
-    intent = PublishIntent.find_by(:base_path => encoded_base_path)
+    intent = PublishIntent.find_by(base_path: encoded_base_path)
     intent.destroy
 
-    render :json => {}
+    render json: {}
   end
 end

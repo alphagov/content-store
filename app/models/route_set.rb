@@ -84,7 +84,7 @@ class RouteSet < OpenStruct
 private
 
   def register_rendering_app
-    Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app, :force_http => true) + "/")
+    Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app, force_http: true) + "/")
   end
 
   def register_redirect(route)
@@ -115,6 +115,6 @@ private
   end
 
   def any_routes?
-    routes.any? || gone_routes.any?  || redirects.any?
+    routes.any? || gone_routes.any? || redirects.any?
   end
 end
