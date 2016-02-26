@@ -444,6 +444,17 @@ describe ContentItem, type: :model do
     it 'should return the linking item' do
       expect(@item.incoming_links("related")).to eq([@other_item])
     end
+
+    context 'with the linking_format parameter' do
+      before :each do
+        create(:content_item, :with_content_id, format: "a", links: { "related" => [@item.content_id] })
+        @matching = create(:content_item, :with_content_id, format: "b", links: { "related" => [@item.content_id] })
+      end
+
+      it 'should return only the linking items which have that format' do
+        expect(@item.incoming_links("related", linking_format: "b")).to eq([@matching])
+      end
+    end
   end
 
   describe 'access limiting' do

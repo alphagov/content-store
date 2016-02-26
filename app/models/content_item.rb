@@ -114,8 +114,10 @@ class ContentItem
     LinkedItemsQuery.new(self).call
   end
 
-  def incoming_links(type)
-    ContentItem.where("links.#{type}" => { "$in" => [content_id] })
+  def incoming_links(link_type, linking_format: nil)
+    scope = ContentItem.where("links.#{link_type}" => { "$in" => [content_id] })
+    scope = scope.where(format: linking_format) if linking_format
+    scope
   end
 
   def viewable_by?(user_uid)
