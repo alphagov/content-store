@@ -4,7 +4,7 @@ module MongoInstrumentation
   module ControllerRuntime
     extend ActiveSupport::Concern
 
-    protected
+  protected
 
     def append_info_to_payload(payload)
       super
