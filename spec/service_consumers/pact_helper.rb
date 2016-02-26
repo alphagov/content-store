@@ -1,11 +1,11 @@
-ENV["RAILS_ENV"]="test"
+ENV["RAILS_ENV"] = "test"
 require "webmock"
 require "pact/provider/rspec"
 require "rails_helper"
 
 WebMock.disable!
 
-Pact.configure do | config |
+Pact.configure do |config|
   config.reports_dir = "spec/reports/pacts"
   config.include WebMock::API
   config.include WebMock::Matchers
@@ -22,7 +22,6 @@ Pact.service_provider "Content Store" do
       pact_uri "#{base_url}/#{version_part}"
     end
   end
-
 end
 
 Pact.provider_states_for "Publishing API" do
@@ -70,7 +69,7 @@ Pact.provider_states_for "Publishing API" do
     set_up do
       FactoryGirl.create(:content_item,
         base_path: "/vat-rates",
-      )
+                        )
     end
   end
 end

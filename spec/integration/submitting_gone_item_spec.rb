@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-describe "submitting gone items to the content store", :type => :request do
-
+describe "submitting gone items to the content store", type: :request do
   context "creating a new gone item" do
     before(:each) do
       @data = {
@@ -11,8 +10,8 @@ describe "submitting gone items to the content store", :type => :request do
         "transmitted_at" => "2",
         "payload_version" => "1",
         "routes" => [
-          {"path" => "/dodo-sanctuary", "type" => "prefix"},
-          {"path" => "/dodo-sanctuary.json", "type" => "exact"}
+          { "path" => "/dodo-sanctuary", "type" => "prefix" },
+          { "path" => "/dodo-sanctuary.json", "type" => "exact" }
         ]
       }
 
@@ -24,7 +23,7 @@ describe "submitting gone items to the content store", :type => :request do
     end
 
     it "creates the content item" do
-      item = ContentItem.where(:base_path => "/dodo-sanctuary").first
+      item = ContentItem.where(base_path: "/dodo-sanctuary").first
       expect(item).to be
       expect(item.format).to eq("gone")
     end

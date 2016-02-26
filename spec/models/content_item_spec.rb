@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'update_lock'
 
-describe ContentItem, :type => :model do
+describe ContentItem, type: :model do
   describe ".create_or_replace" do
     describe "exceptions" do
       before :each do
@@ -26,7 +26,7 @@ describe ContentItem, :type => :model do
       end
 
       context "when assigning a value of incorrect type" do
-        let(:attributes) { { "routes" => 12 , "transmitted_at" => 12} }
+        let(:attributes) { { "routes" => 12, "transmitted_at" => 12 } }
 
         it "handles Mongoid::Errors::InvalidValue" do
           result = item = nil
@@ -86,7 +86,6 @@ describe ContentItem, :type => :model do
           expect(item.transmitted_at).to eq("2")
         end
       end
-
     end
   end
 
@@ -193,7 +192,7 @@ describe ContentItem, :type => :model do
     context 'with an empty link type' do
       before :each do
         @item = build(:content_item)
-        @item.links = {"related" => []}
+        @item.links = { "related" => [] }
       end
 
       it 'should include the key' do
@@ -209,7 +208,7 @@ describe ContentItem, :type => :model do
       before :each do
         @linked_item = create(:content_item, :with_content_id)
         @item = build(:content_item)
-        @item.links = {"related" => [@linked_item.content_id]}
+        @item.links = { "related" => [@linked_item.content_id] }
       end
 
       it 'should include the key' do
@@ -225,7 +224,7 @@ describe ContentItem, :type => :model do
       before :each do
         @item = build(
           :content_item,
-          :links => {"related" => [SecureRandom.uuid]}
+          links: { "related" => [SecureRandom.uuid] }
         )
       end
 
@@ -242,22 +241,22 @@ describe ContentItem, :type => :model do
         # we don't accidentally pass this test by taking the first or last item
         create(
           :redirect_content_item,
-          :base_path => '/a',
-          :content_id => shared_content_id
+          base_path: '/a',
+          content_id: shared_content_id
         )
         @linked_item = create(
           :content_item,
-          :base_path => '/b',
-          :content_id => shared_content_id
+          base_path: '/b',
+          content_id: shared_content_id
         )
         create(
           :redirect_content_item,
-          :base_path => '/c',
-          :content_id => shared_content_id
+          base_path: '/c',
+          content_id: shared_content_id
         )
         @item = build(
           :content_item,
-          :links => {"related" => [shared_content_id]}
+          links: { "related" => [shared_content_id] }
         )
       end
 
@@ -269,7 +268,7 @@ describe ContentItem, :type => :model do
     context 'with non-renderable linked items' do
       let(:redirect) { create(:redirect_content_item, :with_content_id) }
       let(:gone) { create(:gone_content_item, :with_content_id) }
-      let(:item) { build(:content_item, :links => {"related" => [redirect.content_id, gone.content_id]}) }
+      let(:item) { build(:content_item, links: { "related" => [redirect.content_id, gone.content_id] }) }
 
       it 'excludes the non-renderable items' do
         expect(item.linked_items["related"]).to eq([])
@@ -280,18 +279,18 @@ describe ContentItem, :type => :model do
       before :each do
         shared_content_id = SecureRandom.uuid
         Timecop.travel(-10.seconds) do
-          create(:content_item, :base_path => '/a', :content_id => shared_content_id)
-          create(:content_item, :base_path => '/c', :content_id => shared_content_id)
+          create(:content_item, base_path: '/a', content_id: shared_content_id)
+          create(:content_item, base_path: '/c', content_id: shared_content_id)
         end
         @newer_linked_item = create(
           :content_item,
-          :base_path => '/b',
-          :content_id => shared_content_id
+          base_path: '/b',
+          content_id: shared_content_id
         )
 
         @item = build(
           :content_item,
-          :links => {"related" => [shared_content_id]}
+          links: { "related" => [shared_content_id] }
         )
       end
 
@@ -303,23 +302,23 @@ describe ContentItem, :type => :model do
     context 'with multiple published items with different locales' do
       let(:shared_content_id) { SecureRandom.uuid }
       let!(:english_linked_item) {
-        create(:content_item, :base_path => '/a', :content_id => shared_content_id, :locale => I18n.default_locale.to_s)
+        create(:content_item, base_path: '/a', content_id: shared_content_id, locale: I18n.default_locale.to_s)
       }
       let!(:french_linked_item) {
-        create(:content_item, :base_path => '/a.fr', :content_id => shared_content_id, :locale => "fr")
+        create(:content_item, base_path: '/a.fr', content_id: shared_content_id, locale: "fr")
       }
       let(:french_item) {
         build(
           :content_item,
-          :locale => "fr",
-          :links => {"related" => [shared_content_id]}
+          locale: "fr",
+          links: { "related" => [shared_content_id] }
         )
       }
       let(:spanish_item) {
         build(
           :content_item,
-          :locale => "es",
-          :links => {"related" => [shared_content_id]}
+          locale: "es",
+          links: { "related" => [shared_content_id] }
         )
       }
 
@@ -334,7 +333,7 @@ describe ContentItem, :type => :model do
       context "a newer english item exists" do
         let!(:newer_english_linked_item) {
           Timecop.travel(10.seconds) do
-            create(:content_item, :base_path => '/a_new', :content_id => shared_content_id, :locale => I18n.default_locale.to_s)
+            create(:content_item, base_path: '/a_new', content_id: shared_content_id, locale: I18n.default_locale.to_s)
           end
         }
 

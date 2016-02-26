@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-describe "submitting redirect items to the content store", :type => :request do
-
+describe "submitting redirect items to the content store", type: :request do
   before :each do
     @data = {
       "base_path" => "/crb-checks",
@@ -9,8 +8,8 @@ describe "submitting redirect items to the content store", :type => :request do
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "publishing_app" => "publisher",
       "redirects" => [
-        {"path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks"},
-        {"path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks"}
+        { "path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks" },
+        { "path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks" }
       ],
       "transmitted_at" => "2",
       "payload_version" => 1,
@@ -27,7 +26,7 @@ describe "submitting redirect items to the content store", :type => :request do
     end
 
     it "creates the content item" do
-      item = ContentItem.where(:base_path => "/crb-checks").first
+      item = ContentItem.where(base_path: "/crb-checks").first
       expect(item).to be
       expect(item.format).to eq("redirect")
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
@@ -42,10 +41,10 @@ describe "submitting redirect items to the content store", :type => :request do
   context "replacing an existing item with a redirect" do
     before(:each) do
       @item = create(:content_item,
-                     :base_path => "/crb-checks",
-                     :need_ids => ["100321"],
-                     :public_updated_at => Time.zone.parse("2014-03-12T14:53:54Z"),
-                     :details => {"foo" => "bar"}
+                     base_path: "/crb-checks",
+                     need_ids: ["100321"],
+                     public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
+                     details: { "foo" => "bar" }
                     )
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/crb-checks", @data

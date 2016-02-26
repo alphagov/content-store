@@ -10,7 +10,7 @@ module RouterHelpers
     assert_requested(be_signature, times: 1)
 
     routes.each do |(path, type)|
-      route_signature, _ = stub_route_registration(path, type, rendering_app)
+      route_signature, = stub_route_registration(path, type, rendering_app)
       assert_requested(route_signature, times: 1)
     end
     assert_requested(stub_router_commit, times: 1)
@@ -20,7 +20,7 @@ module RouterHelpers
     # Note: WebMock stubs allow you to assert against already executed requests.
 
     routes.each do |(path, type)|
-      route_signature, _ = stub_gone_route_registration(path, type)
+      route_signature, = stub_gone_route_registration(path, type)
       assert_requested(route_signature, times: 1)
     end
     assert_requested(stub_router_commit, times: 1)
@@ -30,7 +30,7 @@ module RouterHelpers
     # Note: WebMock stubs allow you to assert against already executed requests.
 
     redirects.each do |(path, type, destination)|
-      redirect_signature, _ = stub_redirect_registration(path, type, destination, "permanent")
+      redirect_signature, = stub_redirect_registration(path, type, destination, "permanent")
       assert_requested(redirect_signature, times: 1)
     end
     assert_requested(stub_router_commit, times: 1)
@@ -41,7 +41,7 @@ module RouterHelpers
     assert_not_requested(be_signature)
 
     routes.each do |(path, type)|
-      route_signature, _ = stub_route_registration(path, type, rendering_app)
+      route_signature, = stub_route_registration(path, type, rendering_app)
       assert_not_requested(route_signature)
     end
     assert_not_requested(stub_router_commit)
@@ -49,7 +49,7 @@ module RouterHelpers
 
   def assert_no_routes_registered_for_path(path)
     route_stub = stub_http_request(:put, "#{GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT}/routes").
-      with(:body => {"route" => hash_including("incoming_path" => path)})
+      with(body: { "route" => hash_including("incoming_path" => path) })
     assert_not_requested(route_stub)
   end
 end

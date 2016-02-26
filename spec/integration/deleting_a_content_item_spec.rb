@@ -7,7 +7,7 @@ RSpec.describe "Deleting a content item", type: :request do
     before do
       FactoryGirl.create(:content_item,
         base_path: base_path,
-      )
+                        )
     end
 
     it "deletes the content item" do

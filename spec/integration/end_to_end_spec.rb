@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe "End-to-end behaviour", :type => :request do
-
-  let(:data) {{
+describe "End-to-end behaviour", type: :request do
+  let(:data) {
+    {
     "locale" => "en",
     "base_path" => "/vat-rates",
     "content_id" => SecureRandom.uuid,
@@ -19,7 +19,7 @@ describe "End-to-end behaviour", :type => :request do
   }}
 
   def create_item(data_hash)
-    put_json "/content#{data_hash["base_path"]}", data_hash
+    put_json "/content#{data_hash['base_path']}", data_hash
     expect(response.status).to eq(201)
   end
 
@@ -49,10 +49,10 @@ describe "End-to-end behaviour", :type => :request do
       before(:each) {
         create_item(linked_data_1)
         create_item(data.merge(
-          "links" => {
-            "related" => [linked_data_1["content_id"]],
-            "connected" => []
-          }
+                      "links" => {
+                        "related" => [linked_data_1["content_id"]],
+                        "connected" => []
+                      }
         ))
       }
 
@@ -62,7 +62,7 @@ describe "End-to-end behaviour", :type => :request do
       end
 
       it "should return details of linked items" do
-        related_paths = links["related"].map {|i| i["base_path"] }
+        related_paths = links["related"].map { |i| i["base_path"] }
         expect(related_paths).to eq([linked_data_1["base_path"]])
       end
 
@@ -75,14 +75,14 @@ describe "End-to-end behaviour", :type => :request do
       before(:each) {
         create_item(linked_data_1)
         create_item(data.merge(
-          "links" => {
-            "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
-          }
+                      "links" => {
+                        "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
+                      }
         ))
       }
 
       it "should ignore the missing one" do
-        related_paths = links["related"].map {|i| i["base_path"] }
+        related_paths = links["related"].map { |i| i["base_path"] }
         expect(related_paths).not_to include(linked_data_2["base_path"])
         expect(related_paths).to include(linked_data_1["base_path"])
       end
@@ -91,15 +91,15 @@ describe "End-to-end behaviour", :type => :request do
     context "linked item added after the original item" do
       before(:each) {
         create_item(data.merge(
-          "links" => {
-            "related" => [linked_data_1["content_id"]]
-          }
+                      "links" => {
+                        "related" => [linked_data_1["content_id"]]
+                      }
         ))
         create_item(linked_data_1)
       }
 
       it "should include details of items" do
-        related_paths = links["related"].map {|i| i["base_path"] }
+        related_paths = links["related"].map { |i| i["base_path"] }
         expect(related_paths).to eq([linked_data_1["base_path"]])
       end
     end
@@ -110,7 +110,7 @@ describe "End-to-end behaviour", :type => :request do
           content_id: linked_data_1["content_id"],
           locale: "fr",
           base_path: linked_data_1["base_path"] + ".fr"
-        ).stringify_keys
+                      ).stringify_keys
       }
 
       before(:each) {
@@ -118,10 +118,10 @@ describe "End-to-end behaviour", :type => :request do
         create_item(linked_data_1)
         create_item(linked_data_2)
         create_item(data.merge(
-          "locale" => "fr",
-          "links" => {
-            "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
-          }
+                      "locale" => "fr",
+                      "links" => {
+                        "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
+                      }
         ))
       }
 
@@ -161,33 +161,33 @@ describe "End-to-end behaviour", :type => :request do
     context "an item with multiple translations" do
       before(:each) do
         create_item(data.merge(
-          "locale" => "fr",
-          "base_path" => "/vat-rates.fr",
-          "title" => "Taux de TVA",
-          "routes" => [
-            { "path" => "/vat-rates.fr", "type" => 'exact' }
-          ]
+                      "locale" => "fr",
+                      "base_path" => "/vat-rates.fr",
+                      "title" => "Taux de TVA",
+                      "routes" => [
+                        { "path" => "/vat-rates.fr", "type" => 'exact' }
+                      ]
         ))
         create_item(data.merge(
-          "locale" => "de",
-          "base_path" => "/vat-rates.de",
-          "title" => "Mehrwertsteuersätze",
-          "routes" => [
-            { "path" => "/vat-rates.de", "type" => 'exact' }
-          ]
+                      "locale" => "de",
+                      "base_path" => "/vat-rates.de",
+                      "title" => "Mehrwertsteuersätze",
+                      "routes" => [
+                        { "path" => "/vat-rates.de", "type" => 'exact' }
+                      ]
         ))
       end
 
       it "should include a links to each available locale in alphabetical order" do
-        expect(links["available_translations"].map {|t| t["locale"]}).to eq(%w{de en fr})
+        expect(links["available_translations"].map { |t| t["locale"] }).to eq(%w{de en fr})
       end
 
       it "should include titles of each available_translation" do
-        expect(links["available_translations"].map {|t| t["title"]}).to eq(['Mehrwertsteuersätze', 'VAT rates', 'Taux de TVA'])
+        expect(links["available_translations"].map { |t| t["title"] }).to eq(['Mehrwertsteuersätze', 'VAT rates', 'Taux de TVA'])
       end
 
       it "should include base_path of each available_tranlsation" do
-        expect(links["available_translations"].map {|t| t["base_path"]}).to eq(['/vat-rates.de', '/vat-rates', '/vat-rates.fr'])
+        expect(links["available_translations"].map { |t| t["base_path"] }).to eq(['/vat-rates.de', '/vat-rates', '/vat-rates.fr'])
       end
     end
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Fetching content items", :type => :request do
+describe "Fetching content items", type: :request do
   it "does not use N+1 queries to expand linked items" do
     content_item = create(:content_item)
     content_item.links["related"] = []
@@ -22,7 +22,7 @@ describe "Fetching content items", :type => :request do
     content_item = create(:content_item, :with_content_id)
     I18n.available_locales.each do |locale|
       next if locale == :en
-      create(:content_item, :content_id => content_item.content_id, :locale => locale.to_s)
+      create(:content_item, content_id: content_item.content_id, locale: locale.to_s)
     end
 
     reset_mongoid_query_count

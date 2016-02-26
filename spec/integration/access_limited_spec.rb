@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Fetching an access-limited content item", :type => :request do
+describe "Fetching an access-limited content item", type: :request do
   let(:access_limited_content_item) { create(:access_limited_content_item) }
   let(:authorised_user_uid) { access_limited_content_item.access_limited['users'].first }
 
@@ -19,7 +19,7 @@ describe "Fetching an access-limited content item", :type => :request do
   context "request with an authorised user ID specified in the header" do
     before do
       get "/content/#{access_limited_content_item.base_path}",
-        {}, { 'X-Govuk-Authenticated-User' => authorised_user_uid }
+        {}, 'X-Govuk-Authenticated-User' => authorised_user_uid
     end
 
     it "returns the details for the requested item" do
@@ -38,7 +38,7 @@ describe "Fetching an access-limited content item", :type => :request do
   context "request with an unauthorised user ID specified in the header" do
     it "returns a 403 (Forbidden) response" do
       get "/content/#{access_limited_content_item.base_path}",
-        {}, { 'X-Govuk-Authenticated-User' => 'unauthorised-user' }
+        {}, 'X-Govuk-Authenticated-User' => 'unauthorised-user'
 
       json = JSON.parse(response.body)
 

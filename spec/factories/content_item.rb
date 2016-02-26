@@ -1,9 +1,8 @@
 FactoryGirl.define do
-
   # Base factory not intended to be used directly.  Present to contain common
   # attributes and traits
-  factory :base_content_item, :class => ContentItem do
-    sequence(:base_path) {|n| "/test-content-#{n}" }
+  factory :base_content_item, class: ContentItem do
+    sequence(:base_path) { |n| "/test-content-#{n}" }
     format 'gone' # Using gone as it allows the smallest valid base
     publishing_app 'publisher'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
@@ -28,21 +27,21 @@ FactoryGirl.define do
     factory :content_item_with_content_id, traits: [:with_content_id]
 
     factory :redirect_content_item do
-      sequence(:base_path) {|n| "/test-redirect-#{n}" }
+      sequence(:base_path) { |n| "/test-redirect-#{n}" }
       format "redirect"
       routes []
       redirects { [{ 'path' => base_path, 'type' => 'exact', 'destination' => '/somewhere' }] }
     end
 
     factory :gone_content_item do
-      sequence(:base_path) {|n| "/dodo-sanctuary-#{n}" }
+      sequence(:base_path) { |n| "/dodo-sanctuary-#{n}" }
       format "gone"
     end
 
     factory :access_limited_content_item do
-      sequence(:base_path) {|n| "/access-limited-#{n}" }
+      sequence(:base_path) { |n| "/access-limited-#{n}" }
       access_limited {
-        { "users" => [ "M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"] }
+        { "users" => ["M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"] }
       }
     end
   end

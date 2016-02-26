@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UpdateLock, :type => :model do
+describe UpdateLock, type: :model do
   describe "initializing without a lockable instance" do
     let(:not_lockable) { double(:not_lockable) }
 
@@ -32,7 +32,7 @@ describe UpdateLock, :type => :model do
         )
       }
       context "with neither transmitted_at or payload_version" do
-        let(:attributes){ {} }
+        let(:attributes) { {} }
         it "raises an error" do
           expect {
             subject.check_availability!(attributes)
@@ -44,7 +44,7 @@ describe UpdateLock, :type => :model do
 
       context "with transmitted_at" do
         context "where existing is higher" do
-          let(:attributes){ { transmitted_at: "9" } }
+          let(:attributes) { { transmitted_at: "9" } }
 
           it "raises an error" do
             expect {
@@ -57,7 +57,7 @@ describe UpdateLock, :type => :model do
         end
 
         context "where existing is equal" do
-          let(:attributes){ { transmitted_at: "10" } }
+          let(:attributes) { { transmitted_at: "10" } }
 
           it "raises an error" do
             expect {
@@ -70,7 +70,7 @@ describe UpdateLock, :type => :model do
         end
 
         context "where existing is lower" do
-          let(:attributes){ { transmitted_at: "12" } }
+          let(:attributes) { { transmitted_at: "12" } }
           it "does not raise an error" do
             expect {
               subject.check_availability!(attributes)
@@ -81,7 +81,7 @@ describe UpdateLock, :type => :model do
 
       context "with payload_version" do
         context "where existing is higher" do
-          let(:attributes){ { payload_version: "19" } }
+          let(:attributes) { { payload_version: "19" } }
 
           it "raises an error" do
             expect {
@@ -94,7 +94,7 @@ describe UpdateLock, :type => :model do
         end
 
         context "where existing is equal" do
-          let(:attributes){ { payload_version: "20" } }
+          let(:attributes) { { payload_version: "20" } }
 
           it "raises an error" do
             expect {
@@ -106,7 +106,7 @@ describe UpdateLock, :type => :model do
         end
 
         context "where existing is lower" do
-          let(:attributes){ { payload_version: "21" } }
+          let(:attributes) { { payload_version: "21" } }
           it "does not raise an error" do
             expect {
               subject.check_availability!(attributes)
@@ -116,7 +116,7 @@ describe UpdateLock, :type => :model do
       end
 
       context "with both transmitted_at and payload_version" do
-        let(:attributes){ { transmitted_at: "5", payload_version: "21"} }
+        let(:attributes) { { transmitted_at: "5", payload_version: "21" } }
         it "prefers payload_version does not raise" do
           expect {
             subject.check_availability!(attributes)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'update_lock'
 
-describe "content item write API", :type => :request do
+describe "content item write API", type: :request do
   before :each do
     @data = {
       "base_path" => "/vat-rates",
@@ -9,7 +9,7 @@ describe "content item write API", :type => :request do
       "title" => "VAT rates",
       "description" => "Current VAT rates",
       "format" => "answer",
-      "need_ids" => ["100123", "100124"],
+      "need_ids" => %w(100123 100124),
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "transmitted_at" => "2",
@@ -33,17 +33,17 @@ describe "content item write API", :type => :request do
 
     it "creates the content item" do
       put_json "/content/vat-rates", @data
-      item = ContentItem.where(:base_path => "/vat-rates").first
+      item = ContentItem.where(base_path: "/vat-rates").first
       expect(item).to be
       expect(item.title).to eq("VAT rates")
       expect(item.description).to eq("Current VAT rates")
       expect(item.format).to eq("answer")
-      expect(item.need_ids).to eq(["100123", "100124"])
+      expect(item.need_ids).to eq(%w(100123 100124))
       expect(item.locale).to eq("en")
       expect(item.phase).to eq("live")
       expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
-      expect(item.details).to eq({"body" => "<p>Some body text</p>\n"})
+      expect(item.details).to eq("body" => "<p>Some body text</p>\n")
     end
 
     it "responds with an empty JSON document in the body" do
@@ -79,7 +79,7 @@ describe "content item write API", :type => :request do
         put_json "/content/vat-rates", @data
         expect(response.status).to eq(201)
 
-        item = ContentItem.where(:base_path => "/vat-rates").first
+        item = ContentItem.where(base_path: "/vat-rates").first
         expect(item.description).to eq [
           { "content_type" => "text/html", "content" => "<p>content</p>" },
           { "content_type" => "text/plain", "content" => "content" },
@@ -98,7 +98,7 @@ describe "content item write API", :type => :request do
                                 ])
 
       put_json "/content/vat-rates.fr", foreign_data
-      item = ContentItem.where(:base_path => "/vat-rates.fr").first
+      item = ContentItem.where(base_path: "/vat-rates.fr").first
       expect(item).to be
       expect(item.title).to eq("Taux de TVA")
       expect(item.locale).to eq("fr")
@@ -109,12 +109,12 @@ describe "content item write API", :type => :request do
     before(:each) do
       Timecop.travel(30.minutes.ago) do
         @item = create(:content_item,
-                     :title => "Original title",
-                     :base_path => "/vat-rates",
-                     :need_ids => ["100321"],
-                     :public_updated_at => Time.zone.parse("2014-03-12T14:53:54Z"),
-                     :details => {"foo" => "bar"}
-                    )
+                     title: "Original title",
+                     base_path: "/vat-rates",
+                     need_ids: ["100321"],
+                     public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
+                     details: { "foo" => "bar" }
+                      )
       end
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
     end
@@ -128,10 +128,10 @@ describe "content item write API", :type => :request do
       put_json "/content/vat-rates", @data
       @item.reload
       expect(@item.title).to eq("VAT rates")
-      expect(@item.need_ids).to eq(["100123", "100124"])
+      expect(@item.need_ids).to eq(%w(100123 100124))
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
-      expect(@item.details).to eq({"body" => "<p>Some body text</p>\n"})
+      expect(@item.details).to eq("body" => "<p>Some body text</p>\n")
     end
 
     it "does not register routes when they haven't changed" do
@@ -149,7 +149,7 @@ describe "content item write API", :type => :request do
   describe "creating a content item with both routes and redirects" do
     before :each do
       @data["redirects"] = [
-        {"path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates"}
+        { "path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates" }
       ]
     end
 
@@ -170,7 +170,7 @@ describe "content item write API", :type => :request do
     end
 
     it "saves the access-limiting details" do
-      item = ContentItem.where(:base_path => "/vat-rates").first
+      item = ContentItem.where(base_path: "/vat-rates").first
       expect(item).to be
       expect(item.access_limited).to eq("users" => authorised_users)
     end
@@ -204,7 +204,7 @@ describe "content item write API", :type => :request do
 
     it "includes an error message" do
       data = JSON.parse(response.body)
-      expect(data["errors"]).to eq({"base" => ["unrecognised field(s) foo, bar in input"]})
+      expect(data["errors"]).to eq("base" => ["unrecognised field(s) foo, bar in input"])
     end
   end
 
@@ -221,7 +221,7 @@ describe "content item write API", :type => :request do
     it "includes an error message" do
       data = JSON.parse(response.body)
       expected_error_message = Mongoid::Errors::InvalidValue.new(Array, @data['routes'].class).message
-      expect(data["errors"]).to eq({"base" => [expected_error_message]})
+      expect(data["errors"]).to eq("base" => [expected_error_message])
     end
   end
 
@@ -239,7 +239,7 @@ describe "content item write API", :type => :request do
 
     it "creates the item with encoded base_path" do
       put_json "/content/#{path}", @data
-      item = ContentItem.where(:base_path => path).first
+      item = ContentItem.where(base_path: path).first
       expect(item).to be
       expect(item.base_path).to eq(path)
     end
@@ -247,12 +247,12 @@ describe "content item write API", :type => :request do
 
   context "with stale attributes" do
     before do
-        create(
-          :content_item,
-          :base_path => "/vat-rates",
-          :transmitted_at => "2",
-          :payload_version => "2"
-        )
+      create(
+        :content_item,
+        base_path: "/vat-rates",
+        transmitted_at: "2",
+        payload_version: "2"
+      )
     end
 
     context "transmitted_at based" do
@@ -302,9 +302,9 @@ describe "content item write API", :type => :request do
     before do
       create(
         :content_item,
-        :base_path => "/vat-rates",
-        :transmitted_at => "2",
-        :payload_version => "1"
+        base_path: "/vat-rates",
+        transmitted_at: "2",
+        payload_version: "1"
       )
     end
 
