@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AbsolutePathValidator, type: :model do
-  class ValidatablePath < Struct.new(:path)
+  ValidatablePath = Struct.new(:path) do
     include ActiveModel::Validations
     validates :path, absolute_path: true
   end

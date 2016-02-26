@@ -42,7 +42,7 @@ describe "End-to-end behaviour", type: :request do
     subject(:links) {
       get "/content/vat-rates"
       expect(response.status).to eq(200)
-      links = JSON.parse(response.body)["links"]
+      JSON.parse(response.body)["links"]
     }
 
     context "linked item which already existed" do
@@ -143,7 +143,7 @@ describe "End-to-end behaviour", type: :request do
     subject(:links) {
       get "/content#{data['base_path']}"
       expect(response.status).to eq(200)
-      links = JSON.parse(response.body)["links"]
+      JSON.parse(response.body)["links"]
     }
 
     context "an item without any translation" do

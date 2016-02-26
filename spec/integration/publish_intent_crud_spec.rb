@@ -146,7 +146,7 @@ describe "CRUD of publish intents", type: :request do
 
     it "handles non-ascii paths" do
       path = URI.encode('/news/בוט לאינד')
-      intent = create(:publish_intent, base_path: path)
+      create(:publish_intent, base_path: path)
       get "/publish-intent#{path}"
       expect(response.status).to eq(200)
 
