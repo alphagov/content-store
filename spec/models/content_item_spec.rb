@@ -433,6 +433,46 @@ describe ContentItem, type: :model do
         end
       end
     end
+
+    context 'formats which should include specific incoming_links' do
+      context 'working_group' do
+        before :each do
+          @working_group = create(:content_item, :with_content_id, format: "working_group")
+          @policy = create(:content_item, :with_content_id, format: "policy", links: { "working_groups" => [@working_group.content_id] })
+        end
+
+        it 'should include the key' do
+          expect(@working_group.linked_items.keys).to include("policies")
+        end
+
+        it 'should include the linked item' do
+          expect(@working_group.linked_items["policies"]).to eq([@policy])
+        end
+
+        describe 'when the item already has links of that type' do
+          before :each do
+            @another_policy = create(:content_item, :with_content_id, format: "policy")
+            @working_group.update(links: { "policies" => [@another_policy.content_id] })
+          end
+
+          it 'should append to that list' do
+            expect(@working_group.linked_items["policies"]).to include(@policy, @another_policy)
+          end
+        end
+
+        describe 'when the item links to another policy but with a different link type' do
+          before :each do
+            @special_policy = create(:content_item, :with_content_id, format: "policy")
+            @working_group.update(links: { "special_policies" => [@special_policy.content_id] })
+          end
+
+          it 'should not mix them into the policies list' do
+            expect(@working_group.linked_items["policies"]).to eq([@policy])
+            expect(@working_group.linked_items["special_policies"]).to eq([@special_policy])
+          end
+        end
+      end
+    end
   end
 
   describe '#incoming_links' do

@@ -8,6 +8,11 @@ class LinkedItemsQuery
   def call
     items = linked_items
     items["available_translations"] = available_translations if available_translations.any?
+    if content_item.format == "working_group"
+      items["policies"] ||= []
+      items["policies"] += content_items(incoming_link_content_ids)
+      items["policies"].uniq!(&:content_id)
+    end
     items
   end
 
@@ -16,7 +21,7 @@ private
   # Return the extant and renderable linked_items and any "passthrough" items
   # which aren't really content_items, but are instead hardcoded hashes.
   def linked_items
-    outgoing_content_items = content_items
+    outgoing_content_items = content_items(outgoing_link_content_ids)
     content_item.links.each_with_object({}) do |(link_type, raw_content_ids), result|
       passthrough_hashes, raw_content_ids = raw_content_ids.partition { |link| link.is_a?(Hash) }
       passthrough_content_items = passthrough_hashes.map do |attributes|
@@ -33,14 +38,14 @@ private
 
   # Return the renderable items based on `content_ids`, in the most appropriate
   # locale
-  def content_items
+  def content_items(content_ids)
     # For each linked content_id find all non-redirect content items with
     # matching content_id in either this item's locale, or the default locale
     # with the most recently updated first.
     locales = [I18n.default_locale.to_s, content_item.locale].uniq
     renderable_items_by_id = ContentItem
       .renderable_content
-      .where(content_id: { "$in" => all_content_ids })
+      .where(content_id: { "$in" => content_ids })
       .where(locale: { "$in" => locales })
       .sort(updated_at: -1)
       .group_by(&:content_id)
@@ -55,10 +60,20 @@ private
     end
   end
 
-  # Returns the content_ids for all types of link, and ignore the passthrough
-  # hashes
-  def all_content_ids
+  # Returns the content_ids for all types of link ignoring passthrough hashes.
+  def outgoing_link_content_ids
     content_item.links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
+  end
+
+  # Any working_group-specific incoming_links
+  def incoming_link_content_ids
+    if content_item.format == "working_group"
+      content_item.incoming_links("working_groups", linking_format: "policy")
+        .only(:content_id)
+        .map(&:content_id)
+    else
+      []
+    end
   end
 
   def available_translations
