@@ -15,6 +15,6 @@ Rails.application.routes.draw do
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"
   end
 
-  get "/healthcheck", :to => proc { [200, {}, ["OK"]] }
+  get "/healthcheck", to: proc { [200, {}, ["OK"]] }
   get "/debug/taggings-per-app" => "debug#taggings_per_app"
 end
