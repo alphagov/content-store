@@ -46,7 +46,7 @@ class RouteSet < OpenStruct
       rendering_app: intent.rendering_app,
     )
     route_attrs = intent.routes
-    if item = intent.content_item
+    if (item = intent.content_item)
       # if a content item exists we only want to register the set of routes
       # that don't already exist on the item
       route_attrs -= item.routes

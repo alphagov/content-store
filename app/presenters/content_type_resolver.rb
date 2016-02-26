@@ -16,8 +16,8 @@ class ContentTypeResolver
 private
 
   def resolve_hash(hash)
-    hash.inject({}) do |hash, (key, value)|
-      hash.merge(key => resolve(value))
+    hash.inject({}) do |memo, (key, value)|
+      memo.merge(key => resolve(value))
     end
   end
 

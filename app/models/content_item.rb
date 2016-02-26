@@ -22,7 +22,7 @@ class ContentItem
     end
 
     return result, item
-  rescue Mongoid::Errors::UnknownAttribute => e
+  rescue Mongoid::Errors::UnknownAttribute
     extra_fields = attributes.keys - self.fields.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     return false, item
@@ -169,13 +169,13 @@ private
     end
 
     # build up the links hash using the selected items above
-    links.each_with_object({}) do |(link_type, content_ids), result|
-      passthrough_hashes, content_ids = content_ids.partition { |link| link.is_a?(Hash) }
+    links.each_with_object({}) do |(link_type, uuids), result|
+      passthrough_hashes, uuids = uuids.partition { |link| link.is_a?(Hash) }
       passthrough_content_items = passthrough_hashes.map {|attributes|
         ContentItem.new(attributes)
       }
 
-      result[link_type] = content_ids.map { |id| required_items[id] }.compact + passthrough_content_items
+      result[link_type] = uuids.map { |id| required_items[id] }.compact + passthrough_content_items
     end
   end
 
