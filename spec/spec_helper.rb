@@ -1,4 +1,4 @@
-if( ENV['COVERAGE'] == 'on' )
+if(ENV['COVERAGE'] == 'on')
   require 'simplecov'
   require 'simplecov-rcov'
   SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter

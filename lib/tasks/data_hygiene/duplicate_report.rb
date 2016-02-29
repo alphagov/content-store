@@ -37,24 +37,26 @@ module Tasks
         summarise
       end
 
-private
+    private
+
       def fetch_all_duplicate_content_items
         puts "Fetching content items for duplicated content ids..."
-        duplicate_content_id_aggregation.flat_map do |content_id_count|
+        duplicates = duplicate_content_id_aggregation.flat_map do |content_id_count|
           next if content_id_count["_id"].blank?
           ContentItem.where(content_id: content_id_count["_id"]).to_a
-        end.compact
+        end
+        duplicates.compact
       end
 
       def duplicate_content_id_aggregation
         @duplicate_content_id_aggregation ||= ContentItem.collection.aggregate([
           {
             "$group" => {
-              "_id" => "$content_id", "count" => {"$sum" => 1}
+              "_id" => "$content_id", "count" => { "$sum" => 1 }
             }
           },
           {
-            "$match" => { "count" => {"$gt" => 1} }
+            "$match" => { "count" => { "$gt" => 1 } }
           }
         ])
       end
@@ -64,7 +66,7 @@ private
         content_id_counts = content_items.each_with_object(Hash.new(0)) do |ci, hash|
           hash[ci.content_id] += 1
         end
-        content_id_counts.select { |k, v| v > 1 }
+        content_id_counts.select { |_k, v| v > 1 }
       end
 
       def summarise
@@ -74,18 +76,17 @@ private
         end
       end
 
-      def write_to_csv(content_items, locale=nil)
+      def write_to_csv(content_items, locale = nil)
         puts "Writing content items to csv..."
         current_time = Time.now.strftime("%Y-%m-%d-%H-%M")
         filename = "duplicate_content_ids_#{current_time}"
         filename = "#{locale}_#{filename}" if locale
 
         CSV.open("tmp/#{filename}.csv", 'wb') do |csv|
-          content_item_fields = [
-            "_id", "content_id", "title", "format", "locale", "publishing_app",
-            "rendering_app", "routes", "redirects", "phase", "analytics_identifier",
-            "updated_at"
-          ]
+          content_item_fields = %w(
+            _id content_id title format locale publishing_app
+            rendering_app routes redirects phase analytics_identifier
+            updated_at)
 
           csv << content_item_fields
           content_items.each do |content_item|

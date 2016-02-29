@@ -2,7 +2,7 @@ require "tasks/data_hygiene/inconsistent_redirect_finder"
 
 namespace :data_hygiene do
   desc "Find policies that redirect to somewhere, but don't have the correct content item set up"
-  task :inconstent_policy_redirects => :environment do
+  task inconstent_policy_redirects: :environment do
     content_items = ContentItem.where(format: "placeholder", publishing_app: "whitehall", base_path: /^\/government\/policies/)
 
     puts "Analyzing #{content_items.count} content items"

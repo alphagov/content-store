@@ -9,11 +9,9 @@ module WhitehallReport
     mismatched_content_id = []
 
     CSV.foreach(csv_path, headers: true) do |row|
-      whitehall_db_id = row["whitehall_db_id"]
       content_id = row["content_id"]
       base_path = row["base_path"]
       locale = row["locale"]
-      state = row["state"]
       model = row["model"]
       updated_at = row["updated_at"]
 

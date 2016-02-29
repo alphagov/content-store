@@ -13,12 +13,12 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
   end
 
   formats_to_use = if args[:format_names].present?
-    args[:format_names].split(",")
-  else
-    # placeholder items can have a format of 'placeholder' or 'placeholder_my_format_name'.
-    # redirect doesn't have a frontend schema.
-    (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - ['redirect']
-  end
+                     args[:format_names].split(",")
+                   else
+                     # placeholder items can have a format of 'placeholder' or 'placeholder_my_format_name'.
+                     # redirect doesn't have a frontend schema.
+                     (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - ['redirect']
+                   end
 
   validatable_content_items = ContentItem.where(:format.in => formats_to_use)
   api_url_callable = lambda { |base_path| "http://api.example.com/content#{base_path}" }

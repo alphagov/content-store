@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PublishIntent, :type => :model do
+describe PublishIntent, type: :model do
   describe "validations" do
     let(:intent) { build(:publish_intent) }
 
@@ -22,11 +22,11 @@ describe PublishIntent, :type => :model do
       end
 
       it "should have a db level uniqueness constraint" do
-        create(:publish_intent, :base_path => "/foo")
+        create(:publish_intent, base_path: "/foo")
 
         intent.base_path = "/foo"
         expect {
-          intent.save! :validate => false
+          intent.save! validate: false
         }.to raise_error(Moped::Errors::OperationFailure)
       end
     end
@@ -81,7 +81,7 @@ describe PublishIntent, :type => :model do
       intent.publish_time = nil
       intent.valid?
 
-      expect(intent.as_json["errors"]).to eq({"publish_time" => ["can't be blank"]})
+      expect(intent.as_json["errors"]).to eq("publish_time" => ["can't be blank"])
     end
   end
 
@@ -119,13 +119,16 @@ describe PublishIntent, :type => :model do
   end
 
   describe "registering routes" do
-    let(:routes) {[
-      { 'path' => '/a-path', 'type' => 'exact' },
-      { 'path' => '/a-path.json', 'type' => 'exact' },
-      { 'path' => '/a-path/subpath', 'type' => 'prefix' }
-    ]}
+    let(:routes) do
+      [
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+    end
+
     let(:intent) {
-      build(:publish_intent, :base_path => "/a-path", :rendering_app => "an-app", :routes => routes)
+      build(:publish_intent, base_path: "/a-path", rendering_app: "an-app", routes: routes)
     }
 
     it "registers the assigned routes when created" do
@@ -140,12 +143,12 @@ describe PublishIntent, :type => :model do
 
   describe ".cleanup_expired" do
     before :each do
-      create(:publish_intent, :publish_time => 3.days.ago)
-      create(:publish_intent, :publish_time => 2.days.ago)
-      create(:publish_intent, :publish_time => 1.hour.ago)
-      create(:publish_intent, :publish_time => 10.minutes.from_now)
-      create(:publish_intent, :publish_time => 10.days.from_now)
-      create(:publish_intent, :publish_time => 1.year.from_now)
+      create(:publish_intent, publish_time: 3.days.ago)
+      create(:publish_intent, publish_time: 2.days.ago)
+      create(:publish_intent, publish_time: 1.hour.ago)
+      create(:publish_intent, publish_time: 10.minutes.from_now)
+      create(:publish_intent, publish_time: 10.days.from_now)
+      create(:publish_intent, publish_time: 1.year.from_now)
     end
 
     it "deletes all publish_intents with publish_at in the past" do
@@ -156,11 +159,11 @@ describe PublishIntent, :type => :model do
     end
 
     it "does not delete very recently passed intents" do
-      recent = create(:publish_intent, :publish_time => 30.seconds.ago)
+      recent = create(:publish_intent, publish_time: 30.seconds.ago)
 
       PublishIntent.cleanup_expired
 
-      expect(PublishIntent.where(:base_path => recent.base_path).first).to be
+      expect(PublishIntent.where(base_path: recent.base_path).first).to be
       expect(PublishIntent.count).to eq(4)
     end
   end

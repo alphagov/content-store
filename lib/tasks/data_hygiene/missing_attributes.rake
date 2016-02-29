@@ -28,9 +28,9 @@ namespace :data_hygiene do
     lines = File.read(import_path).split("\n")
     lines = lines[1..-1]
 
-    hash = lines.each.with_object({}) do |line, hash|
+    hash = lines.each.with_object({}) do |line, memo|
       content_id, _, _, base_path = line.split(",")
-      hash[base_path] = content_id
+      memo[base_path] = content_id
     end
 
     content_items = []

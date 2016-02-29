@@ -14,8 +14,8 @@ describe Tasks::DataHygiene::ContentItemDeduplicator do
   describe "#deduplicate" do
     it "runs without issue" do
       content_item = create(:content_item_with_content_id, locale: 'cy')
-      dupe = create(:content_item, content_id: content_item.content_id, locale: 'cy')
-      locale_variant = create(:content_item, content_id: content_item.content_id, locale: 'en')
+      create(:content_item, content_id: content_item.content_id, locale: 'cy')
+      create(:content_item, content_id: content_item.content_id, locale: 'en')
 
       expect { subject.deduplicate }.to change(ContentItem, :count).by(-1)
 

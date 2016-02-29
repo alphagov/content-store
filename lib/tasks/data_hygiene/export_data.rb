@@ -36,7 +36,7 @@ module Tasks
 
         stdout.print "\r"
         stdout.flush
-        stdout.print "Progress [#{"=" * percent_complete}>#{"." * percent_remaining}] (#{percent_complete}%)"
+        stdout.print "Progress [#{'=' * percent_complete}>#{'.' * percent_remaining}] (#{percent_complete}%)"
         stdout.flush
       end
     end

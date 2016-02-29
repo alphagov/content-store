@@ -18,7 +18,7 @@ module MongoInstrumentation
     end
 
     def self.reset_runtime
-      self.runtime =  0
+      self.runtime = 0
     end
 
     # The event handler for "query.moped" notifications.

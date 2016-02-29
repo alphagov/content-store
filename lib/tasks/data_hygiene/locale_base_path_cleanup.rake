@@ -1,7 +1,6 @@
 namespace :data_hygiene do
   namespace :locale_base_path_cleanup do
     def report(cleanup: false)
-
       ContentItem.where(:locale.nin => ["en", nil]).each do |item|
         unless item.locale == item.base_path.split(".").last
           puts "locale/base_path mismatch for locale #{item.locale}"
@@ -31,7 +30,7 @@ namespace :data_hygiene do
       routes = []
 
       item.routes.each do |hash|
-        routes.push(hash.merge("path" => "#{hash["path"]}.#{item.locale}"))
+        routes.push(hash.merge("path" => "#{hash['path']}.#{item.locale}"))
       end
 
       routes
@@ -41,7 +40,7 @@ namespace :data_hygiene do
       redirects = []
 
       item.redirects.each do |hash|
-        redirects.push(hash.merge("path" => "#{hash["path"]}.#{item.locale}"))
+        redirects.push(hash.merge("path" => "#{hash['path']}.#{item.locale}"))
       end
 
       redirects

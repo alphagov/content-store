@@ -12,7 +12,7 @@ module MongoidInspectionHelpers
     end
 
     # The event handler for "query.moped" notifications.
-    def query(event)
+    def query(_event)
       self.class.query_count += 1
     end
   end

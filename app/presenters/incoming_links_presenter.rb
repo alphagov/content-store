@@ -13,6 +13,7 @@ class IncomingLinksPresenter
   end
 
 private
+
   def present_linked_item(linked_item)
     LinkedItemPresenter.new(linked_item, @api_url_method).present
   end

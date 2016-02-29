@@ -1,15 +1,15 @@
 class ContentItemsController < ApplicationController
-  before_filter :parse_json_request, :only => [:update]
-  before_filter :set_default_cache_headers, :only => [:show]
+  before_filter :parse_json_request, only: [:update]
+  before_filter :set_default_cache_headers, only: [:show]
 
   def show
     item = Rails.application.statsd.time('show.find_by') do
-      ContentItem.find_by(:base_path => encoded_base_path)
+      ContentItem.find_by(base_path: encoded_base_path)
     end
 
     if item.viewable_by?(authenticated_user_uid)
       set_cache_control_private if item.access_limited?
-      render :json => ContentItemPresenter.new(item, api_url_method)
+      render json: ContentItemPresenter.new(item, api_url_method)
     else
       render json_forbidden_response
     end
@@ -41,7 +41,7 @@ class ContentItemsController < ApplicationController
     ContentItem.find_by(base_path: base_path).destroy
   end
 
-  private
+private
 
   def authenticated_user_uid
     request.headers['X-Govuk-Authenticated-User']
@@ -49,11 +49,11 @@ class ContentItemsController < ApplicationController
 
   def json_forbidden_response
     {
-      :json => {
-        :errors => {
-          :type => "access_forbidden",
-          :code => "403",
-          :message => "You do not have permission to access this resource",
+      json: {
+        errors: {
+          type: "access_forbidden",
+          code: "403",
+          message: "You do not have permission to access this resource",
         }
       },
       status: 403
@@ -61,16 +61,16 @@ class ContentItemsController < ApplicationController
   end
 
   def set_default_cache_headers
-    intent = PublishIntent.where(:base_path => encoded_base_path).first
+    intent = PublishIntent.where(base_path: encoded_base_path).first
     if intent && !intent.past?
-      expires_in bounded_max_age(intent.publish_time), :public => true
+      expires_in bounded_max_age(intent.publish_time), public: true
     else
-      expires_in config.default_ttl, :public => true
+      expires_in config.default_ttl, public: true
     end
   end
 
   def set_cache_control_private
-    expires_in config.minimum_ttl, :public => false
+    expires_in config.minimum_ttl, public: false
   end
 
   # Calculate the max-age based on the publish_time but constrained to be within

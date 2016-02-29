@@ -13,7 +13,7 @@ describe RouteSet, type: :model do
       expect(route_set.is_redirect).to eq(false)
       expect(route_set.is_gone).to eq(false)
       expected_routes = [
-        { path: '/path', type:'exact' },
+        { path: '/path', type: 'exact' },
         { path: '/path.json', type: 'exact' },
         { path: '/path/subpath', type: 'prefix' },
       ]
@@ -86,7 +86,7 @@ describe RouteSet, type: :model do
 
     context "with a corresponding content item" do
       let!(:item) {
-        create(:content_item, base_path: "/path", routes: [{"path" => "/path", "type" => "exact"}])
+        create(:content_item, base_path: "/path", routes: [{ "path" => "/path", "type" => "exact" }])
       }
 
       it "constructs a supplimentary route set for the intent" do
@@ -111,7 +111,7 @@ describe RouteSet, type: :model do
 
       it "contains no routes if the content item already has all the routes in the intent" do
         intent = build(:publish_intent, base_path: "/path", rendering_app: "frontend")
-        intent.routes = [ { 'path' => '/path', 'type' => 'exact' } ]
+        intent.routes = [{ 'path' => '/path', 'type' => 'exact' }]
 
         route_set = RouteSet.from_publish_intent(intent)
         expect(route_set.is_redirect).to be_falsey

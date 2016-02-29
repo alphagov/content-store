@@ -1,7 +1,6 @@
 module Tasks
   module DataHygiene
     class ContentItemDeduplicator
-
       attr_reader :do_destroy, :total, :deduplicated, :preserved
 
       def report_duplicates
@@ -14,7 +13,7 @@ module Tasks
         process_duplicates
       end
 
-      private
+    private
 
       def process_duplicates
         @deduplicated = []
@@ -26,9 +25,8 @@ module Tasks
         @total = duplicates.flatten.size
 
         duplicates.each do |duplicate_set|
-
           # Sort by updated_at and preserve the latest record.
-          duplicate_set.sort! {|x,y| x.updated_at <=> y.updated_at}
+          duplicate_set.sort! { |x, y| x.updated_at <=> y.updated_at }
           latest = duplicate_set.pop
           @preserved << "#{latest.content_id},#{latest.locale},#{latest.updated_at},#{latest.base_path}"
 
@@ -60,12 +58,12 @@ module Tasks
         @duplicate_content_id_aggregation ||= ContentItem.collection.aggregate([
           {
             "$group" => {
-              "_id" => {"content_id" => "$content_id", "locale" => "$locale"},
-              "uniqueIds" => {"$addToSet" => "$_id"},
-              "count" => {"$sum" => 1}
+              "_id" => { "content_id" => "$content_id", "locale" => "$locale" },
+              "uniqueIds" => { "$addToSet" => "$_id" },
+              "count" => { "$sum" => 1 }
             }
           },
-          {"$match" => {"_id.content_id" => {"$ne" => nil}, "count" => {"$gt" => 1}}}
+          { "$match" => { "_id.content_id" => { "$ne" => nil }, "count" => { "$gt" => 1 } } }
         ])
       end
 

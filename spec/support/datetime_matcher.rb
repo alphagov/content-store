@@ -14,4 +14,3 @@ RSpec::Matchers.define :match_datetime do |expected|
     "expected that #{actual} would not be be the same time as #{expected}"
   end
 end
-

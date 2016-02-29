@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe "Fetching a content item with a publish intent", :type => :request do
-  let(:content_item) { create(:content_item, :public_updated_at => 30.minutes.ago) }
+describe "Fetching a content item with a publish intent", type: :request do
+  let(:content_item) { create(:content_item, public_updated_at: 30.minutes.ago) }
 
   context "a publish intent long in the past" do
     before(:each) do
-      create(:publish_intent, :base_path => content_item.base_path, :publish_time => 5.minutes.ago)
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.ago)
       get_content content_item
     end
 
@@ -26,7 +26,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
   context "a publish intent that has newly passed" do
     before(:each) do
-      create(:publish_intent, :base_path => content_item.base_path, :publish_time => 10.seconds.ago)
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 10.seconds.ago)
       get_content content_item
     end
 
@@ -47,7 +47,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
 
   context "a publish intent more than the default TTL away" do
     before(:each) do
-      create(:publish_intent, :base_path => content_item.base_path, :publish_time => 40.minutes.from_now)
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 40.minutes.from_now)
       get_content content_item
     end
 
@@ -69,7 +69,7 @@ describe "Fetching a content item with a publish intent", :type => :request do
   context "a publish intent before the default TTL time" do
     before(:each) do
       Timecop.freeze
-      create(:publish_intent, :base_path => content_item.base_path, :publish_time => 5.minutes.from_now)
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.from_now)
       get_content content_item
     end
 
@@ -88,10 +88,10 @@ describe "Fetching a content item with a publish intent", :type => :request do
   end
 end
 
-describe "Fetching a publish intent without a content item", :type => :request do
+describe "Fetching a publish intent without a content item", type: :request do
   before(:each) do
     Timecop.freeze
-    create(:publish_intent, :base_path => "/some/future/thing", :publish_time => 5.minutes.from_now)
+    create(:publish_intent, base_path: "/some/future/thing", publish_time: 5.minutes.from_now)
     get "/content/some/future/thing"
   end
 

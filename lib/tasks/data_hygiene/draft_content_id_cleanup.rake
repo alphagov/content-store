@@ -23,13 +23,11 @@ namespace :data_hygiene do
         next if substitution_formats.include?(hash.fetch("format"))
 
         unless hash.fetch("content_id") == item.content_id
-          puts "content_id mismatch: #{item.content_id} will be set to #{hash.fetch("content_id")}"
+          puts "content_id mismatch: #{item.content_id} will be set to #{hash.fetch('content_id')}"
           puts "  (base_path: #{item.base_path})"
           puts
 
-          if cleanup
-            item.set(content_id: hash.fetch("content_id"))
-          end
+          item.set(content_id: hash.fetch("content_id")) if cleanup
         end
       end
     end

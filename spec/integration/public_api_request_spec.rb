@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Public API requests for content items", :type => :request do
+describe "Public API requests for content items", type: :request do
   let(:content_item) do
     FactoryGirl.create(
       :content_item,
