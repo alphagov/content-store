@@ -111,13 +111,13 @@ class ContentItem
 
   # Return a Hash of link types to lists of related items
   def linked_items
-    items = load_linked_items
-    items["available_translations"] = available_translations if available_translations.any?
-    items
+    LinkedItemsQuery.new(self).call
   end
 
-  def incoming_links(type)
-    ContentItem.where("links.#{type}" => { "$in" => [content_id] })
+  def incoming_links(link_type, linking_format: nil)
+    scope = ContentItem.where("links.#{link_type}" => { "$in" => [content_id] })
+    scope = scope.where(format: linking_format) if linking_format
+    scope
   end
 
   def viewable_by?(user_uid)
@@ -146,50 +146,5 @@ private
 
   def authorised_user_uids
     access_limited['users']
-  end
-
-  def load_linked_items
-    content_ids = links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
-
-    # For each linked content_id find all non-redirect content items with
-    # matching content_id in either this item's locale, or the default locale
-    # with the most recently updated first.
-    potential_items_by_id = ContentItem
-      .renderable_content
-      .where(content_id: { "$in" => content_ids })
-      .where(locale: { "$in" => [I18n.default_locale.to_s, self.locale].uniq })
-      .sort(updated_at: -1)
-      .group_by(&:content_id)
-
-    # For each set of items for a given content_id, pick the first one that
-    # matches this item's locale, or fall back to the first one matching the
-    # default locale.
-    required_items = potential_items_by_id.each_with_object({}) do |(content_id, items), results|
-      results[content_id] = items.find { |i| i.locale == self.locale } || items.find { |i| i.locale == I18n.default_locale.to_s }
-    end
-
-    # build up the links hash using the selected items above
-    links.each_with_object({}) do |(link_type, uuids), result|
-      passthrough_hashes, uuids = uuids.partition { |link| link.is_a?(Hash) }
-      passthrough_content_items = passthrough_hashes.map {|attributes|
-        ContentItem.new(attributes)
-      }
-
-      result[link_type] = uuids.map { |id| required_items[id] }.compact + passthrough_content_items
-    end
-  end
-
-  def available_translations
-    @available_translations ||= load_available_translations
-  end
-
-  def load_available_translations
-    return [] if self.content_id.blank?
-    ContentItem
-      .renderable_content
-      .where(content_id: content_id)
-      .sort(locale: 1, updated_at: 1)
-      .group_by(&:locale)
-      .map { |_locale, items| items.last }
   end
 end

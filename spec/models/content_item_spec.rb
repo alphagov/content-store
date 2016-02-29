@@ -433,6 +433,68 @@ describe ContentItem, type: :model do
         end
       end
     end
+
+    context 'formats which should include specific incoming_links' do
+      context 'working_group' do
+        before :each do
+          @working_group = create(:content_item, :with_content_id, format: "working_group")
+          @policy = create(:content_item, :with_content_id, format: "policy", links: { "working_groups" => [@working_group.content_id] })
+        end
+
+        it 'should include the key' do
+          expect(@working_group.linked_items.keys).to include("policies")
+        end
+
+        it 'should include the linked item' do
+          expect(@working_group.linked_items["policies"]).to eq([@policy])
+        end
+
+        describe 'when the item already has links of that type' do
+          before :each do
+            @another_policy = create(:content_item, :with_content_id, format: "policy")
+            @working_group.update(links: { "policies" => [@another_policy.content_id] })
+          end
+
+          it 'should append to that list' do
+            expect(@working_group.linked_items["policies"]).to include(@policy, @another_policy)
+          end
+        end
+
+        describe 'when the item links to another policy but with a different link type' do
+          before :each do
+            @special_policy = create(:content_item, :with_content_id, format: "policy")
+            @working_group.update(links: { "special_policies" => [@special_policy.content_id] })
+          end
+
+          it 'should not mix them into the policies list' do
+            expect(@working_group.linked_items["policies"]).to eq([@policy])
+            expect(@working_group.linked_items["special_policies"]).to eq([@special_policy])
+          end
+        end
+      end
+    end
+  end
+
+  describe '#incoming_links' do
+    before :each do
+      @item = create(:content_item, :with_content_id)
+      @other_item = create(:content_item, :with_content_id, links: { "related" => [@item.content_id] })
+    end
+
+    it 'should return the linking item' do
+      expect(@item.incoming_links("related")).to eq([@other_item])
+    end
+
+    context 'with the linking_format parameter' do
+      before :each do
+        create(:content_item, :with_content_id, format: "a", links: { "related" => [@item.content_id] })
+        @matching = create(:content_item, :with_content_id, format: "b", links: { "related" => [@item.content_id] })
+      end
+
+      it 'should return only the linking items which have that format' do
+        expect(@item.incoming_links("related", linking_format: "b")).to eq([@matching])
+      end
+    end
   end
 
   describe 'access limiting' do
