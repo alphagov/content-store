@@ -67,9 +67,7 @@ Pact.provider_states_for "Publishing API" do
 
   provider_state "a content item exists with base path /vat-rates" do
     set_up do
-      FactoryGirl.create(:content_item,
-        base_path: "/vat-rates",
-                        )
+      FactoryGirl.create(:content_item, base_path: "/vat-rates")
     end
   end
 end

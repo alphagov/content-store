@@ -41,10 +41,10 @@ describe "submitting redirect items to the content store", type: :request do
   context "replacing an existing item with a redirect" do
     before(:each) do
       @item = create(:content_item,
-                     base_path: "/crb-checks",
-                     need_ids: ["100321"],
-                     public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
-                     details: { "foo" => "bar" }
+                      base_path: "/crb-checks",
+                      need_ids: ["100321"],
+                      public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
+                      details: { "foo" => "bar" }
                     )
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/crb-checks", @data

@@ -4,14 +4,14 @@ describe "Fetching content items", type: :request do
   context "an existing content item" do
     let(:content_item) {
       create(:content_item,
-        base_path: "/vat-rates",
-        content_id: SecureRandom.uuid,
-        title: "VAT rates",
-        description: "Current VAT rates",
-        format: "answer",
-        need_ids: ["100136"],
-        public_updated_at: 30.minutes.ago,
-        details: { "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n" },
+              base_path: "/vat-rates",
+              content_id: SecureRandom.uuid,
+              title: "VAT rates",
+              description: "Current VAT rates",
+              format: "answer",
+              need_ids: ["100136"],
+              public_updated_at: 30.minutes.ago,
+              details: { "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n" },
             )
     }
     before(:each) { get_content content_item }

@@ -3,16 +3,17 @@ require 'rails_helper'
 describe "CRUD of publish intents", type: :request do
   describe "submitting a publish intent" do
     let(:publish_time) { 40.minutes.from_now }
-    let(:data) {
+    let(:data) do
       {
-      "base_path" => "/vat-rates",
-      "publish_time" => publish_time,
-      "publishing_app" => "publisher",
-      "rendering_app" => "frontend",
-      "routes" => [
-        { "path" => "/vat-rates", "type" => "exact" },
-      ],
-    }}
+        "base_path" => "/vat-rates",
+        "publish_time" => publish_time,
+        "publishing_app" => "publisher",
+        "rendering_app" => "frontend",
+        "routes" => [
+          { "path" => "/vat-rates", "type" => "exact" },
+        ],
+      }
+    end
 
     context "a new publish intent" do
       it "creates the publish intent" do
@@ -59,9 +60,9 @@ describe "CRUD of publish intents", type: :request do
       context "with a corresponding content-item" do
         before :each do
           create(:content_item,
-            base_path: "/vat-rates",
-            rendering_app: "frontend",
-            routes: [{ "path" => "/vat-rates", "type" => "exact" }]
+                  base_path: "/vat-rates",
+                  rendering_app: "frontend",
+                  routes: [{ "path" => "/vat-rates", "type" => "exact" }]
                 )
           WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
         end

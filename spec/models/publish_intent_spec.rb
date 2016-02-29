@@ -119,13 +119,14 @@ describe PublishIntent, type: :model do
   end
 
   describe "registering routes" do
-    let(:routes) {
+    let(:routes) do
       [
-      { 'path' => '/a-path', 'type' => 'exact' },
-      { 'path' => '/a-path.json', 'type' => 'exact' },
-      { 'path' => '/a-path/subpath', 'type' => 'prefix' }
-    ]
-    }
+        { 'path' => '/a-path', 'type' => 'exact' },
+        { 'path' => '/a-path.json', 'type' => 'exact' },
+        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+      ]
+    end
+
     let(:intent) {
       build(:publish_intent, base_path: "/a-path", rendering_app: "an-app", routes: routes)
     }
