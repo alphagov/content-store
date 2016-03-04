@@ -47,6 +47,8 @@ class ContentItem
   field :title, type: String
   field :description, type: Hash, default: { "value" => nil }
   field :format, type: String
+  field :document_type, type: String
+  field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s
   field :need_ids, type: Array, default: []
   field :public_updated_at, type: DateTime
