@@ -2,19 +2,26 @@ require 'rails_helper'
 
 describe "Fetching content items", type: :request do
   context "an existing content item" do
-    let(:content_item) {
-      create(:content_item,
-              base_path: "/vat-rates",
-              content_id: SecureRandom.uuid,
-              title: "VAT rates",
-              description: "Current VAT rates",
-              format: "answer",
-              need_ids: ["100136"],
-              public_updated_at: 30.minutes.ago,
-              details: { "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n" },
-            )
-    }
-    before(:each) { get_content content_item }
+    let(:max_cache_time) { nil }
+
+    let(:content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: "/vat-rates",
+        content_id: SecureRandom.uuid,
+        title: "VAT rates",
+        description: "Current VAT rates",
+        format: "answer",
+        need_ids: ["100136"],
+        public_updated_at: 30.minutes.ago,
+        details: { "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n" },
+        max_cache_time: max_cache_time,
+      )
+    end
+
+    before do
+      get_content content_item
+    end
 
     it "returns a 200 OK response" do
       expect(response.status).to eq(200)
@@ -69,6 +76,30 @@ describe "Fetching content items", type: :request do
     it "sets a cache-control directive of public" do
       expect(cache_control["public"]).to eq(true)
     end
+
+    context "when the max_cache_time field is set on the content item" do
+      let(:max_cache_time) { 123 }
+
+      it "sets cache headers to expire in the max_cache_time" do
+        expect(cache_control["max-age"]).to eq(123.to_s)
+      end
+
+      context "but the max_cache_time exceeds the default TTL" do
+        let(:max_cache_time) { default_ttl + 999 }
+
+        it "disregards the max_cache_time" do
+          expect(cache_control["max-age"]).to eq(default_ttl.to_s)
+        end
+      end
+
+      context "and it is zero" do
+        let(:max_cache_time) { 0 }
+
+        it "sets cache headers to expire in the minimum_ttl" do
+          expect(cache_control["max-age"]).to eq(minimum_ttl.to_s)
+        end
+      end
+    end
   end
 
 
@@ -103,7 +134,6 @@ describe "Fetching content items", type: :request do
       expect(cache_control["public"]).to eq(true)
     end
   end
-
 
   context "a content item with linked items" do
     let(:content_item) { create(:content_item, links: { 'related' => [linked_item.content_id] }) }

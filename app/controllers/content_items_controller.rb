@@ -1,14 +1,22 @@
 class ContentItemsController < ApplicationController
   before_filter :parse_json_request, only: [:update]
-  before_filter :set_default_cache_headers, only: [:show]
 
   def show
-    item = Rails.application.statsd.time('show.find_by') do
-      ContentItem.find_by(base_path: encoded_base_path)
+    item = Rails.application.statsd.time('show.find_content_item') do
+      ContentItem.where(base_path: encoded_base_path).first
     end
 
+    intent = Rails.application.statsd.time('show.find_publish_intent') do
+      PublishIntent.where(base_path: encoded_base_path).first
+    end
+
+    set_cache_headers(item, intent)
+
+    raise Mongoid::Errors::DocumentNotFound.new(
+      ContentItem, base_path: encoded_base_path
+    ) unless item
+
     if item.viewable_by?(authenticated_user_uid)
-      set_cache_control_private if item.access_limited?
       render json: ContentItemPresenter.new(item, api_url_method)
     else
       render json_forbidden_response
@@ -60,30 +68,30 @@ private
     }
   end
 
-  def set_default_cache_headers
-    intent = PublishIntent.where(base_path: encoded_base_path).first
+  def set_cache_headers(item, intent)
+    cache_time = config.default_ttl
+    is_public = true
+
     if intent && !intent.past?
-      expires_in bounded_max_age(intent.publish_time), public: true
-    else
-      expires_in config.default_ttl, public: true
+      cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
+    elsif item && item.access_limited?
+      cache_time = config.minimum_ttl
+      is_public = false
+    elsif item && item.max_cache_time.present?
+      cache_time = item.max_cache_time
     end
+
+    expires_in bounded_max_age(cache_time), public: is_public
   end
 
-  def set_cache_control_private
-    expires_in config.minimum_ttl, public: false
-  end
-
-  # Calculate the max-age based on the publish_time but constrained to be within
-  # the default_ttl and minimum_ttl.
-  def bounded_max_age(publish_time)
-    time_to_publish = (publish_time.to_i - Time.zone.now.to_i)
-
-    if time_to_publish > config.default_ttl
+  # Constrain the cache time to be within the minimum_ttl and default_ttl.
+  def bounded_max_age(cache_time)
+    if cache_time > config.default_ttl
       config.default_ttl
-    elsif time_to_publish < config.minimum_ttl
+    elsif cache_time < config.minimum_ttl
       config.minimum_ttl
     else
-      time_to_publish
+      cache_time
     end
   end
 end
