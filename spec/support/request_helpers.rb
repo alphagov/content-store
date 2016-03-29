@@ -11,6 +11,10 @@ module RequestHelpers
     Rails.application.config.default_ttl
   end
 
+  def minimum_ttl
+    Rails.application.config.minimum_ttl
+  end
+
   def cache_control
     Rack::Cache::CacheControl.new(response["Cache-Control"])
   end
