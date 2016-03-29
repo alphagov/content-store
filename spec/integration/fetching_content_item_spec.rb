@@ -14,8 +14,10 @@ describe "Fetching content items", type: :request do
         format: "answer",
         need_ids: ["100136"],
         public_updated_at: 30.minutes.ago,
-        details: { "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n" },
-        max_cache_time: max_cache_time,
+        details: {
+          "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n",
+          "max_cache_time" => max_cache_time,
+        },
       )
     end
 
@@ -58,7 +60,10 @@ describe "Fetching content items", type: :request do
         "analytics_identifier" => nil,
         "phase" => "live",
       )
-      expect(data["details"]).to eq("body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n",)
+      expect(data["details"]).to eq(
+        "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n",
+        "max_cache_time" => nil,
+      )
     end
 
     it "outputs the timestamp fields correctly" do
