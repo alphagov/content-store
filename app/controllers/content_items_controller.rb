@@ -77,8 +77,8 @@ private
     elsif item && item.access_limited?
       cache_time = config.minimum_ttl
       is_public = false
-    elsif item && item.max_cache_time.present?
-      cache_time = item.max_cache_time
+    elsif item && max_cache_time(item)
+      cache_time = max_cache_time(item)
     end
 
     expires_in bounded_max_age(cache_time), public: is_public
@@ -93,5 +93,10 @@ private
     else
       cache_time
     end
+  end
+
+  def max_cache_time(item)
+    return unless item.try(:details)
+    item.details["max_cache_time"]
   end
 end
