@@ -18,7 +18,13 @@ describe "Fetching linked items", type: :request do
           "api_url" => "http://www.example.com/content/a",
           "web_url" => "https://www.test.gov.uk/a",
           "locale" => "en",
-          "links" => { "parent" => [item.content_id] },
+          "links" => {
+            "parent" => [{
+              "content_id" => item.content_id,
+              "title" => item.title,
+              "base_path" => item.base_path,
+            }],
+          },
           "schema_name" => "answer",
           "document_type" => "answer",
         },
@@ -30,7 +36,13 @@ describe "Fetching linked items", type: :request do
           "api_url" => "http://www.example.com/content/b",
           "web_url" => "https://www.test.gov.uk/b",
           "locale" => "en",
-          "links" => { "parent" => [item.content_id] },
+          "links" => {
+            "parent" => [{
+              "content_id" => item.content_id,
+              "title" => item.title,
+              "base_path" => item.base_path,
+            }],
+          },
           "schema_name" => "answer",
           "document_type" => "answer",
         },

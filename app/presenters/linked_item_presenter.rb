@@ -24,6 +24,11 @@ class LinkedItemPresenter
       presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
     end
 
+    linked_parent = linked_item.linked_parent
+    if linked_parent
+      presented["links"][:parent][0] = add_parents_recursively(linked_parent)
+    end
+
     case linked_item.document_type
     # TODO: Remove placeholder when whitehall's format split is deployed and republished
     # as they will have a schema_name of 'placeholder' and a document_type of 'topical_event'
@@ -48,5 +53,18 @@ private
     return nil unless item.base_path
 
     Plek.current.website_root + item.base_path
+  end
+
+  def add_parents_recursively(parent)
+    json = {
+      content_id: parent.content_id,
+      title: parent.title,
+      base_path: parent.base_path
+    }
+
+    nested_parent = parent.linked_parent
+    json[:parent] = [add_parents_recursively(nested_parent)] if nested_parent
+
+    json
   end
 end
