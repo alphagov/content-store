@@ -43,6 +43,18 @@ RSpec.describe ContentTypeResolver do
     )
   end
 
+  it "handles hashes with content types but no content field" do
+    result = subject.resolve([
+      content_type: "application/pdf",
+      path: "some/document.pdf",
+    ])
+
+    expect(result).to eq([
+      content_type: "application/pdf",
+      path: "some/document.pdf",
+    ])
+  end
+
   it "recurses on nested hashes" do
     result = subject.resolve(
       details: {
