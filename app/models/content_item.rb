@@ -140,6 +140,22 @@ class ContentItem
     base_path.sub(%r{^/}, "")
   end
 
+  # This method is temporary. It will be removed when dependency resolution is implemented.
+  # This method, when called on a ContentItem, will return the first parent ContentItem that is linked
+  # or nil if none exists.
+  def linked_parent
+    parents = self[:links][:parent]
+    return if parents.nil?
+    # Some content items link to their parent as a string containing the ID, while
+    # others have a more complete hash representing the object.
+    if parents.first.is_a?(String)
+      linked_parent_content_id = parents.first
+    else
+      linked_parent_content_id = parents.first[:content_id]
+    end
+    ContentItem.find_by(content_id: linked_parent_content_id)
+  end
+
 protected
 
   def route_set
