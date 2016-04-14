@@ -33,7 +33,7 @@ private
     return false unless array.all? { |v| v.is_a?(Hash) }
 
     hash_keys = array.flat_map(&:keys).map(&:to_sym)
-    hash_keys.include?(:content_type)
+    hash_keys.include?(:content_type) && hash_keys.include?(:content)
   end
 
   def extract_content(array)
