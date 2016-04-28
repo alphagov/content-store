@@ -76,9 +76,16 @@ describe LinkedItemPresenter do
         expect(presented_item['links']).to eql(
           parent: [
             {
-              content_id: parent_section.content_id,
-              title: parent_section.title,
-              base_path: parent_section.base_path,
+              "content_id" => parent_section.content_id,
+              "title" => parent_section.title,
+              "base_path" => parent_section.base_path,
+              "description" => parent_section.description,
+              "api_url" => "http://api.example.com/content#{parent_section.base_path}",
+              "web_url" => "https://www.test.gov.uk#{parent_section.base_path}",
+              "locale" => parent_section.locale,
+              "links" => {},
+              "schema_name" => "topic",
+              "document_type" => "topic",
             }
           ]
         )
@@ -139,16 +146,31 @@ describe LinkedItemPresenter do
           expect(presented_item["links"]).to eql(
             parent: [
               {
-                content_id: topic_paye.content_id,
-                title: topic_paye.title,
-                base_path: topic_paye.base_path,
-                parent: [
-                  {
-                    content_id: topic_business_tax.content_id,
-                    title: topic_business_tax.title,
-                    base_path: topic_business_tax.base_path
-                  }
-                ]
+                "content_id" => topic_paye.content_id,
+                "title" => topic_paye.title,
+                "base_path" => topic_paye.base_path,
+                "description" => topic_paye.description,
+                "api_url" => "http://api.example.com/content#{topic_paye.base_path}",
+                "web_url" => "https://www.test.gov.uk#{topic_paye.base_path}",
+                "locale" => topic_paye.locale,
+                "schema_name" => "topic",
+                "document_type" => "topic",
+                "links" => {
+                  "parent" => [
+                    {
+                      "content_id" => topic_business_tax.content_id,
+                      "title" => topic_business_tax.title,
+                      "base_path" => topic_business_tax.base_path,
+                      "description" => topic_business_tax.description,
+                      "api_url" => "http://api.example.com/content#{topic_business_tax.base_path}",
+                      "web_url" => "https://www.test.gov.uk#{topic_business_tax.base_path}",
+                      "locale" => topic_business_tax.locale,
+                      "links" => {},
+                      "schema_name" => "topic",
+                      "document_type" => "topic",
+                    }
+                  ]
+                }
               }
             ]
           )
@@ -170,23 +192,46 @@ describe LinkedItemPresenter do
           it "adds nested parents" do
             expect(presented_item["links"]).to eql(
               parent: [
-                content_id: topic_paye_details.content_id,
-                title: topic_paye_details.title,
-                base_path: topic_paye_details.base_path,
-                parent: [
-                  {
-                    content_id: topic_paye.content_id,
-                    title: topic_paye.title,
-                    base_path: topic_paye.base_path,
-                    parent: [
-                      {
-                        content_id: topic_business_tax.content_id,
-                        title: topic_business_tax.title,
-                        base_path: topic_business_tax.base_path
+                "content_id" => topic_paye_details.content_id,
+                "title" => topic_paye_details.title,
+                "base_path" => topic_paye_details.base_path,
+                "description" => topic_paye_details.description,
+                "api_url" => "http://api.example.com/content#{topic_paye_details.base_path}",
+                "web_url" => "https://www.test.gov.uk#{topic_paye_details.base_path}",
+                "locale" => topic_paye_details.locale,
+                "schema_name" => "topic",
+                "document_type" => "topic",
+                "links" => {
+                  "parent" => [
+                    {
+                      "content_id" => topic_paye.content_id,
+                      "title" => topic_paye.title,
+                      "base_path" => topic_paye.base_path,
+                      "description" => topic_paye.description,
+                      "api_url" => "http://api.example.com/content#{topic_paye.base_path}",
+                      "web_url" => "https://www.test.gov.uk#{topic_paye.base_path}",
+                      "locale" => topic_paye.locale,
+                      "schema_name" => "topic",
+                      "document_type" => "topic",
+                      "links" => {
+                        "parent" => [
+                          {
+                            "content_id" => topic_business_tax.content_id,
+                            "title" => topic_business_tax.title,
+                            "base_path" => topic_business_tax.base_path,
+                            "description" => topic_business_tax.description,
+                            "api_url" => "http://api.example.com/content#{topic_business_tax.base_path}",
+                            "web_url" => "https://www.test.gov.uk#{topic_business_tax.base_path}",
+                            "locale" => topic_business_tax.locale,
+                            "links" => {},
+                            "schema_name" => "topic",
+                            "document_type" => "topic",
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]
+                    }
+                  ]
+                }
               ]
             )
           end
