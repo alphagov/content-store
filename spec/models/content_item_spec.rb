@@ -472,6 +472,47 @@ describe ContentItem, type: :model do
           end
         end
       end
+
+      context 'migrated editions' do
+        before :each do
+          @case_study = create(:content_item, :with_content_id, format: "case_study")
+          @document_collection = create(:content_item,
+            :with_content_id,
+            format: "placeholder_document_collection",
+            links: { "documents" => [@case_study.content_id] })
+        end
+
+        it 'should include the key' do
+          expect(@case_study.linked_items.keys).to include("document_collections")
+        end
+
+        it 'should include the linked item' do
+          expect(@case_study.linked_items["document_collections"]).to eq([@document_collection])
+        end
+
+        describe 'when the item already has links of that type' do
+          before :each do
+            @another_collection = create(:content_item, :with_content_id, format: "document_collection")
+            @case_study.update(links: { "document_collections" => [@another_collection.content_id] })
+          end
+
+          it 'should append to that list' do
+            expect(@case_study.linked_items["document_collections"]).to include(@document_collection, @another_collection)
+          end
+        end
+
+        describe 'when the item links to another document_collection but with a different link type' do
+          before :each do
+            @parent = create(:content_item, :with_content_id, format: "document_collection")
+            @case_study.update(links: { "parent" => [@parent.content_id] })
+          end
+
+          it 'should not mix them into the document_collections list' do
+            expect(@case_study.linked_items["document_collections"]).to eq([@document_collection])
+            expect(@case_study.linked_items["parent"]).to eq([@parent])
+          end
+        end
+      end
     end
   end
 

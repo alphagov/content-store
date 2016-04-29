@@ -1,6 +1,8 @@
 class LinkedItemsQuery
   attr_reader :content_item
 
+  MIGRATED_EDITION_FORMATS = %w(case_study detailed_guide).freeze
+
   def initialize(content_item)
     @content_item = content_item
   end
@@ -12,6 +14,10 @@ class LinkedItemsQuery
       items["policies"] ||= []
       items["policies"] += content_items(incoming_link_content_ids)
       items["policies"].uniq!(&:content_id)
+    elsif MIGRATED_EDITION_FORMATS.include? content_item.format
+      items["document_collections"] ||= []
+      items["document_collections"] += content_items(incoming_link_content_ids)
+      items["document_collections"].uniq!(&:content_id)
     end
     items
   end
@@ -65,10 +71,13 @@ private
     content_item.links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
   end
 
-  # Any working_group-specific incoming_links
   def incoming_link_content_ids
     if content_item.format == "working_group"
       content_item.incoming_links("working_groups", linking_format: "policy")
+        .only(:content_id)
+        .map(&:content_id)
+    elsif content_item.format == "case_study"
+      content_item.incoming_links("documents", linking_format: "placeholder_document_collection")
         .only(:content_id)
         .map(&:content_id)
     else
