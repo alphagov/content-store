@@ -1,6 +1,8 @@
 class LinkedItemsQuery
   attr_reader :content_item
 
+  MIGRATED_EDITION_FORMATS = %w(case_study detailed_guide).freeze
+
   def initialize(content_item)
     @content_item = content_item
   end
@@ -9,9 +11,9 @@ class LinkedItemsQuery
     items = linked_items
     items["available_translations"] = available_translations if available_translations.any?
     if content_item.format == "working_group"
-      items["policies"] ||= []
-      items["policies"] += content_items(incoming_link_content_ids)
-      items["policies"].uniq!(&:content_id)
+      merge_inverse_links(items, "policies", "working_groups", "policy")
+    elsif MIGRATED_EDITION_FORMATS.include? content_item.format
+      merge_inverse_links(items, "document_collections", "documents", "placeholder_document_collection")
     end
     items
   end
@@ -65,15 +67,16 @@ private
     content_item.links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
   end
 
-  # Any working_group-specific incoming_links
-  def incoming_link_content_ids
-    if content_item.format == "working_group"
-      content_item.incoming_links("working_groups", linking_format: "policy")
-        .only(:content_id)
-        .map(&:content_id)
-    else
-      []
-    end
+  def incoming_link_content_ids(link_type, linking_format)
+    content_item.incoming_links(link_type, linking_format: linking_format)
+      .only(:content_id)
+      .map(&:content_id)
+  end
+
+  def merge_inverse_links(items, link_type, incoming_link_type, linking_format)
+    items[link_type] ||= []
+    items[link_type] += content_items(incoming_link_content_ids(incoming_link_type, linking_format))
+    items[link_type].uniq!(&:content_id)
   end
 
   def available_translations
