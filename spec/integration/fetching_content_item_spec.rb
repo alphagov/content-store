@@ -43,6 +43,7 @@ describe "Fetching content items", type: :request do
         locale
         analytics_identifier
         phase
+        first_published_at
         public_updated_at
         updated_at
         details

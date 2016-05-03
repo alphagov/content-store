@@ -6,6 +6,7 @@
   "format": "the format of this content",
   "need_ids": ["array", "of", "need", "ids"],
   "locale": "en",
+  "first_published_at": "2014-01-02T03:04:05+00:00",
   "public_updated_at": "2014-03-04T13:58:11+00:00",
   "updated_at": "2014-03-04T14:15:17+00:00",
   "details": {

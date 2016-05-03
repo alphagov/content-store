@@ -14,6 +14,7 @@ class ContentItemPresenter
     need_ids
     locale
     updated_at
+    first_published_at
     public_updated_at
     phase
     analytics_identifier
