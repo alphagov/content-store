@@ -11,6 +11,8 @@ class ContentItemPresenter
     content_id
     title
     format
+    schema_name
+    document_type
     need_ids
     locale
     updated_at

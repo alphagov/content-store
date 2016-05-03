@@ -19,6 +19,8 @@ describe "Fetching linked items", type: :request do
           "web_url" => "https://www.test.gov.uk/a",
           "locale" => "en",
           "links" => { "parent" => [item.content_id] },
+          "schema_name" => "answer",
+          "document_type" => "answer",
         },
         {
           "content_id" => "ID-2",
@@ -29,6 +31,8 @@ describe "Fetching linked items", type: :request do
           "web_url" => "https://www.test.gov.uk/b",
           "locale" => "en",
           "links" => { "parent" => [item.content_id] },
+          "schema_name" => "answer",
+          "document_type" => "answer",
         },
       ])
 
