@@ -118,6 +118,10 @@ This is the update date that should be surfaced to the user. This is used for
 sorting documents by update date. It should change when there is a major
 update and should not change for a minor update.
 
+## `first_published_at`
+
+ISO 8601 formatted timestamp. Present when the content item has been published.
+
 ## `details`
 
 A hash. Present in all contexts.
