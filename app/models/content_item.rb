@@ -59,6 +59,7 @@ class ContentItem
   field :routes, type: Array, default: []
   field :redirects, type: Array, default: []
   field :links, type: Hash, default: {}
+  field :expanded_links, type: Hash, default: {}
   field :access_limited, type: Hash, default: {}
   field :phase, type: String, default: 'live'
   field :analytics_identifier, type: String
