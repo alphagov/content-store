@@ -48,6 +48,7 @@ describe "Fetching content items", type: :request do
         updated_at
         details
         links
+        expanded_links
       ])
 
       expect(data).to include(

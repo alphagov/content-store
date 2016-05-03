@@ -18,6 +18,7 @@ class ContentItemPresenter
     public_updated_at
     phase
     analytics_identifier
+    expanded_links
   ).freeze
 
   def initialize(item, api_url_method)
