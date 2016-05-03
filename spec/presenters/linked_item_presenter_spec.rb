@@ -11,6 +11,8 @@ describe LinkedItemPresenter do
               content_id: 'AN-ID',
               title: "My Title",
               base_path: '/my-page',
+              schema_name: 'publication',
+              document_type: 'policy_paper',
               description: [
                 { content_type: "text/html", content: "<p>A HTML description.</p>" },
                 { content_type: "text/plain", content: "Short description." },
@@ -32,6 +34,8 @@ describe LinkedItemPresenter do
         "web_url" => "https://www.test.gov.uk/my-page",
         "locale" => "en",
         "links" => {},
+        "schema_name" => "publication",
+        "document_type" => "policy_paper"
       )
     end
 

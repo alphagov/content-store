@@ -16,6 +16,8 @@ class LinkedItemPresenter
       "api_url" => api_url(linked_item),
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,
+      "schema_name" => linked_item.schema_name,
+      "document_type" => linked_item.document_type
     }
 
     %i(analytics_identifier links).each do |attr|

@@ -19,6 +19,8 @@ FactoryGirl.define do
 
     factory :content_item do
       format "answer"
+      schema_name "answer"
+      document_type "answer"
       title "Test content"
       rendering_app 'frontend'
       public_updated_at Time.now
