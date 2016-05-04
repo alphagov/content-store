@@ -66,7 +66,7 @@ class ContentItem
   field :transmitted_at, type: String
   field :payload_version, type: Integer
 
-  scope :renderable_content, -> { where(:format.nin => NON_RENDERABLE_FORMATS) }
+  scope :renderable_content, -> { where(:schema_name.nin => NON_RENDERABLE_FORMATS) }
 
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
@@ -106,11 +106,11 @@ class ContentItem
   end
 
   def redirect?
-    self.format == "redirect"
+    self.schema_name == "redirect"
   end
 
   def gone?
-    self.format == "gone"
+    self.schema_name == "gone"
   end
 
   # Return a Hash of link types to lists of related items
@@ -118,9 +118,9 @@ class ContentItem
     LinkedItemsQuery.new(self).call
   end
 
-  def incoming_links(link_type, linking_format: nil)
+  def incoming_links(link_type, linking_document_type: nil)
     scope = ContentItem.where("links.#{link_type}" => { "$in" => [content_id] })
-    scope = scope.where(format: linking_format) if linking_format
+    scope = scope.where(document_type: linking_document_type) if linking_document_type
     scope
   end
 
@@ -129,7 +129,7 @@ class ContentItem
   end
 
   def register_routes(previous_item: nil)
-    return if self.format.start_with?("placeholder")
+    return if self.schema_name.start_with?("placeholder")
     return if previous_item && previous_item.route_set == self.route_set
     self.route_set.register!
   end

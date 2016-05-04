@@ -10,10 +10,10 @@ class LinkedItemsQuery
   def call
     items = linked_items
     items["available_translations"] = available_translations if available_translations.any?
-    if content_item.format == "working_group"
+    if content_item.schema_name == "working_group"
       merge_inverse_links(items, "policies", "working_groups", "policy")
-    elsif MIGRATED_EDITION_FORMATS.include? content_item.format
-      merge_inverse_links(items, "document_collections", "documents", "placeholder_document_collection")
+    elsif MIGRATED_EDITION_FORMATS.include? content_item.schema_name
+      merge_inverse_links(items, "document_collections", "documents", /document_collection$/)
     end
     items
   end
@@ -67,15 +67,15 @@ private
     content_item.links.values.flatten.uniq.reject { |link| link.is_a?(Hash) }
   end
 
-  def incoming_link_content_ids(link_type, linking_format)
-    content_item.incoming_links(link_type, linking_format: linking_format)
+  def incoming_link_content_ids(link_type, linking_document_type)
+    content_item.incoming_links(link_type, linking_document_type: linking_document_type)
       .only(:content_id)
       .map(&:content_id)
   end
 
-  def merge_inverse_links(items, link_type, incoming_link_type, linking_format)
+  def merge_inverse_links(items, link_type, incoming_link_type, linking_document_type)
     items[link_type] ||= []
-    items[link_type] += content_items(incoming_link_content_ids(incoming_link_type, linking_format))
+    items[link_type] += content_items(incoming_link_content_ids(incoming_link_type, linking_document_type))
     items[link_type].uniq!(&:content_id)
   end
 
