@@ -7,20 +7,20 @@ class ContentItemPresenter
   RESOLVER = ContentTypeResolver.new("text/html")
 
   PUBLIC_ATTRIBUTES = %w(
+    analytics_identifier
     base_path
     content_id
-    title
-    format
-    schema_name
     document_type
-    need_ids
-    locale
-    updated_at
-    first_published_at
-    public_updated_at
-    phase
-    analytics_identifier
     expanded_links
+    first_published_at
+    format
+    locale
+    need_ids
+    phase
+    public_updated_at
+    schema_name
+    title
+    updated_at
   ).freeze
 
   def initialize(item, api_url_method)
