@@ -50,6 +50,8 @@ describe "Fetching content items", type: :request do
         first_published_at
         public_updated_at
         updated_at
+        rendering_app
+        publishing_app
         details
         links
         expanded_links
