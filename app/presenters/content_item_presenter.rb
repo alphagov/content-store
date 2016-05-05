@@ -18,6 +18,8 @@ class ContentItemPresenter
     need_ids
     phase
     public_updated_at
+    publishing_app
+    rendering_app
     schema_name
     title
     updated_at
