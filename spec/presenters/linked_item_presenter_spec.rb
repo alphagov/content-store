@@ -11,6 +11,8 @@ describe LinkedItemPresenter do
               content_id: 'AN-ID',
               title: "My Title",
               base_path: '/my-page',
+              schema_name: 'publication',
+              document_type: 'policy_paper',
               description: [
                 { content_type: "text/html", content: "<p>A HTML description.</p>" },
                 { content_type: "text/plain", content: "Short description." },
@@ -32,6 +34,8 @@ describe LinkedItemPresenter do
         "web_url" => "https://www.test.gov.uk/my-page",
         "locale" => "en",
         "links" => {},
+        "schema_name" => "publication",
+        "document_type" => "policy_paper"
       )
     end
 
@@ -73,7 +77,7 @@ describe LinkedItemPresenter do
 
     context "with a topical_event link" do
       let(:content_item) do
-        build(:content_item, format: "topical_event", details: {
+        build(:content_item, document_type: "topical_event", details: {
           start_date: "2015-11-25T00:00:00.000+00:00",
           end_date: "2015-11-30T00:00:00.000+00:00",
         })
@@ -90,7 +94,7 @@ describe LinkedItemPresenter do
     # TODO: Remove when topical_events are migrated
     context "with a placeholder_topical_event link" do
       let(:content_item) do
-        build(:content_item, format: "placeholder_topical_event", details: {
+        build(:content_item, document_type: "placeholder_topical_event", details: {
           start_date: "2015-11-25T00:00:00.000+00:00",
           end_date: "2015-11-30T00:00:00.000+00:00",
         })

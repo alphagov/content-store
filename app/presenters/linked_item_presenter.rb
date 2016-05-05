@@ -16,14 +16,17 @@ class LinkedItemPresenter
       "api_url" => api_url(linked_item),
       "web_url" => web_url(linked_item),
       "locale" => linked_item.locale,
+      "schema_name" => linked_item.schema_name,
+      "document_type" => linked_item.document_type
     }
 
     %i(analytics_identifier links).each do |attr|
       presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
     end
 
-    case linked_item.format
-    # TODO: Remove placeholder case when Topical Events are migrated.
+    case linked_item.document_type
+    # TODO: Remove placeholder when whitehall's format split is deployed and republished
+    # as they will have a schema_name of 'placeholder' and a document_type of 'topical_event'
     when /(placeholder_)?topical_event/
       presented["details"] = linked_item.details.slice(:start_date, :end_date).stringify_keys
     end

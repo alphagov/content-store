@@ -6,6 +6,8 @@ describe "submitting gone items to the content store", type: :request do
       @data = {
         "base_path" => "/dodo-sanctuary",
         "format" => "gone",
+        "schema_name" => "gone",
+        "document_type" => "gone",
         "publishing_app" => "publisher",
         "transmitted_at" => "2",
         "payload_version" => "1",

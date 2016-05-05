@@ -5,6 +5,8 @@ describe "submitting redirect items to the content store", type: :request do
     @data = {
       "base_path" => "/crb-checks",
       "format" => "redirect",
+      "schema_name" => "redirect",
+      "document_type" => "redirect",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "publishing_app" => "publisher",
       "redirects" => [

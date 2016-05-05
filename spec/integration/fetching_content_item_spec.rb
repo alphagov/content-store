@@ -11,7 +11,9 @@ describe "Fetching content items", type: :request do
         content_id: SecureRandom.uuid,
         title: "VAT rates",
         description: "Current VAT rates",
-        format: "answer",
+        format: "publication",
+        schema_name: "publication",
+        document_type: "guidance",
         need_ids: ["100136"],
         public_updated_at: 30.minutes.ago,
         details: {
@@ -39,6 +41,8 @@ describe "Fetching content items", type: :request do
         title
         description
         format
+        schema_name
+        document_type
         need_ids
         locale
         analytics_identifier
@@ -56,7 +60,9 @@ describe "Fetching content items", type: :request do
         "content_id" => content_item.content_id,
         "title" => "VAT rates",
         "description" => "Current VAT rates",
-        "format" => "answer",
+        "format" => "publication",
+        "schema_name" => "publication",
+        "document_type" => "guidance",
         "need_ids" => ["100136"],
         "locale" => "en",
         "analytics_identifier" => nil,
@@ -165,6 +171,8 @@ describe "Fetching content items", type: :request do
         api_url
         web_url
         links
+        schema_name
+        document_type
       ])
 
       expect(linked_item_data).to include(
@@ -174,7 +182,9 @@ describe "Fetching content items", type: :request do
         "description" => linked_item.description,
         "locale" => linked_item.locale,
         "web_url" => Plek.new.website_root + linked_item.base_path,
-        "links" => {}
+        "links" => {},
+        "schema_name" => "answer",
+        "document_type" => "answer"
       )
     end
 
@@ -218,6 +228,8 @@ describe "Fetching content items", type: :request do
           locale
           api_url
           web_url
+          schema_name
+          document_type
         ])
       end
 
@@ -229,6 +241,8 @@ describe "Fetching content items", type: :request do
         "description" => linked_item.description,
         "locale" => linked_item.locale,
         "web_url" => Plek.new.website_root + linked_item.base_path,
+        "schema_name" => "answer",
+        "document_type" => "answer",
       )
 
       second_linked_item_data = data["links"]["related"].second
@@ -239,6 +253,8 @@ describe "Fetching content items", type: :request do
         "description" => nil,
         "locale" => "en",
         "web_url" => nil,
+        "schema_name" => nil,
+        "document_type" => nil,
       )
     end
   end

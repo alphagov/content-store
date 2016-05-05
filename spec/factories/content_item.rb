@@ -4,6 +4,8 @@ FactoryGirl.define do
   factory :base_content_item, class: ContentItem do
     sequence(:base_path) { |n| "/test-content-#{n}" }
     format 'gone' # Using gone as it allows the smallest valid base
+    schema_name { format }
+    document_type { format }
     publishing_app 'publisher'
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
     transmitted_at "1"

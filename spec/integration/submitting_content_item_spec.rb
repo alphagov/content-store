@@ -9,6 +9,8 @@ describe "content item write API", type: :request do
       "title" => "VAT rates",
       "description" => "Current VAT rates",
       "format" => "answer",
+      "schema_name" => "answer",
+      "document_type" => "answer",
       "need_ids" => %w(100123 100124),
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",

@@ -8,6 +8,8 @@ describe "submitting placeholder items to the content store", type: :request do
       "title" => "VAT rates",
       "description" => "Current VAT rates",
       "format" => "placeholder",
+      "schema_name" => "placeholder",
+      "document_type" => "placeholder",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "transmitted_at" => "2",
       "payload_version" => "1",
