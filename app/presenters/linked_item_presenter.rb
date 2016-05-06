@@ -29,6 +29,8 @@ class LinkedItemPresenter
     # as they will have a schema_name of 'placeholder' and a document_type of 'topical_event'
     when /(placeholder_)?topical_event/
       presented["details"] = linked_item.details.slice(:start_date, :end_date).stringify_keys
+    when /(placeholder_)?organisation/
+      presented["details"] = linked_item.details.slice(:brand, :logo).deep_stringify_keys
     end
 
     presented
