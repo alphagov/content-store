@@ -107,5 +107,49 @@ describe LinkedItemPresenter do
         )
       end
     end
+
+    context "with an organisation link" do
+      let(:content_item) do
+        build(:content_item, document_type: "organisation", details: {
+          brand: "ministry-mcministryface",
+          logo: {
+            formatted_title: "Ministry<br/>McMinistryface",
+            crest: "mmmf"
+          }
+        })
+      end
+
+      it "adds the start and end date from the details hash" do
+        expect(presented_item['details']).to eql(
+          "brand" => "ministry-mcministryface",
+          "logo" => {
+            "formatted_title" => "Ministry<br/>McMinistryface",
+            "crest" => "mmmf"
+          }
+        )
+      end
+    end
+
+    context "with a placeholder_organisation link" do
+      let(:content_item) do
+        build(:content_item, document_type: "placeholder_organisation", details: {
+          brand: "ministry-mcministryface",
+          logo: {
+            formatted_title: "Ministry<br/>McMinistryface",
+            crest: "mmmf"
+          }
+        })
+      end
+
+      it "adds the start and end date from the details hash" do
+        expect(presented_item['details']).to eql(
+          "brand" => "ministry-mcministryface",
+          "logo" => {
+            "formatted_title" => "Ministry<br/>McMinistryface",
+            "crest" => "mmmf"
+          }
+        )
+      end
+    end
   end
 end
