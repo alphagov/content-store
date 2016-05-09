@@ -514,6 +514,51 @@ describe ContentItem, type: :model do
         end
       end
     end
+
+    context "topics" do
+      let(:topic_business_tax) {
+        create(
+          :content_item,
+          content_id: SecureRandom.uuid,
+          format: 'topic',
+          title: 'Business tax',
+          base_path: "/topic/business-tax",
+        )
+      }
+
+      let(:topic_paye) {
+        create(
+          :content_item,
+          content_id: SecureRandom.uuid,
+          format: 'topic',
+          title: 'PAYE',
+          base_path: "/topic/business-tax/paye",
+          links: {
+            parent: [topic_business_tax.content_id]
+          }
+        )
+      }
+
+      let(:item) {
+        create(
+          :content_item,
+          links: {
+            parent: [
+              {
+                content_id: topic_paye.content_id,
+                title: topic_paye.title,
+                base_path: topic_paye.base_path
+              }
+            ]
+          }
+        )
+      }
+
+      it "ContentItems with parents provide a reference to the main parent" do
+        expect(item.linked_parent.content_id).to eq(topic_paye.content_id)
+        expect(topic_paye.linked_parent.content_id).to eq(topic_business_tax.content_id)
+      end
+    end
   end
 
   describe '#incoming_links' do

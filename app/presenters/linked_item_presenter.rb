@@ -24,6 +24,11 @@ class LinkedItemPresenter
       presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
     end
 
+    linked_parent = linked_item.linked_parent
+    if linked_parent
+      presented["links"][:parent][0] = self.class.new(linked_parent, @api_url_method).present
+    end
+
     case linked_item.document_type
     # TODO: Remove placeholder when whitehall's format split is deployed and republished
     # as they will have a schema_name of 'placeholder' and a document_type of 'topical_event'
