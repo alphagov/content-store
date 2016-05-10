@@ -22,23 +22,20 @@ private
   end
 
   def resolve_array(array)
-    if has_content_types?(array)
-      extract_content(array)
+    if array.all? { |v| v.is_a?(Hash) }
+      array = array.map(&:symbolize_keys)
+      content_for_type = extract_content(array)
+    end
+
+    if content_for_type
+      content_for_type[:content]
     else
       array.map { |e| resolve(e) }
     end
   end
 
-  def has_content_types?(array)
-    return false unless array.all? { |v| v.is_a?(Hash) }
-
-    hash_keys = array.flat_map(&:keys).map(&:to_sym)
-    hash_keys.include?(:content_type) && hash_keys.include?(:content)
-  end
-
   def extract_content(array)
-    array = array.map(&:symbolize_keys)
-    array.detect { |h| h[:content_type] == content_type }[:content]
+    array.detect { |h| h[:content_type] == content_type && h[:content] }
   end
 
   attr_accessor :content_type

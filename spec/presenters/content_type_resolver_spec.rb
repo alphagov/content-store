@@ -106,4 +106,27 @@ RSpec.describe ContentTypeResolver do
       ]
     )
   end
+
+  it "doesn't resolve incomplete multi-type content" do
+    result = subject.resolve(
+      details: {
+        body: {
+          content: [
+            { content: "<p>body</p>" },
+            { content_type: "html" }
+          ]
+        }
+      }
+    )
+    expect(result).to eq(
+      details: {
+        body: {
+          content: [
+            { content: "<p>body</p>" },
+            { content_type: "html" }
+          ]
+        }
+      }
+    )
+  end
 end
