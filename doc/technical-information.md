@@ -3,7 +3,7 @@
 `ContentItem` is the base unit of content in the content store. They have both a
 private and public-facing JSON representation. More details on these
 representations and the meanings of the individual fields can be found in
-[doc/content_item_fields.md](doc/content_item_fields.md).
+[content_item_fields.md](content_item_fields.md).
 
 ## Writing content items to the content store
 
@@ -19,7 +19,7 @@ curl https://content-store.publishing.service.gov.uk/content<base_path> -X PUT \
 
 where `<base_path>` is the path on GOV.UK where the content lives (for example
 `/vat-rates`) and `<content_item_json>` is the JSON for the content item as
-outlined in [doc/input_examples](doc/input_examples).
+outlined in [input_examples](input_examples).
 
 There is currently an [API adapter](https://github.com/alphagov/gds-api-adapters/blob/master/lib/gds_api/publishing_api.rb)
 in [gds-api-adapters](https://github.com/alphagov/gds-api-adapters) for writing
@@ -34,11 +34,11 @@ To retrieve content from the content store, make a GET request:
   curl https://content-store.publishing.service.gov.uk/content<base_path>
 ```
 
-Examples of the JSON representation of content items can be found in [doc/output_examples](doc/output_examples).
+Examples of the JSON representation of content items can be found in [output_examples](output_examples).
 
 ## Access-limited content items
 
-Some content can be marked as [access-limited](doc/content_item_fields.md#access_limited).
+Some content can be marked as [access-limited](content_item_fields.md#access_limited).
 This content can only be retrieved from the content store with the right
 authorisation. Authentication details can be provided with a GET request to
 identify an authenticated user:
@@ -52,7 +52,7 @@ identify an authenticated user:
 If the supplied identifier is in the list of authorised users, the content item
 will be returned. If not, a 403 (Forbidden) response will be returned. For more
 details on how to create an access-limited content item, see
-[doc/content_item_fields.md#access_limited](doc/content_item_fields.md#access_limited)
+[content_item_fields.md#access_limited](content_item_fields.md#access_limited)
 
 Note: the access-limiting behaviour should only be active on the draft stack.
 
@@ -64,7 +64,7 @@ something at a given time.  If a publish intent is present for a content item,
 content-store will reduce the TTL in its cache headers as the publish time
 approaches, allowing the new item to be fetched as soon as it's published.
 
-See [doc/publish_intents.md](doc/publish_intents.md) for more details.
+See [publish_intents.md](publish_intents.md) for more details.
 
 ## Running draft-content-store in development
 
