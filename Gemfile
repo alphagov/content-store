@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.6'
 gem 'rails-api', '0.2.1'
 
-gem 'mongoid', '4.0.0'
+gem 'mongoid', '5.1.3'
 gem 'mongoid_rails_migrations', '1.0.1'
 
 gem 'logstasher', '0.5.0'
@@ -28,7 +28,7 @@ gem 'uuidtools', '2.1.5'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.2'
-  gem 'database_cleaner', '~> 1.2'
+  gem 'database_cleaner', '~> 1.5.3'
   gem 'factory_girl', '~> 4.4.0'
   gem 'webmock', '~> 1.18.0', require: false
   gem 'timecop', '0.7.1'
