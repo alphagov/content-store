@@ -27,7 +27,7 @@ describe PublishIntent, type: :model do
         intent.base_path = "/foo"
         expect {
           intent.save! validate: false
-        }.to raise_error(Moped::Errors::OperationFailure)
+        }.to raise_error(Mongo::Error::OperationFailure)
       end
     end
 
