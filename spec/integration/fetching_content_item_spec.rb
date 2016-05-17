@@ -55,6 +55,7 @@ describe "Fetching content items", type: :request do
         details
         links
         expanded_links
+        withdrawn_notice
       ])
 
       expect(data).to include(
@@ -258,6 +259,28 @@ describe "Fetching content items", type: :request do
         "schema_name" => nil,
         "document_type" => nil,
       )
+    end
+  end
+
+  context "a withdrawn content item" do
+    let(:withdrawn_at) { DateTime.parse("2016-05-17 11:20") }
+    let(:withdrawn_item) do
+      FactoryGirl.create(
+        :content_item,
+        withdrawn_notice: {
+          explanation: "This is no longer true",
+          withdrawn_at: withdrawn_at,
+        }
+      )
+    end
+
+    it "displays the withdrawal explanation and time" do
+      get_content withdrawn_item
+
+      data = JSON.parse(response.body)
+
+      expect(data["withdrawn_notice"]["explanation"]).to eq("This is no longer true")
+      expect(DateTime.iso8601(data["withdrawn_notice"]["withdrawn_at"])).to eq(withdrawn_at)
     end
   end
 end

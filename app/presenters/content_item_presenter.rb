@@ -23,6 +23,7 @@ class ContentItemPresenter
     schema_name
     title
     updated_at
+    withdrawn_notice
   ).freeze
 
   def initialize(item, api_url_method)
