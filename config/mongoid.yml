@@ -1,5 +1,5 @@
 development:
-  sessions:
+  clients:
     default:
       # MONGODB_URI includes draft_content_store_development or content_store_development
       # depending on whether we're running content store in draft mode or not.
@@ -7,26 +7,23 @@ development:
       options:
         write:
           w: 1
-        read: primary
 
 test:
-  sessions:
+  clients:
     default:
       uri: mongodb://localhost/content_store_test
       options:
         write:
           w: 1
-        read: primary
         # In the test environment we lower the retries and retry interval to
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
 
 production:
-  sessions:
+  clients:
     default:
       uri: <%= ENV['MONGODB_URI'] %>
       options:
         write:
           w: majority
-        read: primary_preferred

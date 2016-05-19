@@ -32,7 +32,7 @@ describe "monitoring mongo query runtimes", type: :request do
     end
 
     it "resets the mongo runtime after the request has completed" do
-      expect(MongoInstrumentation::MopedSubscriber.runtime).to eq(0)
+      expect(MongoInstrumentation::MonitoringSubscriber.runtime).to eq(0)
     end
   end
 end
