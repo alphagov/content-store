@@ -65,6 +65,7 @@ class ContentItem
   field :analytics_identifier, type: String
   field :transmitted_at, type: String
   field :payload_version, type: Integer
+  field :withdrawn_notice, type: Hash, default: {}
 
   scope :renderable_content, -> { where(:schema_name.nin => NON_RENDERABLE_FORMATS) }
 
