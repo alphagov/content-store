@@ -23,7 +23,7 @@ FactoryGirl.define do
       format "answer"
       title "Test content"
       rendering_app 'frontend'
-      public_updated_at Time.now
+      public_updated_at { Time.now }
     end
 
     factory :content_item_with_content_id, traits: [:with_content_id]
