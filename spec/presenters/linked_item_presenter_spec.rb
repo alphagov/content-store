@@ -17,6 +17,7 @@ describe LinkedItemPresenter do
                 { content_type: "text/html", content: "<p>A HTML description.</p>" },
                 { content_type: "text/plain", content: "Short description." },
               ],
+              public_updated_at: Time.new(2016, 1, 1)
            )
     end
 
@@ -34,6 +35,7 @@ describe LinkedItemPresenter do
         "web_url" => "https://www.test.gov.uk/my-page",
         "locale" => "en",
         "links" => {},
+        "public_updated_at" => DateTime.new(2016, 1, 1),
         "schema_name" => "publication",
         "document_type" => "policy_paper"
       )

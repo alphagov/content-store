@@ -171,6 +171,7 @@ describe "Fetching content items", type: :request do
         title
         description
         locale
+        public_updated_at
         api_url
         web_url
         links
@@ -229,6 +230,7 @@ describe "Fetching content items", type: :request do
           title
           description
           locale
+          public_updated_at
           api_url
           web_url
           schema_name
