@@ -12,17 +12,14 @@ class ContentItemPresenter
     content_id
     document_type
     expanded_links
-    first_published_at
     format
     locale
     need_ids
     phase
-    public_updated_at
     publishing_app
     rendering_app
     schema_name
     title
-    updated_at
     withdrawn_notice
   ).freeze
 
@@ -32,11 +29,13 @@ class ContentItemPresenter
   end
 
   def as_json(options = nil)
-    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
-      "links" => links,
-      "description" => RESOLVER.resolve(@item.description),
-      "details" => RESOLVER.resolve(@item.details),
-    )
+    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES)
+      .merge(datetimes)
+      .merge(
+        "links" => links,
+        "description" => RESOLVER.resolve(@item.description),
+        "details" => RESOLVER.resolve(@item.details),
+      )
   end
 
 private
@@ -51,5 +50,13 @@ private
 
   def present_linked_item(linked_item)
     LinkedItemPresenter.new(linked_item, @api_url_method).present
+  end
+
+  def datetimes
+    hash = {}
+    hash["first_published_at"] = @item.first_published_at.iso8601 if @item.first_published_at
+    hash["public_updated_at"] = @item.public_updated_at.iso8601 if @item.public_updated_at
+    hash["updated_at"] = @item.updated_at.iso8601 if @item.updated_at
+    hash
   end
 end

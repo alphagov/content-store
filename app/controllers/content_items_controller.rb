@@ -16,8 +16,11 @@ class ContentItemsController < ApplicationController
       ContentItem, base_path: encoded_base_path
     ) unless item
 
+    rendered_content_item = ContentItemPresenter.new(item, api_url_method).as_json
+    SchemaValidator.new(rendered_content_item).validate
+
     if item.viewable_by?(authenticated_user_uid)
-      render json: ContentItemPresenter.new(item, api_url_method)
+      render json: rendered_content_item
     else
       render json_forbidden_response
     end

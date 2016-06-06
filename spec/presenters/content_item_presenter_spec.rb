@@ -25,7 +25,13 @@ describe ContentItemPresenter do
   let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
 
   it "includes public attributes" do
-    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(links description details)
+    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(
+      links
+      description
+      details
+      first_published_at
+      public_updated_at
+    )
     expect(presenter.as_json.keys).to match_array(expected_fields)
   end
 
