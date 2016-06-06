@@ -1,5 +1,5 @@
 class TaggingsPerApp
-  TAGS = %w[mainstream_browse_pages topics organisations parent]
+  TAGS = %w[mainstream_browse_pages topics organisations parent].freeze
 
   def initialize(app_name)
     @app_name = app_name

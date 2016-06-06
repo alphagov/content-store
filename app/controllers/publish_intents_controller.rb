@@ -10,11 +10,8 @@ class PublishIntentsController < ApplicationController
   def update
     result, intent = PublishIntent.create_or_update(encoded_base_path, @request_data)
 
-    if result
-      status = (result == :created ? :created : :ok)
-    else
-      status = :unprocessable_entity
-    end
+    status = status_from_result(result)
+
     response_body = {}
     response_body[:errors] = intent.errors.as_json if intent.errors.any?
     render json: response_body, status: status
@@ -25,5 +22,18 @@ class PublishIntentsController < ApplicationController
     intent.destroy
 
     render json: {}
+  end
+
+private
+
+  def status_from_result(result)
+    case result
+    when false
+      :unprocessable_entity
+    when :created
+      :created
+    else
+      :ok
+    end
   end
 end

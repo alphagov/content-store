@@ -23,10 +23,11 @@ FactoryGirl.define do
       format "answer"
       title "Test content"
       rendering_app 'frontend'
-      public_updated_at { Time.now }
+      public_updated_at { Time.zone.now }
+      first_published_at { Time.zone.now }
     end
 
-    factory :content_item_with_content_id, traits: [:with_content_id]
+    factory :content_item_with_content_id, parent: :content_item, traits: [:with_content_id]
 
     factory :redirect_content_item do
       sequence(:base_path) { |n| "/test-redirect-#{n}" }
