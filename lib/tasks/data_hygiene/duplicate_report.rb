@@ -91,7 +91,7 @@ module Tasks
           csv << content_item_fields
           content_items.each do |content_item|
             csv << content_item_fields.map do |field|
-              content_item.send("#{field}")
+              content_item.send(field)
             end
           end
         end

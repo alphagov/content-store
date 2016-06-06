@@ -1,11 +1,11 @@
-desc """
+desc %{
   Validate content items against their frontend schemas. Ignores formats without schemas.
 
   Optionally supply a comma separated list of format names to check.
 
   This assumes that govuk-content-schemas is in a sibling directory. Set
   GOVUK_CONTENT_SCHEMAS_PATH to override with a custom path.
-"""
+}
 task :check_content_items_against_schema, [:format_names] => :environment do |_task, args|
   GovukContentSchemaTestHelpers.configure do |config|
     config.schema_type = 'frontend'
