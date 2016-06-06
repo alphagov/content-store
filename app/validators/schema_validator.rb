@@ -41,6 +41,8 @@ private
   end
 
   def schemas_directory
+    return ENV["SCHEMAS_DIRECTORY"] if ENV["SCHEMAS_DIRECTORY"]
+
     if Rails.env.production?
       "govuk-content-schemas"
     else
