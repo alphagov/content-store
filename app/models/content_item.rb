@@ -84,6 +84,11 @@ class ContentItem
   # at which point this index can be removed again.
   index("links.documents" => 1)
 
+  # Add an index to speed up calls from working groups.
+  # TODO: This will go away once dependency resolution moves to publishing api from content store,
+  # at which point this index can be removed again.
+  index("links.working_groups" => 1)
+
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
   def as_json(options = nil)
