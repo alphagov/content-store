@@ -40,7 +40,7 @@ FactoryGirl.define do
       format "gone"
     end
 
-    factory :access_limited_content_item do
+    factory :access_limited_content_item, parent: :content_item do
       sequence(:base_path) { |n| "/access-limited-#{n}" }
       access_limited {
         { "users" => ["M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"] }
