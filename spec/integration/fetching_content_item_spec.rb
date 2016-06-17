@@ -285,4 +285,24 @@ describe "Fetching content items", type: :request do
       expect(DateTime.iso8601(data["withdrawn_notice"]["withdrawn_at"])).to eq(withdrawn_at)
     end
   end
+
+  context "a gone content item" do
+    let(:gone_item) { FactoryGirl.create(:gone_content_item) }
+
+    before do
+      get_content gone_item
+    end
+
+    it "responds with 410" do
+      expect(response.status).to eq(410)
+    end
+
+    it "sets cache headers to expire in the default TTL" do
+      expect(cache_control["max-age"]).to eq(default_ttl.to_s)
+    end
+
+    it "sets a cache-control directive of public" do
+      expect(cache_control["public"]).to eq(true)
+    end
+  end
 end

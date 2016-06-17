@@ -17,7 +17,7 @@ class ContentItemsController < ApplicationController
     ) unless item
 
     if item.viewable_by?(authenticated_user_uid)
-      render json: ContentItemPresenter.new(item, api_url_method)
+      render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
     else
       render json_forbidden_response
     end
@@ -98,5 +98,10 @@ private
   def max_cache_time(item)
     return unless item.try(:details)
     item.details["max_cache_time"]
+  end
+
+  def http_status(item)
+    return 410 if item.gone?
+    200
   end
 end
