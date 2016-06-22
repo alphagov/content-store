@@ -8,13 +8,14 @@ class LinkedItemPresenter
   end
 
   def present
+    return linked_item if already_expanded?
     presented = {
       "content_id" => linked_item.content_id,
       "title" => linked_item.title,
       "base_path" => linked_item.base_path,
       "description" => ContentItemPresenter::RESOLVER.resolve(linked_item.description),
-      "api_url" => api_url(linked_item),
-      "web_url" => web_url(linked_item),
+      "api_url" => api_url,
+      "web_url" => web_url,
       "locale" => linked_item.locale,
       "public_updated_at" => linked_item.public_updated_at,
       "schema_name" => linked_item.schema_name,
@@ -39,15 +40,19 @@ class LinkedItemPresenter
 
 private
 
-  def api_url(item)
-    return nil unless item.base_path
-
-    @api_url_method.call(item.base_path_without_root)
+  def already_expanded?
+    !linked_item.is_a?(ContentItem)
   end
 
-  def web_url(item)
-    return nil unless item.base_path
+  def api_url
+    return unless linked_item.base_path
 
-    Plek.current.website_root + item.base_path
+    @api_url_method.call(linked_item.base_path_without_root)
+  end
+
+  def web_url
+    return unless linked_item.base_path
+
+    Plek.current.website_root + linked_item.base_path
   end
 end

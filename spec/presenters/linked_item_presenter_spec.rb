@@ -77,6 +77,14 @@ describe LinkedItemPresenter do
       end
     end
 
+    context "a content item has already been expanded" do
+      let(:content_item) { { web_url: "/test" } }
+      let(:presenter) { LinkedItemPresenter.new(content_item, api_url_method) }
+      it "returns the content_item" do
+        expect(presenter.present). to eq(content_item)
+      end
+    end
+
     context "with a topical_event link" do
       let(:content_item) do
         build(:content_item, document_type: "topical_event", details: {

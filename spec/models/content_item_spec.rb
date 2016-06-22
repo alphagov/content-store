@@ -389,6 +389,17 @@ describe ContentItem, type: :model do
       end
     end
 
+    context "when a link hash has already been expanded" do
+      let(:expanded_link) { [{ web_url: "test" }] }
+      let!(:content_item) do
+        create(:content_item, links: { parent: expanded_link })
+      end
+
+      it "does not create new ContentItems" do
+        expect(content_item.linked_items[:parent]).to eq(expanded_link)
+      end
+    end
+
     context "if a link hash is provided for pass-through" do
       let(:passthrough_link_hash) {
         {
