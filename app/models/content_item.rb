@@ -121,7 +121,14 @@ class ContentItem
 
   # Return a Hash of link types to lists of related items
   def linked_items
+    return links if already_expanded_links?
     LinkedItemsQuery.new(self).call
+  end
+
+  def already_expanded_links?
+    return false if links.empty?
+    expanded = links.flat_map { |_, value| value }
+    expanded.all? { |value| value.is_a?(Hash) && value.has_key?(:web_url) }
   end
 
   def incoming_links(link_type, linking_document_type: nil)
