@@ -1,4 +1,5 @@
 require "hashdiff"
+require "pp"
 
 class CompareLink
   attr_reader :new, :content_item
