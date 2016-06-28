@@ -19,6 +19,8 @@ namespace :compare do
   task :content_item, [:content_item] => :environment do |_t, args|
     content_item = args[:content_item]
     content_item = ContentItem.find_by(content_id: content_item)
-    CompareLink.new(content_item).compare
+    compare_link = CompareLink.new(content_item)
+    compare_link.show
+    compare_link.compare
   end
 end
