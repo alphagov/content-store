@@ -12,7 +12,14 @@ class CompareLink
 
   def compare
     puts "DIFF #{content_item.content_id} #{'*' * 20}"
-    pp HashDiff.diff(sort(old), sort(new))
+    pp HashDiff.best_diff(sort(old), sort(new))
+  end
+
+  def show
+    puts "LINKS #{content_item.content_id} #{'*' * 20}"
+    pp sort(old)
+    puts "EXPANDED LINKS #{content_item.content_id} #{'*' * 20}"
+    pp sort(new)
   end
 
 private
@@ -26,7 +33,7 @@ private
   end
 
   def api_url_method
-    lambda { |a| Plek.current.website_root + "/api/content/" + a }
+    lambda { |path| Plek.current.website_root + "/api/content/" + path }
   end
 
   def sort(links)
@@ -39,11 +46,13 @@ private
 
   def known_exceptions
     %w(
+      api_url
       document_type
       expanded_links
       links
       public_updated_at
       schema_name
+      web_url
     )
   end
 end
