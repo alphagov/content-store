@@ -115,8 +115,16 @@ for the Latin America and Caribbean region").
 ISO 8601 formatted timestamp. Present in all contexts.
 
 This is the update date that should be surfaced to the user. This is used for
-sorting documents by update date. It should change when there is a major
-update and should not change for a minor update.
+sorting documents by update date or to display when the document was last
+changed.
+
+If a `public_updated_at` field is included when sending the draft payload to the
+publishing api then this field will represent when the draft was saved. Publishing
+will not update it.
+
+If a `public_updated_at` field is not included when sending the draft payload
+then this field represents the time it was published for a major version, or the
+time the most recent major version was published if a minor version.
 
 ## `first_published_at`
 
@@ -202,11 +210,19 @@ In the `retrieving` context, the items are hashes containing:
 
 ISO 8601 formatted timestamp. Present in retrieving and notifying contexts.
 
-Note: This field is set by the content store whenever a item is created or
-modified in it.
+This field is not sent from the publishing-api. It is set with the current time
+by the content-store whenever an item is created or modified in it. This means
+that in the context of the draft content-store this field will reflect the time
+the publishing-api receives a `put_content` or `patch_links` request. In the context
+of the live content-store it will reflect the time the publishing-api receives a
+`publish` request, or even a `publish` request for a dependent content item.
 
-It contains the timestamp at which the content was last modified in any way.
-This is suitable to be used for update versioning.
+Content items may be updated for reasons other than a change to the wording. A
+technical/housekeeping reason may require content items to be republished, which
+would result in this field being updated.
+
+When using this field in a frontend to represent when a page was updated, consider
+whether `public_updated_at` or `last_edited_at` would better suit your needs.
 
 ## `publishing_app`
 
