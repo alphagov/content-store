@@ -2,12 +2,12 @@ require 'compare_links'
 
 namespace :compare do
   desc """
-  Compare expanded links with links for migration for a schema_name
-  rake 'compare:links[service_manual_guide]'
+  Compare expanded links with links for migration for a document_type
+  rake 'compare:document_type[service_manual_guide]'
   """
-  task :schema_name, [:schema_name] => :environment do |_t, args|
-    schema_name = args[:schema_name]
-    ContentItem.where(schema_name: schema_name).each do |item|
+  task :document_type, [:document_type] => :environment do |_t, args|
+    document_type = args[:document_type]
+    ContentItem.where(document_type: document_type).each do |item|
       CompareLink.new(item).compare
     end
   end
