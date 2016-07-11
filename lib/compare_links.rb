@@ -38,9 +38,15 @@ private
 
   def sort(links)
     links.each_with_object({}) do |(k, v), h|
-      h[k] = v.map do |value|
+      v = v.map do |value|
         Hash[value.except(*known_exceptions).sort]
       end
+
+      v = v.sort do |a, b|
+        a['base_path'] <=> b['base_path']
+      end
+
+      h[k] = v
     end
   end
 
