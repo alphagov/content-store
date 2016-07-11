@@ -1,14 +1,14 @@
 class ApplicationController < ActionController::API
   rescue_from Mongoid::Errors::DocumentNotFound, with: :error_404
 
+  def config
+    @config ||= ContentStore::Application.config
+  end
+
 private
 
   def error_404
     head :not_found
-  end
-
-  def config
-    @config ||= ContentStore::Application.config
   end
 
   def parse_json_request
