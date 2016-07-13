@@ -42,6 +42,7 @@ class ContentItemPresenter
 private
 
   def links
+    return @item.expanded_links unless document_type_expanded?
     Rails.application.statsd.time('public_content_item_presenter.links') do
       @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
         items[link_type] = linked_items.map { |i| present_linked_item(i) }
@@ -51,5 +52,9 @@ private
 
   def present_linked_item(linked_item)
     LinkedItemPresenter.new(linked_item, @api_url_method).present
+  end
+
+  def document_type_expanded?
+    @item.document_type =~ /travel_advice/
   end
 end

@@ -15,7 +15,7 @@ describe ContentItemPresenter do
       ]
     }
   end
-  let(:item) { build(:content_item, links: links, locale: locale, expanded_links: expanded_links) }
+  let(:item) { build(:content_item, document_type: "travel_advice", links: links, locale: locale, expanded_links: expanded_links) }
   let(:links) { {} }
   let(:locale) { "en" }
 
