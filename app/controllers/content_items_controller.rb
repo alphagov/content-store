@@ -17,7 +17,9 @@ class ContentItemsController < ApplicationController
     ) unless item
 
     if item.viewable_by?(authenticated_user_uid)
-      render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
+      json = ContentItemPresenter.new(item, api_url_method).as_json
+      validate_schema(json)
+      render json: json, status: http_status(item)
     else
       render json_forbidden_response
     end
@@ -103,5 +105,9 @@ private
   def http_status(item)
     return 410 if item.gone?
     200
+  end
+
+  def validate_schema(json)
+    SchemaValidator.new(type: :schema).validate(json.except("content_id"))
   end
 end
