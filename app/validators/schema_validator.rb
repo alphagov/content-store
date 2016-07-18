@@ -56,7 +56,7 @@ private
   end
 
   def schema
-    @schema || JSON.load(File.read("govuk-content-schemas/formats/#{schema_name}/frontend/#{type}.json"))
+    @schema || JSON.load(File.read("../govuk-content-schemas/dist/formats/#{schema_name}/frontend/#{type}.json"))
   rescue Errno::ENOENT => error
     Airbrake.notify_or_ignore(error, parameters: {
       explanation: "#{payload} is missing schema_name #{schema_name} or type #{type}"
