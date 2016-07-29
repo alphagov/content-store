@@ -54,7 +54,6 @@ describe "Fetching content items", type: :request do
         publishing_app
         details
         links
-        expanded_links
         withdrawn_notice
       ])
 

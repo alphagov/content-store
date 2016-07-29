@@ -19,10 +19,10 @@ describe "Fetching linked items", type: :request do
             "api_url" => "http://www.example.com/content/a",
             "web_url" => "https://www.test.gov.uk/a",
             "locale" => "en",
-            "links" => { "parent" => [item.content_id] },
             "public_updated_at" => Time.now.as_json,
             "schema_name" => "answer",
             "document_type" => "answer",
+            "links" => { "parent" => [item.content_id] },
           },
           {
             "content_id" => "ID-2",
@@ -32,10 +32,10 @@ describe "Fetching linked items", type: :request do
             "api_url" => "http://www.example.com/content/b",
             "web_url" => "https://www.test.gov.uk/b",
             "locale" => "en",
-            "links" => { "parent" => [item.content_id] },
             "public_updated_at" => Time.now.as_json,
             "schema_name" => "answer",
             "document_type" => "answer",
+            "links" => { "parent" => [item.content_id] },
           },
         ])
 

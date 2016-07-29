@@ -11,7 +11,6 @@ class ContentItemPresenter
     base_path
     content_id
     document_type
-    expanded_links
     first_published_at
     format
     locale

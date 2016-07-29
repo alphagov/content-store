@@ -33,10 +33,6 @@ describe ContentItemPresenter do
     expect(presenter.as_json["base_path"]).to eq(item.base_path)
   end
 
-  it "presents expanded_links" do
-    expect(presenter.as_json["expanded_links"]).to eq(expanded_links)
-  end
-
   context "with related links" do
     let(:linked_item1) { create(:content_item, :with_content_id) }
     let(:linked_item2) { create(:content_item, :with_content_id) }
