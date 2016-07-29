@@ -54,7 +54,6 @@ describe "Fetching content items", type: :request do
         publishing_app
         details
         links
-        expanded_links
         withdrawn_notice
       ])
 
@@ -152,7 +151,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a content item with linked items" do
-    let(:content_item) { create(:content_item, links: { 'related' => [linked_item.content_id] }) }
+    let(:content_item) { create(:content_item, document_type: "travel_advice", links: { 'related' => [linked_item.content_id] }) }
     let(:linked_item) { create(:content_item, :with_content_id) }
 
     before(:each) { get_content content_item }
@@ -201,7 +200,7 @@ describe "Fetching content items", type: :request do
 
   context "a content item with mixed linked items and passthrough hashes" do
     let(:content_item) {
-      create(:content_item, links: {
+      create(:content_item, document_type: 'travel_advice', links: {
         'related' => [
           linked_item.content_id,
           {

@@ -9,7 +9,7 @@ describe "End-to-end behaviour", type: :request do
     "title" => "VAT rates",
     "format" => "answer",
     "schema_name" => "answer",
-    "document_type" => "answer",
+    "document_type" => "travel_advice",
     "publishing_app" => "publisher",
     "rendering_app" => "frontend",
     "routes" => [
@@ -17,7 +17,7 @@ describe "End-to-end behaviour", type: :request do
     ],
     "public_updated_at" => Time.now,
     "transmitted_at" => "2",
-    "payload_version" => "1"
+    "payload_version" => "1",
   }}
 
   def create_item(data_hash)

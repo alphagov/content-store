@@ -15,7 +15,7 @@ describe ContentItemPresenter do
       ]
     }
   end
-  let(:item) { build(:content_item, links: links, locale: locale, expanded_links: expanded_links) }
+  let(:item) { build(:content_item, document_type: "travel_advice", links: links, locale: locale, expanded_links: expanded_links) }
   let(:links) { {} }
   let(:locale) { "en" }
 
@@ -31,10 +31,6 @@ describe ContentItemPresenter do
 
   it "outputs the base_path correctly" do
     expect(presenter.as_json["base_path"]).to eq(item.base_path)
-  end
-
-  it "presents expanded_links" do
-    expect(presenter.as_json["expanded_links"]).to eq(expanded_links)
   end
 
   context "with related links" do

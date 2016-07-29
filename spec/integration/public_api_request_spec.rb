@@ -4,6 +4,7 @@ describe "Public API requests for content items", type: :request do
   let(:content_item) do
     FactoryGirl.create(
       :content_item,
+      document_type: "travel_advice",
       links: { 'related' => [linked_item.content_id] },
       description: [
         { content_type: "text/html", content: "<p>content</p>" },
