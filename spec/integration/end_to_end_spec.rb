@@ -73,23 +73,6 @@ describe "End-to-end behaviour", type: :request do
       end
     end
 
-    context "linked item which does not exist" do
-      before(:each) {
-        create_item(linked_data_1)
-        create_item(data.merge(
-                      "links" => {
-                        "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
-                      }
-        ))
-      }
-
-      it "should ignore the missing one" do
-        related_paths = links["related"].map { |i| i["base_path"] }
-        expect(related_paths).not_to include(linked_data_2["base_path"])
-        expect(related_paths).to include(linked_data_1["base_path"])
-      end
-    end
-
     context "linked item added after the original item" do
       before(:each) {
         create_item(data.merge(
@@ -126,11 +109,6 @@ describe "End-to-end behaviour", type: :request do
                       }
         ))
       }
-
-      it "should link by preference to the item with matching locale" do
-        expect(links["related"][0]["base_path"]).to eq(linked_data_1_fr["base_path"])
-        expect(links["related"][0]["locale"]).to eq(linked_data_1_fr["locale"])
-      end
 
       it "should fall back on the english version if no item found with matching locale" do
         expect(links["related"][1]["base_path"]).to eq(linked_data_2["base_path"])
