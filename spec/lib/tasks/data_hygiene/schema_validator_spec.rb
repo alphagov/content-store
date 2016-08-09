@@ -1,0 +1,68 @@
+require "rails_helper"
+require "tasks/data_hygiene/schema_validator"
+
+RSpec.describe DataHygiene::SchemaValidator, :report_errors do
+  let(:csv_file) { double(:csv_file) }
+  let(:log) { double(:log) }
+
+  let(:schema) do
+    {
+      "type" => "object",
+      "required" => ["title"],
+      "properties" => {
+        "title" => { "type" => "string" }
+      }
+    }
+  end
+
+  before do
+    FactoryGirl.create(:content_item, schema_name: "some_format")
+
+    allow(File).to receive(:open)
+      .with(Rails.root.join("tmp", "some_format-validation-errors.csv"), "w")
+      .and_yield(csv_file)
+
+    allow(File).to receive(:read).with(anything)
+
+    allow(JSON).to receive(:load)
+      .with(anything).and_return(schema)
+
+    expect(log).to receive(:puts)
+      .with("Validating 1 items with format 'some_format'\n\n")
+  end
+
+  context "with a valid payload" do
+    it "doesn't log to file" do
+      expect(log).to receive(:puts)
+        .with(a_string_matching(/0 errors written/))
+
+      expect(log).to receive(:print).with(".")
+      expect(csv_file).not_to receive(:write).with(anything)
+
+      described_class.new("some_format", log).report_errors
+    end
+  end
+
+  context "with an invalid payload" do
+    let(:schema) do
+      {
+        "type" => "object",
+        "required" => ["a"],
+        "properties" => {
+          "a" => { "type" => "integer" }
+        }
+      }
+    end
+
+    it "logs errors to file" do
+      expect(log).to receive(:puts)
+        .with(a_string_matching(/1 errors written/))
+
+      expect(log).to receive(:print).with("E")
+      expect(csv_file).to receive(:write)
+        .with(a_string_matching(/property '#\/' did not contain a required property of 'a'/))
+
+      described_class.new("some_format", log).report_errors
+    end
+  end
+end
