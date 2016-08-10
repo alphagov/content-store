@@ -261,7 +261,7 @@ describe "Fetching content items", type: :request do
         "schema_name" => "answer",
         "document_type" => "answer",
       )
-     end
+    end
   end
 
   context "a withdrawn content item" do
