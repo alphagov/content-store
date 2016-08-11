@@ -22,10 +22,15 @@ class LinkedItemPresenter
       "schema_name" => linked_item.schema_name,
       "document_type" => linked_item.document_type
     }
+    presented["details"] = linked_item.details.slice(:brand, :logo).deep_stringify_keys if organisation?
     presented
   end
 
 private
+
+  def organisation?
+    linked_item.document_type == 'organisation'
+  end
 
   def api_url
     return unless linked_item.base_path
