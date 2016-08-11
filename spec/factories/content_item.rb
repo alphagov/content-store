@@ -40,6 +40,17 @@ FactoryGirl.define do
       format "gone"
     end
 
+    factory :gone_content_item_with_details do
+      sequence(:base_path) { |n| "/messy-language-stuff-#{n}" }
+      format "gone"
+      details {
+        {
+          explanation: "<div class=\"govspeak\"><p>Explanation…</p> </div>",
+          alternative_path: "/example"
+        }
+      }
+    end
+
     factory :access_limited_content_item, parent: :content_item do
       sequence(:base_path) { |n| "/access-limited-#{n}" }
       access_limited {
