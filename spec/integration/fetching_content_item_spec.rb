@@ -304,4 +304,22 @@ describe "Fetching content items", type: :request do
       expect(cache_control["public"]).to eq(true)
     end
   end
+
+  context "a gone content item with an explantion and alternative_path" do
+    let(:gone_item) { FactoryGirl.create(:gone_content_item_with_details) }
+
+    before do
+      get_content gone_item
+    end
+
+    it "responds with 200" do
+      expect(response.status).to eq(200)
+    end
+
+    it "includes the details" do
+      details = JSON.parse(response.body)["details"]
+      expect(details["explanation"]).to eq("<div class=\"govspeak\"><p>Explanation…</p> </div>")
+      expect(details["alternative_path"]).to eq("/example")
+    end
+  end
 end

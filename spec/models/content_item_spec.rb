@@ -590,4 +590,16 @@ describe ContentItem, type: :model do
       expect(content_item["description"]).to eq("value" => "foo")
     end
   end
+
+  describe "gone?" do
+    it "returns true for schema_name 'gone' with empty details" do
+      gone_item = build(:gone_content_item)
+      expect(gone_item.gone?).to be(true)
+    end
+
+    it "returns true for schema_name 'gone' with empty details" do
+      gone_item = build(:gone_content_item_with_details)
+      expect(gone_item.gone?).to be(false)
+    end
+  end
 end

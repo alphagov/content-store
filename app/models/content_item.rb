@@ -121,7 +121,13 @@ class ContentItem
   end
 
   def gone?
-    self.schema_name == "gone"
+    #we've overloaded gone a bit by adding explanation and alternative
+    #url to the schema to support Whitehall unpublishing. We need to consider
+    #things with an explanation as only being a bit gone and not return 410 from
+    #content store or register a gone route. This is a fix until we implement an
+    #alternative type of unpublishing through the stack as it is causing issues
+    #in production
+    self.schema_name == "gone" && self.details.empty?
   end
 
   # Return a Hash of link types to lists of related items
