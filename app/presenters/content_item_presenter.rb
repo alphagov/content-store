@@ -51,9 +51,16 @@ private
     item.links.each_with_object({}) do |(link_type, passthrough_hash), result|
       passthrough, ids = passthrough_hash.partition { |type| type.is_a?(Hash) }
       hashes = passthrough.map { |attributes| present(ContentItem.new(attributes)) }
-      content_items = ids.map { |id| present(ContentItem.find_by(content_id: id)) }
+      content_items = content_items_for(ids).map { |content_item| present(content_item) }
       result[link_type] = hashes + content_items
     end
+  end
+
+  def content_items_for(content_ids)
+    ContentItem
+      .renderable_content
+      .where(content_id: { "$in" => content_ids })
+      .sort(updated_at: -1)
   end
 
   def available_translations

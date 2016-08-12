@@ -88,33 +88,6 @@ describe "End-to-end behaviour", type: :request do
         expect(related_paths).to eq([linked_data_1["base_path"]])
       end
     end
-
-    context "translations of linked items exist" do
-      let(:linked_data_1_fr) {
-        attributes_for(:content_item,
-          content_id: linked_data_1["content_id"],
-          locale: "fr",
-          base_path: linked_data_1["base_path"] + ".fr"
-                      ).stringify_keys
-      }
-
-      before(:each) {
-        create_item(linked_data_1_fr)
-        create_item(linked_data_1)
-        create_item(linked_data_2)
-        create_item(data.merge(
-                      "locale" => "fr",
-                      "links" => {
-                        "related" => [linked_data_1["content_id"], linked_data_2["content_id"]]
-                      }
-        ))
-      }
-
-      it "should fall back on the english version if no item found with matching locale" do
-        expect(links["related"][1]["base_path"]).to eq(linked_data_2["base_path"])
-        expect(links["related"][1]["locale"]).to eq(linked_data_2["locale"])
-      end
-    end
   end
 
   describe "available_translations" do
