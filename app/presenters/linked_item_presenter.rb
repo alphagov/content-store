@@ -8,7 +8,7 @@ class LinkedItemPresenter
   end
 
   def present
-    return linked_item if already_expanded?
+    return {} unless linked_item
     presented = {
       "content_id" => linked_item.content_id,
       "title" => linked_item.title,
@@ -17,31 +17,19 @@ class LinkedItemPresenter
       "api_url" => api_url,
       "web_url" => web_url,
       "locale" => linked_item.locale,
+      "links" => linked_item.links,
       "public_updated_at" => linked_item.public_updated_at,
       "schema_name" => linked_item.schema_name,
       "document_type" => linked_item.document_type
     }
-
-    %i(analytics_identifier links).each do |attr|
-      presented[attr.to_s] = linked_item.send(attr) if linked_item.has_attribute?(attr)
-    end
-
-    case linked_item.document_type
-    # TODO: Remove placeholder when whitehall's format split is deployed and republished
-    # as they will have a schema_name of 'placeholder' and a document_type of 'topical_event'
-    when /(placeholder_)?topical_event/
-      presented["details"] = linked_item.details.slice(:start_date, :end_date).stringify_keys
-    when /(placeholder_)?organisation/
-      presented["details"] = linked_item.details.slice(:brand, :logo).deep_stringify_keys
-    end
-
+    presented["details"] = linked_item.details.slice(:brand, :logo).deep_stringify_keys if organisation?
     presented
   end
 
 private
 
-  def already_expanded?
-    !linked_item.is_a?(ContentItem)
+  def organisation?
+    linked_item.document_type == 'organisation'
   end
 
   def api_url

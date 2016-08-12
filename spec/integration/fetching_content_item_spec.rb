@@ -13,7 +13,7 @@ describe "Fetching content items", type: :request do
         description: "Current VAT rates",
         format: "publication",
         schema_name: "publication",
-        document_type: "guidance",
+        document_type: "travel_advice",
         need_ids: ["100136"],
         public_updated_at: 30.minutes.ago,
         details: {
@@ -64,7 +64,7 @@ describe "Fetching content items", type: :request do
         "description" => "Current VAT rates",
         "format" => "publication",
         "schema_name" => "publication",
-        "document_type" => "guidance",
+        "document_type" => "travel_advice",
         "need_ids" => ["100136"],
         "locale" => "en",
         "analytics_identifier" => nil,
@@ -170,10 +170,10 @@ describe "Fetching content items", type: :request do
         title
         description
         locale
+        links
         public_updated_at
         api_url
         web_url
-        links
         schema_name
         document_type
       ])
@@ -184,8 +184,8 @@ describe "Fetching content items", type: :request do
         "title" => linked_item.title,
         "description" => linked_item.description,
         "locale" => linked_item.locale,
+        "links" => linked_item.links,
         "web_url" => Plek.new.website_root + linked_item.base_path,
-        "links" => {},
         "schema_name" => "answer",
         "document_type" => "answer"
       )
@@ -239,18 +239,6 @@ describe "Fetching content items", type: :request do
 
       first_linked_item_data = data["links"]["related"].first
       expect(first_linked_item_data).to include(
-        "base_path" => linked_item.base_path,
-        "content_id" => linked_item.content_id,
-        "title" => linked_item.title,
-        "description" => linked_item.description,
-        "locale" => linked_item.locale,
-        "web_url" => Plek.new.website_root + linked_item.base_path,
-        "schema_name" => "answer",
-        "document_type" => "answer",
-      )
-
-      second_linked_item_data = data["links"]["related"].second
-      expect(second_linked_item_data).to include(
         "base_path" => nil,
         "content_id" => "passthrough-content-id",
         "title" => "Passthrough title",
@@ -259,6 +247,19 @@ describe "Fetching content items", type: :request do
         "web_url" => nil,
         "schema_name" => nil,
         "document_type" => nil,
+      )
+
+      second_linked_item_data = data["links"]["related"].last
+      expect(second_linked_item_data).to include(
+        "base_path" => linked_item.base_path,
+        "content_id" => linked_item.content_id,
+        "title" => linked_item.title,
+        "description" => linked_item.description,
+        "locale" => linked_item.locale,
+        "links" => linked_item.links,
+        "web_url" => Plek.new.website_root + linked_item.base_path,
+        "schema_name" => "answer",
+        "document_type" => "answer",
       )
     end
   end

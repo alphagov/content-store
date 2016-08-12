@@ -79,16 +79,6 @@ class ContentItem
   # and fetch the entire document.
   index(content_id: 1, locale: 1, format: 1, updated_at: -1, title: 1, _id: 1)
 
-  # Add an index to speed up calls from [incoming links](https://github.com/alphagov/content-store/blob/d066a40489c731d2dc835968750b92c8dd992f5c/app/models/content_item.rb#L122-L126).
-  # TODO: This will go away once dependency resolution moves to publishing api from content store,
-  # at which point this index can be removed again.
-  index("links.documents" => 1)
-
-  # Add an index to speed up calls from working groups.
-  # TODO: This will go away once dependency resolution moves to publishing api from content store,
-  # at which point this index can be removed again.
-  index("links.working_groups" => 1)
-
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
   def as_json(options = nil)
@@ -128,18 +118,6 @@ class ContentItem
     #alternative type of unpublishing through the stack as it is causing issues
     #in production
     self.schema_name == "gone" && self.details.empty?
-  end
-
-  # Return a Hash of link types to lists of related items
-  def linked_items
-    return links if already_expanded_links?
-    LinkedItemsQuery.new(self).call
-  end
-
-  def already_expanded_links?
-    return false if links.empty?
-    expanded = links.flat_map { |_, value| value }
-    expanded.all? { |value| value.is_a?(Hash) && value.has_key?(:web_url) }
   end
 
   def incoming_links(link_type, linking_document_type: nil)

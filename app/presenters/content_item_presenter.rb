@@ -44,14 +44,35 @@ private
 
   def links
     return item.expanded_links unless document_type_expanded?
-    Rails.application.statsd.time('public_content_item_presenter.links') do
-      item.linked_items.each_with_object({}) do |(link_type, linked_items), items|
-        items[link_type] = linked_items.map { |i| present_linked_item(i) }
-      end
+    passthrough.merge(available_translations: available_translations)
+  end
+
+  def passthrough
+    item.links.each_with_object({}) do |(link_type, passthrough_hash), result|
+      passthrough, ids = passthrough_hash.partition { |type| type.is_a?(Hash) }
+      hashes = passthrough.map { |attributes| present(ContentItem.new(attributes)) }
+      content_items = content_items_for(ids).map { |content_item| present(content_item) }
+      result[link_type] = hashes + content_items
     end
   end
 
-  def present_linked_item(linked_item)
+  def content_items_for(content_ids)
+    ContentItem
+      .renderable_content
+      .where(content_id: { "$in" => content_ids })
+      .sort(updated_at: -1)
+  end
+
+  def available_translations
+    ContentItem
+      .renderable_content
+      .where(content_id: item.content_id)
+      .sort(locale: 1, updated_at: 1)
+      .group_by(&:locale)
+      .map { |_locale, items| present(items.last) }
+  end
+
+  def present(linked_item)
     LinkedItemPresenter.new(linked_item, api_url_method).present
   end
 
