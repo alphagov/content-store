@@ -51,6 +51,17 @@ FactoryGirl.define do
       }
     end
 
+    factory :gone_content_time_with_empty_details_fields do
+      sequence(:base_path) { |n| "/more-gone-than-the-other-gone-#{n}" }
+      format "gone"
+      details {
+        {
+          explanation: "",
+          alternative_path: ""
+        }
+      }
+    end
+
     factory :access_limited_content_item, parent: :content_item do
       sequence(:base_path) { |n| "/access-limited-#{n}" }
       access_limited {

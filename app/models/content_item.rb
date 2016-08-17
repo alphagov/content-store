@@ -127,7 +127,7 @@ class ContentItem
     #content store or register a gone route. This is a fix until we implement an
     #alternative type of unpublishing through the stack as it is causing issues
     #in production
-    self.schema_name == "gone" && self.details.empty?
+    schema_name == "gone" && details_is_empty?
   end
 
   # Return a Hash of link types to lists of related items
@@ -174,5 +174,9 @@ private
 
   def authorised_user_uids
     access_limited['users']
+  end
+
+  def details_is_empty?
+    details.nil? || details.values.reject(&:blank?).empty?
   end
 end

@@ -592,14 +592,19 @@ describe ContentItem, type: :model do
   end
 
   describe "gone?" do
-    it "returns true for schema_name 'gone' with empty details" do
+    it "returns true for schema_name 'gone' with no details" do
       gone_item = build(:gone_content_item)
       expect(gone_item.gone?).to be(true)
     end
 
-    it "returns true for schema_name 'gone' with empty details" do
+    it "returns false for schema_name 'gone' with details" do
       gone_item = build(:gone_content_item_with_details)
       expect(gone_item.gone?).to be(false)
+    end
+
+    it "returns true for schema_name 'gone' with empty details fields" do
+      gone_item = build(:gone_content_time_with_empty_details_fields)
+      expect(gone_item.gone?).to be(true)
     end
   end
 end
