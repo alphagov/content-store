@@ -33,21 +33,6 @@ describe ContentItemPresenter do
     expect(presenter.as_json["base_path"]).to eq(item.base_path)
   end
 
-  context "with related links" do
-    let(:linked_item1) { create(:content_item, :with_content_id) }
-    let(:linked_item2) { create(:content_item, :with_content_id) }
-    let(:links) { { "related" => [linked_item1.content_id, linked_item2.content_id] } }
-
-    it "includes the link type" do
-      expect(presenter.as_json).to have_key("links")
-      expect(presenter.as_json["links"].keys).to include("related")
-    end
-
-    it "includes each linked item" do
-      expect(presenter.as_json["links"]["related"].size).to be(2)
-    end
-  end
-
   describe "content type resolution" do
     let(:item) do
       FactoryGirl.create(

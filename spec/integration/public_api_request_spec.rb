@@ -5,7 +5,7 @@ describe "Public API requests for content items", type: :request do
     FactoryGirl.create(
       :content_item,
       document_type: "travel_advice",
-      links: { 'related' => [linked_item.content_id] },
+      expanded_links: { 'related' => [{ content_id: linked_item.content_id }] },
       description: [
         { content_type: "text/html", content: "<p>content</p>" },
         { content_type: "text/plain", content: "content" },
@@ -25,7 +25,7 @@ describe "Public API requests for content items", type: :request do
     get_api_content content_item
     data = JSON.parse(response.body)
 
-    expect(data["links"]["related"].first["api_url"]).to eq("http://www.example.com/api/content#{linked_item.base_path}")
+    expect(data["links"]["related"].first["content_id"]).to eq(linked_item.content_id)
   end
 
   it "inlines the 'text/html' content type" do
