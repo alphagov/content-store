@@ -127,7 +127,7 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "returns a 400 with bad json" do
-      put "/publish-intent/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
+      put "/publish-intent/foo", env: { "RAW_POST_DATA" => "I'm not json" }, headers: { "CONTENT_TYPE" => "application/json" }
       expect(response.status).to eq(400)
     end
   end
