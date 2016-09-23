@@ -6,4 +6,4 @@
 #
 # Secondly, when given invalid json, it blows up before even reaching the
 # application, preventing us from handling invalid json gracefully.
-Rails.application.config.middleware.delete "ActionDispatch::ParamsParser"
+Rails.application.config.middleware.delete ActionDispatch::ParamsParser
