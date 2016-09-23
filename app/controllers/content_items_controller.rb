@@ -1,5 +1,5 @@
 class ContentItemsController < ApplicationController
-  before_filter :parse_json_request, only: [:update]
+  before_action :parse_json_request, only: [:update]
 
   def show
     item = Rails.application.statsd.time('show.find_content_item') do
