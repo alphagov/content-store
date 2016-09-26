@@ -47,6 +47,7 @@ class ContentItemsController < ApplicationController
 
   def destroy
     ContentItem.find_by(base_path: base_path).destroy
+    render status: :ok
   end
 
 private
