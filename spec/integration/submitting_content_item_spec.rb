@@ -185,7 +185,7 @@ describe "content item write API", type: :request do
 
   context "given invalid JSON data" do
     before(:each) do
-      put "/content/foo", "I'm not json", "CONTENT_TYPE" => "application/json"
+      put "/content/foo", env: { "RAW_POST_DATA" => "I'm not json" }, headers: { "CONTENT_TYPE" => "application/json" }
     end
 
     it "returns a Bad Request status" do
@@ -312,7 +312,7 @@ describe "content item write API", type: :request do
 
     it "raises a MissingAttributeError" do
       expect {
-        put_json "/content/vat-rates", @data.except(
+        put_json "/content/vat-rates", @data.to_h.except(
           "transmitted_at",
           "payload_version"
         )

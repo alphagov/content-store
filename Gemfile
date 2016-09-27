@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7.1'
-gem 'rails-api', '0.2.1'
+gem 'rails', '5.0.0.1'
 
-gem 'mongoid', '5.1.3'
+gem 'mongoid', '6.0.0'
 gem 'mongoid_rails_migrations', '1.0.1'
 
 gem 'logstasher', '0.5.0'
-gem 'airbrake', '4.0.0'
+gem 'airbrake', '~> 5.4'
+gem 'airbrake-ruby', '1.5'
 
 gem 'unicorn', '4.8.2'
 
@@ -21,7 +21,7 @@ gem 'hashdiff', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', '20.1.1'
+  gem 'gds-api-adapters', '36.0.1'
 end
 
 gem 'govuk-content-schema-test-helpers', '1.3.0'
@@ -31,7 +31,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0.2'
   gem 'database_cleaner', '~> 1.5.3'
   gem 'factory_girl', '~> 4.4.0'
-  gem 'webmock', '~> 1.18.0', require: false
+  gem 'webmock', '2.1.0', require: false
   gem 'timecop', '0.7.1'
 
   gem 'simplecov', '0.8.2', require: false

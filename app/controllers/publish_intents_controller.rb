@@ -1,5 +1,5 @@
 class PublishIntentsController < ApplicationController
-  before_filter :parse_json_request, only: [:update]
+  before_action :parse_json_request, only: [:update]
 
   def show
     intent = PublishIntent.find_by(base_path: encoded_base_path)
