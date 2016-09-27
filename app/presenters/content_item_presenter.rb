@@ -45,8 +45,4 @@ private
   def links
     item.expanded_links
   end
-
-  def present(linked_item)
-    LinkedItemPresenter.new(linked_item, api_url_method).present
-  end
 end
