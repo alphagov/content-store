@@ -43,6 +43,6 @@ private
   attr_reader :item, :api_url_method
 
   def links
-    item.expanded_links
+    ExpandedLinksPresenter.new(item.expanded_links).present
   end
 end
