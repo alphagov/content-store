@@ -1,0 +1,164 @@
+require 'rails_helper'
+
+RSpec.describe ExpandedLinksPresenter do
+  describe ".present" do
+    subject { described_class.new(links).present }
+
+    let(:prefix) { Plek.current.website_root }
+    let(:base_path) { "/test-page" }
+    let(:api_path) { "/api/content/test-page" }
+    let(:links) do
+      {
+        link_group: [{ base_path: base_path, api_path: api_path }]
+      }
+    end
+
+    context "production environment" do
+      let(:production_prefix) { "https://www.gov.uk" }
+      let(:expected) do
+        {
+          link_group: [
+            a_hash_including(
+              web_url: "#{production_prefix}#{base_path}",
+              api_url: "#{production_prefix}#{api_path}",
+            )
+          ]
+        }
+      end
+
+      before do
+        double = instance_double(Plek, website_root: production_prefix)
+        allow(Plek).to receive(:current).and_return(double)
+      end
+
+      it { is_expected.to include expected }
+    end
+
+    context "development environment" do
+      let(:development_prefix) { "http://dev.gov.uk" }
+      let(:expected) do
+        {
+          link_group: [
+            a_hash_including(
+              web_url: "#{development_prefix}#{base_path}",
+              api_url: "#{development_prefix}#{api_path}",
+            )
+          ]
+        }
+      end
+
+      before do
+        double = instance_double(Plek, website_root: development_prefix)
+        allow(Plek).to receive(:current).and_return(double)
+      end
+
+      it { is_expected.to include expected }
+    end
+
+    context "groups of links" do
+      let(:links) do
+        {
+          group_1: [
+            { base_path: "/group-1/link-1", api_path: "/api/content/group-1/link-1" },
+            { base_path: "/group-1/link-2", api_path: "/api/content/group-1/link-2" },
+            { base_path: "/group-1/link-3", api_path: "/api/content/group-1/link-3" },
+          ],
+          group_2: [
+            { base_path: "/group-2/link-1", api_path: "/api/content/group-2/link-1" },
+            { base_path: "/group-2/link-2", api_path: "/api/content/group-2/link-2" },
+            { base_path: "/group-2/link-3", api_path: "/api/content/group-2/link-3" },
+          ],
+        }
+      end
+
+      let(:expected) do
+        {
+          group_1: [
+            a_hash_including(web_url: "#{prefix}/group-1/link-1", api_url: "#{prefix}/api/content/group-1/link-1"),
+            a_hash_including(web_url: "#{prefix}/group-1/link-2", api_url: "#{prefix}/api/content/group-1/link-2"),
+            a_hash_including(web_url: "#{prefix}/group-1/link-3", api_url: "#{prefix}/api/content/group-1/link-3"),
+          ],
+          group_2: [
+            a_hash_including(web_url: "#{prefix}/group-2/link-1", api_url: "#{prefix}/api/content/group-2/link-1"),
+            a_hash_including(web_url: "#{prefix}/group-2/link-2", api_url: "#{prefix}/api/content/group-2/link-2"),
+            a_hash_including(web_url: "#{prefix}/group-2/link-3", api_url: "#{prefix}/api/content/group-2/link-3"),
+          ],
+        }
+      end
+
+      it { is_expected.to match expected }
+    end
+
+    context "link without api_path set" do
+      let(:links) do
+        {
+          link_group: [{ base_path: base_path }]
+        }
+      end
+      let(:api_path) { "/api/content#{base_path}" }
+      let(:expected) do
+        {
+          link_group: [
+            a_hash_including(
+              api_path: api_path,
+              api_url: "#{prefix}#{api_path}",
+            )
+          ],
+        }
+      end
+
+      it "prefixes a base path with '/api/content' to create API url" do
+        is_expected.to match expected
+      end
+    end
+
+    context "link with children" do
+      let(:links) do
+        { group: [{ base_path: "/grand-parent", links: parent }] }
+      end
+
+      let(:parent) do
+        { group: [{ base_path: "/grand-parent/parent", links: child }] }
+      end
+
+      let(:child) do
+        { group: [{ base_path: "/grand-parent/parent/child", links: {} }] }
+      end
+
+      let(:expected_links) do
+        {
+          group: [
+            a_hash_including(
+              web_url: "#{prefix}/grand-parent",
+              links: expected_parent,
+            )
+          ]
+        }
+      end
+
+      let(:expected_parent) do
+        {
+          group: [
+            a_hash_including(
+              web_url: "#{prefix}/grand-parent/parent",
+              links: expected_child,
+            )
+          ]
+        }
+      end
+
+      let(:expected_child) do
+        {
+          group: [
+            a_hash_including(
+              web_url: "#{prefix}/grand-parent/parent/child",
+              links: {},
+            )
+          ]
+        }
+      end
+
+      it { is_expected.to match expected_links }
+    end
+  end
+end
