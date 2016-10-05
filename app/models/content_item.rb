@@ -2,8 +2,6 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps::Updated
 
-  NON_RENDERABLE_FORMATS = %w(redirect gone)
-
   def self.create_or_replace(base_path, attributes)
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
@@ -66,8 +64,6 @@ class ContentItem
   field :transmitted_at, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
-
-  scope :renderable_content, -> { where(:schema_name.nin => NON_RENDERABLE_FORMATS) }
 
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
