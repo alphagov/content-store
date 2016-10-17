@@ -6,7 +6,7 @@ module RouterHelpers
   def assert_routes_registered(rendering_app, routes)
     # Note: WebMock stubs allow you to assert against already executed requests.
 
-    be_signature = stub_router_backend_registration(rendering_app, "http://#{rendering_app}.test.gov.uk/")
+    be_signature = stub_router_backend_registration(rendering_app, "https://#{rendering_app}.test.gov.uk/")
     assert_requested(be_signature, times: 1)
 
     routes.each do |(path, type)|
