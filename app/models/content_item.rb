@@ -116,12 +116,6 @@ class ContentItem
     schema_name == "gone" && details_is_empty?
   end
 
-  def incoming_links(link_type, linking_document_type: nil)
-    scope = ContentItem.where("links.#{link_type}" => { "$in" => [content_id] })
-    scope = scope.where(document_type: linking_document_type) if linking_document_type
-    scope
-  end
-
   def viewable_by?(user_uid)
     !access_limited? || authorised_user_uids.include?(user_uid)
   end
