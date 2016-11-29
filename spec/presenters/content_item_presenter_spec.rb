@@ -59,4 +59,12 @@ describe ContentItemPresenter do
       expect(presenter.as_json["details"]).to eq(body: "<p>content</p>")
     end
   end
+
+  it "validates against the schema" do
+    content_item = create(:content_item, :with_content_id, schema_name: "generic")
+
+    presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+
+    expect(presented.to_json).to be_valid_against_schema("generic")
+  end
 end
