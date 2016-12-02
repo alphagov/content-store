@@ -40,7 +40,6 @@ describe "Fetching content items", type: :request do
         content_id
         title
         description
-        format
         schema_name
         document_type
         need_ids
@@ -62,7 +61,6 @@ describe "Fetching content items", type: :request do
         "content_id" => content_item.content_id,
         "title" => "VAT rates",
         "description" => "Current VAT rates",
-        "format" => "publication",
         "schema_name" => "publication",
         "document_type" => "travel_advice",
         "need_ids" => ["100136"],

@@ -12,7 +12,6 @@ class ContentItemPresenter
     content_id
     document_type
     first_published_at
-    format
     locale
     need_ids
     phase
