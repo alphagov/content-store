@@ -26,7 +26,7 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
   invalid_content_items = []
 
   puts "Validating #{validatable_content_items.count} content items"
-  validatable_content_items.order_by([:format, :asc], [:_id, :asc]).each do |content_item|
+  validatable_content_items.each do |content_item|
     presenter = ContentItemPresenter.new(content_item, api_url_callable)
     validator = GovukContentSchemaTestHelpers::Validator.new(content_item.format, presenter.to_json)
     if validator.valid?
