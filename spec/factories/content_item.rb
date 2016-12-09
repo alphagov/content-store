@@ -66,7 +66,10 @@ FactoryGirl.define do
     factory :access_limited_content_item, parent: :content_item do
       sequence(:base_path) { |n| "/access-limited-#{n}" }
       access_limited {
-        { "users" => ["M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"] }
+        {
+          "users" => ["M6GdNZggrbGiJrLjMSbKqA", "f17250b0-7540-0131-f036-005056030202"],
+          "fact_check_ids" => ["85aa9fd5-c514-4964-b931-5b597e4ec668"]
+        }
       }
     end
   end
