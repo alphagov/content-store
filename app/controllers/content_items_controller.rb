@@ -60,11 +60,15 @@ private
     request.headers['Govuk-Fact-Check-Id']
   end
 
+  def invalid_user_id?
+    authenticated_user_uid == 'invalid'
+  end
+
   def can_view(item)
     if fact_check_id_header.present?
       item.fact_checkable_with?(fact_check_id_header)
     else
-      item.viewable_by?(authenticated_user_uid)
+      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
     end
   end
 
