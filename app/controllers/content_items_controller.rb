@@ -16,7 +16,7 @@ class ContentItemsController < ApplicationController
       ContentItem, base_path: encoded_base_path
     ) unless item
 
-    if item.viewable_by?(authenticated_user_uid)
+    if can_view(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
     else
       render json_forbidden_response
@@ -56,6 +56,22 @@ private
     request.headers['X-Govuk-Authenticated-User']
   end
 
+  def fact_check_id_header
+    request.headers['Govuk-Fact-Check-Id']
+  end
+
+  def invalid_user_id?
+    authenticated_user_uid == 'invalid'
+  end
+
+  def can_view(item)
+    if fact_check_id_header.present?
+      item.fact_checkable_with?(fact_check_id_header)
+    else
+      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
+    end
+  end
+
   def json_forbidden_response
     {
       json: {
@@ -75,7 +91,7 @@ private
 
     if intent && !intent.past?
       cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
-    elsif item && item.access_limited?
+    elsif item && (fact_check_id_header.present? || item.access_limited?)
       cache_time = config.minimum_ttl
       is_public = false
     elsif item && max_cache_time(item)

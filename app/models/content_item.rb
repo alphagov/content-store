@@ -120,6 +120,10 @@ class ContentItem
     !access_limited? || authorised_user_uids.include?(user_uid)
   end
 
+  def fact_checkable_with?(fact_check_id)
+    fact_check_ids.include?(fact_check_id)
+  end
+
   def register_routes(previous_item: nil)
     return if self.schema_name.start_with?("placeholder")
     return if previous_item && previous_item.route_set == self.route_set
@@ -142,6 +146,10 @@ private
 
   def authorised_user_uids
     access_limited['users']
+  end
+
+  def fact_check_ids
+    access_limited.fetch('fact_check_ids', [])
   end
 
   def details_is_empty?
