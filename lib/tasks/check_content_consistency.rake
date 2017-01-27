@@ -20,7 +20,7 @@ namespace :check_content_consistency do
   desc "Check all the items for consistency with the router-api"
   task all: :environment do
     items = ContentItem.pluck(:base_path)
-    successes, failures = items.partition do |base_path|
+    _, failures = items.partition do |base_path|
       check_content(base_path)
     end
     puts "Results: #{failures.count} failures out of #{docs.count}."

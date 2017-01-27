@@ -140,9 +140,9 @@ end
 def stub_router(path = "/test-redirect", body_args = {}, status = 200)
   body = default_router_body.merge(incoming_path: path).merge(body_args)
   stub_request(:get, "#{router_api_url}/routes?incoming_path=#{path}").
-  and_return(
-    status: status,
-    body: body.to_json,
-    headers: { "Content-Type": "application/json" }
-  )
+    and_return(
+      status: status,
+      body: body.to_json,
+      headers: { "Content-Type": "application/json" }
+    )
 end

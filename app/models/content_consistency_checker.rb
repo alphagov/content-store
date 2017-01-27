@@ -26,7 +26,7 @@ private
 
   def get_route(path)
     begin
-      res = JSON.parse(router_api.get_route(path).raw_response_body)
+      JSON.parse(router_api.get_route(path).raw_response_body)
     rescue GdsApi::HTTPNotFound
       @errors << "Path (#{path}) was not found!"
       nil
@@ -66,9 +66,7 @@ private
                  "rendering app (#{rendering_app})."
     end
 
-    if res["disabled"]
-      @errors << "Route is marked as disabled."
-    end
+    @errors << "Route is marked as disabled." if res["disabled"]
   end
 
   def content_item
