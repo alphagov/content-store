@@ -192,8 +192,8 @@ describe ContentItem, type: :model do
       end
     end
 
-    context 'an access-limited content item' do
-      let!(:content_item) { create(:access_limited_content_item) }
+    context 'an access-limited by user-id content item' do
+      let!(:content_item) { create(:access_limited_content_item, :by_user_id) }
       let(:authorised_user_uid) { content_item.access_limited['users'].first }
 
       it 'is access limited' do
@@ -207,6 +207,28 @@ describe ContentItem, type: :model do
       it 'is not viewable by an unauthorised user' do
         expect(content_item.viewable_by?('unauthorised-user')).to be(false)
         expect(content_item.viewable_by?(nil)).to be(false)
+      end
+    end
+
+    context "an access-limited by fact_check_id content item" do
+      let!(:content_item) { create(:access_limited_content_item, :by_fact_check_id) }
+      let(:fact_check_id) { content_item.access_limited['fact_check_ids'].first }
+      let(:logged_in_user) { 'authenticated_user_uid' }
+
+      it "is access limited" do
+        expect(content_item.access_limited?).to be(true)
+      end
+
+      it "is fact_checkable_with a valid fact_check_id" do
+        expect(content_item.fact_checkable_with?(fact_check_id)).to be(true)
+      end
+
+      it "is not fact_checkable_with an invalid fact check token" do
+        expect(content_item.fact_checkable_with?("foo")).to be(false)
+      end
+
+      it 'is viewable by an authenticated user' do
+        expect(content_item.viewable_by?(logged_in_user)).to be(true)
       end
     end
   end

@@ -117,7 +117,7 @@ class ContentItem
   end
 
   def viewable_by?(user_uid)
-    !access_limited? || authorised_user_uids.include?(user_uid)
+    authorised_user_uids.empty? || authorised_user_uids.include?(user_uid)
   end
 
   def fact_checkable_with?(fact_check_id)
@@ -145,7 +145,7 @@ protected
 private
 
   def authorised_user_uids
-    access_limited['users']
+    access_limited.fetch('users', [])
   end
 
   def fact_check_ids
