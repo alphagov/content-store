@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe "Fetching an access-limited content item", type: :request do
-  let(:access_limited_content_item) { create(:access_limited_content_item) }
+describe "Fetching an access-limited by user-id content item", type: :request do
+  let(:access_limited_content_item) { create(:access_limited_content_item, :by_user_id) }
   let(:authorised_user_uid) { access_limited_content_item.access_limited['users'].first }
 
   context "request without an authentication header" do
@@ -49,7 +49,9 @@ describe "Fetching an access-limited content item", type: :request do
   end
 
   context "with a fact check ID specified in the header" do
+    let(:access_limited_content_item) { create(:access_limited_content_item, :by_fact_check_id) }
     let(:fact_check_id) { access_limited_content_item.access_limited["fact_check_ids"].first }
+
     before do
       get "/content/#{access_limited_content_item.base_path}",
         params: {}, headers: { 'Govuk-Fact-Check-Id' => fact_check_id }
