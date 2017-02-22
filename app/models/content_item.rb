@@ -40,6 +40,35 @@ class ContentItem
     )
   end
 
+  def self.find_for_path(path)
+    where(base_path: path).first ||
+      find_route_exact_match(path) ||
+      find_route_prefix_match(path)
+  end
+
+  def self.find_route_exact_match(path)
+    where(routes: { "$elemMatch" => { path: path, type: "exact" } }).first
+  end
+
+  def self.find_route_prefix_match(path)
+    paths = path.split("/").reject(&:empty?)
+    potential_matches = (0...paths.size).map do |i|
+      "/#{paths[0..i].join('/')}"
+    end
+    where(
+      routes: { "$elemMatch" => { :path.in => potential_matches, type: "prefix" } }
+    ).sort_by { |item| route_prefix_compare(item.routes, potential_matches) }.first
+  end
+
+  def self.route_prefix_compare(routes, potential_prefixes)
+    best_match = routes
+      .select { |route| route["type"] == "prefix" && potential_prefixes.include?(route["path"]) }
+      .sort_by { |route| -route["path"].length }
+      .first
+
+    -best_match["path"].length
+  end
+
   field :_id, as: :base_path, type: String, overwrite: true
   field :content_id, type: String
   field :title, type: String

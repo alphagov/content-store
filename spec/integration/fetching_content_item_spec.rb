@@ -163,6 +163,87 @@ describe "Fetching content items", type: :request do
     end
   end
 
+  context "when requesting an exact route within a base_path" do
+    let!(:content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        routes: [
+          { path: "/base-path/exact", type: "exact" },
+        ],
+      )
+    end
+
+    let(:requested_path) { "/base-path/exact" }
+    let(:colliding_path) { "/does-not-collide" }
+
+    let!(:colliding_content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: colliding_path,
+        content_id: SecureRandom.uuid
+      )
+    end
+
+    before do
+      get "/content#{requested_path}"
+    end
+
+    it "returns a 200 OK response" do
+      expect(response.status).to eq(200)
+    end
+
+    it "returns the presented content item as JSON data" do
+      expect(response.content_type).to eq("application/json")
+      expect(response.body).to eq(present(content_item))
+    end
+
+    context "and a different content item has the base_path of the route" do
+      let(:colliding_path) { "/base-path/exact" }
+      it "returns the colliding content item" do
+        expect(response.content_type).to eq("application/json")
+        expect(response.body).to eq(present(colliding_content_item))
+      end
+    end
+  end
+
+  context "when requesting a prefix route within a base_path" do
+    let!(:content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        routes: [
+          { path: "/base-path/prefix", type: "prefix" },
+        ],
+      )
+    end
+    let(:requested_path) { "/base-path/prefix" }
+
+    before do
+      get "/content#{requested_path}"
+    end
+
+    it "returns a 200 OK response" do
+      expect(response.status).to eq(200)
+    end
+
+    it "returns the presented content item as JSON data" do
+      expect(response.content_type).to eq("application/json")
+      expect(response.body).to eq(present(content_item))
+    end
+
+    context "and we request a route within the prefix" do
+      let(:requested_path) { "/base-path/prefix/deeply/nested/path" }
+
+      it "returns the presented content item as JSON data" do
+        expect(response.content_type).to eq("application/json")
+        expect(response.body).to eq(present(content_item))
+      end
+    end
+  end
+
   context "a withdrawn content item" do
     let(:withdrawn_at) { DateTime.parse("2016-05-17 11:20") }
     let(:withdrawn_item) do

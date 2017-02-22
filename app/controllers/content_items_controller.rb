@@ -3,11 +3,12 @@ class ContentItemsController < ApplicationController
 
   def show
     item = Rails.application.statsd.time('show.find_content_item') do
-      ContentItem.where(base_path: encoded_base_path).first
+      ContentItem.find_for_path(encoded_base_path)
     end
 
     intent = Rails.application.statsd.time('show.find_publish_intent') do
-      PublishIntent.where(base_path: encoded_base_path).first
+      base_path = item ? item.base_path : encoded_base_path
+      PublishIntent.where(base_path: base_path).first
     end
 
     set_cache_headers(item, intent)
