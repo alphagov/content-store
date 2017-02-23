@@ -34,7 +34,7 @@ class RouteSet < OpenStruct
       gone_routes: gone_routes,
       redirects: redirects,
       base_path: item.base_path,
-      rendering_app: item.rendering_app,
+      rendering_app: item.router_rendering_app,
       is_redirect: item.redirect?,
       is_gone: item.gone?,
     )
