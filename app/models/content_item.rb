@@ -116,6 +116,20 @@ class ContentItem
     schema_name == "gone" && details_is_empty?
   end
 
+  def router_rendering_app
+    # This is an extension of the hack in `gone?` method.
+    #
+    # For items that are registered in the content store which are not redirects
+    # or gones we need to have a rendering_app. This is fine for all but the
+    # "gone but not gone" exception defined in `gone?` where rendering_app is
+    # not part of the schema for a gone but it required to register the route.
+    #
+    # This rather nastily fallsback to whitehall frontend for gones that are
+    # not gone and lack a rendering_app
+    return rendering_app if schema_name != "gone" || gone?
+    rendering_app || "whitehall-frontend"
+  end
+
   def viewable_by?(user_uid)
     authorised_user_uids.empty? || authorised_user_uids.include?(user_uid)
   end
