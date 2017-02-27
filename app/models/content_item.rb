@@ -106,6 +106,10 @@ class ContentItem
   # and fetch the entire document.
   index(content_id: 1, locale: 1, format: 1, updated_at: -1, title: 1, _id: 1)
 
+  # We want to look up content items by whether they match a route and the type
+  # of route.
+  index("routes.path" => 1, "routes.type" => 1)
+
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
   def as_json(options = nil)
