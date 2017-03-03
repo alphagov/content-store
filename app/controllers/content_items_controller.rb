@@ -3,7 +3,8 @@ class ContentItemsController < ApplicationController
 
   def show
     item = Rails.application.statsd.time('show.find_content_item') do
-      ContentItem.find_for_path(encoded_base_path)
+      base_path = ContentItem::BasePathForPath.(encoded_base_path)
+      ContentItem.where(base_path: base_path).first
     end
 
     intent = Rails.application.statsd.time('show.find_publish_intent') do
