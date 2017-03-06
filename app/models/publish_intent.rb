@@ -58,6 +58,12 @@ class PublishIntent
     where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago).delete_all
   end
 
+  def base_path_without_root
+    return nil unless base_path
+
+    base_path.sub(%r{^/}, "")
+  end
+
 private
 
   def route_set

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     put "/content(/*base_path_without_root)" => "content_items#update"
     delete "/content(/*base_path_without_root)" => "content_items#destroy"
 
-    get "/publish-intent(/*path_without_root)" => "publish_intents#show"
+    get "/publish-intent(/*path_without_root)" => "publish_intents#show", :as => :publish_intent
     put "/publish-intent(/*base_path_without_root)" => "publish_intents#update"
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"
   end

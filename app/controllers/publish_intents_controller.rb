@@ -2,7 +2,10 @@ class PublishIntentsController < ApplicationController
   before_action :parse_json_request, only: [:update]
 
   def show
-    intent = PublishIntent.find_by(base_path: encoded_request_path)
+    intent = PublishIntent.find_by_path(encoded_request_path)
+
+    return error_404 unless intent
+    return redirect_canonical(intent) if intent.base_path != encoded_request_path
 
     render json: intent
   end
@@ -25,5 +28,12 @@ class PublishIntentsController < ApplicationController
     intent.destroy
 
     render json: {}
+  end
+
+private
+
+  def redirect_canonical(intent)
+    route = publish_intent_url(intent.base_path_without_root)
+    redirect_to route, status: 303
   end
 end

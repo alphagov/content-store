@@ -159,6 +159,20 @@ describe "CRUD of publish intents", type: :request do
       get "/publish-intent/non-existent"
       expect(response.status).to eq(404)
     end
+
+    it "returns a 303 redirect for a path match" do
+      create(:publish_intent,
+        base_path: "/vat-rates",
+        routes: [
+          { path: "/vat-rates", type: "exact" },
+          { path: "/vat-rates/exact", type: "exact" },
+        ]
+      )
+
+      get "/publish-intent/vat-rates/exact"
+      expect(response.status).to eq(303)
+      expect(response).to redirect_to("/publish-intent/vat-rates")
+    end
   end
 
   describe "deleting a publish intent" do
