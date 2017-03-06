@@ -136,12 +136,7 @@ describe "content item write API", type: :request do
       expect(@item.details).to eq("body" => "<p>Some body text</p>\n")
     end
 
-    it "does not register routes when they haven't changed" do
-      put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
-    end
-
-    it "registers routes for the content item when they have changed" do
+    it "registers routes for the content item" do
       @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [['/vat-rates', 'exact'], ['/vat-rates.json', 'exact']])

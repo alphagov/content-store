@@ -118,53 +118,6 @@ describe ContentItem, type: :model do
         ['/a-path/subpath', 'prefix']
       ])
     end
-
-    context "with a previous item" do
-      before :each do
-        # dup the routes so they can be modified without affecting @item
-        previous_routes = @routes.map(&:dup)
-        @previous_item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: previous_routes)
-      end
-
-      it 'does not register the routes when they are unchanged' do
-        @item.register_routes(previous_item: @previous_item)
-        refute_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
-        ])
-      end
-
-      it 'registers routes when the routes are different' do
-        @previous_item.routes[1]['type'] = 'prefix'
-        @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
-        ])
-      end
-
-      it 'registers routes when the redirects are different' do
-        @previous_item.redirects << { 'path' => '/a-path/old-part', 'type' => 'exact', 'destination' => '/somewhere' }
-        @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
-        ])
-      end
-
-      it 'registers routes when the rendering_app is different' do
-        @previous_item.rendering_app = 'another-app'
-        @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
-        ])
-      end
-    end
   end
 
   context 'when loaded from the content store' do

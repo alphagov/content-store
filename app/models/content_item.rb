@@ -14,7 +14,7 @@ class ContentItem
     item.assign_attributes(attributes)
 
     if item.upsert
-      item.register_routes(previous_item: previous_item)
+      item.register_routes
     else
       result = false
     end
@@ -138,7 +138,7 @@ class ContentItem
     fact_check_ids.include?(fact_check_id)
   end
 
-  def register_routes(previous_item: nil)
+  def register_routes
     return if self.schema_name.start_with?("placeholder")
     self.route_set.register!
   end
