@@ -73,6 +73,8 @@ Pact.provider_states_for "Publishing API" do
 
   provider_state "a content item exists with base_path /vat-rates and payload_version 0" do
     set_up do
+      stub_request(:any, Regexp.new(Plek.find("router-api")))
+
       FactoryGirl.create(:content_item, base_path: "/vat-rates", payload_version: 0)
     end
   end
