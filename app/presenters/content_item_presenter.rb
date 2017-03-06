@@ -14,6 +14,7 @@ class ContentItemPresenter
     first_published_at
     format
     locale
+    navigation_document_supertype
     need_ids
     phase
     public_updated_at
@@ -22,6 +23,7 @@ class ContentItemPresenter
     schema_name
     title
     updated_at
+    user_journey_document_supertype
     withdrawn_notice
   ).freeze
 
