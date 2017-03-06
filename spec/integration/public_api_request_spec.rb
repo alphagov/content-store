@@ -22,17 +22,35 @@ describe "Public API requests for content items", type: :request do
   let(:linked_item) { FactoryGirl.create(:content_item, :with_content_id) }
 
   it "corrrectly expands linked items with Public API URLs" do
-    get_api_content content_item
+    get "/api/content#{content_item.base_path}"
     data = JSON.parse(response.body)
 
     expect(data["links"]["related"].first["content_id"]).to eq(linked_item.content_id)
   end
 
   it "inlines the 'text/html' content type" do
-    get_api_content content_item
+    get "/api/content#{content_item.base_path}"
     data = JSON.parse(response.body)
 
     expect(data["description"]).to eq("<p>content</p>")
     expect(data["details"]["body"]).to eq("<p>content</p>")
+  end
+
+  context "when we match on a path in routes and not a base path" do
+    before do
+      create(:content_item,
+        base_path: "/base-path",
+        routes: [
+          { path: "/base-path", type: "exact" },
+          { path: "/base-path/segment", type: "exact" },
+        ]
+      )
+    end
+
+    it "redirects to public API" do
+      get "/api/content/base-path/segment"
+      expect(response).to redirect_to("/api/content/base-path")
+    end
+
   end
 end

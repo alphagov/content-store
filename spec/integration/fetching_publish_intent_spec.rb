@@ -6,7 +6,7 @@ describe "Fetching a content item with a publish intent", type: :request do
   context "a publish intent long in the past" do
     before(:each) do
       create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.ago)
-      get_content content_item
+      get "/content/#{content_item.base_path}"
     end
 
     it "returns the presented content item as JSON data" do
@@ -27,7 +27,7 @@ describe "Fetching a content item with a publish intent", type: :request do
   context "a publish intent that has newly passed" do
     before(:each) do
       create(:publish_intent, base_path: content_item.base_path, publish_time: 10.seconds.ago)
-      get_content content_item
+      get "/content/#{content_item.base_path}"
     end
 
     it "returns the presented content item as JSON data" do
@@ -48,7 +48,7 @@ describe "Fetching a content item with a publish intent", type: :request do
   context "a publish intent more than the default TTL away" do
     before(:each) do
       create(:publish_intent, base_path: content_item.base_path, publish_time: 40.minutes.from_now)
-      get_content content_item
+      get "/content/#{content_item.base_path}"
     end
 
     it "returns the presented content item as JSON data" do
@@ -70,7 +70,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     before(:each) do
       Timecop.freeze
       create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.from_now)
-      get_content content_item
+      get "/content/#{content_item.base_path}"
     end
 
     it "returns the presented content item as JSON data" do

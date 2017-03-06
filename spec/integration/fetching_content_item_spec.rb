@@ -24,7 +24,7 @@ describe "Fetching content items", type: :request do
     end
 
     before do
-      get_content content_item
+      get "/content#{content_item.base_path}"
     end
 
     it "returns a 200 OK response" do
@@ -122,7 +122,7 @@ describe "Fetching content items", type: :request do
   context "a content item with a non-ASCII base_path" do
     let(:content_item) { create(:content_item, base_path: URI.encode('/news/בוט לאינד')) }
 
-    before(:each) { get_content content_item }
+    before(:each) { get "/content#{content_item.base_path}" }
 
     it "returns a 200 OK response" do
       expect(response.status).to eq(200)
@@ -190,13 +190,12 @@ describe "Fetching content items", type: :request do
       get "/content#{requested_path}"
     end
 
-    it "returns a 200 OK response" do
-      expect(response.status).to eq(200)
+    it "returns a 303 See Other response" do
+      expect(response.status).to eq(303)
     end
 
-    it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(present(content_item))
+    it "returns a redirect to the item by base_path" do
+      expect(response).to redirect_to("/content/base-path")
     end
 
     context "and a different content item has the base_path of the route" do
@@ -225,21 +224,19 @@ describe "Fetching content items", type: :request do
       get "/content#{requested_path}"
     end
 
-    it "returns a 200 OK response" do
-      expect(response.status).to eq(200)
+    it "returns a 303 See Other response" do
+      expect(response.status).to eq(303)
     end
 
-    it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
-      expect(response.body).to eq(present(content_item))
+    it "returns a redirect to the item by base_path" do
+      expect(response).to redirect_to("/content/base-path")
     end
 
     context "and we request a route within the prefix" do
       let(:requested_path) { "/base-path/prefix/deeply/nested/path" }
 
-      it "returns the presented content item as JSON data" do
-        expect(response.content_type).to eq("application/json")
-        expect(response.body).to eq(present(content_item))
+      it "returns a redirect to the item by base_path" do
+        expect(response).to redirect_to("/content/base-path")
       end
     end
   end
@@ -257,7 +254,7 @@ describe "Fetching content items", type: :request do
     end
 
     it "displays the withdrawal explanation and time" do
-      get_content withdrawn_item
+      get "/content#{withdrawn_item.base_path}"
 
       data = JSON.parse(response.body)
 
@@ -270,7 +267,7 @@ describe "Fetching content items", type: :request do
     let(:gone_item) { FactoryGirl.create(:gone_content_item) }
 
     before do
-      get_content gone_item
+      get "/content#{gone_item.base_path}"
     end
 
     it "responds with 410" do
@@ -290,7 +287,7 @@ describe "Fetching content items", type: :request do
     let(:gone_item) { FactoryGirl.create(:gone_content_item_with_details) }
 
     before do
-      get_content gone_item
+      get "/content#{gone_item.base_path}"
     end
 
     it "responds with 200" do
