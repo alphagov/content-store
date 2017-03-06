@@ -2,7 +2,7 @@ class PublishIntentsController < ApplicationController
   before_action :parse_json_request, only: [:update]
 
   def show
-    intent = PublishIntent.find_by(base_path: encoded_base_path)
+    intent = PublishIntent.find_by(base_path: encoded_request_path)
 
     render json: intent
   end

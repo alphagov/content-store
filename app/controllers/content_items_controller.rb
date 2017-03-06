@@ -3,19 +3,19 @@ class ContentItemsController < ApplicationController
 
   def show
     item = Rails.application.statsd.time('show.find_content_item') do
-      base_path = ContentItem::BasePathForPath.(encoded_base_path)
+      base_path = ContentItem::BasePathForPath.(encoded_request_path)
       ContentItem.where(base_path: base_path).first
     end
 
     intent = Rails.application.statsd.time('show.find_publish_intent') do
-      base_path = item ? item.base_path : encoded_base_path
+      base_path = item ? item.base_path : encoded_request_path
       PublishIntent.where(base_path: base_path).first
     end
 
     set_cache_headers(item, intent)
 
     raise Mongoid::Errors::DocumentNotFound.new(
-      ContentItem, base_path: encoded_base_path
+      ContentItem, base_path: encoded_request_path
     ) unless item
 
     if can_view(item)
@@ -48,7 +48,7 @@ class ContentItemsController < ApplicationController
   end
 
   def destroy
-    ContentItem.find_by(base_path: base_path).destroy
+    ContentItem.find_by(base_path: encoded_base_path).destroy
     render status: :ok
   end
 
