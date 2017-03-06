@@ -29,6 +29,9 @@ class PublishIntent
   field :rendering_app, type: String
   field :routes, type: Array, default: []
 
+  # We want to look up this model by route as well as the base_path
+  index("routes.path" => 1, "routes.type" => 1)
+
   validates :base_path, absolute_path: true
   validates :publish_time, presence: true
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/
