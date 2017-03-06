@@ -85,6 +85,11 @@ describe PublishIntent, type: :model do
     end
   end
 
+  describe ".find_by_path" do
+    subject { described_class.find_by_path(path) }
+    it_behaves_like "find_by_path", :publish_intent
+  end
+
   describe "#past?" do
     let(:intent) { build(:publish_intent) }
 

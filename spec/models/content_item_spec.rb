@@ -89,6 +89,11 @@ describe ContentItem, type: :model do
     end
   end
 
+  describe ".find_by_path" do
+    subject { described_class.find_by_path(path) }
+    it_behaves_like "find_by_path", :content_item
+  end
+
   it "should set updated_at on upsert" do
     item = build(:content_item)
     Timecop.freeze do

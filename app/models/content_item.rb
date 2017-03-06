@@ -40,6 +40,10 @@ class ContentItem
     )
   end
 
+  def self.find_by_path(path)
+    ::FindByPath.new(self).find(path)
+  end
+
   field :_id, as: :base_path, type: String, overwrite: true
   field :content_id, type: String
   field :title, type: String

@@ -17,6 +17,10 @@ class PublishIntent
     return false, intent
   end
 
+  def self.find_by_path(path)
+    ::FindByPath.new(self).find(path)
+  end
+
   PUBLISH_TIME_LEEWAY = 1.minute
 
   field :_id, as: :base_path, type: String, overwrite: true
