@@ -31,8 +31,12 @@ to a separate gem.
 To retrieve content from the content store, make a GET request:
 
 ``` sh
-  curl https://content-store.publishing.service.gov.uk/content<base_path>
+  curl https://content-store.publishing.service.gov.uk/content<path>
 ```
+
+If the `path` matches a `base_path` content will be returned, whereas if the
+`path` matches a route a 303 redirect will be returned to the content at the
+`base_path`.
 
 Examples of the JSON representation of content items can be found in [output_examples](output_examples).
 
