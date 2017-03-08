@@ -28,7 +28,7 @@ gem 'govuk-content-schema-test-helpers', '~> 1.4'
 gem 'uuidtools', '2.1.5'
 
 group :development, :test do
-  gem 'rspec-rails', '~> 3.0.2'
+  gem 'rspec-rails', '~> 3.0'
   gem 'database_cleaner', '~> 1.5.3'
   gem 'factory_girl', '~> 4.4'
   gem 'webmock', '2.1.0', require: false
