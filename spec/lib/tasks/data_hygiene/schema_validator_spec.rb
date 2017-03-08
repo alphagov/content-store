@@ -22,10 +22,8 @@ RSpec.describe DataHygiene::SchemaValidator, :report_errors do
       .with(Rails.root.join("tmp", "some_format-validation-errors.csv"), "w")
       .and_yield(csv_file)
 
-    allow(File).to receive(:read).with(anything)
-
-    allow(JSON).to receive(:load)
-      .with(anything).and_return(schema)
+    allow(File).to receive(:read).with(%r{/formats/some_format/frontend/schema.json$})
+      .and_return(schema.to_json)
 
     expect(log).to receive(:puts)
       .with("Validating 1 items with format 'some_format'\n\n")

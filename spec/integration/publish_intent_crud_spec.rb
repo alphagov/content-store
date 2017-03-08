@@ -59,11 +59,12 @@ describe "CRUD of publish intents", type: :request do
 
       context "with a corresponding content-item" do
         before :each do
-          create(:content_item,
-                  base_path: "/vat-rates",
-                  rendering_app: "frontend",
-                  routes: [{ "path" => "/vat-rates", "type" => "exact" }]
-                )
+          create(
+            :content_item,
+            base_path: "/vat-rates",
+            rendering_app: "frontend",
+            routes: [{ "path" => "/vat-rates", "type" => "exact" }]
+          )
           WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
         end
 
@@ -161,7 +162,8 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "returns a 303 redirect for a path match" do
-      create(:publish_intent,
+      create(
+        :publish_intent,
         base_path: "/vat-rates",
         routes: [
           { path: "/vat-rates", type: "exact" },

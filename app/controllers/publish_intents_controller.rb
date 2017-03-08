@@ -13,14 +13,9 @@ class PublishIntentsController < ApplicationController
   def update
     result, intent = PublishIntent.create_or_update(encoded_base_path, @request_data)
 
-    if result
-      status = (result == :created ? :created : :ok)
-    else
-      status = :unprocessable_entity
-    end
     response_body = {}
     response_body[:errors] = intent.errors.as_json if intent.errors.any?
-    render json: response_body, status: status
+    render json: response_body, status: update_status(result)
   end
 
   def destroy
@@ -35,5 +30,10 @@ private
   def redirect_canonical(intent)
     route = publish_intent_url(intent.base_path_without_root)
     redirect_to route, status: 303
+  end
+
+  def update_status(result)
+    return :unprocessable_entity unless result
+    result == :created ? :created : :ok
   end
 end

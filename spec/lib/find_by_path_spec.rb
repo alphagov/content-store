@@ -80,7 +80,8 @@ describe FindByPath do
       context "but there is another item with a better path match" do
         let(:path) { "/base-path/prefix-route/with-extra/segments" }
         let!(:better_prefix_match) do
-          create(:compatible_model,
+          create(
+            :compatible_model,
             base_path: "/base_path/prefix-route",
             prefix_routes: "/base-path/prefix-route/with-extra",
           )
@@ -93,7 +94,8 @@ describe FindByPath do
         let(:path) { prefix_route_path }
         let(:matching_base_path) { "/base-path/prefix-route" }
         let!(:exact_match) do
-          create(:compatible_model,
+          create(
+            :compatible_model,
             base_path: matching_base_path,
             exact_routes: prefix_route_path,
           )

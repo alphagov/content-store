@@ -38,7 +38,8 @@ describe "Public API requests for content items", type: :request do
 
   context "when we match on a path in routes and not a base path" do
     before do
-      create(:content_item,
+      create(
+        :content_item,
         base_path: "/base-path",
         routes: [
           { path: "/base-path", type: "exact" },
@@ -51,6 +52,5 @@ describe "Public API requests for content items", type: :request do
       get "/api/content/base-path/segment"
       expect(response).to redirect_to("/api/content/base-path")
     end
-
   end
 end

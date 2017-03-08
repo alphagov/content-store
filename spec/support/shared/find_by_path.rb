@@ -13,7 +13,8 @@ shared_examples "find_by_path" do |factory|
   context "when an exact route matches" do
     let(:path) { "/base-path/exact-route" }
     let!(:match) do
-      create(factory,
+      create(
+        factory,
         base_path: "/base-path",
         routes: [
           { path: "/base-path", type: "exact" },
@@ -27,7 +28,8 @@ shared_examples "find_by_path" do |factory|
   context "when a prefix route matches" do
     let(:path) { "/base-path/prefix-route/that-is/very-deep" }
     let!(:match) do
-      create(factory,
+      create(
+        factory,
         base_path: "/base-path",
         routes: [
           { path: "/base-path", type: "exact" },
