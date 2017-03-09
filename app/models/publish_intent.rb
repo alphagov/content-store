@@ -59,9 +59,7 @@ class PublishIntent
   end
 
   def base_path_without_root
-    return nil unless base_path
-
-    base_path.sub(%r{^/}, "")
+    base_path&.sub(%r{^/}, "")
   end
 
 private
