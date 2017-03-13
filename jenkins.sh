@@ -5,6 +5,7 @@ set -e
 export RAILS_ENV=test
 export GOVUK_CONTENT_SCHEMAS_PATH=/tmp/govuk-content-schemas
 export COVERAGE=on
+export PACT_BROKER_BASE_URL=https://pact-broker.cloudapps.digital
 
 # Cleanup anything left from previous test runs
 git clean -fdx
