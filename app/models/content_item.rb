@@ -40,6 +40,10 @@ class ContentItem
     )
   end
 
+  def self.find_by_path(path)
+    ::FindByPath.new(self).find(path)
+  end
+
   field :_id, as: :base_path, type: String, overwrite: true
   field :content_id, type: String
   field :title, type: String
@@ -76,6 +80,10 @@ class ContentItem
   # get hold of these related items purely from the index, without having to go
   # and fetch the entire document.
   index(content_id: 1, locale: 1, format: 1, updated_at: -1, title: 1, _id: 1)
+
+  # We want to look up content items by whether they match a route and the type
+  # of route.
+  index("routes.path" => 1, "routes.type" => 1)
 
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
@@ -147,9 +155,7 @@ class ContentItem
   end
 
   def base_path_without_root
-    return nil unless base_path
-
-    base_path.sub(%r{^/}, "")
+    base_path&.sub(%r{^/}, "")
   end
 
 protected

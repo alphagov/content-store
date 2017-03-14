@@ -24,7 +24,7 @@ describe "Fetching content items", type: :request do
     end
 
     before do
-      get_content content_item
+      get "/content#{content_item.base_path}"
     end
 
     it "returns a 200 OK response" do
@@ -122,7 +122,7 @@ describe "Fetching content items", type: :request do
   context "a content item with a non-ASCII base_path" do
     let(:content_item) { create(:content_item, base_path: URI.encode('/news/בוט לאינד')) }
 
-    before(:each) { get_content content_item }
+    before(:each) { get "/content#{content_item.base_path}" }
 
     it "returns a 200 OK response" do
       expect(response.status).to eq(200)
@@ -163,6 +163,84 @@ describe "Fetching content items", type: :request do
     end
   end
 
+  context "when requesting an exact route within a base_path" do
+    let!(:content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        routes: [
+          { path: "/base-path/exact", type: "exact" },
+        ],
+      )
+    end
+
+    let(:requested_path) { "/base-path/exact" }
+    let(:colliding_path) { "/does-not-collide" }
+
+    let!(:colliding_content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: colliding_path,
+        content_id: SecureRandom.uuid
+      )
+    end
+
+    before do
+      get "/content#{requested_path}"
+    end
+
+    it "returns a 303 See Other response" do
+      expect(response.status).to eq(303)
+    end
+
+    it "returns a redirect to the item by base_path" do
+      expect(response).to redirect_to("/content/base-path")
+    end
+
+    context "and a different content item has the base_path of the route" do
+      let(:colliding_path) { "/base-path/exact" }
+      it "returns the colliding content item" do
+        expect(response.content_type).to eq("application/json")
+        expect(response.body).to eq(present(colliding_content_item))
+      end
+    end
+  end
+
+  context "when requesting a prefix route within a base_path" do
+    let!(:content_item) do
+      FactoryGirl.create(
+        :content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        routes: [
+          { path: "/base-path/prefix", type: "prefix" },
+        ],
+      )
+    end
+    let(:requested_path) { "/base-path/prefix" }
+
+    before do
+      get "/content#{requested_path}"
+    end
+
+    it "returns a 303 See Other response" do
+      expect(response.status).to eq(303)
+    end
+
+    it "returns a redirect to the item by base_path" do
+      expect(response).to redirect_to("/content/base-path")
+    end
+
+    context "and we request a route within the prefix" do
+      let(:requested_path) { "/base-path/prefix/deeply/nested/path" }
+
+      it "returns a redirect to the item by base_path" do
+        expect(response).to redirect_to("/content/base-path")
+      end
+    end
+  end
+
   context "a withdrawn content item" do
     let(:withdrawn_at) { DateTime.parse("2016-05-17 11:20") }
     let(:withdrawn_item) do
@@ -176,7 +254,7 @@ describe "Fetching content items", type: :request do
     end
 
     it "displays the withdrawal explanation and time" do
-      get_content withdrawn_item
+      get "/content#{withdrawn_item.base_path}"
 
       data = JSON.parse(response.body)
 
@@ -189,7 +267,7 @@ describe "Fetching content items", type: :request do
     let(:gone_item) { FactoryGirl.create(:gone_content_item) }
 
     before do
-      get_content gone_item
+      get "/content#{gone_item.base_path}"
     end
 
     it "responds with 410" do
@@ -209,7 +287,7 @@ describe "Fetching content items", type: :request do
     let(:gone_item) { FactoryGirl.create(:gone_content_item_with_details) }
 
     before do
-      get_content gone_item
+      get "/content#{gone_item.base_path}"
     end
 
     it "responds with 200" do

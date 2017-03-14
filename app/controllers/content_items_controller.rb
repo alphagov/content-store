@@ -3,18 +3,17 @@ class ContentItemsController < ApplicationController
 
   def show
     item = Rails.application.statsd.time('show.find_content_item') do
-      ContentItem.where(base_path: encoded_base_path).first
+      ContentItem.find_by_path(encoded_request_path)
     end
 
     intent = Rails.application.statsd.time('show.find_publish_intent') do
-      PublishIntent.where(base_path: encoded_base_path).first
+      PublishIntent.find_by_path(encoded_request_path)
     end
 
     set_cache_headers(item, intent)
 
-    raise Mongoid::Errors::DocumentNotFound.new(
-      ContentItem, base_path: encoded_base_path
-    ) unless item
+    return error_404 unless item
+    return redirect_canonical(item) if item.base_path != encoded_request_path
 
     if can_view(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
@@ -46,11 +45,24 @@ class ContentItemsController < ApplicationController
   end
 
   def destroy
-    ContentItem.find_by(base_path: base_path).destroy
+    ContentItem.find_by(base_path: encoded_base_path).destroy
     render status: :ok
   end
 
 private
+
+  def redirect_canonical(content_item)
+    route = api_url_method.(content_item.base_path_without_root)
+    redirect_to route, status: 303
+  end
+
+  def can_view(item)
+    if fact_check_id_header.present?
+      item.fact_checkable_with?(fact_check_id_header)
+    else
+      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
+    end
+  end
 
   def authenticated_user_uid
     request.headers['X-Govuk-Authenticated-User']
@@ -62,14 +74,6 @@ private
 
   def invalid_user_id?
     authenticated_user_uid == 'invalid'
-  end
-
-  def can_view(item)
-    if fact_check_id_header.present?
-      item.fact_checkable_with?(fact_check_id_header)
-    else
-      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
-    end
   end
 
   def json_forbidden_response

@@ -17,6 +17,10 @@ class PublishIntent
     return false, intent
   end
 
+  def self.find_by_path(path)
+    ::FindByPath.new(self).find(path)
+  end
+
   PUBLISH_TIME_LEEWAY = 1.minute
 
   field :_id, as: :base_path, type: String, overwrite: true
@@ -24,6 +28,9 @@ class PublishIntent
   field :publishing_app, type: String
   field :rendering_app, type: String
   field :routes, type: Array, default: []
+
+  # We want to look up this model by route as well as the base_path
+  index("routes.path" => 1, "routes.type" => 1)
 
   validates :base_path, absolute_path: true
   validates :publish_time, presence: true
@@ -49,6 +56,10 @@ class PublishIntent
   # Called nightly from a cron job
   def self.cleanup_expired
     where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago).delete_all
+  end
+
+  def base_path_without_root
+    base_path&.sub(%r{^/}, "")
   end
 
 private

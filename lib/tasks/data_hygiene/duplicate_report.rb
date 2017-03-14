@@ -86,12 +86,13 @@ module Tasks
           content_item_fields = %w(
             _id content_id title format locale publishing_app
             rendering_app routes redirects phase analytics_identifier
-            updated_at)
+            updated_at
+          )
 
           csv << content_item_fields
           content_items.each do |content_item|
             csv << content_item_fields.map do |field|
-              content_item.send("#{field}")
+              content_item.send(field.to_s)
             end
           end
         end

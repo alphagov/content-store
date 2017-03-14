@@ -81,11 +81,13 @@ return a 409 if the `base_path` is already registered to a different
 Details of a publish intent can be queried by making a GET request:
 
 ``` sh
-curl https://content-store.publishing.service.gov.uk/publish_intents<base_path>
+curl https://content-store.publishing.service.gov.uk/publish_intents<path>
 ```
 
-This will return a 200 along with the details of the intent as JSON, ot a 404
-if a matching intent wasn't found.
+If `<path>` matches a `base_path` of a publish intent this will return a 200
+along with details of the intent. If it matches a route inside the intent it
+will return a 303 redirect to the intent at a base path. If no intent matching
+the `<path>` is found a 404 will be returned.
 
 ## Deleting an intent to publish
 

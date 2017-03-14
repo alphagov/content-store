@@ -19,8 +19,16 @@ private
     head :bad_request
   end
 
+  def encoded_request_path
+    URI.escape(request_path)
+  end
+
   def encoded_base_path
     URI.escape(base_path)
+  end
+
+  def request_path
+    "/#{params[:path_without_root]}"
   end
 
   def base_path

@@ -22,6 +22,8 @@ module ContentStore
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.eager_load_paths << "#{config.root}/lib"
+
     config.i18n.enforce_available_locales = true
     config.i18n.available_locales = [
       :en, :ar, :az, :be, :bg, :bn, :cs, :cy, :de, :dr, :el, :es, :'es-419',

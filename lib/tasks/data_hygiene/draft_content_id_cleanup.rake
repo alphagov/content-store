@@ -1,7 +1,7 @@
 namespace :data_hygiene do
   namespace :draft_content_id_cleanup do
     def run(cleanup: false)
-      unless ENV["MONGODB_URI"] && ENV["MONGODB_URI"].include?("draft")
+      unless ENV["MONGODB_URI"]&.include?("draft")
         raise "This should only be run against the draft content store"
       end
 

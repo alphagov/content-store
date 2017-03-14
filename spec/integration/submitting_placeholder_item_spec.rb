@@ -40,13 +40,14 @@ describe "submitting placeholder items to the content store", type: :request do
   context 'updating an existing content item' do
     before(:each) do
       Timecop.travel(30.minutes.ago) do
-        @item = create(:content_item,
-                        title: "Original title",
-                        base_path: "/vat-rates",
-                        need_ids: ["100321"],
-                        public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
-                        details: { "foo" => "bar" }
-                      )
+        @item = create(
+          :content_item,
+          title: "Original title",
+          base_path: "/vat-rates",
+          need_ids: ["100321"],
+          public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
+          details: { "foo" => "bar" }
+        )
       end
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
     end

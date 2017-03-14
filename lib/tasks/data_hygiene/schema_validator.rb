@@ -53,7 +53,7 @@ module DataHygiene
     def schema
       prefix_path = Rails.env.development? ? "../govuk-content-schemas/dist" : "govuk-content-schemas"
       schema_path = "#{prefix_path}/formats/#{schema_name}/frontend/schema.json"
-      @schema ||= JSON.load(File.read(schema_path))
+      @schema ||= JSON.parse(File.read(schema_path))
     end
 
     def report_path

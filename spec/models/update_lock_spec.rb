@@ -101,7 +101,8 @@ describe UpdateLock, type: :model do
               subject.check_availability!(attributes)
             }.to raise_error(
               OutOfOrderTransmissionError,
-              /has a newer \(or equal\) payload_version/)
+              /has a newer \(or equal\) payload_version/
+            )
           end
         end
 
