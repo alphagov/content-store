@@ -215,21 +215,21 @@ describe ContentItem, type: :model do
       end
     end
 
-    context "an access-limited by fact_check_id content item" do
-      let!(:content_item) { create(:access_limited_content_item, :by_fact_check_id) }
-      let(:fact_check_id) { content_item.access_limited['fact_check_ids'].first }
+    context "an access-limited by auth_bypass_id content item" do
+      let!(:content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
+      let(:auth_bypass_id) { content_item.access_limited['auth_bypass_ids'].first }
       let(:logged_in_user) { 'authenticated_user_uid' }
 
       it "is access limited" do
         expect(content_item.access_limited?).to be(true)
       end
 
-      it "is fact_checkable_with a valid fact_check_id" do
-        expect(content_item.fact_checkable_with?(fact_check_id)).to be(true)
+      it "includes a valid auth_bypass_id" do
+        expect(content_item.includes_auth_bypass_id_or_fact_check_id?(auth_bypass_id)).to be(true)
       end
 
-      it "is not fact_checkable_with an invalid fact check token" do
-        expect(content_item.fact_checkable_with?("foo")).to be(false)
+      it "does not include a valid auth bypass token when the id is invalid" do
+        expect(content_item.includes_auth_bypass_id_or_fact_check_id?("foo")).to be(false)
       end
 
       it 'is viewable by an authenticated user' do
