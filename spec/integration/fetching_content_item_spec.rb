@@ -43,6 +43,8 @@ describe "Fetching content items", type: :request do
         format
         schema_name
         document_type
+        email_document_supertype
+        government_document_supertype
         navigation_document_supertype
         user_journey_document_supertype
         need_ids

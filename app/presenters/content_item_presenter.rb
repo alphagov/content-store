@@ -11,8 +11,10 @@ class ContentItemPresenter
     base_path
     content_id
     document_type
+    email_document_supertype
     first_published_at
     format
+    government_document_supertype
     locale
     navigation_document_supertype
     need_ids

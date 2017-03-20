@@ -10,6 +10,8 @@ describe "End-to-end behaviour", type: :request do
     "format" => "answer",
     "schema_name" => "answer",
     "document_type" => "travel_advice",
+    "email_document_supertype" => "publications",
+    "government_document_supertype" => "new-stories",
     "navigation_document_supertype" => "guidance",
     "user_journey_document_supertype" => "finding",
     "publishing_app" => "publisher",

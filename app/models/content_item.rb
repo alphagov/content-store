@@ -50,6 +50,8 @@ class ContentItem
   field :description, type: Hash, default: { "value" => nil }
   field :format, type: String
   field :document_type, type: String
+  field :email_document_supertype, type: String, default: ''
+  field :government_document_supertype, type: String, default: ''
   field :navigation_document_supertype, type: String, default: ''
   field :user_journey_document_supertype, type: String, default: ''
   field :schema_name, type: String
