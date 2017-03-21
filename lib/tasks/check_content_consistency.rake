@@ -4,8 +4,13 @@ namespace :check_content_consistency do
     errors = checker.call
 
     if errors.any?
-      puts "#{base_path} 😱"
-      puts errors
+      Airbrake.notify(
+        "Found an inconsistent content item: #{base_path} 😱",
+        parameters: {
+          base_path: base_path,
+          errors: errors,
+        }
+      )
     end
 
     errors.none?
