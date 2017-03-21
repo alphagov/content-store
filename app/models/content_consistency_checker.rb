@@ -1,15 +1,18 @@
 require 'gds_api/router'
 
 class ContentConsistencyChecker
-  attr_reader :base_path
+  attr_reader :base_path, :ignore_recent
 
-  def initialize(base_path)
+  def initialize(base_path, ignore_recent = false)
     @base_path = base_path
+    @ignore_recent = ignore_recent
     @errors = []
   end
 
   def call
     return @errors unless content_item
+
+    return @errors if ignore_recent && content_item.updated_at < 1.day.ago
 
     redirects.each do |redirect|
       check_redirect(redirect)

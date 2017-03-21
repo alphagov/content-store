@@ -1,6 +1,6 @@
 namespace :check_content_consistency do
-  def check_content(base_path)
-    checker = ContentConsistencyChecker.new(base_path)
+  def check_content(base_path, ignore_recent = false)
+    checker = ContentConsistencyChecker.new(base_path, ignore_recent)
     errors = checker.call
 
     if errors.any?
@@ -18,11 +18,14 @@ namespace :check_content_consistency do
   end
 
   desc "Check all the items for consistency with the router-api"
-  task all: :environment do
+  task :all, [:ignore_recent] => [:environment] do |_, args|
     items = ContentItem.pluck(:base_path)
     failures = items.reject do |base_path|
-      check_content(base_path)
+      check_content(
+        base_path,
+        args.fetch(:ignore_recent, false) == "true"
+      )
     end
-    puts "Results: #{failures.count} failures out of #{docs.count}."
+    puts "Results: #{failures.count} failures out of #{items.count}."
   end
 end
