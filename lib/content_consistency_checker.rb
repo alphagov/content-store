@@ -1,14 +1,14 @@
 require 'gds_api/router'
 
 class ContentConsistencyChecker
-  attr_reader :base_path
+  def initialize
 
-  def initialize(base_path)
-    @base_path = base_path
-    @errors = []
   end
 
-  def call
+  def call(base_path)
+    @base_path = base_path
+    @errors = []
+
     return @errors unless content_item
 
     redirects.each do |redirect|
@@ -23,6 +23,7 @@ class ContentConsistencyChecker
   end
 
 private
+  attr_reader :base_path
 
   def get_route(path)
     begin
