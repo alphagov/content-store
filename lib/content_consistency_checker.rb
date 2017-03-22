@@ -5,7 +5,7 @@ class ContentConsistencyChecker
     @routes = load_routes(routes)
   end
 
-  def call(base_path)
+  def check_content(base_path)
     @base_path = base_path
     @errors = []
 
