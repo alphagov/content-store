@@ -14,7 +14,7 @@ class InconsistentRedirectFinder
       rescue GdsApi::HTTPNotFound
         next
       end
-      route && route.handler == "redirect"
+      route && route["handler"] == "redirect"
     end
   end
 end
