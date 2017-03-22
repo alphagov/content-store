@@ -1,8 +1,8 @@
 require 'gds_api/router'
 
 class ContentConsistencyChecker
-  def initialize
-
+  def initialize(routes)
+    @routes = load_routes(routes)
   end
 
   def call(base_path)
@@ -25,10 +25,28 @@ class ContentConsistencyChecker
 private
   attr_reader :base_path
 
+  def load_routes(filename)
+    routes = {}
+
+    Zlib::GzipReader.open(filename) do |file|
+      csv = CSV.new(file)
+      keys = csv.gets
+      csv.each do |row|
+        route = Hash[keys.zip(row)]
+        route["disabled"] = route["disabled"] == "true"
+        route["updated_at"] = Time.parse(route["updated_at"])
+        incoming_path = route.fetch("incoming_path")
+        routes[incoming_path] = route
+      end
+    end
+
+    routes
+  end
+
   def get_route(path)
     begin
-      JSON.parse(router_api.get_route(path).raw_response_body)
-    rescue GdsApi::HTTPNotFound
+      @routes.fetch(path)
+    rescue KeyError
       @errors << "Path (#{path}) was not found!"
       nil
     end
@@ -39,6 +57,8 @@ private
 
     res = get_route(path)
     return unless res
+
+    return if content_item.updated_at > res["updated_at"]
 
     if res["handler"] != "redirect"
       @errors << "router-api: Handler is not a redirect for #{path}."
@@ -57,6 +77,8 @@ private
     res = get_route(path)
     return unless res
 
+    return if content_item.updated_at > res["updated_at"]
+
     if res["handler"] != expected_handler
       @errors << "Handler (#{res['handler']}) does not match expected item " \
                  "handler (#{expected_handler})."
@@ -71,10 +93,10 @@ private
   end
 
   def content_item
-    @content_item ||= ContentItem.find_by!(base_path: base_path)
+    ContentItem.find_by!(base_path: base_path)
   rescue Mongoid::Errors::DocumentNotFound
     @errors << "Content (#{base_path}) could not be found."
-    @content_item ||= nil
+    nil
   end
 
   def expected_handler
