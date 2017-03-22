@@ -1,29 +1,26 @@
 require 'gds_api/router'
 
 class ContentConsistencyChecker
+  attr_reader :errors
+
   def initialize(routes)
     @routes = load_routes(routes)
+    @errors = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def check_content(base_path)
-    @base_path = base_path
-    @errors = []
+  def check_content
+    ContentItem.each do |content_item|
+      content_item.redirects.each do |redirect|
+        check_redirect(content_item, redirect)
+      end
 
-    return @errors unless content_item
-
-    redirects.each do |redirect|
-      check_redirect(redirect)
+      content_item.routes.each do |route|
+        check_route(content_item, route)
+      end
     end
-
-    routes.each do |route|
-      check_route(route)
-    end
-
-    @errors
   end
 
 private
-  attr_reader :base_path
 
   def load_routes(filename)
     routes = {}
@@ -47,12 +44,12 @@ private
     begin
       @routes.fetch(path)
     rescue KeyError
-      @errors << "Path (#{path}) was not found!"
+      @errors[path] << "Path (#{path}) was not found!"
       nil
     end
   end
 
-  def check_redirect(redirect)
+  def check_redirect(content_item, redirect)
     path = redirect[:path]
 
     res = get_route(path)
@@ -61,17 +58,19 @@ private
     return if content_item.updated_at > res["updated_at"]
 
     if res["handler"] != "redirect"
-      @errors << "router-api: Handler is not a redirect for #{path}."
+      @errors[content_item.base_path] << "Handler is not a redirect for " \
+                                         "#{path}."
     end
 
     if res["redirect_to"] != redirect[:destination]
-      @errors << "router-api: Route destination (#{res['redirect_to']}) " \
-                 "does not match item destination " \
-                 "(#{redirect['destination']})."
+      @errors[content_item.base_path] << "Route destination " \
+                                         "(#{res['redirect_to']}) does not " \
+                                         "match item destination " \
+                                         "(#{redirect['destination']})."
     end
   end
 
-  def check_route(route)
+  def check_route(content_item, route)
     path = route[:path]
 
     res = get_route(path)
@@ -79,27 +78,22 @@ private
 
     return if content_item.updated_at > res["updated_at"]
 
-    if res["handler"] != expected_handler
-      @errors << "Handler (#{res['handler']}) does not match expected item " \
-                 "handler (#{expected_handler})."
+    if res["handler"] != expected_handler(content_item)
+      @errors[content_item.base_path] << "Handler (#{res['handler']}) does " \
+                                         "not match expected item handler " \
+                                         "(#{expected_handler(content_item)})."
     end
 
-    if res["backend_id"] != rendering_app
-      @errors << "Backend ID (#{res['backend_id']}) does not match item " \
-                 "rendering app (#{rendering_app})."
+    if res["backend_id"] != content_item.rendering_app
+      @errors[content_item.base_path] << "Backend ID (#{res['backend_id']}) " \
+                                         "does not match item rendering app " \
+                                         "(#{content_item.rendering_app})."
     end
 
-    @errors << "Route is marked as disabled." if res["disabled"]
+    @errors[content_item.base_path] << "Route is marked as disabled." if res["disabled"]
   end
 
-  def content_item
-    ContentItem.find_by!(base_path: base_path)
-  rescue Mongoid::Errors::DocumentNotFound
-    @errors << "Content (#{base_path}) could not be found."
-    nil
-  end
-
-  def expected_handler
+  def expected_handler(content_item)
     if content_item.gone?
       "gone"
     elsif content_item.redirect?
@@ -107,21 +101,5 @@ private
     else
       "backend"
     end
-  end
-
-  def routes
-    content_item.routes
-  end
-
-  def redirects
-    content_item.redirects
-  end
-
-  def rendering_app
-    content_item.rendering_app
-  end
-
-  def router_api
-    Rails.application.router_api
   end
 end

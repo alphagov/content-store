@@ -1,28 +1,24 @@
 require "content_consistency_checker"
 
-def report_error(base_path, errors)
+def report_errors(errors)
   Airbrake.notify(
-    "Found an inconsistent content item.",
+    "Found inconsistent content items.",
     parameters: {
-      base_path: base_path,
       errors: errors,
     }
   )
 
-  puts "#{base_path} 😱"
-  puts errors
-end
-
-def check_content(checker, base_path)
-  errors = checker.check_content(base_path)
-  report_error(base_path, errors) if errors.any?
+  errors.each do |base_path, item_errors|
+    puts "#{base_path} 😱"
+    puts item_errors
+  end
 end
 
 desc "Check the items for consistency with the router-api"
 task :check_content_consistency, [:routes] => [:environment] do |_, args|
   checker = ContentConsistencyChecker.new(args[:routes])
-  items = ContentItem.pluck(:base_path)
-  items.each do |base_path|
-    check_content(checker, base_path)
-  end
+  checker.check_content
+
+  errors = checker.errors
+  report_errors(errors) if errors.any?
 end
