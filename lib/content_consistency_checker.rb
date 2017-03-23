@@ -9,7 +9,7 @@ class ContentConsistencyChecker
   end
 
   def check_content
-    ContentItem.each do |content_item|
+    content_items_to_check.each do |content_item|
       content_item.redirects.each do |redirect|
         check_redirect(content_item, redirect)
       end
@@ -21,6 +21,12 @@ class ContentConsistencyChecker
   end
 
 private
+
+  def content_items_to_check
+    ContentItem
+      .where(:content_id.nin => ["", nil])
+      .where(:schema_name.not => /^placeholder/)
+  end
 
   def load_routes(filename)
     routes = {}
