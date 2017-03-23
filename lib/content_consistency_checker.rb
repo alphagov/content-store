@@ -1,11 +1,15 @@
-require 'gds_api/router'
+require "set"
+
+require "gds_api/router"
 
 class ContentConsistencyChecker
   attr_reader :errors
 
-  def initialize(routes)
+  def initialize(routes, router_data)
     @routes = load_routes(routes)
+    @remaining_routes = Set.new(@routes.keys)
     @errors = Hash.new { |hash, key| hash[key] = [] }
+    @router_data = load_router_data(router_data)
   end
 
   def check_content
@@ -17,6 +21,22 @@ class ContentConsistencyChecker
       content_item.routes.each do |route|
         check_route(content_item, route)
       end
+    end
+  end
+
+  def check_routes
+    @remaining_routes.each do |path|
+      next if @router_data.include?(path)
+
+      route = @routes.fetch(path)
+      next if route["disabled"]
+      next if route["handler"] == "gone"
+      next if route["handler"] == "redirect" && (route["backend_id"].nil? || route["backend_id"].empty?)
+
+      content_item = ContentItem.find_by_path(route["incoming_path"])
+      next if content_item
+
+      @errors[route["incoming_path"]] << "No content item available."
     end
   end
 
@@ -39,7 +59,19 @@ private
         route["disabled"] = route["disabled"] == "true"
         route["updated_at"] = Time.parse(route["updated_at"])
         incoming_path = route.fetch("incoming_path")
-        routes[incoming_path] = route
+        routes[incoming_path.to_sym] = route
+      end
+    end
+
+    routes
+  end
+
+  def load_router_data(path)
+    routes = Set.new
+
+    Dir.glob(path + "/data/*.csv").each do |path|
+      CSV.foreach(path) do |row|
+        routes.add?(row[0].to_sym)
       end
     end
 
@@ -48,7 +80,9 @@ private
 
   def get_route(path)
     begin
-      @routes.fetch(path)
+      route = @routes.fetch(path.to_sym)
+      @remaining_routes.delete?(path.to_sym)
+      route
     rescue KeyError
       @errors[path] << "Path (#{path}) was not found!"
       nil

@@ -2,7 +2,7 @@ require "content_consistency_checker"
 
 def report_errors(errors)
   Airbrake.notify(
-    "Found inconsistent content items.",
+    "Inconsistent content items",
     parameters: {
       errors: errors,
     }
@@ -15,9 +15,13 @@ def report_errors(errors)
 end
 
 desc "Check the items for consistency with the router-api"
-task :check_content_consistency, [:routes] => [:environment] do |_, args|
-  checker = ContentConsistencyChecker.new(args[:routes])
+task :check_content_consistency, [:routes, :router_data] => [:environment] do |_, args|
+  raise "Must pass routes.csv.gz file" unless args[:routes]
+  raise "Must pass location to router-data" unless args[:router_data]
+
+  checker = ContentConsistencyChecker.new(args[:routes], args[:router_data])
   checker.check_content
+  checker.check_routes
 
   errors = checker.errors
   report_errors(errors) if errors.any?
