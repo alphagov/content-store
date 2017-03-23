@@ -225,11 +225,11 @@ describe ContentItem, type: :model do
       end
 
       it "includes a valid auth_bypass_id" do
-        expect(content_item.includes_auth_bypass_id_or_fact_check_id?(auth_bypass_id)).to be(true)
+        expect(content_item.includes_auth_bypass_id?(auth_bypass_id)).to be(true)
       end
 
       it "does not include a valid auth bypass token when the id is invalid" do
-        expect(content_item.includes_auth_bypass_id_or_fact_check_id?("foo")).to be(false)
+        expect(content_item.includes_auth_bypass_id?("foo")).to be(false)
       end
 
       it 'is viewable by an authenticated user' do
