@@ -1,6 +1,7 @@
 FROM ruby:2.3.1
 RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean
 
+ENV GOVUK_APP_NAME content-store
 ENV GOVUK_CONTENT_SCHEMAS_PATH /govuk-content-schemas
 ENV MONGODB_URI mongodb://mongo/content-store
 ENV PORT 3068
