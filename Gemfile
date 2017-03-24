@@ -21,7 +21,7 @@ gem 'hashdiff', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', '36.0.1'
+  gem 'gds-api-adapters', "~> 41.0"
 end
 
 gem 'govuk-content-schema-test-helpers', '~> 1.4'

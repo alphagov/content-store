@@ -146,8 +146,8 @@ class ContentItem
     authorised_user_uids.empty? || authorised_user_uids.include?(user_uid)
   end
 
-  def fact_checkable_with?(fact_check_id)
-    fact_check_ids.include?(fact_check_id)
+  def includes_auth_bypass_id_or_fact_check_id?(auth_bypass_id)
+    auth_bypass_ids_or_fact_check_ids.include?(auth_bypass_id)
   end
 
   def register_routes(previous_item: nil)
@@ -170,6 +170,10 @@ private
 
   def authorised_user_uids
     access_limited.fetch('users', [])
+  end
+
+  def auth_bypass_ids_or_fact_check_ids
+    access_limited.fetch('auth_bypass_ids', fact_check_ids)
   end
 
   def fact_check_ids

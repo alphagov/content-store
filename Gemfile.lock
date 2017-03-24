@@ -68,7 +68,7 @@ GEM
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     find_a_port (1.0.1)
-    gds-api-adapters (36.0.1)
+    gds-api-adapters (41.0.0)
       link_header
       lrucache (~> 0.1.1)
       null_logger
@@ -119,7 +119,7 @@ GEM
     multi_json (1.12.1)
     netrc (0.11.0)
     nio4r (1.2.1)
-    nokogiri (1.7.0.1)
+    nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
     null_logger (0.0.1)
     pact (1.10.0)
@@ -142,7 +142,7 @@ GEM
       term-ansicolor (~> 1.0)
       thor
       webrick
-    pact-support (0.6.0)
+    pact-support (0.6.1)
       awesome_print (~> 1.1)
       find_a_port (~> 1.0.1)
       json
@@ -284,7 +284,7 @@ DEPENDENCIES
   ci_reporter_rspec (~> 1.0.0)
   database_cleaner (~> 1.5.3)
   factory_girl (~> 4.4)
-  gds-api-adapters (= 36.0.1)
+  gds-api-adapters (~> 41.0)
   govuk-content-schema-test-helpers (~> 1.4)
   govuk-lint
   hashdiff
@@ -306,4 +306,4 @@ DEPENDENCIES
   whenever (~> 0.9.4)
 
 BUNDLED WITH
-   1.11.2
+   1.14.5

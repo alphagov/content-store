@@ -48,20 +48,20 @@ describe "Fetching an access-limited by user-id content item", type: :request do
     end
   end
 
-  context "with a fact check ID specified in the header" do
-    let(:access_limited_content_item) { create(:access_limited_content_item, :by_fact_check_id) }
-    let(:fact_check_id) { access_limited_content_item.access_limited["fact_check_ids"].first }
+  context "with a auth bypass ID specified in the header" do
+    let(:access_limited_content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
+    let(:auth_bypass_id) { access_limited_content_item.access_limited["auth_bypass_ids"].first }
 
     before do
       get "/content/#{access_limited_content_item.base_path}",
-        params: {}, headers: { 'Govuk-Fact-Check-Id' => fact_check_id }
+        params: {}, headers: { 'Govuk-Auth-Bypass-Id' => auth_bypass_id }
     end
 
     it "marks the cache-control as private" do
       expect(cache_control["private"]).to eq(true)
     end
 
-    context "if the fact check ID matches" do
+    context "if the auth bypass ID matches" do
       it "returns the requested item" do
         expect(response.status).to eq(200)
         expect(response.content_type).to eq("application/json")
@@ -71,8 +71,8 @@ describe "Fetching an access-limited by user-id content item", type: :request do
       end
     end
 
-    context "if the fact check ID does not match" do
-      let(:fact_check_id) { SecureRandom.uuid }
+    context "if the auth bypass ID does not match" do
+      let(:auth_bypass_id) { SecureRandom.uuid }
       it "returns a 403 Forbidden response" do
         json = JSON.parse(response.body)
 

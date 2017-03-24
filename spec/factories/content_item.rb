@@ -74,10 +74,10 @@ FactoryGirl.define do
         }
       end
 
-      trait :by_fact_check_id do
+      trait :by_auth_bypass_id do
         access_limited {
           {
-            "fact_check_ids" => ["85aa9fd5-c514-4964-b931-5b597e4ec668"]
+            "auth_bypass_ids" => ["85aa9fd5-c514-4964-b931-5b597e4ec668"]
           }
         }
       end
