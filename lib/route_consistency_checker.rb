@@ -5,11 +5,11 @@ require "gds_api/router"
 class RouteConsistencyChecker
   attr_reader :errors
 
-  def initialize(routes, router_data)
-    @routes = load_routes(routes)
-    @remaining_routes = Set.new(@routes.keys)
+  def initialize(routes_filename, router_data_filename)
+    @routes = load_routes(routes_filename)
+    @router_data = load_router_data(router_data_filename)
+    @remaining_routes = Set.new(routes.keys)
     @errors = Hash.new { |hash, key| hash[key] = [] }
-    @router_data = load_router_data(router_data)
   end
 
   def check_content
@@ -25,10 +25,10 @@ class RouteConsistencyChecker
   end
 
   def check_routes
-    @remaining_routes.each do |path|
-      next if @router_data.include?(path)
+    remaining_routes.each do |path|
+      next if router_data.include?(path)
 
-      route = @routes.fetch(path)
+      route = routes.fetch(path)
       next if route["disabled"]
       next if route["handler"] == "gone"
       next if route["handler"] == "redirect" && !route["backend_id"].present?
@@ -36,11 +36,14 @@ class RouteConsistencyChecker
       content_item = ContentItem.find_by_path(route["incoming_path"])
       next if content_item
 
-      @errors[route["incoming_path"]] << "No content item available."
+      errors[route["incoming_path"]] << "No content item available."
     end
   end
 
 private
+
+  attr_reader :routes, :router_data, :remaining_routes
+  attr_writer :errors
 
   def content_items_to_check
     ContentItem
@@ -80,11 +83,11 @@ private
 
   def get_route(path)
     begin
-      route = @routes.fetch(path.to_sym)
-      @remaining_routes.delete?(path.to_sym)
+      route = routes.fetch(path.to_sym)
+      remaining_routes.delete?(path.to_sym)
       route
     rescue KeyError
-      @errors[path] << "Path (#{path}) was not found!"
+      errors[path] << "Path (#{path}) was not found!"
       nil
     end
   end
@@ -98,15 +101,14 @@ private
     return if content_item.updated_at > res["updated_at"]
 
     if res["handler"] != "redirect"
-      @errors[content_item.base_path] << "Handler is not a redirect for " \
-                                         "#{path}."
+      errors[content_item.base_path] << "Handler is not a redirect for #{path}."
     end
 
     if res["redirect_to"] != redirect[:destination]
-      @errors[content_item.base_path] << "Route destination " \
-                                         "(#{res['redirect_to']}) does not " \
-                                         "match item destination " \
-                                         "(#{redirect['destination']})."
+      errors[content_item.base_path] << "Route destination " \
+                                        "(#{res['redirect_to']}) does not " \
+                                        "match item destination " \
+                                        "(#{redirect['destination']})."
     end
   end
 
@@ -119,18 +121,18 @@ private
     return if content_item.updated_at > res["updated_at"]
 
     if res["handler"] != expected_handler(content_item)
-      @errors[content_item.base_path] << "Handler (#{res['handler']}) does " \
-                                         "not match expected item handler " \
-                                         "(#{expected_handler(content_item)})."
+      errors[content_item.base_path] << "Handler (#{res['handler']}) does " \
+                                        "not match expected item handler " \
+                                        "(#{expected_handler(content_item)})."
     end
 
     if res["backend_id"] != content_item.rendering_app
-      @errors[content_item.base_path] << "Backend ID (#{res['backend_id']}) " \
-                                         "does not match item rendering app " \
-                                         "(#{content_item.rendering_app})."
+      errors[content_item.base_path] << "Backend ID (#{res['backend_id']}) " \
+                                        "does not match item rendering app " \
+                                        "(#{content_item.rendering_app})."
     end
 
-    @errors[content_item.base_path] << "Route is marked as disabled." if res["disabled"]
+    errors[content_item.base_path] << "Route is marked as disabled." if res["disabled"]
   end
 
   def expected_handler(content_item)
