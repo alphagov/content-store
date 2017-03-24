@@ -2,7 +2,7 @@ require "set"
 
 require "gds_api/router"
 
-class ContentConsistencyChecker
+class RouteConsistencyChecker
   attr_reader :errors
 
   def initialize(routes, router_data)
@@ -31,7 +31,7 @@ class ContentConsistencyChecker
       route = @routes.fetch(path)
       next if route["disabled"]
       next if route["handler"] == "gone"
-      next if route["handler"] == "redirect" && (route["backend_id"].nil? || route["backend_id"].empty?)
+      next if route["handler"] == "redirect" && !route["backend_id"].present?
 
       content_item = ContentItem.find_by_path(route["incoming_path"])
       next if content_item
@@ -69,8 +69,8 @@ private
   def load_router_data(path)
     routes = Set.new
 
-    Dir.glob(path + "/data/*.csv").each do |path|
-      CSV.foreach(path) do |row|
+    Dir.glob(path + "/data/*.csv").each do |csv_path|
+      CSV.foreach(csv_path) do |row|
         routes.add?(row[0].to_sym)
       end
     end
