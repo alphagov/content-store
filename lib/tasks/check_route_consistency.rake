@@ -19,7 +19,10 @@ task :check_route_consistency, [:routes, :router_data] => [:environment] do |_, 
   raise "Must pass routes.csv.gz file" unless args[:routes]
   raise "Must pass location to router-data" unless args[:router_data]
 
-  checker = RouteConsistencyChecker.new(args[:routes], args[:router_data])
+  routes = RouteDumpLoader.load(args[:routes])
+  router_data = RouterDataLoader.load(args[:router_data])
+
+  checker = RouteConsistencyChecker.new(routes, router_data)
   checker.check_content
   checker.check_routes
 
