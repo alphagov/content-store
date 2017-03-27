@@ -7,7 +7,7 @@ class RouteConsistencyChecker
   def initialize(routes, router_data)
     @routes = routes
     @router_data = router_data
-    @remaining_routes = Set.new(routes.keys)
+    @checked_routes = Set.new
     @errors = Hash.new { |hash, key| hash[key] = [] }
   end
 
@@ -24,25 +24,21 @@ class RouteConsistencyChecker
   end
 
   def check_routes
-    remaining_routes.each do |path|
+    unchecked_routes.each do |path|
       next if router_data.include?(path)
 
       route = routes.fetch(path)
-      next if route.disabled
-      next if route.handler == "gone"
-      next if route.handler == "redirect" && !route.backend_id.present?
+      next unless is_valid_route?(route)
 
-      content_item = ContentItem.find_by_path(route.incoming_path)
-      next if content_item
+      content_item = find_content_item(route.incoming_path)
 
-      errors[route.incoming_path] << "No content item available."
+      errors[route.incoming_path] << "No content item available." unless content_item
     end
   end
 
 private
 
-  attr_reader :routes, :router_data, :remaining_routes
-  attr_writer :errors
+  attr_reader :routes, :router_data, :checked_routes
 
   def content_items_to_check
     ContentItem
@@ -50,31 +46,64 @@ private
       .where(:schema_name.not => /^placeholder/)
   end
 
+  def unchecked_routes
+    Set.new(routes.keys) - checked_routes
+  end
+
+  def is_valid_route?(route)
+    !route.disabled && route.handler != "gone" && !(route.handler == "redirect" && !route.backend_id.present?)
+  end
+
   def get_route(path)
-    begin
-      route = routes.fetch(path.to_sym)
-      remaining_routes.delete?(path.to_sym)
-      route
-    rescue KeyError
-      errors[path] << "Path (#{path}) was not found!"
-      nil
+    route = routes.fetch(path.to_sym)
+    checked_routes.add?(path.to_sym)
+    route
+  rescue KeyError
+    errors[path] << "Path (#{path}) was not found!"
+    nil
+  end
+
+  def find_content_item_for_field(path, kind)
+    items = ContentItem.where("#{kind}s.path" => path).entries
+    if items.length > 1
+      errors[path] << "Multiple content items returned for #{kind}."
+      return nil
     end
+    items.first
+  end
+
+  def find_content_item_by_route(path)
+    find_content_item_for_field(path, "route")
+  end
+
+  def find_content_item_by_redirect(path)
+    find_content_item_for_field(path, "redirect")
+  end
+
+  def find_content_item(path)
+    # We cannot use an 'or' query here as it seems to be slower than doing this
+    # irb(main):019:0> time { ContentItem.where(routes: { "$elemMatch" => { path: path } }).first }
+    #   0.000000   0.000000   0.000000 (  0.006512)
+    # irb(main):020:0> time { ContentItem.where(redirects: { "$elemMatch" => { path: path } }).first }
+    #   0.010000   0.000000   0.010000 (  0.004688)
+    # irb(main):021:0> time { ContentItem.or({ redirects: { "$elemMatch" => { path: path } } }, { routes: { "$elemMatch" => { path: path } } }).first }
+    #   0.000000   0.000000   0.000000 ( 11.314430)
+    find_content_item_by_route(path) || find_content_item_by_redirect(path)
   end
 
   def check_redirect(content_item, redirect)
     path = redirect[:path]
 
-    res = get_route(path)
-    return unless res
+    result = get_route(path)
 
-    return if content_item.updated_at > res.updated_at
+    return if !result || content_item.updated_at > result.updated_at
 
-    if res.handler != "redirect"
+    if result.handler != "redirect"
       errors[path] << "Handler should be a redirect."
     end
 
-    if res.redirect_to != redirect[:destination]
-      errors[path] << "Route destination (#{res.redirect_to}) does not " \
+    if result.redirect_to != redirect[:destination]
+      errors[path] << "Route destination (#{result.redirect_to}) does not " \
                       "match item destination (#{redirect[:destination]})."
     end
   end
@@ -82,22 +111,21 @@ private
   def check_route(content_item, route)
     path = route[:path]
 
-    res = get_route(path)
-    return unless res
+    result = get_route(path)
 
-    return if content_item.updated_at > res.updated_at
+    return if !result || content_item.updated_at > result.updated_at
 
-    if res.handler != expected_handler(content_item)
-      errors[path] << "Handler (#{res.handler}) does not match expected " \
+    if result.handler != expected_handler(content_item)
+      errors[path] << "Handler (#{result.handler}) does not match expected " \
                       "item handler (#{expected_handler(content_item)})."
     end
 
-    if res.backend_id != content_item.rendering_app
-      errors[path] << "Backend ID (#{res.backend_id}) does not match " \
+    if result.backend_id != content_item.rendering_app
+      errors[path] << "Backend ID (#{result.backend_id}) does not match " \
                       "item rendering app (#{content_item.rendering_app})."
     end
 
-    errors[path] << "Route is marked as disabled." if res.disabled
+    errors[path] << "Route is marked as disabled." if result.disabled
   end
 
   def expected_handler(content_item)
