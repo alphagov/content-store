@@ -87,6 +87,10 @@ class ContentItem
   # of route.
   index("routes.path" => 1, "routes.type" => 1)
 
+  # We want to look up content items by whether they match a redirect and the
+  # type of redirect.
+  index("redirects.path" => 1, "redirects.type" => 1)
+
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
   def as_json(options = nil)
