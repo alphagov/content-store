@@ -168,10 +168,16 @@ describe RouteSet, type: :model do
       redirects = [
         { path: '/path', type: 'exact', destination: '/new-path' },
         { path: '/path/sub/path', type: 'prefix', destination: '/somewhere-else' },
+        {
+          path: '/path/longer/sub/path',
+          type: 'prefix',
+          destination: '/somewhere-else-2',
+          segments_mode: 'ignore',
+        },
       ]
       route_set = RouteSet.new(redirects: redirects, base_path: '/path', is_redirect: true)
       route_set.register!
-      assert_redirect_routes_registered([['/path', 'exact', '/new-path'], ['/path/sub/path', 'prefix', '/somewhere-else']])
+      assert_redirect_routes_registered([['/path', 'exact', '/new-path'], ['/path/sub/path', 'prefix', '/somewhere-else'], ['/path/longer/sub/path', 'prefix', '/somewhere-else-2', 'ignore']])
     end
 
     it 'registers and commits all registerable gone routes for a gone item' do
