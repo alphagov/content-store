@@ -17,8 +17,8 @@ Pact.service_provider "Content Store" do
       pact_uri ENV.fetch('PUBLISHING_API_PACT_PATH', '../publishing-api/spec/pacts/publishing_api-content_store.json')
     else
       base_url = ENV.fetch("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
-      url = "#{base_url}/pacts/provider/#{URI.escape(name)}/consumer/#{URI.escape(consumer_name)}"
-      version_part = ENV['PUBLISHING_API_PACT_VERSION'] ? "versions/#{ENV['PUBLISHING_API_PACT_VERSION']}" : 'latest'
+      url = "#{base_url}/pacts/provider/#{CGI.escape(name)}/consumer/#{CGI.escape(consumer_name)}"
+      version_part = ENV['PUBLISHING_API_PACT_VERSION'] ? "versions/#{CGI.escape(ENV['PUBLISHING_API_PACT_VERSION'])}" : 'latest'
 
       pact_uri "#{url}/#{version_part}"
     end
