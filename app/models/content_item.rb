@@ -6,7 +6,8 @@ class ContentItem
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
-    lock.check_availability!(attributes)
+    payload_version = attributes["payload_version"]
+    lock.check_availability!(payload_version)
 
     result = previous_item ? :replaced : :created
 
