@@ -33,9 +33,6 @@ class ContentItem
         type: "conflict",
         code: "409",
         message: e.message,
-        fields: {
-          transmitted_at: [e.message],
-        }
       }
     )
   end
@@ -69,7 +66,6 @@ class ContentItem
   field :access_limited, type: Hash, default: {}
   field :phase, type: String, default: 'live'
   field :analytics_identifier, type: String
-  field :transmitted_at, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
 
