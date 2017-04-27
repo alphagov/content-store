@@ -120,12 +120,18 @@ private
                       "item handler (#{expected_handler(content_item)})."
     end
 
-    if result.backend_id != content_item.rendering_app
-      errors[path] << "Backend ID (#{result.backend_id}) does not match " \
-                      "item rendering app (#{content_item.rendering_app})."
+    if should_check_backend_id(result)
+      if result.backend_id != content_item.rendering_app
+        errors[path] << "Backend ID (#{result.backend_id}) does not match " \
+                        "item rendering app (#{content_item.rendering_app})."
+      end
     end
 
     errors[path] << "Route is marked as disabled." if result.disabled
+  end
+
+  def should_check_backend_id(route)
+    route.handler == "backend" || !route.backend_id.empty?
   end
 
   def expected_handler(content_item)
