@@ -14,7 +14,6 @@ describe "content item write API", type: :request do
       "need_ids" => %w(100123 100124),
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
-      "transmitted_at" => "2",
       "payload_version" => 1,
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
@@ -253,35 +252,13 @@ describe "content item write API", type: :request do
       create(
         :content_item,
         base_path: "/vat-rates",
-        transmitted_at: "2",
         payload_version: "2"
       )
     end
 
-    context "transmitted_at based" do
-      before do
-        put_json "/content/vat-rates", @data.except("payload_version")
-      end
-
-      it "responds with a HTTP 'conflict' status" do
-        expect(response.status).to eq(409)
-      end
-
-      it "provides a helpful error body" do
-        expect(response.body).to include(
-          "the latest ContentItem has a newer (or equal) transmitted_at of 2"
-        )
-      end
-
-      it "doesn't perform an update" do
-        content_item = ContentItem.where(base_path: "/vat-rates").first
-        expect(content_item.transmitted_at).to eq("2")
-      end
-    end
-
     context "payload_version based" do
       before do
-        put_json "/content/vat-rates", @data.except("transmitted_at")
+        put_json "/content/vat-rates", @data
       end
 
       it "responds with a HTTP 'conflict' status" do
@@ -301,12 +278,11 @@ describe "content item write API", type: :request do
     end
   end
 
-  context "without transmitted_at or payload_version" do
+  context "without payload_version" do
     before do
       create(
         :content_item,
         base_path: "/vat-rates",
-        transmitted_at: "2",
         payload_version: "1"
       )
     end
@@ -314,7 +290,6 @@ describe "content item write API", type: :request do
     it "raises a MissingAttributeError" do
       expect {
         put_json "/content/vat-rates", @data.to_h.except(
-          "transmitted_at",
           "payload_version"
         )
       }.to raise_error(MissingAttributeError)

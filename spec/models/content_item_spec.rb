@@ -11,7 +11,7 @@ describe ContentItem, type: :model do
       end
 
       context "when unknown attributes are provided" do
-        let(:attributes) { { "foo" => "foo", "bar" => "bar", "transmitted_at" => 12 } }
+        let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
 
         it "handles Mongoid::Errors::UnknownAttribute" do
           result = item = nil
@@ -26,7 +26,7 @@ describe ContentItem, type: :model do
       end
 
       context "when assigning a value of incorrect type" do
-        let(:attributes) { { "routes" => 12, "transmitted_at" => 12 } }
+        let(:attributes) { { "routes" => 12 } }
 
         it "handles Mongoid::Errors::InvalidValue" do
           result = item = nil
@@ -66,7 +66,6 @@ describe ContentItem, type: :model do
             result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.to change(ContentItem, :count).by(1)
           expect(result).to eq(:created)
-          expect(item.transmitted_at).to eq("1")
         end
       end
 
@@ -75,7 +74,7 @@ describe ContentItem, type: :model do
           @item.save!
         end
 
-        let(:attributes) { @item.attributes.merge("transmitted_at" => "2") }
+        let(:attributes) { @item.attributes }
 
         it "upserts the item" do
           result = item = nil
@@ -83,7 +82,6 @@ describe ContentItem, type: :model do
             result, item = ContentItem.create_or_replace(@item.base_path, attributes)
           }.not_to change(ContentItem, :count)
           expect(result).to eq(:replaced)
-          expect(item.transmitted_at).to eq("2")
         end
       end
     end

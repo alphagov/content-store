@@ -6,7 +6,8 @@ class ContentItem
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
-    lock.check_availability!(attributes)
+    payload_version = attributes["payload_version"]
+    lock.check_availability!(payload_version)
 
     result = previous_item ? :replaced : :created
 
@@ -33,9 +34,6 @@ class ContentItem
         type: "conflict",
         code: "409",
         message: e.message,
-        fields: {
-          transmitted_at: [e.message],
-        }
       }
     )
   end
@@ -69,7 +67,6 @@ class ContentItem
   field :access_limited, type: Hash, default: {}
   field :phase, type: String, default: 'live'
   field :analytics_identifier, type: String
-  field :transmitted_at, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
 
