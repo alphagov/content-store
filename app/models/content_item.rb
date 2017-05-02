@@ -15,7 +15,7 @@ class ContentItem
     item.assign_attributes(attributes)
 
     if item.upsert
-      item.register_routes(previous_item: previous_item)
+      item.register_routes
     else
       result = false
     end
@@ -151,9 +151,8 @@ class ContentItem
     auth_bypass_ids.include?(auth_bypass_id)
   end
 
-  def register_routes(previous_item: nil)
+  def register_routes
     return if self.schema_name.start_with?("placeholder")
-    return if previous_item && previous_item.route_set == self.route_set
     self.route_set.register!
   end
 
