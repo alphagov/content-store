@@ -131,7 +131,7 @@ private
   end
 
   def should_check_backend_id(route)
-    route.handler == "backend" || !route.backend_id.empty?
+    route.handler == "backend" || route.backend_id.present?
   end
 
   def expected_handler(content_item)
