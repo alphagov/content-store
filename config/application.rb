@@ -38,6 +38,8 @@ module ContentStore
 
     config.paths["log"] = ENV["LOG_PATH"] if ENV["LOG_PATH"]
 
+    config.register_router_retries = 3
+
     def router_api
       @router_api ||= GdsApi::Router.new(Plek.current.find('router-api'))
     end
