@@ -146,6 +146,21 @@ describe "content item write API", type: :request do
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [['/vat-rates', 'exact'], ['/vat-rates.json', 'exact']])
     end
+
+    context "when the router-api is unavailable" do
+      let!(:stub) do
+        stub_http_request(:post, "#{GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT}/routes/commit")
+          .to_return(status: 500)
+      end
+
+      it "fails to update content item" do
+        @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
+        put_json "/content/vat-rates", @data
+        @item.reload
+        expect(@item.title).to eq("Original title")
+        expect(WebMock::RequestRegistry.instance.times_executed(stub.request_pattern)).to eq(3)
+      end
+    end
   end
 
   describe "creating a content item with both routes and redirects" do
