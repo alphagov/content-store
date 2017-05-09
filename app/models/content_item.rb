@@ -152,8 +152,7 @@ class ContentItem
   end
 
   def register_routes(previous_item: nil)
-    return if self.schema_name.start_with?("placeholder")
-    return if previous_item && previous_item.route_set == self.route_set
+    return unless should_register_routes?(previous_item: previous_item)
     self.route_set.register!
   end
 
@@ -168,6 +167,12 @@ protected
   end
 
 private
+
+  def should_register_routes?(previous_item: nil)
+    return false if self.schema_name.start_with?("placeholder")
+    return false if previous_item && previous_item.route_set == self.route_set
+    true
+  end
 
   def authorised_user_uids
     access_limited.fetch('users', [])
