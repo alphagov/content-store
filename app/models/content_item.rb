@@ -81,6 +81,7 @@ class ContentItem
   field :analytics_identifier, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
+  field :publishing_request_id, type: String, default: nil
 
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at

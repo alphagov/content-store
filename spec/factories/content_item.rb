@@ -10,6 +10,7 @@ FactoryGirl.define do
     routes { [{ 'path' => base_path, 'type' => 'exact' }] }
     payload_version 0
     first_published_at { Time.now }
+    publishing_request_id { "432.432523.233242" }
 
     trait :with_content_id do
       content_id { SecureRandom.uuid }

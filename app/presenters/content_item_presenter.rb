@@ -27,6 +27,7 @@ class ContentItemPresenter
     updated_at
     user_journey_document_supertype
     withdrawn_notice
+    publishing_request_id
   ).freeze
 
   def initialize(item, api_url_method)
