@@ -2,6 +2,11 @@ class ContentItem
   include Mongoid::Document
   include Mongoid::Timestamps::Updated
 
+  def self.revert(previous_item:, item:)
+    item.remove unless previous_item
+    previous_item&.upsert
+  end
+
   def self.create_or_replace(base_path, attributes)
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
@@ -15,7 +20,14 @@ class ContentItem
     item.assign_attributes(attributes)
 
     if item.upsert
-      item.register_routes(previous_item: previous_item)
+      begin
+        item.register_routes(previous_item: previous_item)
+      rescue => e
+        revert(previous_item: previous_item, item: item)
+        raise unless e.is_a?(GdsApi::BaseError)
+        item.errors.add(:routes, "Could not communicated with router.")
+        result = false
+      end
     else
       result = false
     end
@@ -152,9 +164,15 @@ class ContentItem
   end
 
   def register_routes(previous_item: nil)
-    return if self.schema_name.start_with?("placeholder")
-    return if previous_item && previous_item.route_set == self.route_set
-    self.route_set.register!
+    return unless should_register_routes?(previous_item: previous_item)
+
+    tries = Rails.application.config.register_router_retries
+    begin
+      route_set.register!
+    rescue GdsApi::BaseError
+      tries -= 1
+      tries.positive? ? retry : raise
+    end
   end
 
   def base_path_without_root
@@ -168,6 +186,12 @@ protected
   end
 
 private
+
+  def should_register_routes?(previous_item: nil)
+    return false if self.schema_name.start_with?("placeholder")
+    return false if previous_item && previous_item.route_set == self.route_set
+    true
+  end
 
   def authorised_user_uids
     access_limited.fetch('users', [])
