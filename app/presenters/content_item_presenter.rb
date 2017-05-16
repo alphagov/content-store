@@ -13,7 +13,6 @@ class ContentItemPresenter
     document_type
     email_document_supertype
     first_published_at
-    format
     government_document_supertype
     locale
     navigation_document_supertype
