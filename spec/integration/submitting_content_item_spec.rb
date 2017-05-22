@@ -23,6 +23,7 @@ describe "content item write API", type: :request do
       "routes" => [
         { "path" => "/vat-rates", "type" => 'exact' }
       ],
+      "publishing_request_id" => "test test test",
     }
   end
 
@@ -45,6 +46,7 @@ describe "content item write API", type: :request do
       expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq("body" => "<p>Some body text</p>\n")
+      expect(item.publishing_request_id).to eq("test test test")
     end
 
     it "responds with an empty JSON document in the body" do

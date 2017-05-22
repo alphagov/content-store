@@ -58,6 +58,7 @@ describe "Fetching content items", type: :request do
         details
         links
         withdrawn_notice
+        publishing_request_id
       ])
 
       expect(data).to include(
