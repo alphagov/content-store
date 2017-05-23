@@ -114,10 +114,17 @@ describe PublishIntent, type: :model do
       end
     end
 
-    it "is true for an intent in the past" do
-      intent.publish_time = 5.minutes.ago
-      expect(intent.past?).to eq(true)
+    it "is false for an intent within the leeway period" do
+      intent.publish_time = 4.minutes.ago
+      expect(intent.past?).to eq(false)
+    end
 
+    it "is true for an intent past the leeway period" do
+      intent.publish_time = 6.minutes.ago
+      expect(intent.past?).to eq(true)
+    end
+
+    it "is true for an intent in the past" do
       intent.publish_time = 5.months.ago
       expect(intent.past?).to eq(true)
     end
