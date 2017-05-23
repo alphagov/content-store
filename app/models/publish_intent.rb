@@ -21,7 +21,7 @@ class PublishIntent
     ::FindByPath.new(self).find(path)
   end
 
-  PUBLISH_TIME_LEEWAY = 1.minute
+  PUBLISH_TIME_LEEWAY = 5.minutes
 
   field :_id, as: :base_path, type: String, overwrite: true
   field :publish_time, type: DateTime
