@@ -5,8 +5,7 @@ The central storage of *published* content on GOV.UK.
 ## Technical documentation
 
 The content store maps public-facing URLs to published items of content,
-represented as JSON data. It will replace [content API][content-api]
-in time.
+represented as JSON data.
 
 Publishing applications add content to the content store via the Publishing API;
 public-facing applications read content from the content store and render them
@@ -34,5 +33,4 @@ Example API requests and corresponding responses can be found in the
 Detailed technical information can be found in the
 [content store documentation](doc/technical-information.md).
 
-[content-api]: https://github.com/alphagov/govuk_content_api
 [pact-broker-docs]: https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest
