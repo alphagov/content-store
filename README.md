@@ -22,7 +22,7 @@ on GOV.UK.
 ## Example API output
 
 Example API requests and corresponding responses can be found in the
-[content store pack-broker documentation][pact-broker-docs].
+[content store pact-broker documentation][pact-broker-docs].
 
 ## Licence
 
