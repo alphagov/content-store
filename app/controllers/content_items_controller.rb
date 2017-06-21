@@ -27,6 +27,15 @@ class ContentItemsController < ApplicationController
       ContentItem.create_or_replace(encoded_base_path, @request_data)
     end
 
+    intent = PublishIntent.find_by_path(encoded_base_path)
+    if intent.present? && intent.publish_time.past?
+      intent.destroy
+      Rails.application.statsd.timing(
+        "scheduled_publishing_delay.#{item.document_type}",
+        ((item.updated_at.to_time - intent.publish_time.to_time) * 1000).to_i
+      )
+    end
+
     response_body = {}
     case result
     when :created

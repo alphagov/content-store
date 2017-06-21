@@ -89,6 +89,43 @@ describe "content item write API", type: :request do
         ]
       end
     end
+
+    context "with a publish intent in the past" do
+      before do
+        create(:publish_intent, base_path: @data["base_path"], publish_time: 10.seconds.ago)
+      end
+
+      it "deletes the publish intent" do
+        put_json "/content/vat-rates", @data
+        expect(PublishIntent.count).to eq(0)
+      end
+
+      it "logs the latency from the expected publish time" do
+        allow(Rails.application.statsd).to receive(:timing)
+        expect(Rails.application.statsd).to receive(:timing).with("scheduled_publishing_delay.answer", kind_of(Numeric))
+        expect(Rails.application.statsd).to receive(:timing) do |key, ms|
+          expect(ms).to be_within(1000).of(10000) if key == "scheduled_publishing_delay.answer"
+        end
+        put_json "/content/vat-rates", @data
+      end
+    end
+
+    context "with a publish intent in the future" do
+      let!(:publish_intent) do
+        create(:publish_intent, base_path: @data["base_path"], publish_time: 1.hour.from_now)
+      end
+
+      it "doesn't delete the publish intent" do
+        put_json "/content/vat-rates", @data
+        expect(PublishIntent.first).to eq(publish_intent)
+      end
+
+      it "doesn't log the latency from the expected publish time" do
+        allow(Rails.application.statsd).to receive(:timing)
+        expect(Rails.application.statsd).to_not receive(:timing).with("scheduled_publishing_delay.answer", kind_of(Numeric))
+        put_json "/content/vat-rates", @data
+      end
+    end
   end
 
   describe "creating a non-English content item" do
