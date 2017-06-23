@@ -14,7 +14,7 @@ class ExpandedLinksPresenter
           api_url: api_url(link),
           web_url: web_url(link),
           links: link[:links].present? ? self.class.new(link[:links]).present : {}
-        )
+        ).compact
       end
     end
   end
