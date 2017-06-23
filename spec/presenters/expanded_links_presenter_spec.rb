@@ -112,6 +112,28 @@ RSpec.describe ExpandedLinksPresenter do
       end
     end
 
+    context "link without base_path" do
+      let(:links) do
+        {
+          link_group: [{}]
+        }
+      end
+
+      let(:expected_links) do
+        {
+          link_group: [
+            {
+              links: {}
+            }
+          ]
+        }
+      end
+
+      it "does not include api_path, api_url or web_url" do
+        is_expected.to match expected_links
+      end
+    end
+
     context "link with children" do
       let(:links) do
         { group: [{ base_path: "/grand-parent", links: parent }] }
