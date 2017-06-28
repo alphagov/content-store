@@ -1,7 +1,7 @@
 require "route_consistency_checker"
 
 def report_errors(errors)
-  Airbrake.notify(
+  Airbrake.notify_sync(
     "Inconsistent routes",
     parameters: {
       errors: errors,
