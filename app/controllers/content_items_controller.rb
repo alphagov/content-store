@@ -30,9 +30,10 @@ class ContentItemsController < ApplicationController
     intent = PublishIntent.find_by_path(encoded_base_path)
     if intent.present? && intent.publish_time.past?
       intent.destroy
-      Rails.application.statsd.timing(
-        "scheduled_publishing_delay.#{item.document_type}",
-        ((item.updated_at.to_time - intent.publish_time.to_time) * 1000).to_i
+      ScheduledPublishingLogEntry.create(
+        base_path: item.base_path,
+        document_type: item.document_type,
+        scheduled_publication_time: intent.publish_time
       )
     end
 

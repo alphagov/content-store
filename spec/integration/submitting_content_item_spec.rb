@@ -91,8 +91,9 @@ describe "content item write API", type: :request do
     end
 
     context "with a publish intent in the past" do
+      let(:publish_time) { 10.seconds.ago.to_datetime }
       before do
-        create(:publish_intent, base_path: @data["base_path"], publish_time: 10.seconds.ago)
+        create(:publish_intent, base_path: @data["base_path"], publish_time: publish_time)
       end
 
       it "deletes the publish intent" do
@@ -101,11 +102,12 @@ describe "content item write API", type: :request do
       end
 
       it "logs the latency from the expected publish time" do
-        allow(Rails.application.statsd).to receive(:timing)
-        expect(Rails.application.statsd).to receive(:timing).with("scheduled_publishing_delay.answer", kind_of(Numeric))
-        expect(Rails.application.statsd).to receive(:timing) do |key, ms|
-          expect(ms).to be_within(1000).of(10000) if key == "scheduled_publishing_delay.answer"
-        end
+        expect(ScheduledPublishingLogEntry).to receive(:create).with(
+          base_path: @data["base_path"],
+          document_type: @data["document_type"],
+          scheduled_publication_time: publish_time
+        )
+
         put_json "/content/vat-rates", @data
       end
     end
@@ -121,9 +123,8 @@ describe "content item write API", type: :request do
       end
 
       it "doesn't log the latency from the expected publish time" do
-        allow(Rails.application.statsd).to receive(:timing)
-        expect(Rails.application.statsd).to_not receive(:timing).with("scheduled_publishing_delay.answer", kind_of(Numeric))
         put_json "/content/vat-rates", @data
+        expect(ScheduledPublishingLogEntry.count).to eq(0)
       end
     end
   end
