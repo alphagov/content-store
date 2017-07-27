@@ -2,5 +2,5 @@
 
 node {
   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
-  govuk.buildProject(publishingE2eTests: true)
+  govuk.buildProject(publishingE2ETests: true)
 }
