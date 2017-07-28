@@ -36,8 +36,8 @@ set of fields than those listed below.
  - `gone`: A content item which has [gone away](gone_item.md)
  - `redirect`: A content item which has [been redirected](redirect_item.md)
  - `placeholder*`: A temporary [placeholder](placeholder_item.md) for a content item.
-
-## `content_id`
+ 
+## `content_id`
 
 A UUID string as described in [RFC 4122](http://www.ietf.org/rfc/rfc4122.txt).
 Present in all contexts.
@@ -229,10 +229,9 @@ whether `public_updated_at` or `last_edited_at` would better suit your needs.
 A string. Present only in storing context.
 
 This is the name of the application responsible for publishing the content to
-the content store. This should be resolvable with
-`Plek.find(publishing_app)`.
+the content store. This should be resolvable with `Plek.find(publishing_app)`.
 
-## `rendering_app`
+## `rendering_app`
 
 A string. Present only in storing context.
 
@@ -240,7 +239,7 @@ The is the name of the application responsible for rendering the content on
 GOV.UK. It is passed to the router when the content store registers the routes
 for the content. This should be resolvable with `Plek.find(rendering_app)`.
 
-## `routes`
+## `routes`
 
 An array of hashes. Present only in storing context.
 
@@ -248,7 +247,7 @@ This holds the routes associated with the content item. Each hash in the array
 contains a path and a routing type. See
 [`route_registration`](route_registration.md) for more details.
 
-## `redirects`
+## `redirects`
 
 An array of hashes. Present only in storing context.
 
