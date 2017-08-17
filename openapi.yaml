@@ -1,0 +1,191 @@
+openapi: '3.0.0'
+
+info:
+  title: GOV.UK Content API
+  description:
+  version: '1.0.0'
+
+servers:
+  - url: https://www.gov.uk/api/content
+
+paths:
+  /{path}:
+    get:
+      summary: Access a content item by path
+      description: The primary means to access content that is hosted on GOV.UK.
+      responses:
+        200:
+          description: A content item is available at that path.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        404:
+          description: No content item is available at that path.
+
+components:
+  schemas:
+
+    WithdrawnNotice:
+      required:
+        - explanation
+        - withdrawn_at
+      properties:
+        explanation:
+          type: string
+          description: An explanation as to why the content was withdrawn.
+        withdrawn_at:
+          type: string
+          format: date-time
+          description: The date when the content was withdrawn.
+
+    LinkedContentItem:
+      required:
+        - analytics_identifier
+        - api_path
+        - base_path
+        - content_id
+        - description
+        - document_type
+        - locale
+        - public_updated_at
+        - schema_name
+        - title
+        - withdrawn
+      properties:
+        analytics_identifier:
+          type: integer
+          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
+        api_path:
+          type: string
+          description: The base path of the content item, available from the API.
+        base_path:
+          type: string
+          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
+        content_id:
+          type: string
+          format: uuid
+          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
+        description:
+          type: string
+          description: A description of the content which can then be displayed publically.
+        details:
+          type: object
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
+        document_type:
+          type: string
+          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        locale:
+          type: string
+          description: The language the document is written in. A fixed list of locales is allowed.
+        public_updated_at:
+          type: string
+          format: date-time
+          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
+        schema_name:
+          type: string
+          description: The name of the GOV.UK content schema that the request body will be validated against.
+        title:
+          type: string
+          description: The title of the edition, displayed to the user.
+        withdrawn:
+          type: boolean
+          description: Holds whether or not the content has been withdrawn.
+
+    ContentItem:
+      required:
+        - base_path
+        - document_type
+        - email_document_supertype
+        - first_published_at
+        - government_document_supertype
+        - navigation_document_supertype
+        - need_ids
+        - phase
+        - public_updated_at
+        - publishing_app
+        - schema_name
+        - updated_at
+        - user_journey_document_supertype
+        - links
+      properties:
+        analytics_identifier:
+          type: integer
+          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
+        base_path:
+          type: string
+          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
+        content_id:
+          type: string
+          format: uuid
+          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
+        document_type:
+          type: string
+          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        email_document_supertype:
+          type: string
+          description: High level group for email subscriptions used to identify publications and announcement.
+        first_published_at:
+          type: string
+          format: date-time
+          description: Can be set by publishing application, otherwise set automatically in Publishing API on first publish and copied on subsequent ones.
+        government_document_supertype:
+          type: string
+          description: Grouping for email subscriptions.
+        locale:
+          type: string
+          description: The language the document is written in. A fixed list of locales is allowed.
+        navigation_document_supertype:
+          type: string
+          description: Used to filter pages on the new taxonomy-based navigation pages.
+        need_ids:
+          type: array
+          description: An array of need IDs from Maslow.
+          items:
+            type: string
+        phase:
+          type: string
+          enum: [alpha, beta, live]
+          description: The "phase" of an edition can either be alpha, beta or live.
+        public_updated_at:
+          type: string
+          format: date-time
+          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
+        publishing_app:
+          type: string
+          description: The application which published the edition.
+        rendering_app:
+          type: string
+          description: The application which will be used to render the content of the edition.
+        schema_name:
+          type: string
+          description: The name of the GOV.UK content schema that the request body will be validated against.
+        title:
+          type: string
+          description: The title of the edition, displayed to the user.
+        updated_at:
+          type: string
+          format: date-time
+          description: Current date time every time the content item changes, which could be an update to one of the dependent links.
+        user_journey_document_supertype:
+          type: string
+          description: Used to distinguish pages used mainly for navigation (finding) from content pages (thing).
+        withdrawn_notice:
+          $ref: '#/components/schemas/WithdrawnNotice'
+          description: If the edition is withdrawn, this will contain the information about when and why it was withdrawn.
+        publishing_request_id:
+          type: string
+          description: The GOV.UK Request ID which was used when the content item was published.
+        links:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedContentItem'
+          description: An object containing all the documents that this document links to organised by the link names
+        description:
+          type: string
+          description: A description of the content which can then be displayed publically.
+        details:
+          type: object
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
