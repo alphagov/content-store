@@ -26,7 +26,7 @@ def validate_content_for_schema(schema_name)
   api_url_callable = lambda { |base_path| "http://api.example.com/content#{base_path}" }
 
   # content_id ASC makes the sample semi-random
-  items = ContentItem.order(content_id: :asc).where(schema_name: schema_name).limit(10)
+  items = ContentItem.order(content_id: :asc).where(schema_name: schema_name).limit(100)
 
   counts = { checked: 0, okay: 0, fail: 0 }
   errors = []
