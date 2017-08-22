@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '5.1.1'
 
 gem 'mongoid', '6.1.0'
-gem 'mongoid_rails_migrations', '1.0.1'
+gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_migrations", branch: "avoid-calling-bundler-require-in-library-code-v1.1.0-plus-mongoid-v5-fix"
 
 gem 'logstasher', '0.5.0'
 gem 'airbrake', '~> 5.4'
@@ -29,7 +29,7 @@ gem 'uuidtools', '2.1.5'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
-  gem 'database_cleaner', '~> 1.5.3'
+  gem 'database_cleaner', '~> 1.6.1'
   gem 'factory_girl', '~> 4.4'
   gem 'webmock', '2.1.0', require: false
   gem 'timecop', '0.7.1'
