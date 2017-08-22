@@ -86,13 +86,6 @@ class ContentItem
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
 
-  # We want to look up related items by their content ID, excluding those that
-  # are redirects; when multiple items exist, we take the most recent one, and
-  # we need its base_path and its title. By indexing all these fields, we can
-  # get hold of these related items purely from the index, without having to go
-  # and fetch the entire document.
-  index(content_id: 1, locale: 1, format: 1, updated_at: -1, title: 1, _id: 1)
-
   # We want to look up content items by whether they match a route and the type
   # of route.
   index("routes.path" => 1, "routes.type" => 1)
