@@ -20,8 +20,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContentItem'
+        303:
+          description: The canonical path for this content item is a different path.
         404:
           description: No content item is available at that path.
+        410:
+          description: The content item is no longer available at that path.
 
 components:
   schemas:
@@ -48,6 +52,7 @@ components:
         - description
         - document_type
         - locale
+        - links
         - public_updated_at
         - schema_name
         - title
@@ -55,12 +60,15 @@ components:
       properties:
         analytics_identifier:
           type: integer
+          nullable: true
           description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
         api_path:
           type: string
+          nullable: true
           description: The base path of the content item, available from the API.
         base_path:
           type: string
+          nullable: true
           description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
         content_id:
           type: string
@@ -68,6 +76,7 @@ components:
           description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
         description:
           type: string
+          nullable: true
           description: A description of the content which can then be displayed publically.
         details:
           type: object
