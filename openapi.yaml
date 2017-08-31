@@ -13,6 +13,8 @@ paths:
     get:
       summary: Access a content item by path
       description: The primary means to access content that is hosted on GOV.UK.
+      tags:
+        - Content
       responses:
         200:
           description: A content item is available at that path.
