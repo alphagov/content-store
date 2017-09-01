@@ -33,6 +33,7 @@ components:
   schemas:
 
     WithdrawnNotice:
+      type: object
       required:
         - explanation
         - withdrawn_at
@@ -46,6 +47,7 @@ components:
           description: The date when the content was withdrawn.
 
     LinkedContentItem:
+      type: object
       required:
         - analytics_identifier
         - api_path
@@ -104,6 +106,7 @@ components:
           description: Holds whether or not the content has been withdrawn.
 
     ContentItem:
+      type: object
       required:
         - base_path
         - document_type
