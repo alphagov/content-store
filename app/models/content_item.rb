@@ -141,12 +141,12 @@ class ContentItem
     # For items that are registered in the content store which are not redirects
     # or gones we need to have a rendering_app. This is fine for all but the
     # "gone but not gone" exception defined in `gone?` where rendering_app is
-    # not part of the schema for a gone but it required to register the route.
+    # not part of the schema for a gone but is required to register the route.
     #
-    # This rather nastily fallsback to whitehall frontend for gones that are
+    # This rather nastily fallsback to government frontend for gones that are
     # not gone and lack a rendering_app
     return rendering_app if schema_name != "gone" || gone?
-    rendering_app || "whitehall-frontend"
+    rendering_app || "government-frontend"
   end
 
   def viewable_by?(user_uid)
