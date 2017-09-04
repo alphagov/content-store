@@ -20,6 +20,15 @@ paths:
       description: The primary means to access content that is hosted on GOV.UK.
       tags:
         - Content
+      parameters:
+        - name: 'path'
+          in: path
+          description: |
+            The path parameter is used to identify a content item resource.  
+            This parameter is the same value as the path in the URL for the content on GOV.UK.  
+            eg. `/vat`
+          schema:
+            type: string
       responses:
         200:
           description: A content item is available at that path.
