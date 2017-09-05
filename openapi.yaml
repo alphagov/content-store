@@ -2,7 +2,12 @@ openapi: '3.0.0'
 
 info:
   title: GOV.UK Content API
-  description:
+  description: |
+    The GOV.UK Content API provides a simple and consistent way to request GOV.UK content as structured data in a predictable format.
+
+    The API accepts HTTP requests and responds with [JSON](https://en.wikipedia.org/wiki/JSON) data containing the same published content as you see presented on GOV.UK. The content retrieved via the API is current, it is published at the same time as the information available on the GOV.UK website.
+
+    The GOV.UK Content API is a JSON [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) API, an architectural software style in which HTTP requests are used to provide a standard approach to requesting and modifying data.
   version: '1.0.0'
 
 servers:
@@ -15,6 +20,15 @@ paths:
       description: The primary means to access content that is hosted on GOV.UK.
       tags:
         - Content
+      parameters:
+        - name: 'path'
+          in: path
+          description: |
+            The path parameter is used to identify a content item resource.  
+            This parameter is the same value as the path in the URL for the content on GOV.UK.  
+          schema:
+            type: string
+            example: '/vat-rates'
       responses:
         200:
           description: A content item is available at that path.
@@ -22,6 +36,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContentItem'
+              example:
+                $ref: '#/components/examples/ContentItemExample'
         303:
           description: The canonical path for this content item is a different path.
         404:
@@ -31,8 +47,9 @@ paths:
 
 components:
   schemas:
-
     WithdrawnNotice:
+      description: |
+        Contains information about why and when a ContentItem was withdrawn.
       type: object
       required:
         - explanation
@@ -45,8 +62,20 @@ components:
           type: string
           format: date-time
           description: The date when the content was withdrawn.
+      example:
+        explanation: ! '<div class="govspeak"><p>This guidance has been withdrawn from use
+    because the Environment Agency no longer provides best practice guidance. See
+    guidance on <a href="https://www.gov.uk/guidance/prevent-the-spread-of-harmful-invasive-and-non-native-plants">preventing
+    harmful weeds and invasive non-native plants spreading weeds</a> for information
+    on controlling specific plants.</p>
+
+    </div>'
+        withdrawn_at: '2016-07-11T15:08:02Z'
 
     LinkedContentItem:
+      description: |
+        ContentItems are related to one another via `links`.
+        LinkedContentItems contain the data necessary to describe and render a link.
       type: object
       required:
         - analytics_identifier
@@ -104,8 +133,25 @@ components:
         withdrawn:
           type: boolean
           description: Holds whether or not the content has been withdrawn.
+      example:
+        api_path: /api/content/browse/tax/vat
+        base_path: /browse/tax/vat
+        content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+        description: Includes online returns, rates, charging and record keeping
+        document_type: mainstream_browse_page
+        locale: en
+        public_updated_at: '2015-06-24T13:56:39Z'
+        schema_name: mainstream_browse_page
+        title: VAT
+        withdrawn: false
+        links: {}
+        api_url: https://www.gov.uk/api/content/browse/tax/vat
+        web_url: https://www.gov.uk/browse/tax/vat
 
     ContentItem:
+      description: |
+        Resource containing the content, links and metadata for a page on GOV.UK.
+        A ContentItem has fields which describe it, suchas when it was last updated, fields containing content text and links to related ContentItems.
       type: object
       required:
         - base_path
@@ -203,3 +249,253 @@ components:
         details:
           type: object
           description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
+      example:
+        $ref: '#/components/examples/ContentItemExample'
+  examples:
+    ContentItemExample:
+      analytics_identifier: 
+      base_path: /vat-rates
+      content_id: f838c22a-b2aa-49be-bd95-153f593293a3
+      document_type: answer
+      email_document_supertype: other
+      first_published_at: '2016-02-29T09:24:10.000+00:00'
+      government_document_supertype: other
+      locale: en
+      navigation_document_supertype: guidance
+      need_ids: []
+      phase: live
+      public_updated_at: '2014-12-12T14:55:23.000+00:00'
+      publishing_app: publisher
+      rendering_app: government-frontend
+      schema_name: answer
+      title: VAT rates
+      updated_at: '2017-08-31T11:35:14.024Z'
+      user_journey_document_supertype: thing
+      withdrawn_notice: {}
+      publishing_request_id: 3592-1504179295.816-10.3.3.1-410
+      links:
+        mainstream_browse_pages:
+        - api_path: /api/content/browse/tax/vat
+          base_path: /browse/tax/vat
+          content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+          description: Includes online returns, rates, charging and record keeping
+          document_type: mainstream_browse_page
+          locale: en
+          public_updated_at: '2015-06-24T13:56:39Z'
+          schema_name: mainstream_browse_page
+          title: VAT
+          withdrawn: false
+          links: {}
+          api_url: https://www.gov.uk/api/content/browse/tax/vat
+          web_url: https://www.gov.uk/browse/tax/vat
+        ordered_related_items:
+        - api_path: /api/content/tax-on-shopping
+          base_path: /tax-on-shopping
+          content_id: ca839010-1a5e-4049-93b5-577a40286701
+          description: VAT and other taxes on shopping and services, including tax-free
+            shopping, energy-saving equipment and mobility aids
+          document_type: guide
+          locale: en
+          public_updated_at: '2014-12-18T14:31:58Z'
+          schema_name: guide
+          title: Tax on shopping and services
+          withdrawn: false
+          links:
+            mainstream_browse_pages:
+            - api_path: /api/content/browse/tax/vat
+              base_path: /browse/tax/vat
+              content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+              description: Includes online returns, rates, charging and record keeping
+              document_type: mainstream_browse_page
+              locale: en
+              public_updated_at: '2015-06-24T13:56:39Z'
+              schema_name: mainstream_browse_page
+              title: VAT
+              withdrawn: false
+              links:
+                parent:
+                - api_path: /api/content/browse/tax
+                  base_path: /browse/tax
+                  content_id: 71255733-af6c-4887-9991-9b288d8d431f
+                  description: Includes VAT, debt and inheritance tax
+                  document_type: mainstream_browse_page
+                  locale: en
+                  public_updated_at: '2015-04-08T10:48:40Z'
+                  schema_name: mainstream_browse_page
+                  title: Money and tax
+                  withdrawn: false
+                  links: {}
+                  api_url: https://www.gov.uk/api/content/browse/tax
+                  web_url: https://www.gov.uk/browse/tax
+              api_url: https://www.gov.uk/api/content/browse/tax/vat
+              web_url: https://www.gov.uk/browse/tax/vat
+          api_url: https://www.gov.uk/api/content/tax-on-shopping
+          web_url: https://www.gov.uk/tax-on-shopping
+        - api_path: /api/content/vat-businesses
+          base_path: /vat-businesses
+          content_id: 727e4b52-b760-4bd6-844d-48d8df888e32
+          description: VAT for business - VAT rates, exempt and zero-rated items, when to
+            charge VAT, credit and debit notes, discounts and VAT on offers
+          document_type: guide
+          locale: en
+          public_updated_at: '2014-12-19T15:27:25Z'
+          schema_name: guide
+          title: Businesses and charging VAT
+          withdrawn: false
+          links:
+            mainstream_browse_pages:
+            - api_path: /api/content/browse/business/business-tax
+              base_path: /browse/business/business-tax
+              content_id: b7d6588c-a056-47fc-9528-0b9ff42c3866
+              description: Includes Corporation Tax, Capital Gains Tax, Construction Industry
+                Scheme (CIS) and VAT
+              document_type: mainstream_browse_page
+              locale: en
+              public_updated_at: '2016-11-18T16:02:29Z'
+              schema_name: mainstream_browse_page
+              title: Business tax
+              withdrawn: false
+              links:
+                parent:
+                - api_path: /api/content/browse/business
+                  base_path: /browse/business
+                  content_id: 2e47e500-8d91-4747-b6d8-cf6524d570f1
+                  description: Information about starting up and running a business in the
+                    UK, including help if you're self employed or a sole trader.
+                  document_type: mainstream_browse_page
+                  locale: en
+                  public_updated_at: '2016-11-18T16:02:29Z'
+                  schema_name: mainstream_browse_page
+                  title: Business and self-employed
+                  withdrawn: false
+                  links: {}
+                  api_url: https://www.gov.uk/api/content/browse/business
+                  web_url: https://www.gov.uk/browse/business
+              api_url: https://www.gov.uk/api/content/browse/business/business-tax
+              web_url: https://www.gov.uk/browse/business/business-tax
+            - api_path: /api/content/browse/tax/vat
+              base_path: /browse/tax/vat
+              content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+              description: Includes online returns, rates, charging and record keeping
+              document_type: mainstream_browse_page
+              locale: en
+              public_updated_at: '2015-06-24T13:56:39Z'
+              schema_name: mainstream_browse_page
+              title: VAT
+              withdrawn: false
+              links:
+                parent:
+                - api_path: /api/content/browse/tax
+                  base_path: /browse/tax
+                  content_id: 71255733-af6c-4887-9991-9b288d8d431f
+                  description: Includes VAT, debt and inheritance tax
+                  document_type: mainstream_browse_page
+                  locale: en
+                  public_updated_at: '2015-04-08T10:48:40Z'
+                  schema_name: mainstream_browse_page
+                  title: Money and tax
+                  withdrawn: false
+                  links: {}
+                  api_url: https://www.gov.uk/api/content/browse/tax
+                  web_url: https://www.gov.uk/browse/tax
+              api_url: https://www.gov.uk/api/content/browse/tax/vat
+              web_url: https://www.gov.uk/browse/tax/vat
+          api_url: https://www.gov.uk/api/content/vat-businesses
+          web_url: https://www.gov.uk/vat-businesses
+        organisations:
+        - analytics_identifier: D25
+          api_path: /api/content/government/organisations/hm-revenue-customs
+          base_path: /government/organisations/hm-revenue-customs
+          content_id: 6667cce2-e809-4e21-ae09-cb0bdc1ddda3
+          document_type: organisation
+          locale: en
+          public_updated_at: '2015-05-13T10:09:06Z'
+          schema_name: placeholder
+          title: HM Revenue & Customs
+          withdrawn: false
+          details:
+            brand: hm-revenue-customs
+            logo:
+              formatted_title: HM Revenue<br/>&amp; Customs
+              crest: hmrc
+          links: {}
+          api_url: https://www.gov.uk/api/content/government/organisations/hm-revenue-customs
+          web_url: https://www.gov.uk/government/organisations/hm-revenue-customs
+        parent:
+        - api_path: /api/content/browse/tax/vat
+          base_path: /browse/tax/vat
+          content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+          description: Includes online returns, rates, charging and record keeping
+          document_type: mainstream_browse_page
+          locale: en
+          public_updated_at: '2015-06-24T13:56:39Z'
+          schema_name: mainstream_browse_page
+          title: VAT
+          withdrawn: false
+          links:
+            parent:
+            - api_path: /api/content/browse/tax
+              base_path: /browse/tax
+              content_id: 71255733-af6c-4887-9991-9b288d8d431f
+              description: Includes VAT, debt and inheritance tax
+              document_type: mainstream_browse_page
+              locale: en
+              public_updated_at: '2015-04-08T10:48:40Z'
+              schema_name: mainstream_browse_page
+              title: Money and tax
+              withdrawn: false
+              links: {}
+              api_url: https://www.gov.uk/api/content/browse/tax
+              web_url: https://www.gov.uk/browse/tax
+          api_url: https://www.gov.uk/api/content/browse/tax/vat
+          web_url: https://www.gov.uk/browse/tax/vat
+        topics:
+        - api_path: /api/content/topic/business-tax/vat
+          base_path: /topic/business-tax/vat
+          content_id: 1ddaaacb-0981-4abc-a532-a5111f2bea6b
+          description: List of information about VAT.
+          document_type: topic
+          locale: en
+          public_updated_at: '2016-11-30T14:17:03Z'
+          schema_name: topic
+          title: VAT
+          withdrawn: false
+          links: {}
+          api_url: https://www.gov.uk/api/content/topic/business-tax/vat
+          web_url: https://www.gov.uk/topic/business-tax/vat
+        available_translations:
+        - title: VAT rates
+          public_updated_at: '2014-12-12T14:55:23Z'
+          document_type: answer
+          schema_name: answer
+          base_path: /vat-rates
+          description: Current VAT rates - standard 20% and rates for reduced rate and zero-rated
+            items
+          api_path: /api/content/vat-rates
+          withdrawn: false
+          content_id: f838c22a-b2aa-49be-bd95-153f593293a3
+          locale: en
+          api_url: https://www.gov.uk/api/content/vat-rates
+          web_url: https://www.gov.uk/vat-rates
+          links: {}
+      description: Current VAT rates - standard 20% and rates for reduced rate and zero-rated
+        items
+      details:
+        body: ! "\n<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value
+          Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n\n<h2 id=\"vat-rates-for-goods-and-services\">\n<abbr
+          title=\"Value Added Tax\">VAT</abbr> rates for goods and services</h2>\n\n<table>\n
+          \ <thead>\n    <tr>\n      <th>Rate</th>\n      <th>% of <abbr title=\"Value Added
+          Tax\">VAT</abbr>\n</th>\n      <th>What the rate applies to</th>\n    </tr>\n
+          \ </thead>\n  <tbody>\n    <tr>\n      <td>Standard</td>\n      <td>20%</td>\n
+          \     <td>Most goods and services</td>\n    </tr>\n    <tr>\n      <td>Reduced
+          rate</td>\n      <td>5%</td>\n      <td>Some goods and services, eg children’s
+          car seats and home energy</td>\n    </tr>\n    <tr>\n      <td>Zero rate</td>\n
+          \     <td>0%</td>\n      <td>Zero-rated goods and services, eg most food and children’s
+          clothes</td>\n    </tr>\n  </tbody>\n</table>\n\n<p>The standard rate of <abbr
+          title=\"Value Added Tax\">VAT</abbr> increased to 20% on 4 January 2011 (from
+          17.5%).</p>\n\n<p>Some things are exempt from <abbr title=\"Value Added Tax\">VAT</abbr>,
+          eg postage stamps, financial and property transactions.</p>\n\n<p>The <a href=\"/vat-businesses/vat-rates\"><abbr
+          title=\"Value Added Tax\">VAT</abbr> rate businesses charge</a> depends on their
+          goods and services.</p>\n\n<p>Check the <a href=\"https://www.gov.uk/rates-of-vat-on-different-goods-and-services\">rates
+          of <abbr title=\"Value Added Tax\">VAT</abbr></a> on different goods and services.</p>\n\n"
+
