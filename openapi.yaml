@@ -23,6 +23,7 @@ paths:
       parameters:
         - name: 'path'
           in: path
+          required: true
           description: |
             The path parameter is used to identify a content item resource.  
             This parameter is the same value as the path in the URL for the content on GOV.UK.  
