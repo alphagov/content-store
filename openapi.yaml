@@ -47,6 +47,8 @@ components:
   schemas:
 
     WithdrawnNotice:
+      description: |
+        Contains information about why and when a ContentItem was withdrawn.
       type: object
       required:
         - explanation
@@ -61,6 +63,9 @@ components:
           description: The date when the content was withdrawn.
 
     LinkedContentItem:
+      description: |
+        ContentItems are related to one another via `links`.
+        LinkedContentItems contain the data necessary to describe and render a link.
       type: object
       required:
         - analytics_identifier
@@ -120,6 +125,9 @@ components:
           description: Holds whether or not the content has been withdrawn.
 
     ContentItem:
+      description: |
+        Resource containing the content, links and metadata for a page on GOV.UK.
+        A ContentItem has fields which describe it, suchas when it was last updated, fields containing content text and links to related ContentItems.
       type: object
       required:
         - base_path
