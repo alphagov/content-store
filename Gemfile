@@ -19,7 +19,7 @@ gem 'hashdiff', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', "~> 41.0"
+  gem 'gds-api-adapters', "~> 47.9.1"
 end
 
 gem 'govuk_app_config', '~> 0.2'
