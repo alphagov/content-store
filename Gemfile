@@ -6,8 +6,6 @@ gem 'mongoid', '6.1.0'
 gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_migrations", branch: "avoid-calling-bundler-require-in-library-code-v1.1.0-plus-mongoid-v5-fix"
 
 gem 'logstasher', '0.5.0'
-gem 'airbrake', '~> 5.4'
-gem 'airbrake-ruby', '1.5'
 
 gem 'unicorn', '4.8.2'
 

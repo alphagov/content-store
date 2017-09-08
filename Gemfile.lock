@@ -52,9 +52,6 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    airbrake (5.5.0)
-      airbrake-ruby (~> 1.5)
-    airbrake-ruby (1.5.0)
     arel (8.0.0)
     ast (2.3.0)
     awesome_print (1.7.0)
@@ -286,8 +283,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake (~> 5.4)
-  airbrake-ruby (= 1.5)
   ci_reporter_rspec (~> 1.0.0)
   database_cleaner (~> 1.6.1)
   factory_girl (~> 4.4)
