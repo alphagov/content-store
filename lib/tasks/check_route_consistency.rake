@@ -1,7 +1,7 @@
 require "route_consistency_checker"
 
 def report_errors(errors)
-  Airbrake.notify_sync(
+  GovukError.notify(
     "Inconsistent routes",
     parameters: {
       errors: errors,
