@@ -11,7 +11,7 @@ gem 'unicorn', '4.8.2'
 
 gem 'plek', '~> 1.9'
 
-gem 'statsd-ruby', '~> 1.2.1'
+gem 'statsd-ruby', '~> 1.4'
 
 gem 'whenever', '~> 0.9.4', require: false
 gem 'hashdiff', require: false
@@ -21,6 +21,8 @@ if ENV['GDS_API_ADAPTERS_DEV']
 else
   gem 'gds-api-adapters', "~> 41.0"
 end
+
+gem 'govuk_app_config', '~> 0.2'
 
 gem 'govuk-content-schema-test-helpers', '~> 1.4'
 gem 'uuidtools', '2.1.5'
