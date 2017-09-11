@@ -20,8 +20,21 @@ servers:
 paths:
   /{path}:
     get:
-      summary: Access a content item by path
-      description: The primary means to access content that is hosted on GOV.UK.
+      summary: Lookup GOV.UK content by path
+      description: |
+        This is the primary interface to lookup the content required to render
+        a page on GOV.UK
+
+        It accepts an input of the path of the page you are looking up. Eg if
+        you were looking up travel advice for Thailand which is hosted on GOV.UK
+        at `https://www.gov.uk/foreign-travel-advice/thailand` you would make
+        a request to
+        `https://www.gov.uk/api/content/foreign-travel-advice/thailand`.
+
+        If the content is available at the requested path you will receive
+        a [`ContentItem`](#contentitem) containing the structured data for that
+        page.
+
       tags:
         - Content
       parameters:
