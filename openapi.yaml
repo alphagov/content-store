@@ -42,11 +42,11 @@ paths:
           in: path
           required: true
           description: |
-            The path parameter is used to identify a content item resource.
-            This parameter is the same value as the path in the URL for the content on GOV.UK.
+            The path to the content on GOV.UK e.g for
+            `https://www.gov.uk/vat-rates` you'd use `vat-rates`
           schema:
             type: string
-            example: '/vat-rates'
+            example: 'vat-rates'
       responses:
         200:
           description: A content item is available at that path.
