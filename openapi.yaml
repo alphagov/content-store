@@ -3,11 +3,15 @@ openapi: '3.0.0'
 info:
   title: GOV.UK Content API
   description: |
-    The GOV.UK Content API provides a simple and consistent way to request GOV.UK content as structured data in a predictable format.
+    The GOV.UK Content API provides a simple and consistent way to request
+    [GOV.UK](https://www.gov.uk) content as structured data in a predictable
+    format. It is used within the GOV.UK website as the means for applications
+    to lookup content in order to render it.
 
-    The API accepts HTTP requests and responds with [JSON](https://en.wikipedia.org/wiki/JSON) data containing the same published content as you see presented on GOV.UK. The content retrieved via the API is current, it is published at the same time as the information available on the GOV.UK website.
+    The API accepts HTTP requests and responds with
+    [JSON](https://en.wikipedia.org/wiki/JSON) data containing the same
+    published content as is presented on GOV.UK.
 
-    The GOV.UK Content API is a JSON [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) API, an architectural software style in which HTTP requests are used to provide a standard approach to requesting and modifying data.
   version: '1.0.0'
 
 servers:
