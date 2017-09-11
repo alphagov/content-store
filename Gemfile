@@ -6,14 +6,12 @@ gem 'mongoid', '6.1.0'
 gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_migrations", branch: "avoid-calling-bundler-require-in-library-code-v1.1.0-plus-mongoid-v5-fix"
 
 gem 'logstasher', '0.5.0'
-gem 'airbrake', '~> 5.4'
-gem 'airbrake-ruby', '1.5'
 
 gem 'unicorn', '4.8.2'
 
 gem 'plek', '~> 1.9'
 
-gem 'statsd-ruby', '~> 1.2.1'
+gem 'statsd-ruby', '~> 1.4'
 
 gem 'whenever', '~> 0.9.4', require: false
 gem 'hashdiff', require: false
@@ -21,8 +19,10 @@ gem 'hashdiff', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', "~> 41.0"
+  gem 'gds-api-adapters', "~> 47.9.1"
 end
+
+gem 'govuk_app_config', '~> 0.2'
 
 gem 'govuk-content-schema-test-helpers', '~> 1.4'
 gem 'uuidtools', '2.1.5'
