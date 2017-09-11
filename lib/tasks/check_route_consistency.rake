@@ -3,9 +3,8 @@ require "route_consistency_checker"
 def report_errors(errors)
   GovukError.notify(
     "Inconsistent routes",
-    parameters: {
-      errors: errors,
-    }
+    level: "warning",
+    extra: { errors: errors },
   )
 
   errors.each do |base_path, item_errors|
