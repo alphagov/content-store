@@ -29,8 +29,8 @@ paths:
           in: path
           required: true
           description: |
-            The path parameter is used to identify a content item resource.  
-            This parameter is the same value as the path in the URL for the content on GOV.UK.  
+            The path parameter is used to identify a content item resource.
+            This parameter is the same value as the path in the URL for the content on GOV.UK.
           schema:
             type: string
             example: '/vat-rates'
@@ -258,7 +258,7 @@ components:
         $ref: '#/components/examples/ContentItemExample'
   examples:
     ContentItemExample:
-      analytics_identifier: 
+      analytics_identifier:
       base_path: /vat-rates
       content_id: f838c22a-b2aa-49be-bd95-153f593293a3
       document_type: answer
