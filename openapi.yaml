@@ -3,11 +3,15 @@ openapi: '3.0.0'
 info:
   title: GOV.UK Content API
   description: |
-    The GOV.UK Content API provides a simple and consistent way to request GOV.UK content as structured data in a predictable format.
+    The GOV.UK Content API provides a simple and consistent way to request
+    [GOV.UK](https://www.gov.uk) content as structured data in a predictable
+    format. It is used within the GOV.UK website as the means for applications
+    to lookup content in order to render it.
 
-    The API accepts HTTP requests and responds with [JSON](https://en.wikipedia.org/wiki/JSON) data containing the same published content as you see presented on GOV.UK. The content retrieved via the API is current, it is published at the same time as the information available on the GOV.UK website.
+    The API accepts HTTP requests and responds with
+    [JSON](https://en.wikipedia.org/wiki/JSON) data containing the same
+    published content as is presented on GOV.UK.
 
-    The GOV.UK Content API is a JSON [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) API, an architectural software style in which HTTP requests are used to provide a standard approach to requesting and modifying data.
   version: '1.0.0'
 
 servers:
@@ -16,8 +20,21 @@ servers:
 paths:
   /{path}:
     get:
-      summary: Access a content item by path
-      description: The primary means to access content that is hosted on GOV.UK.
+      summary: Lookup GOV.UK content by path
+      description: |
+        This is the primary interface to lookup the content required to render
+        a page on GOV.UK
+
+        It accepts an input of the path of the page you are looking up. Eg if
+        you were looking up travel advice for Thailand which is hosted on GOV.UK
+        at `https://www.gov.uk/foreign-travel-advice/thailand` you would make
+        a request to
+        `https://www.gov.uk/api/content/foreign-travel-advice/thailand`.
+
+        If the content is available at the requested path you will receive
+        a [`ContentItem`](#contentitem) containing the structured data for that
+        page.
+
       tags:
         - Content
       parameters:
@@ -25,11 +42,11 @@ paths:
           in: path
           required: true
           description: |
-            The path parameter is used to identify a content item resource.  
-            This parameter is the same value as the path in the URL for the content on GOV.UK.  
+            The path to the content on GOV.UK e.g for
+            `https://www.gov.uk/vat-rates` you'd use `vat-rates`
           schema:
             type: string
-            example: '/vat-rates'
+            example: 'vat-rates'
       responses:
         200:
           description: A content item is available at that path.
@@ -254,7 +271,7 @@ components:
         $ref: '#/components/examples/ContentItemExample'
   examples:
     ContentItemExample:
-      analytics_identifier: 
+      analytics_identifier:
       base_path: /vat-rates
       content_id: f838c22a-b2aa-49be-bd95-153f593293a3
       document_type: answer
