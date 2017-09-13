@@ -62,6 +62,10 @@ paths:
           description: No content item is available at that path.
         410:
           description: The content item is no longer available at that path.
+      x-code-samples:
+        "/vat-rates":
+          lang: shell
+          source: curl https://www.gov.uk/api/content/vat-rates
 
 components:
   schemas:
