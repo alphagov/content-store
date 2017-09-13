@@ -93,7 +93,7 @@ components:
     LinkedContentItem:
       description: |
         ContentItems are related to one another via `links`.
-        LinkedContentItems contain the data necessary to describe and render a link.
+        LinkedContentItems contain the data necessary to describe and render a link to a GOV.UK content item.
       type: object
       required:
         - analytics_identifier
@@ -168,8 +168,8 @@ components:
 
     ContentItem:
       description: |
-        Resource containing the content, links and metadata for a page on GOV.UK.
-        A ContentItem has fields which describe it, suchas when it was last updated, fields containing content text and links to related ContentItems.
+        Resource containing the content, GOV.UK links and metadata for a page on GOV.UK.
+        A ContentItem has fields which describe it, such as when it was last updated, fields containing content text and links to related GOV.UK ContentItems.
       type: object
       required:
         - base_path
@@ -260,7 +260,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/LinkedContentItem'
-          description: An object containing all the documents that this document links to organised by the link names
+          description: An object containing all the GOV.UK documents that this document links to organised by the link names
         description:
           type: string
           description: A description of the content which can then be displayed publically.
@@ -516,4 +516,3 @@ components:
           title=\"Value Added Tax\">VAT</abbr> rate businesses charge</a> depends on their
           goods and services.</p>\n\n<p>Check the <a href=\"https://www.gov.uk/rates-of-vat-on-different-goods-and-services\">rates
           of <abbr title=\"Value Added Tax\">VAT</abbr></a> on different goods and services.</p>\n\n"
-
