@@ -264,7 +264,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/LinkedContentItem'
-          description: An object containing all the GOV.UK documents that this document links to organised by the link names
+          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
         description:
           type: string
           description: A description of the content which can then be displayed publically.
