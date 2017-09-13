@@ -69,106 +69,6 @@ paths:
 
 components:
   schemas:
-    WithdrawnNotice:
-      description: |
-        Contains information about why and when a ContentItem was withdrawn.
-      type: object
-      required:
-        - explanation
-        - withdrawn_at
-      properties:
-        explanation:
-          type: string
-          description: An explanation as to why the content was withdrawn.
-        withdrawn_at:
-          type: string
-          format: date-time
-          description: The date when the content was withdrawn.
-      example:
-        explanation: ! '<div class="govspeak"><p>This guidance has been withdrawn from use
-    because the Environment Agency no longer provides best practice guidance. See
-    guidance on <a href="https://www.gov.uk/guidance/prevent-the-spread-of-harmful-invasive-and-non-native-plants">preventing
-    harmful weeds and invasive non-native plants spreading weeds</a> for information
-    on controlling specific plants.</p>
-
-    </div>'
-        withdrawn_at: '2016-07-11T15:08:02Z'
-
-    LinkedContentItem:
-      description: |
-        ContentItems are related to one another via `links`.
-        LinkedContentItems contain the data necessary to describe and render a link to a GOV.UK content item.
-      type: object
-      required:
-        - analytics_identifier
-        - api_path
-        - base_path
-        - content_id
-        - description
-        - document_type
-        - locale
-        - links
-        - public_updated_at
-        - schema_name
-        - title
-        - withdrawn
-      properties:
-        analytics_identifier:
-          type: integer
-          nullable: true
-          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
-        api_path:
-          type: string
-          nullable: true
-          description: The base path of the content item, available from the API.
-        base_path:
-          type: string
-          nullable: true
-          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
-        content_id:
-          type: string
-          format: uuid
-          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
-        description:
-          type: string
-          nullable: true
-          description: A description of the content which can then be displayed publically.
-        details:
-          type: object
-          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
-        document_type:
-          type: string
-          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
-        locale:
-          type: string
-          description: The language the document is written in. A fixed list of locales is allowed.
-        public_updated_at:
-          type: string
-          format: date-time
-          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
-        schema_name:
-          type: string
-          description: The name of the GOV.UK content schema that the request body will be validated against.
-        title:
-          type: string
-          description: The title of the edition, displayed to the user.
-        withdrawn:
-          type: boolean
-          description: Holds whether or not the content has been withdrawn.
-      example:
-        api_path: /api/content/browse/tax/vat
-        base_path: /browse/tax/vat
-        content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
-        description: Includes online returns, rates, charging and record keeping
-        document_type: mainstream_browse_page
-        locale: en
-        public_updated_at: '2015-06-24T13:56:39Z'
-        schema_name: mainstream_browse_page
-        title: VAT
-        withdrawn: false
-        links: {}
-        api_url: https://www.gov.uk/api/content/browse/tax/vat
-        web_url: https://www.gov.uk/browse/tax/vat
 
     ContentItem:
       description: |
@@ -273,6 +173,107 @@ components:
           description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
       example:
         $ref: '#/components/examples/ContentItemExample'
+
+    LinkedContentItem:
+      description: |
+        ContentItems are related to one another via `links`.
+        LinkedContentItems contain the data necessary to describe and render a link to a GOV.UK content item.
+      type: object
+      required:
+        - analytics_identifier
+        - api_path
+        - base_path
+        - content_id
+        - description
+        - document_type
+        - locale
+        - links
+        - public_updated_at
+        - schema_name
+        - title
+        - withdrawn
+      properties:
+        analytics_identifier:
+          type: integer
+          nullable: true
+          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
+        api_path:
+          type: string
+          nullable: true
+          description: The base path of the content item, available from the API.
+        base_path:
+          type: string
+          nullable: true
+          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
+        content_id:
+          type: string
+          format: uuid
+          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
+        description:
+          type: string
+          nullable: true
+          description: A description of the content which can then be displayed publically.
+        details:
+          type: object
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
+        document_type:
+          type: string
+          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        locale:
+          type: string
+          description: The language the document is written in. A fixed list of locales is allowed.
+        public_updated_at:
+          type: string
+          format: date-time
+          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
+        schema_name:
+          type: string
+          description: The name of the GOV.UK content schema that the request body will be validated against.
+        title:
+          type: string
+          description: The title of the edition, displayed to the user.
+        withdrawn:
+          type: boolean
+          description: Holds whether or not the content has been withdrawn.
+      example:
+        api_path: /api/content/browse/tax/vat
+        base_path: /browse/tax/vat
+        content_id: 895d337a-fa68-4c83-ab79-1c08016afe87
+        description: Includes online returns, rates, charging and record keeping
+        document_type: mainstream_browse_page
+        locale: en
+        public_updated_at: '2015-06-24T13:56:39Z'
+        schema_name: mainstream_browse_page
+        title: VAT
+        withdrawn: false
+        links: {}
+        api_url: https://www.gov.uk/api/content/browse/tax/vat
+        web_url: https://www.gov.uk/browse/tax/vat
+
+    WithdrawnNotice:
+      description: |
+        Contains information about why and when a ContentItem was withdrawn.
+      type: object
+      required:
+        - explanation
+        - withdrawn_at
+      properties:
+        explanation:
+          type: string
+          description: An explanation as to why the content was withdrawn.
+        withdrawn_at:
+          type: string
+          format: date-time
+          description: The date when the content was withdrawn.
+      example:
+        explanation: ! '<div class="govspeak"><p>This guidance has been withdrawn from use
+    because the Environment Agency no longer provides best practice guidance. See
+    guidance on <a href="https://www.gov.uk/guidance/prevent-the-spread-of-harmful-invasive-and-non-native-plants">preventing
+    harmful weeds and invasive non-native plants spreading weeds</a> for information
+    on controlling specific plants.</p>
+
+    </div>'
+        withdrawn_at: '2016-07-11T15:08:02Z'
   examples:
     ContentItemExample:
       analytics_identifier:
@@ -520,3 +521,4 @@ components:
           title=\"Value Added Tax\">VAT</abbr> rate businesses charge</a> depends on their
           goods and services.</p>\n\n<p>Check the <a href=\"https://www.gov.uk/rates-of-vat-on-different-goods-and-services\">rates
           of <abbr title=\"Value Added Tax\">VAT</abbr></a> on different goods and services.</p>\n\n"
+
