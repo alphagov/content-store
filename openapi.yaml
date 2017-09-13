@@ -57,7 +57,7 @@ paths:
               example:
                 $ref: '#/components/examples/ContentItemExample'
         303:
-          description: The canonical path for this content item is a different path.
+          description: A content item at a different location is responsible for the content at this path.
         404:
           description: No content item is available at that path.
         410:
