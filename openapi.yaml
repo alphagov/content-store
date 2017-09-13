@@ -81,6 +81,7 @@ components:
         - email_document_supertype
         - first_published_at
         - government_document_supertype
+        - links
         - navigation_document_supertype
         - need_ids
         - phase
@@ -89,7 +90,6 @@ components:
         - schema_name
         - updated_at
         - user_journey_document_supertype
-        - links
       properties:
         analytics_identifier:
           type: integer
@@ -101,6 +101,12 @@ components:
           type: string
           format: uuid
           description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
+        description:
+          type: string
+          description: A description of the content which can then be displayed publically.
+        details:
+          type: object
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
         document_type:
           type: string
           description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
@@ -114,6 +120,13 @@ components:
         government_document_supertype:
           type: string
           description: Grouping for email subscriptions.
+        links:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedContentItem'
+          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
         locale:
           type: string
           description: The language the document is written in. A fixed list of locales is allowed.
@@ -136,6 +149,9 @@ components:
         publishing_app:
           type: string
           description: The application which published the edition.
+        publishing_request_id:
+          type: string
+          description: The GOV.UK Request ID which was used when the content item was published.
         rendering_app:
           type: string
           description: The application which will be used to render the content of the edition.
@@ -155,22 +171,6 @@ components:
         withdrawn_notice:
           $ref: '#/components/schemas/WithdrawnNotice'
           description: If the edition is withdrawn, this will contain the information about when and why it was withdrawn.
-        publishing_request_id:
-          type: string
-          description: The GOV.UK Request ID which was used when the content item was published.
-        links:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/LinkedContentItem'
-          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
-        description:
-          type: string
-          description: A description of the content which can then be displayed publically.
-        details:
-          type: object
-          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
       example:
         $ref: '#/components/examples/ContentItemExample'
 
@@ -219,6 +219,13 @@ components:
         document_type:
           type: string
           description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        links:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedContentItem'
+          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
         locale:
           type: string
           description: The language the document is written in. A fixed list of locales is allowed.
