@@ -72,8 +72,8 @@ components:
 
     ContentItem:
       description: |
-        Resource containing the content, GOV.UK links and metadata for a page on GOV.UK.
-        A ContentItem has fields which describe it, such as when it was last updated, fields containing content text and links to related GOV.UK ContentItems.
+        A resource that represents a piece of content on GOV.UK.
+        It contains metadata that describe common attributes shared between all content, a details for the particular content and a links field to describe relationships with other content.
       type: object
       required:
         - base_path
@@ -176,8 +176,8 @@ components:
 
     LinkedContentItem:
       description: |
-        ContentItems are related to one another via `links`.
-        LinkedContentItems contain the data necessary to describe and render a link to a GOV.UK content item.
+        A LinkedContentItem is an abridged form of ContentItem which is used to represent links between ContentItems.
+        It is embedded within the `links` field that is used within ContentItem and LinkedContentItem.
       type: object
       required:
         - analytics_identifier
@@ -259,7 +259,7 @@ components:
 
     WithdrawnNotice:
       description: |
-        Contains information about why and when a ContentItem was withdrawn.
+        A WithdrawnNotice is an object that can be embedded within a ContentItem and is used to explain the reason a piece of content has been withdrawn.
       type: object
       required:
         - explanation
