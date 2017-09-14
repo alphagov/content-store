@@ -57,7 +57,7 @@ paths:
               example:
                 $ref: '#/components/examples/ContentItemExample'
         303:
-          description: The canonical path for this content item is a different path.
+          description: A content item at a different location is responsible for the content at this path.
         404:
           description: No content item is available at that path.
         410:
@@ -69,35 +69,115 @@ paths:
 
 components:
   schemas:
-    WithdrawnNotice:
+
+    ContentItem:
       description: |
-        Contains information about why and when a ContentItem was withdrawn.
+        A resource that represents a piece of content on GOV.UK.
+        It contains metadata that describe common attributes shared between all content, a details for the particular content and a links field to describe relationships with other content.
       type: object
       required:
-        - explanation
-        - withdrawn_at
+        - base_path
+        - document_type
+        - email_document_supertype
+        - first_published_at
+        - government_document_supertype
+        - links
+        - navigation_document_supertype
+        - need_ids
+        - phase
+        - public_updated_at
+        - publishing_app
+        - schema_name
+        - updated_at
+        - user_journey_document_supertype
       properties:
-        explanation:
+        analytics_identifier:
+          type: integer
+          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
+        base_path:
           type: string
-          description: An explanation as to why the content was withdrawn.
-        withdrawn_at:
+          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
+        content_id:
+          type: string
+          format: uuid
+          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
+        description:
+          type: string
+          description: A description of the content which can then be displayed publically.
+        details:
+          type: object
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
+        document_type:
+          type: string
+          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        email_document_supertype:
+          type: string
+          description: High level group for email subscriptions used to identify publications and announcement.
+        first_published_at:
           type: string
           format: date-time
-          description: The date when the content was withdrawn.
+          description: Can be set by publishing application, otherwise set automatically in Publishing API on first publish and copied on subsequent ones.
+        government_document_supertype:
+          type: string
+          description: Grouping for email subscriptions.
+        links:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedContentItem'
+          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
+        locale:
+          type: string
+          description: The language the document is written in. A fixed list of locales is allowed.
+        navigation_document_supertype:
+          type: string
+          description: Used to filter pages on the new taxonomy-based navigation pages.
+        need_ids:
+          type: array
+          description: An array of need IDs from Maslow.
+          items:
+            type: string
+        phase:
+          type: string
+          enum: [alpha, beta, live]
+          description: The "phase" of an edition can either be alpha, beta or live.
+        public_updated_at:
+          type: string
+          format: date-time
+          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
+        publishing_app:
+          type: string
+          description: The application which published the edition.
+        publishing_request_id:
+          type: string
+          description: The GOV.UK Request ID which was used when the content item was published.
+        rendering_app:
+          type: string
+          description: The application which will be used to render the content of the edition.
+        schema_name:
+          type: string
+          description: The name of the GOV.UK content schema that the request body will be validated against.
+        title:
+          type: string
+          description: The title of the edition, displayed to the user.
+        updated_at:
+          type: string
+          format: date-time
+          description: Current date time every time the content item changes, which could be an update to one of the dependent links.
+        user_journey_document_supertype:
+          type: string
+          description: Used to distinguish pages used mainly for navigation (finding) from content pages (thing).
+        withdrawn_notice:
+          $ref: '#/components/schemas/WithdrawnNotice'
+          description: If the edition is withdrawn, this will contain the information about when and why it was withdrawn.
       example:
-        explanation: ! '<div class="govspeak"><p>This guidance has been withdrawn from use
-    because the Environment Agency no longer provides best practice guidance. See
-    guidance on <a href="https://www.gov.uk/guidance/prevent-the-spread-of-harmful-invasive-and-non-native-plants">preventing
-    harmful weeds and invasive non-native plants spreading weeds</a> for information
-    on controlling specific plants.</p>
-
-    </div>'
-        withdrawn_at: '2016-07-11T15:08:02Z'
+        $ref: '#/components/examples/ContentItemExample'
 
     LinkedContentItem:
       description: |
-        ContentItems are related to one another via `links`.
-        LinkedContentItems contain the data necessary to describe and render a link to a GOV.UK content item.
+        A LinkedContentItem is an abridged form of ContentItem which is used to represent links between ContentItems.
+        It is embedded within the `links` field that is used within ContentItem and LinkedContentItem.
       type: object
       required:
         - analytics_identifier
@@ -139,6 +219,13 @@ components:
         document_type:
           type: string
           description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+        links:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedContentItem'
+          description: An object that has collections of [LinkedContentItems](#linkedcontentitem) objects in arrays, which are grouped by a link type.
         locale:
           type: string
           description: The language the document is written in. A fixed list of locales is allowed.
@@ -170,109 +257,30 @@ components:
         api_url: https://www.gov.uk/api/content/browse/tax/vat
         web_url: https://www.gov.uk/browse/tax/vat
 
-    ContentItem:
+    WithdrawnNotice:
       description: |
-        Resource containing the content, GOV.UK links and metadata for a page on GOV.UK.
-        A ContentItem has fields which describe it, such as when it was last updated, fields containing content text and links to related GOV.UK ContentItems.
+        A WithdrawnNotice is an object that can be embedded within a ContentItem and is used to explain the reason a piece of content has been withdrawn.
       type: object
       required:
-        - base_path
-        - document_type
-        - email_document_supertype
-        - first_published_at
-        - government_document_supertype
-        - navigation_document_supertype
-        - need_ids
-        - phase
-        - public_updated_at
-        - publishing_app
-        - schema_name
-        - updated_at
-        - user_journey_document_supertype
-        - links
+        - explanation
+        - withdrawn_at
       properties:
-        analytics_identifier:
-          type: integer
-          description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
-        base_path:
+        explanation:
           type: string
-          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
-        content_id:
-          type: string
-          format: uuid
-          description: A UUID which represents the public identifier for a piece of content, combined with locale this makes the unique identifier for an individual piece of content. Can be null for redirects / gone content.
-        document_type:
-          type: string
-          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
-        email_document_supertype:
-          type: string
-          description: High level group for email subscriptions used to identify publications and announcement.
-        first_published_at:
+          description: An explanation as to why the content was withdrawn.
+        withdrawn_at:
           type: string
           format: date-time
-          description: Can be set by publishing application, otherwise set automatically in Publishing API on first publish and copied on subsequent ones.
-        government_document_supertype:
-          type: string
-          description: Grouping for email subscriptions.
-        locale:
-          type: string
-          description: The language the document is written in. A fixed list of locales is allowed.
-        navigation_document_supertype:
-          type: string
-          description: Used to filter pages on the new taxonomy-based navigation pages.
-        need_ids:
-          type: array
-          description: An array of need IDs from Maslow.
-          items:
-            type: string
-        phase:
-          type: string
-          enum: [alpha, beta, live]
-          description: The "phase" of an edition can either be alpha, beta or live.
-        public_updated_at:
-          type: string
-          format: date-time
-          description: Can be set by publishing application, otherwise set automatically in Publishing API each time an edition is published with a major edition.
-        publishing_app:
-          type: string
-          description: The application which published the edition.
-        rendering_app:
-          type: string
-          description: The application which will be used to render the content of the edition.
-        schema_name:
-          type: string
-          description: The name of the GOV.UK content schema that the request body will be validated against.
-        title:
-          type: string
-          description: The title of the edition, displayed to the user.
-        updated_at:
-          type: string
-          format: date-time
-          description: Current date time every time the content item changes, which could be an update to one of the dependent links.
-        user_journey_document_supertype:
-          type: string
-          description: Used to distinguish pages used mainly for navigation (finding) from content pages (thing).
-        withdrawn_notice:
-          $ref: '#/components/schemas/WithdrawnNotice'
-          description: If the edition is withdrawn, this will contain the information about when and why it was withdrawn.
-        publishing_request_id:
-          type: string
-          description: The GOV.UK Request ID which was used when the content item was published.
-        links:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/LinkedContentItem'
-          description: An object containing all the GOV.UK documents that this document links to organised by the link names
-        description:
-          type: string
-          description: A description of the content which can then be displayed publically.
-        details:
-          type: object
-          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - eg a redirect.
+          description: The date when the content was withdrawn.
       example:
-        $ref: '#/components/examples/ContentItemExample'
+        explanation: ! '<div class="govspeak"><p>This guidance has been withdrawn from use
+    because the Environment Agency no longer provides best practice guidance. See
+    guidance on <a href="https://www.gov.uk/guidance/prevent-the-spread-of-harmful-invasive-and-non-native-plants">preventing
+    harmful weeds and invasive non-native plants spreading weeds</a> for information
+    on controlling specific plants.</p>
+
+    </div>'
+        withdrawn_at: '2016-07-11T15:08:02Z'
   examples:
     ContentItemExample:
       analytics_identifier:
@@ -520,3 +528,4 @@ components:
           title=\"Value Added Tax\">VAT</abbr> rate businesses charge</a> depends on their
           goods and services.</p>\n\n<p>Check the <a href=\"https://www.gov.uk/rates-of-vat-on-different-goods-and-services\">rates
           of <abbr title=\"Value Added Tax\">VAT</abbr></a> on different goods and services.</p>\n\n"
+
