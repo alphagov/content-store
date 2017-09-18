@@ -183,7 +183,10 @@ private
 
   def should_register_routes?(previous_item: nil)
     return false if self.schema_name.start_with?("placeholder")
-    return false if previous_item && previous_item.route_set == self.route_set
+    if previous_item
+      return previous_item.schema_name == "placeholder" ||
+          previous_item.route_set != self.route_set
+    end
     true
   end
 

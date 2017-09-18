@@ -147,12 +147,14 @@ describe "content item write API", type: :request do
   end
 
   describe 'updating an existing content item' do
+    let(:format) { "gone" }
     before(:each) do
       Timecop.travel(30.minutes.ago) do
         @item = create(
           :content_item,
           title: "Original title",
           base_path: "/vat-rates",
+          format: format,
           need_ids: ["100321"],
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
           details: { "foo" => "bar" }
@@ -185,6 +187,15 @@ describe "content item write API", type: :request do
       @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [['/vat-rates', 'exact'], ['/vat-rates.json', 'exact']])
+    end
+
+    context "when the original item is a placeholder" do
+      let(:format) { "placeholder" }
+
+      it "registers routes for the content item" do
+        put_json "/content/vat-rates", @data
+        assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+      end
     end
 
     context "when the router-api is unavailable" do
