@@ -57,7 +57,7 @@ paths:
               example:
                 $ref: '#/components/examples/ContentItemExample'
         303:
-          description: A content item at a different location is responsible for the content at this path.
+          description: A content item at a different location is responsible for the content at this path. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#content-that-spans-multiple-pages).
         404:
           description: No content item is available at that path.
         410:
@@ -96,7 +96,7 @@ components:
           description: An identifier which clients of the Publishing API can include with an edition for later use in analytics software.
         base_path:
           type: string
-          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths.
+          description: The path of the content on GOV.UK - or the shortest one for content that spans multiple sub paths. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#base-path).
         content_id:
           type: string
           format: uuid
@@ -106,10 +106,10 @@ components:
           description: A description of the content which can then be displayed publically.
         details:
           type: object
-          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - for example, a redirect.
+          description: An object representing data that is structured in a format defined by the schema of the edition. This holds the content for the edition, often in a field called body. Can be null for items without content - for example, a redirect. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#details).
         document_type:
           type: string
-          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema.
+          description: A particular type of document, used to differentiate between documents that are of different types but share the same schema. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#document-type-and-schema-name).
         email_document_supertype:
           type: string
           description: High level group for email subscriptions used to identify publications and announcement.
@@ -157,7 +157,7 @@ components:
           description: The application which will be used to render the content of the edition.
         schema_name:
           type: string
-          description: The name of the GOV.UK content schema that the request body will be validated against.
+          description: The name of the GOV.UK content schema that the request body will be validated against. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#document-type-and-schema-name).
         title:
           type: string
           description: The title of the edition, displayed to the user.
@@ -177,7 +177,7 @@ components:
     LinkedContentItem:
       description: |
         A LinkedContentItem is an abridged form of ContentItem which is used to represent links between ContentItems.
-        It is embedded within the `links` field that is used within ContentItem and LinkedContentItem.
+        It is embedded within the `links` field that is used within ContentItem and LinkedContentItem. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#links).
       type: object
       required:
         - analytics_identifier
@@ -259,7 +259,7 @@ components:
 
     WithdrawnNotice:
       description: |
-        A WithdrawnNotice is an object that can be embedded within a ContentItem and is used to explain the reason a piece of content has been withdrawn.
+        A WithdrawnNotice is an object that can be embedded within a ContentItem and is used to explain the reason a piece of content has been withdrawn. [Learn more](https://content-api.publishing.service.gov.uk/getting-started.html#withdrawn-content).
       type: object
       required:
         - explanation
