@@ -13,6 +13,7 @@ describe "End-to-end behaviour", type: :request do
     "email_document_supertype" => "publications",
     "government_document_supertype" => "new-stories",
     "navigation_document_supertype" => "guidance",
+    "search_user_need_document_supertype" => "core",
     "user_journey_document_supertype" => "finding",
     "publishing_app" => "publisher",
     "rendering_app" => "frontend",

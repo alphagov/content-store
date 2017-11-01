@@ -63,6 +63,7 @@ class ContentItem
   field :email_document_supertype, type: String, default: ''
   field :government_document_supertype, type: String, default: ''
   field :navigation_document_supertype, type: String, default: ''
+  field :search_user_need_document_supertype, type: String, default: ''
   field :user_journey_document_supertype, type: String, default: ''
   field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s

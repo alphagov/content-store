@@ -45,6 +45,7 @@ describe "Fetching content items", type: :request do
         email_document_supertype
         government_document_supertype
         navigation_document_supertype
+        search_user_need_document_supertype
         user_journey_document_supertype
         need_ids
         locale
