@@ -22,6 +22,7 @@ class ContentItemPresenter
     publishing_app
     rendering_app
     schema_name
+    search_user_need_document_supertype
     title
     updated_at
     user_journey_document_supertype
