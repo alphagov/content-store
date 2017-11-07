@@ -1,6 +1,6 @@
 ---
 applications:
-- name: srh-content-store
+- name: govuk-dev-content-store
   memory: 256M
   buildpack: ruby_buildpack
   instances: 1
