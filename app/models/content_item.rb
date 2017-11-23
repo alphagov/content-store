@@ -170,6 +170,12 @@ class ContentItem
     end
   end
 
+  def delete_routes
+    return unless should_register_routes?
+
+    route_set.delete!
+  end
+
   def base_path_without_root
     base_path&.sub(%r{^/}, "")
   end

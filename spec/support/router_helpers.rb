@@ -52,6 +52,13 @@ module RouterHelpers
       with(body: { "route" => hash_including("incoming_path" => path) })
     assert_not_requested(route_stub)
   end
+
+  def stub_route_deleted(path)
+    stub_http_request(
+      :delete,
+      "#{ROUTER_API_ENDPOINT}/routes?incoming_path=#{CGI.escape(path)}"
+    ).to_return(status: 200)
+  end
 end
 
 RSpec.configure do |config|

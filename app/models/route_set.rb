@@ -81,14 +81,29 @@ class RouteSet < OpenStruct
     commit_routes
   end
 
+  def delete!
+    return unless any_routes?
+
+    paths.each do |path|
+      begin
+        router_api.delete_route(path)
+      rescue GdsApi::HTTPNotFound
+        # Ignore this, as this path could have already been deleted
+        next
+      end
+    end
+
+    commit_routes
+  end
+
 private
 
   def register_rendering_app
-    Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app) + "/")
+    router_api.add_backend(rendering_app, Plek.find(rendering_app) + "/")
   end
 
   def register_redirect(route)
-    Rails.application.router_api.add_redirect_route(
+    router_api.add_redirect_route(
       route.fetch(:path),
       route.fetch(:type),
       route.fetch(:destination),
@@ -98,14 +113,14 @@ private
   end
 
   def register_gone_route(route)
-    Rails.application.router_api.add_gone_route(
+    router_api.add_gone_route(
       route.fetch(:path),
       route.fetch(:type),
     )
   end
 
   def register_route(route, rendering_app)
-    Rails.application.router_api.add_route(
+    router_api.add_route(
       route.fetch(:path),
       route.fetch(:type),
       rendering_app,
@@ -113,7 +128,17 @@ private
   end
 
   def commit_routes
-    Rails.application.router_api.commit_routes
+    router_api.commit_routes
+  end
+
+  def router_api
+    Rails.application.router_api
+  end
+
+  def paths
+    (routes + gone_routes + redirects).map do |hash|
+      hash[:path]
+    end
   end
 
   def any_routes?
