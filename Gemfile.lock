@@ -279,7 +279,7 @@ GEM
       rack
       raindrops (~> 0.7)
     uuidtools (2.1.5)
-    webmock (2.1.0)
+    webmock (2.3.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -316,7 +316,7 @@ DEPENDENCIES
   timecop (= 0.7.1)
   unicorn (= 4.8.2)
   uuidtools (= 2.1.5)
-  webmock (= 2.1.0)
+  webmock (= 2.3.2)
   whenever (~> 0.9.4)
 
 BUNDLED WITH
