@@ -86,7 +86,7 @@ class RouteSet < OpenStruct
 
     paths.each do |path|
       begin
-        router_api.delete_route(path)
+        router_api.delete_route(path, hard_delete: true)
       rescue GdsApi::HTTPNotFound
         # Ignore this, as this path could have already been deleted
         next

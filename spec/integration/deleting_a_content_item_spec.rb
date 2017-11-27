@@ -10,7 +10,7 @@ RSpec.describe "Deleting a content item", type: :request do
       @delete_stubs = ContentItem.find_by(
         base_path: base_path
       ).routes.map do |route|
-        stub_route_deleted(route["path"])
+        stub_route_deleted(route["path"], hard_delete: true)
       end
     end
 
