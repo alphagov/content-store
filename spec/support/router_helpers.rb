@@ -53,11 +53,11 @@ module RouterHelpers
     assert_not_requested(route_stub)
   end
 
-  def stub_route_deleted(path)
-    stub_http_request(
-      :delete,
-      "#{ROUTER_API_ENDPOINT}/routes?incoming_path=#{CGI.escape(path)}"
-    ).to_return(status: 200)
+  def stub_route_deleted(path, hard_delete: false)
+    url = "#{ROUTER_API_ENDPOINT}/routes?incoming_path=#{CGI.escape(path)}"
+    url += "&hard_delete=true" if hard_delete
+
+    stub_http_request(:delete, url).to_return(status: 200)
   end
 end
 
