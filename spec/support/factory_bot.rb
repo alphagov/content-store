@@ -1,13 +1,13 @@
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
-    FactoryGirl.find_definitions
+    FactoryBot.find_definitions
 
     # Lint all factories
     begin
       DatabaseCleaner.start
-      FactoryGirl.lint
+      FactoryBot.lint
     ensure
       DatabaseCleaner.clean
     end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   # Base factory not intended to be used directly.  Present to contain common
   # attributes and traits
   factory :base_content_item, class: ContentItem do

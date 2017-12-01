@@ -5,7 +5,7 @@ RSpec.describe "Deleting a content item", type: :request do
 
   context "when the content item exists" do
     before do
-      FactoryGirl.create(:content_item, base_path: base_path)
+      FactoryBot.create(:content_item, base_path: base_path)
 
       @delete_stubs = ContentItem.find_by(
         base_path: base_path

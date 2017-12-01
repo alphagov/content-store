@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe "Public API requests for content items", type: :request do
   let(:content_item) do
-    FactoryGirl.create(
+    FactoryBot.create(
       :content_item,
       document_type: "travel_advice",
       expanded_links: { 'related' => [{ content_id: linked_item.content_id }] },
@@ -19,7 +19,7 @@ describe "Public API requests for content items", type: :request do
     )
   end
 
-  let(:linked_item) { FactoryGirl.create(:content_item, :with_content_id) }
+  let(:linked_item) { FactoryBot.create(:content_item, :with_content_id) }
 
   it "corrrectly expands linked items with Public API URLs" do
     get "/api/content#{content_item.base_path}"

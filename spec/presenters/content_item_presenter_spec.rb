@@ -35,7 +35,7 @@ describe ContentItemPresenter do
 
   describe "content type resolution" do
     let(:item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         links: links,
         description: [

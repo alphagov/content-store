@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :route_set do
     skip_create
 
