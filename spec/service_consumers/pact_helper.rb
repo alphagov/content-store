@@ -34,6 +34,25 @@ Pact.provider_states_for "Publishing API" do
     WebMock.enable!
     WebMock.reset!
     DatabaseCleaner.clean_with :truncation
+
+    escaped_router_api_prefix = Regexp.escape(Plek.find('router-api'))
+    stub_request(
+      :delete,
+      %r(\A#{escaped_router_api_prefix}/routes)
+    ).to_return(
+      status: 404,
+      body: "{}",
+      headers: { "Content-Type" => "application/json" }
+    )
+
+    stub_request(
+      :post,
+      %r(\A#{escaped_router_api_prefix}/routes/commit)
+    ).to_return(
+      status: 200,
+      body: "{}",
+      headers: { "Content-Type" => "application/json" }
+    )
   end
 
   tear_down do
