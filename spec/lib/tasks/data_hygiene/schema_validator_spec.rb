@@ -16,7 +16,7 @@ RSpec.describe DataHygiene::SchemaValidator, :report_errors do
   end
 
   before do
-    FactoryGirl.create(:content_item, schema_name: "some_format")
+    FactoryBot.create(:content_item, schema_name: "some_format")
 
     allow(File).to receive(:open)
       .with(Rails.root.join("tmp", "some_format-validation-errors.csv"), "w")

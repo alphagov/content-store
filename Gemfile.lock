@@ -75,7 +75,7 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.7.0)
-    factory_girl (4.9.0)
+    factory_bot (4.8.2)
       activesupport (>= 3.0.0)
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
@@ -309,7 +309,7 @@ PLATFORMS
 DEPENDENCIES
   ci_reporter_rspec (~> 1.0.0)
   database_cleaner (~> 1.6.1)
-  factory_girl (~> 4.4)
+  factory_bot (~> 4.8)
   gds-api-adapters (~> 50.0.0)
   govuk-content-schema-test-helpers (~> 1.4)
   govuk-lint
@@ -333,4 +333,4 @@ DEPENDENCIES
   whenever (~> 0.9.4)
 
 BUNDLED WITH
-   1.14.5
+   1.15.1

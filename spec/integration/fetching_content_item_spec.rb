@@ -5,7 +5,7 @@ describe "Fetching content items", type: :request do
     let(:max_cache_time) { nil }
 
     let(:content_item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         base_path: "/vat-rates",
         content_id: SecureRandom.uuid,
@@ -167,7 +167,7 @@ describe "Fetching content items", type: :request do
 
   context "when requesting an exact route within a base_path" do
     let!(:content_item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         base_path: "/base-path",
         content_id: SecureRandom.uuid,
@@ -181,7 +181,7 @@ describe "Fetching content items", type: :request do
     let(:colliding_path) { "/does-not-collide" }
 
     let!(:colliding_content_item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         base_path: colliding_path,
         content_id: SecureRandom.uuid
@@ -211,7 +211,7 @@ describe "Fetching content items", type: :request do
 
   context "when requesting a prefix route within a base_path" do
     let!(:content_item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         base_path: "/base-path",
         content_id: SecureRandom.uuid,
@@ -246,7 +246,7 @@ describe "Fetching content items", type: :request do
   context "a withdrawn content item" do
     let(:withdrawn_at) { DateTime.parse("2016-05-17 11:20") }
     let(:withdrawn_item) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :content_item,
         withdrawn_notice: {
           explanation: "This is no longer true",
@@ -266,7 +266,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a gone content item" do
-    let(:gone_item) { FactoryGirl.create(:gone_content_item) }
+    let(:gone_item) { FactoryBot.create(:gone_content_item) }
 
     before do
       get "/content#{gone_item.base_path}"
@@ -286,7 +286,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a gone content item with an explantion and alternative_path" do
-    let(:gone_item) { FactoryGirl.create(:gone_content_item_with_details) }
+    let(:gone_item) { FactoryBot.create(:gone_content_item_with_details) }
 
     before do
       get "/content#{gone_item.base_path}"

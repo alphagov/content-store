@@ -9,7 +9,7 @@ describe FindByPath do
     field :routes, type: Array, default: []
   end
 
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :compatible_model do
       base_path "/base-path"
       transient do

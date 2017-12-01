@@ -30,7 +30,7 @@ gem 'uuidtools', '2.1.5'
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'database_cleaner', '~> 1.6.1'
-  gem 'factory_girl', '~> 4.4'
+  gem 'factory_bot', '~> 4.8'
   gem 'webmock', '2.3.2', require: false
   gem 'timecop', '0.7.1'
 
