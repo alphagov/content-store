@@ -25,7 +25,6 @@ class ContentItemPresenter
     search_user_need_document_supertype
     title
     updated_at
-    user_need_document_supertype
     user_journey_document_supertype
     withdrawn_notice
     publishing_request_id
