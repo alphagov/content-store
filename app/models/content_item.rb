@@ -60,6 +60,7 @@ class ContentItem
   field :description, type: Hash, default: { "value" => nil }
   field :format, type: String
   field :document_type, type: String
+  field :content_purpose_document_supertype, type: String, default: ''
   field :email_document_supertype, type: String, default: ''
   field :government_document_supertype, type: String, default: ''
   field :navigation_document_supertype, type: String, default: ''
