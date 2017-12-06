@@ -10,6 +10,7 @@ class ContentItemPresenter
     analytics_identifier
     base_path
     content_id
+    content_purpose_document_supertype
     document_type
     email_document_supertype
     first_published_at
