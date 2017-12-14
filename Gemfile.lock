@@ -110,9 +110,11 @@ GEM
       addressable (~> 2.3.8)
     kgio (2.11.0)
     link_header (0.0.8)
-    logstash-event (1.1.5)
-    logstasher (0.5.0)
-      logstash-event (~> 1.1.0)
+    logstash-event (1.2.02)
+    logstasher (1.2.2)
+      activesupport (>= 4.0)
+      logstash-event (~> 1.2.0)
+      request_store
     loofah (2.1.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -214,6 +216,7 @@ GEM
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    request_store (1.3.2)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -315,7 +318,7 @@ DEPENDENCIES
   govuk-lint
   govuk_app_config (~> 0.2)
   hashdiff
-  logstasher (= 0.5.0)
+  logstasher (= 1.2.2)
   mongoid (= 6.1.0)
   mongoid_rails_migrations!
   pact
