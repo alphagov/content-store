@@ -131,8 +131,8 @@ GEM
     minitest (5.10.3)
     mongo (2.4.3)
       bson (>= 4.2.1, < 5.0.0)
-    mongoid (6.1.0)
-      activemodel (~> 5.0)
+    mongoid (6.2.1)
+      activemodel (~> 5.1)
       mongo (>= 2.4.1, < 3.0.0)
     multi_json (1.12.2)
     multipart-post (2.0.0)
@@ -319,7 +319,7 @@ DEPENDENCIES
   govuk_app_config (~> 0.2)
   hashdiff
   logstasher (= 1.2.2)
-  mongoid (= 6.1.0)
+  mongoid (= 6.2.1)
   mongoid_rails_migrations!
   pact
   plek (~> 2.0)
