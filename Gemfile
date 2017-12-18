@@ -9,7 +9,7 @@ gem 'logstasher', '0.5.0'
 
 gem 'unicorn', '4.8.2'
 
-gem 'plek', '~> 1.9'
+gem 'plek', '~> 2.0'
 
 gem 'statsd-ruby', '~> 1.4'
 
