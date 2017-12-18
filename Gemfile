@@ -13,7 +13,7 @@ gem 'plek', '~> 1.9'
 
 gem 'statsd-ruby', '~> 1.4'
 
-gem 'whenever', '~> 0.9.4', require: false
+gem 'whenever', '~> 0.10.0', require: false
 gem 'hashdiff', require: false
 
 if ENV['GDS_API_ADAPTERS_DEV']
