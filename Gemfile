@@ -7,7 +7,7 @@ gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_
 
 gem 'logstasher', '1.2.2'
 
-gem 'unicorn', '4.8.2'
+gem 'unicorn', '5.3.1'
 
 gem 'plek', '~> 2.0'
 
