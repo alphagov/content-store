@@ -22,7 +22,7 @@ else
   gem 'gds-api-adapters', "~> 50.6.0"
 end
 
-gem 'govuk_app_config', '~> 0.2'
+gem 'govuk_app_config', '~> 1.1'
 
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
 gem 'uuidtools', '2.1.5'
