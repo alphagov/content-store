@@ -24,7 +24,7 @@ end
 
 gem 'govuk_app_config', '~> 0.2'
 
-gem 'govuk-content-schema-test-helpers', '~> 1.4'
+gem 'govuk-content-schema-test-helpers', '~> 1.6'
 gem 'uuidtools', '2.1.5'
 
 group :development, :test do
