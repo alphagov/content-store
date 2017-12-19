@@ -31,7 +31,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'database_cleaner', '~> 1.6.1'
   gem 'factory_bot', '~> 4.8'
-  gem 'webmock', '2.3.2', require: false
+  gem 'webmock', '3.1.1', require: false
   gem 'timecop', '0.9.1'
 
   gem 'simplecov', '0.15.1', require: false
