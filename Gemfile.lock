@@ -98,9 +98,11 @@ GEM
       rubocop (~> 0.51.0)
       rubocop-rspec (~> 1.19.0)
       scss_lint
-    govuk_app_config (0.3.0)
-      sentry-raven (~> 2.6.3)
+    govuk_app_config (1.1.0)
+      logstasher (~> 1.2.2)
+      sentry-raven (~> 2.7.1)
       statsd-ruby (~> 1.4.0)
+      unicorn (~> 5.3.1)
     hashdiff (0.3.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -262,7 +264,7 @@ GEM
     scss_lint (0.56.0)
       rake (>= 0.9, < 13)
       sass (~> 3.5.3)
-    sentry-raven (2.6.3)
+    sentry-raven (2.7.1)
       faraday (>= 0.7.6, < 1.0)
     simplecov (0.15.1)
       docile (~> 1.1.0)
@@ -316,9 +318,8 @@ DEPENDENCIES
   gds-api-adapters (~> 50.6.0)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
-  govuk_app_config (~> 0.2)
+  govuk_app_config (~> 1.1)
   hashdiff
-  logstasher (= 1.2.2)
   mongoid (= 6.2.1)
   mongoid_rails_migrations!
   pact
@@ -330,7 +331,6 @@ DEPENDENCIES
   simplecov-rcov (= 0.2.3)
   statsd-ruby (~> 1.4)
   timecop (= 0.9.1)
-  unicorn (= 5.3.1)
   uuidtools (= 2.1.5)
   webmock (= 2.3.2)
   whenever (~> 0.10.0)
