@@ -297,7 +297,7 @@ GEM
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uuidtools (2.1.5)
-    webmock (2.3.2)
+    webmock (3.1.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -332,7 +332,7 @@ DEPENDENCIES
   statsd-ruby (~> 1.4)
   timecop (= 0.9.1)
   uuidtools (= 2.1.5)
-  webmock (= 2.3.2)
+  webmock (= 3.1.1)
   whenever (~> 0.10.0)
 
 BUNDLED WITH
