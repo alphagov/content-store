@@ -1,0 +1,22 @@
+---
+applications:
+- name: govuk-dev-content-store
+  memory: 256M
+  buildpack: ruby_buildpack
+  instances: 1
+  services:
+  - content-store-mongo
+  env:
+    GOVUK_APP_NAME: content-store
+    GOVUK_CONTENT_SCHEMAS_PATH: /govuk-content-schemas
+    # I had to add these. I made up the values, no idea what they *should* be
+    GOVUK_WEBSITE_ROOT: /
+    GOVUK_APP_DOMAIN: www.gov.uk
+
+    # Mongo
+    MONGODB_URI: mongodb://mongo@localhost/db
+    MONGO_SSL: true
+    MONGO_SSL_VERIFY: false
+
+    RAILS_ENV: production
+    APP_HOME: /app
