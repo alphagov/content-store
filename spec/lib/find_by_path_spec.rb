@@ -7,6 +7,7 @@ describe FindByPath do
     include Mongoid::Document
     field :base_path, type: String
     field :routes, type: Array, default: []
+    field :redirects, type: Array, default: []
   end
 
   FactoryBot.define do
@@ -53,6 +54,22 @@ describe FindByPath do
 
         it { is_expected.to eq superseding_instance }
       end
+    end
+
+    context "when there is a redirect exact match for the path" do
+      let(:exact_route_path) { "/base-path/exact-route" }
+      let(:path) { exact_route_path }
+      let!(:instance) do
+        create(
+          :compatible_model,
+          routes: [],
+          redirects: [
+            { path: exact_route_path, type: "exact", destination: "/somewhere" }
+          ]
+        )
+      end
+
+      it { is_expected.to eq instance }
     end
 
     context "when there is a route with a prefix match" do
