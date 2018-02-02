@@ -15,7 +15,9 @@ node("mongodb-2.4") {
     },
     publishingE2ETests: true,
     afterTest: {
-      govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
+      stage("Test pact with Publishing API") {
+        govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
+      }
     }
   )
 }
