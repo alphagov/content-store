@@ -210,17 +210,7 @@ describe "Fetching content items", type: :request do
     end
   end
 
-  context "when requesting a prefix route within a base_path" do
-    let!(:content_item) do
-      FactoryBot.create(
-        :content_item,
-        base_path: "/base-path",
-        content_id: SecureRandom.uuid,
-        routes: [
-          { path: "/base-path/prefix", type: "prefix" },
-        ],
-      )
-    end
+  shared_examples "redirecting prefix routes" do
     let(:requested_path) { "/base-path/prefix" }
 
     before do
@@ -242,6 +232,36 @@ describe "Fetching content items", type: :request do
         expect(response).to redirect_to("/content/base-path")
       end
     end
+  end
+
+  context "when requesting a prefix route within a base_path" do
+    before do
+      FactoryBot.create(
+        :content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        routes: [
+          { path: "/base-path/prefix", type: "prefix" },
+        ],
+      )
+    end
+
+    include_examples "redirecting prefix routes"
+  end
+
+  context "when requesting a prefix redirect within a base_path" do
+    before do
+      FactoryBot.create(
+        :redirect_content_item,
+        base_path: "/base-path",
+        content_id: SecureRandom.uuid,
+        redirects: [
+          { path: "/base-path/prefix", type: "prefix", "destination" => "/somewhere" },
+        ],
+      )
+    end
+
+    include_examples "redirecting prefix routes"
   end
 
   context "a withdrawn content item" do
