@@ -5,6 +5,7 @@ gem 'rails', '5.1.4'
 gem 'mongoid', '6.2.1'
 gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_migrations", branch: "avoid-calling-bundler-require-in-library-code-v1.1.0-plus-mongoid-v5-fix"
 
+gem 'foreman', '~> 0.84'
 gem 'hashdiff', require: false
 gem 'uuidtools', '2.1.5'
 gem 'whenever', '~> 0.10.0', require: false

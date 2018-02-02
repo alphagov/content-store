@@ -1,6 +1,4 @@
-def load_file_if_exists(config, file)
-  config.instance_eval(File.read(file)) if File.exist?(file)
-end
-load_file_if_exists(self, "/etc/govuk/unicorn.rb")
+require "govuk_app_config"
+GovukUnicorn.configure(self)
 
-worker_processes 6
+worker_processes Integer(ENV.fetch("UNICORN_WORKER_PROCESSES", 6))
