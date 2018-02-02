@@ -67,4 +67,20 @@ describe ContentItemPresenter do
 
     expect(presented.to_json).to be_valid_against_schema("generic")
   end
+
+  context "when schema_name is not redirect" do
+    it "doesn't include redirects field" do
+      content_item = create(:content_item)
+      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      expect(presented.keys).to_not include("redirects")
+    end
+  end
+
+  context "when schema_name is redirect" do
+    it "includes the redirects field" do
+      content_item = create(:redirect_content_item)
+      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      expect(presented.keys).to include("redirects")
+    end
+  end
 end

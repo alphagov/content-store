@@ -41,7 +41,9 @@ class ContentItemPresenter
       "links" => links,
       "description" => RESOLVER.resolve(item.description),
       "details" => RESOLVER.resolve(item.details),
-    )
+    ).tap do |i|
+      i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
+    end
   end
 
 private
