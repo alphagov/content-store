@@ -15,9 +15,9 @@ task validate_content_against_schema: :environment do
   total_fail = reports.sum { |r| r[:counts][:fail] }
   failure_percentage = ((total_fail / total_checked.to_f) * 100).to_i
 
-  Rails.application.statsd.gauge("document_validation.checked", total_checked)
-  Rails.application.statsd.gauge("document_validation.fail", total_fail)
-  Rails.application.statsd.gauge("document_validation.failure_percentage", failure_percentage)
+  GovukStatsd.gauge("document_validation.checked", total_checked)
+  GovukStatsd.gauge("document_validation.fail", total_fail)
+  GovukStatsd.gauge("document_validation.failure_percentage", failure_percentage)
 
   puts reports.to_yaml
 end
