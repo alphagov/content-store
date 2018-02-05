@@ -14,7 +14,7 @@ gem 'whenever', '~> 0.10.0', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', "~> 51.1.1"
+  gem 'gds-api-adapters', "~> 51.2.0"
 end
 
 gem 'govuk_app_config', '~> 1.2'
