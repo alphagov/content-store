@@ -2,11 +2,11 @@ class ContentItemsController < ApplicationController
   before_action :parse_json_request, only: [:update]
 
   def show
-    item = Rails.application.statsd.time('show.find_content_item') do
+    item = GovukStatsd.time('show.find_content_item') do
       ContentItem.find_by_path(encoded_request_path)
     end
 
-    intent = Rails.application.statsd.time('show.find_publish_intent') do
+    intent = GovukStatsd.time('show.find_publish_intent') do
       PublishIntent.find_by_path(encoded_request_path)
     end
 
@@ -23,7 +23,7 @@ class ContentItemsController < ApplicationController
   end
 
   def update
-    result, item = Rails.application.statsd.time('update.create_or_replace') do
+    result, item = GovukStatsd.time('update.create_or_replace') do
       ContentItem.create_or_replace(encoded_base_path, @request_data)
     end
 

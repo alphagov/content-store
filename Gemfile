@@ -2,15 +2,14 @@ source 'https://rubygems.org'
 
 gem 'rails', '5.1.4'
 
+gem 'mongo', '2.4.3'
 gem 'mongoid', '6.2.1'
 gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_migrations", branch: "avoid-calling-bundler-require-in-library-code-v1.1.0-plus-mongoid-v5-fix"
 
-gem 'plek', '~> 2.0'
-
-gem 'statsd-ruby', '~> 1.4'
-
-gem 'whenever', '~> 0.10.0', require: false
+gem 'foreman', '~> 0.84'
 gem 'hashdiff', require: false
+gem 'uuidtools', '2.1.5'
+gem 'whenever', '~> 0.10.0', require: false
 
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
@@ -19,9 +18,8 @@ else
 end
 
 gem 'govuk_app_config', '~> 1.2'
-
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
-gem 'uuidtools', '2.1.5'
+gem 'plek', '~> 2.0'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'

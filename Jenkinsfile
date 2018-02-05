@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
-node {
-  def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
+node("mongodb-2.4") {
+  def govuk = load("/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy")
   govuk.buildProject(
     extraParameters: [
       stringParam(
@@ -15,7 +15,9 @@ node {
     },
     publishingE2ETests: true,
     afterTest: {
-      govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
+      stage("Test pact with Publishing API") {
+        govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
+      }
     }
   )
 }
