@@ -19,7 +19,7 @@ end
 
 gem 'govuk_app_config', '~> 1.2'
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
-gem 'plek', '~> 2.0'
+gem 'plek', '~> 2.1'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
