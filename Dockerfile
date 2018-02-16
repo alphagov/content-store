@@ -1,5 +1,6 @@
 FROM ruby:2.4.2
 RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean
+RUN gem install foreman
 
 ENV GOVUK_APP_NAME content-store
 ENV GOVUK_CONTENT_SCHEMAS_PATH /govuk-content-schemas
@@ -15,4 +16,4 @@ ADD Gemfile* $APP_HOME/
 RUN bundle install
 ADD . $APP_HOME
 
-CMD bundle exec foreman run web
+CMD foreman run web
