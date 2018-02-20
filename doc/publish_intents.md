@@ -91,8 +91,10 @@ the `<path>` is found a 404 will be returned.
 
 ## Deleting an intent to publish
 
-There's no need to delete publish intents for the normal workflow - past
-publish intents are automatically deleted by a nightly housekeeping job.
+There's no need to delete publish intents for the normal workflow - publish
+intents are deleted when the document is published, and any stale publish
+intents left over are automatically deleted by a [nightly housekeeping
+job](https://github.com/alphagov/content-store/blob/master/config/schedule.rb).
 
 A publishing application can explicitly delete an intent to publish (for
 example if an editor cancels a scheduled publishing) by sending a DELETE
