@@ -30,11 +30,12 @@ class ContentItemsController < ApplicationController
     intent = PublishIntent.find_by_path(encoded_base_path)
     if intent.present? && intent.publish_time.past?
       intent.destroy
-      ScheduledPublishingLogEntry.create(
+      log_entry = ScheduledPublishingLogEntry.create(
         base_path: item.base_path,
         document_type: item.document_type,
         scheduled_publication_time: intent.publish_time
       )
+      GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
     end
 
     response_body = {}

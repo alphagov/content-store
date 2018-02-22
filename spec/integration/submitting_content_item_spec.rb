@@ -106,7 +106,7 @@ describe "content item write API", type: :request do
           base_path: @data["base_path"],
           document_type: @data["document_type"],
           scheduled_publication_time: publish_time
-        )
+        ).and_return(ScheduledPublishingLogEntry.new)
 
         put_json "/content/vat-rates", @data
       end
