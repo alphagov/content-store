@@ -11,6 +11,8 @@ class ContentItemPresenter
     base_path
     content_id
     content_purpose_document_supertype
+    content_purpose_supergroup
+    content_purpose_subgroup
     document_type
     email_document_supertype
     first_published_at

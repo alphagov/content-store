@@ -48,6 +48,8 @@ describe "Fetching content items", type: :request do
         navigation_document_supertype
         search_user_need_document_supertype
         user_journey_document_supertype
+        content_purpose_supergroup
+        content_purpose_subgroup
         need_ids
         locale
         analytics_identifier

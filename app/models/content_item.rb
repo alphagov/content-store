@@ -61,6 +61,8 @@ class ContentItem
   field :format, type: String
   field :document_type, type: String
   field :content_purpose_document_supertype, type: String, default: ''
+  field :content_purpose_subgroup, type: String, default: ''
+  field :content_purpose_supergroup, type: String, default: ''
   field :email_document_supertype, type: String, default: ''
   field :government_document_supertype, type: String, default: ''
   field :navigation_document_supertype, type: String, default: ''
