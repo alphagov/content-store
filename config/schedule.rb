@@ -9,3 +9,7 @@ job_type :rake, "cd :path && govuk_setenv content-store bundle exec rake :task :
 every 1.day, at: "2:00 am" do
   rake "housekeeping:cleanup_publish_intents"
 end
+
+every 1.day, at: "2:15 am" do
+  rake "publishing_delay_report:report_delays"
+end
