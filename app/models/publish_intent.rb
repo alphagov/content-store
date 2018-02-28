@@ -55,7 +55,17 @@ class PublishIntent
 
   # Called nightly from a cron job
   def self.cleanup_expired
-    where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago).delete_all
+    expired = where(:publish_time.lt => PUBLISH_TIME_LEEWAY.ago)
+
+    expired.each do |intent|
+      GovukError.notify(
+        "Publish intent has expired",
+        level: "warning",
+        extra: { base_path: intent.base_path, scheduled_publish_time: intent.publish_time }
+      )
+    end
+
+    expired.delete_all
   end
 
   def base_path_without_root
