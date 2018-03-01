@@ -6,6 +6,8 @@ class ScheduledPublishingLogEntry
   field :scheduled_publication_time, type: DateTime
   field :delay_in_milliseconds
 
+  index(base_path: 1)
+
   before_save do |document|
     document.delay_in_milliseconds = set_delay_in_milliseconds
   end
