@@ -33,10 +33,9 @@ class ContentItemPresenter
     publishing_request_id
   ).freeze
 
-  def initialize(item, api_url_method, scheduled_publishing: nil)
+  def initialize(item, api_url_method)
     @item = item
     @api_url_method = api_url_method
-    @scheduled_publishing = scheduled_publishing
   end
 
   def as_json(options = nil)
@@ -46,13 +45,12 @@ class ContentItemPresenter
       "details" => RESOLVER.resolve(item.details),
     ).tap do |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
-      i["publishing_scheduled_at"] = scheduled_publishing.scheduled_publication_time if scheduled_publishing
     end
   end
 
 private
 
-  attr_reader :item, :api_url_method, :scheduled_publishing
+  attr_reader :item, :api_url_method
 
   def links
     ExpandedLinksPresenter.new(item.expanded_links).present
