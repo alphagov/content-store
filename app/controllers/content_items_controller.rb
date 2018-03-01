@@ -10,13 +10,20 @@ class ContentItemsController < ApplicationController
       PublishIntent.find_by_path(encoded_request_path)
     end
 
+    scheduled_publishing_log = GovukStatsd.time('show.find_scheduled_publishing_log_entry') do
+      ScheduledPublishingLogEntry.latest_with_path(encoded_request_path)
+    end
+
     set_cache_headers(item, intent)
 
     return error_404 unless item
     return redirect_canonical(item) if item.base_path != encoded_request_path
 
     if can_view(item)
-      render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
+      render(
+        json: ContentItemPresenter.new(item, api_url_method, scheduled_publishing: scheduled_publishing_log),
+        status: http_status(item)
+      )
     else
       render json_forbidden_response
     end

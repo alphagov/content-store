@@ -10,6 +10,12 @@ class ScheduledPublishingLogEntry
     document.delay_in_milliseconds = set_delay_in_milliseconds
   end
 
+  def self.latest_with_path(base_path)
+    ScheduledPublishingLogEntry.where(base_path: base_path)
+      .order_by(scheduled_publication_time: "desc")
+      .first
+  end
+
 private
 
   def set_delay_in_milliseconds
