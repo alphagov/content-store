@@ -93,11 +93,17 @@ describe ContentItemPresenter do
   end
 
   context "when the document was published by the scheduler" do
-    it "includes scheduled publication date" do
+    it "includes scheduled publication date and delay" do
       content_item = create(:content_item)
-      scheduled_publishing = create(:scheduled_publishing_log_entry)
+      scheduled_publishing = Timecop.freeze(Time.new(2018, 3, 1, 9, 32)) do
+        create(:scheduled_publishing_log_entry,
+          scheduled_publication_time: Time.new(2018, 3, 1, 9, 30))
+      end
+
       presented = ContentItemPresenter.new(content_item, api_url_method, scheduled_publishing: scheduled_publishing).as_json
+
       expect(presented["publishing_scheduled_at"]).to eq(scheduled_publishing.scheduled_publication_time)
+      expect(presented["scheduled_publishing_delay_seconds"]).to eq(120)
     end
 
     it "validates against the schema" do

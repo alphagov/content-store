@@ -46,7 +46,10 @@ class ContentItemPresenter
       "details" => RESOLVER.resolve(item.details),
     ).tap do |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
-      i["publishing_scheduled_at"] = scheduled_publishing.scheduled_publication_time if scheduled_publishing
+      if scheduled_publishing
+        i["publishing_scheduled_at"] = scheduled_publishing.scheduled_publication_time
+        i["scheduled_publishing_delay_seconds"] = scheduled_publishing.delay_in_milliseconds / 1000
+      end
     end
   end
 
