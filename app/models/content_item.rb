@@ -69,8 +69,6 @@ class ContentItem
   field :search_user_need_document_supertype, type: String, default: ''
   field :user_journey_document_supertype, type: String, default: ''
 
-  # TODO: remove after publishing-api no longer sends this
-  field :user_need_document_supertype, type: String, default: ''
   field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s
   field :need_ids, type: Array, default: []

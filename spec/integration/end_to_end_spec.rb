@@ -16,7 +16,6 @@ describe "End-to-end behaviour", type: :request do
     "navigation_document_supertype" => "guidance",
     "search_user_need_document_supertype" => "core",
     "user_journey_document_supertype" => "finding",
-    "user_need_document_supertype" => "guidance",
     "content_purpose_supergroup" => "guidance_and_regulation",
     "content_purpose_subgroup" => "guidance",
     "publishing_app" => "publisher",
