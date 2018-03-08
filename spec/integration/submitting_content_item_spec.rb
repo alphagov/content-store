@@ -102,13 +102,10 @@ describe "content item write API", type: :request do
       end
 
       it "logs the latency from the expected publish time" do
-        expect(ScheduledPublishingLogEntry).to receive(:create).with(
-          base_path: @data["base_path"],
-          document_type: @data["document_type"],
-          scheduled_publication_time: publish_time
-        ).and_return(ScheduledPublishingLogEntry.new)
-
         put_json "/content/vat-rates", @data
+
+        log_entry = ScheduledPublishingLogEntry.find_by(base_path: "/vat-rates")
+        expect(log_entry.scheduled_publication_time).to be_within(0.001.seconds).of(publish_time)
       end
     end
 
