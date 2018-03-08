@@ -92,23 +92,54 @@ describe "content item write API", type: :request do
 
     context "with a publish intent in the past" do
       let(:publish_time) { 10.seconds.ago.to_datetime }
-      before do
+      let!(:publish_intent) do
         create(:publish_intent, base_path: @data["base_path"], publish_time: publish_time)
       end
 
-      it "deletes the publish intent" do
+      it "doesn't delete the publish intent" do
         put_json "/content/vat-rates", @data
-        expect(PublishIntent.count).to eq(0)
+        expect(PublishIntent.first).to eq(publish_intent)
       end
 
       it "logs the latency from the expected publish time" do
-        expect(ScheduledPublishingLogEntry).to receive(:create).with(
-          base_path: @data["base_path"],
-          document_type: @data["document_type"],
-          scheduled_publication_time: publish_time
-        ).and_return(ScheduledPublishingLogEntry.new)
+        put_json "/content/vat-rates", @data
+
+        log_entry = ScheduledPublishingLogEntry.find_by(base_path: "/vat-rates")
+        expect(log_entry.scheduled_publication_time).to be_within(0.001.seconds).of(publish_time)
+      end
+
+      it "only logs the latency on the first publishing" do
+        put_json "/content/vat-rates", @data
+        expect(ScheduledPublishingLogEntry.where(base_path: "/vat-rates").count).to eq(1)
 
         put_json "/content/vat-rates", @data
+        expect(ScheduledPublishingLogEntry.where(base_path: "/vat-rates").count).to eq(1)
+      end
+
+      it "does not log latency for 'coming soon' notices" do
+        @data["document_type"] = "coming_soon"
+
+        put_json "/content/vat-rates", @data
+        expect(ScheduledPublishingLogEntry.count).to eq(0)
+      end
+    end
+
+    context "with an earlier scheduled publishing" do
+      it "logs the publishing delays for each scheduled publishing" do
+        first_scheduled_time = 1.day.ago.to_datetime
+        publish_intent = create(:publish_intent, base_path: @data["base_path"], publish_time: first_scheduled_time)
+        put_json "/content/vat-rates", @data
+
+        second_scheduled_time = 1.day.ago.to_datetime
+        publish_intent.publish_time = second_scheduled_time
+        publish_intent.save!
+        put_json "/content/vat-rates", @data
+
+        log_entries = ScheduledPublishingLogEntry.where(base_path: "/vat-rates")
+        expect(log_entries.count).to eq(2)
+
+        expect(log_entries[0].scheduled_publication_time).to be_within(0.001.seconds).of(first_scheduled_time)
+        expect(log_entries[1].scheduled_publication_time).to be_within(0.001.seconds).of(second_scheduled_time)
       end
     end
 

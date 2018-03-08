@@ -34,16 +34,7 @@ class ContentItemsController < ApplicationController
       ContentItem.create_or_replace(encoded_base_path, @request_data)
     end
 
-    intent = PublishIntent.find_by_path(encoded_base_path)
-    if intent.present? && intent.publish_time.past?
-      intent.destroy
-      log_entry = ScheduledPublishingLogEntry.create(
-        base_path: item.base_path,
-        document_type: item.document_type,
-        scheduled_publication_time: intent.publish_time
-      )
-      GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
-    end
+    log_scheduled_publishing(encoded_base_path, item.document_type)
 
     response_body = {}
     case result
@@ -146,5 +137,24 @@ private
   def http_status(item)
     return 410 if item.gone?
     200
+  end
+
+  def log_scheduled_publishing(base_path, document_type)
+    intent = PublishIntent.find_by_path(base_path)
+    if intent.present? && intent.publish_time.past? && document_type != "coming_soon"
+      existing_log_entries = ScheduledPublishingLogEntry.where(
+        base_path: base_path,
+        scheduled_publication_time: intent.publish_time,
+      )
+
+      if existing_log_entries.empty?
+        log_entry = ScheduledPublishingLogEntry.create(
+          base_path: base_path,
+          document_type: document_type,
+          scheduled_publication_time: intent.publish_time,
+        )
+        GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
+      end
+    end
   end
 end
