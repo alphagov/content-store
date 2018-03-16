@@ -90,27 +90,31 @@ describe ContentItem, type: :model do
       context "with no scheduled publishing log" do
         let(:attributes) { { "schema_name" => "publication" } }
 
-        it "sets no scheduled publishing date" do
+        it "sets no scheduled publishing details" do
           _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
 
           expect(item.publishing_scheduled_at).to be_nil
+          expect(item.scheduled_publishing_delay_seconds).to be_nil
         end
       end
 
       context "with a scheduled publishing log entry" do
         let(:attributes) { { "schema_name" => "publication" } }
         let(:scheduled_publication_time) { Time.new(2017, 3, 1, 12, 0) }
+        let(:scheduled_publishing_delay) { 9200 }
         let(:log_entry) {
           build(
             :scheduled_publishing_log_entry,
-            scheduled_publication_time: scheduled_publication_time
+            scheduled_publication_time: scheduled_publication_time,
+            delay_in_milliseconds: 14700
           )
         }
 
-        it "sets the scheduled publishing date" do
+        it "sets the scheduled publishing details" do
           _, item = ContentItem.create_or_replace(@item.base_path, attributes, log_entry)
 
           expect(item.publishing_scheduled_at).to eq(scheduled_publication_time)
+          expect(item.scheduled_publishing_delay_seconds).to eq(14)
         end
       end
     end

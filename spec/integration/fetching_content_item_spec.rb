@@ -57,6 +57,7 @@ describe "Fetching content items", type: :request do
         first_published_at
         public_updated_at
         publishing_scheduled_at
+        scheduled_publishing_delay_seconds
         updated_at
         rendering_app
         publishing_app

@@ -25,6 +25,7 @@ class ContentItemPresenter
     publishing_app
     publishing_scheduled_at
     rendering_app
+    scheduled_publishing_delay_seconds
     schema_name
     search_user_need_document_supertype
     title

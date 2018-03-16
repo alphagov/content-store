@@ -83,4 +83,20 @@ describe ContentItemPresenter do
       expect(presented.keys).to include("redirects")
     end
   end
+
+  context "when content has scheduled publishing details" do
+    it "validates against the schema" do
+      content_item = create(
+        :content_item,
+        :with_content_id,
+        schema_name: "generic",
+        publishing_scheduled_at: Time.new(2018, 6, 1, 9, 30),
+        scheduled_publishing_delay_seconds: 130
+      )
+
+      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+
+      expect(presented.to_json).to be_valid_against_schema("generic")
+    end
+  end
 end

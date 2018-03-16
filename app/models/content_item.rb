@@ -18,13 +18,7 @@ class ContentItem
 
     item = ContentItem.new(base_path: base_path)
 
-    publishing_scheduled_at = if log_entry
-      log_entry.scheduled_publication_time
-    else
-      nil
-    end
-
-    item.assign_attributes(attributes.merge(publishing_scheduled_at: publishing_scheduled_at))
+    item.assign_attributes(attributes.merge(scheduled_publication_details(log_entry)))
 
     if item.upsert
       begin
@@ -82,6 +76,7 @@ class ContentItem
   field :first_published_at, type: DateTime
   field :public_updated_at, type: DateTime
   field :publishing_scheduled_at, type: DateTime
+  field :scheduled_publishing_delay_seconds, type: Integer
   field :details, type: Hash, default: {}
   field :publishing_app, type: String
   field :rendering_app, type: String
@@ -220,4 +215,15 @@ private
   def details_is_empty?
     details.nil? || details.values.reject(&:blank?).empty?
   end
+
+  def self.scheduled_publication_details(log_entry)
+    return {} unless log_entry
+
+    {
+      publishing_scheduled_at: log_entry.scheduled_publication_time,
+      scheduled_publishing_delay_seconds: log_entry.delay_in_milliseconds / 1000
+    }
+  end
+
+  private_class_method :scheduled_publication_details
 end

@@ -140,14 +140,12 @@ private
       .first
 
     if new_scheduled_publishing?(intent, document_type, latest_log_entry)
-      log_entry = ScheduledPublishingLogEntry.create(
+      latest_log_entry = ScheduledPublishingLogEntry.create(
         base_path: base_path,
         document_type: document_type,
         scheduled_publication_time: intent.publish_time,
       )
-      GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
-
-      log_entry
+      GovukStatsd.timing("scheduled_publishing.delay_ms", latest_log_entry.delay_in_milliseconds)
     end
 
     latest_log_entry
