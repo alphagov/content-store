@@ -23,11 +23,12 @@ class ContentItemsController < ApplicationController
   end
 
   def update
-    result, item = GovukStatsd.time('update.create_or_replace') do
-      ContentItem.create_or_replace(encoded_base_path, @request_data)
-    end
+    intent = PublishIntent.find_by_path(encoded_base_path)
+    log_entry = find_or_create_scheduled_publishing_log(encoded_base_path, @request_data["document_type"], intent)
 
-    log_scheduled_publishing(encoded_base_path, item.document_type)
+    result, item = GovukStatsd.time('update.create_or_replace') do
+      ContentItem.create_or_replace(encoded_base_path, @request_data, log_entry)
+    end
 
     response_body = {}
     case result
@@ -132,22 +133,30 @@ private
     200
   end
 
-  def log_scheduled_publishing(base_path, document_type)
-    intent = PublishIntent.find_by_path(base_path)
-    if intent.present? && intent.publish_time.past? && document_type != "coming_soon"
-      existing_log_entries = ScheduledPublishingLogEntry.where(
+  def find_or_create_scheduled_publishing_log(base_path, document_type, intent)
+    latest_log_entry = ScheduledPublishingLogEntry
+      .where(base_path: base_path)
+      .order_by(:scheduled_publication_time.desc)
+      .first
+
+    if new_scheduled_publishing?(intent, document_type, latest_log_entry)
+      log_entry = ScheduledPublishingLogEntry.create(
         base_path: base_path,
+        document_type: document_type,
         scheduled_publication_time: intent.publish_time,
       )
+      GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
 
-      if existing_log_entries.empty?
-        log_entry = ScheduledPublishingLogEntry.create(
-          base_path: base_path,
-          document_type: document_type,
-          scheduled_publication_time: intent.publish_time,
-        )
-        GovukStatsd.timing("scheduled_publishing.delay_ms", log_entry.delay_in_milliseconds)
-      end
+      log_entry
     end
+
+    latest_log_entry
+  end
+
+  def new_scheduled_publishing?(intent, document_type, latest_log_entry)
+    intent.present? &&
+      intent.publish_time.past? &&
+      document_type != "coming_soon" &&
+      (!latest_log_entry || intent.publish_time > latest_log_entry.scheduled_publication_time)
   end
 end

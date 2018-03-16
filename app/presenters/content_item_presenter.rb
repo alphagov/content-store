@@ -23,6 +23,7 @@ class ContentItemPresenter
     phase
     public_updated_at
     publishing_app
+    publishing_scheduled_at
     rendering_app
     schema_name
     search_user_need_document_supertype

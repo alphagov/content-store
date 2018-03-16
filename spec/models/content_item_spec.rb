@@ -3,13 +3,13 @@ require 'update_lock'
 
 describe ContentItem, type: :model do
   describe ".create_or_replace" do
-    describe "exceptions" do
-      before :each do
-        @item = build(:content_item)
-        allow_any_instance_of(UpdateLock)
-          .to receive(:check_availability!)
-      end
+    before :each do
+      @item = build(:content_item)
+      allow_any_instance_of(UpdateLock)
+        .to receive(:check_availability!)
+    end
 
+    describe "exceptions" do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
 
@@ -17,7 +17,7 @@ describe ContentItem, type: :model do
           result = item = nil
 
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.to_not raise_error
 
           expect(result).to be false
@@ -33,7 +33,7 @@ describe ContentItem, type: :model do
 
           expect {
             # routes should be of type Array
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.to_not raise_error
 
           expect(result).to be false
@@ -50,7 +50,7 @@ describe ContentItem, type: :model do
         end
 
         it "returns a result of :conflict" do
-          result, item = ContentItem.create_or_replace(@item.base_path, {})
+          result, item = ContentItem.create_or_replace(@item.base_path, {}, nil)
 
           expect(result).to eq(:conflict)
           expect(item.errors[:message]).to include("Booyah")
@@ -63,7 +63,7 @@ describe ContentItem, type: :model do
         it "upserts the item" do
           result = item = nil
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.to change(ContentItem, :count).by(1)
           expect(result).to eq(:created)
         end
@@ -79,9 +79,38 @@ describe ContentItem, type: :model do
         it "upserts the item" do
           result = item = nil
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes)
+            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.not_to change(ContentItem, :count)
           expect(result).to eq(:replaced)
+        end
+      end
+    end
+
+    describe "scheduled publishing date" do
+      context "with no scheduled publishing log" do
+        let(:attributes) { { "schema_name" => "publication" } }
+
+        it "sets no scheduled publishing date" do
+          _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+
+          expect(item.publishing_scheduled_at).to be_nil
+        end
+      end
+
+      context "with a scheduled publishing log entry" do
+        let(:attributes) { { "schema_name" => "publication" } }
+        let(:scheduled_publication_time) { Time.new(2017, 3, 1, 12, 0) }
+        let(:log_entry) {
+          build(
+            :scheduled_publishing_log_entry,
+            scheduled_publication_time: scheduled_publication_time
+          )
+        }
+
+        it "sets the scheduled publishing date" do
+          _, item = ContentItem.create_or_replace(@item.base_path, attributes, log_entry)
+
+          expect(item.publishing_scheduled_at).to eq(scheduled_publication_time)
         end
       end
     end

@@ -7,7 +7,7 @@ class ContentItem
     previous_item&.upsert
   end
 
-  def self.create_or_replace(base_path, attributes)
+  def self.create_or_replace(base_path, attributes, log_entry)
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
@@ -17,7 +17,14 @@ class ContentItem
     result = previous_item ? :replaced : :created
 
     item = ContentItem.new(base_path: base_path)
-    item.assign_attributes(attributes)
+
+    publishing_scheduled_at = if log_entry
+      log_entry.scheduled_publication_time
+    else
+      nil
+    end
+
+    item.assign_attributes(attributes.merge(publishing_scheduled_at: publishing_scheduled_at))
 
     if item.upsert
       begin
@@ -74,6 +81,7 @@ class ContentItem
   field :need_ids, type: Array, default: []
   field :first_published_at, type: DateTime
   field :public_updated_at, type: DateTime
+  field :publishing_scheduled_at, type: DateTime
   field :details, type: Hash, default: {}
   field :publishing_app, type: String
   field :rendering_app, type: String
