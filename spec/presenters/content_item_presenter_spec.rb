@@ -84,26 +84,18 @@ describe ContentItemPresenter do
     end
   end
 
-  context "when the document was not published by the scheduler" do
-    it "does not include a scheduled publication date" do
-      content_item = create(:content_item)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
-      expect(presented["publishing_scheduled_at"]).to be_nil
-    end
-  end
-
-  context "when the document was published by the scheduler" do
-    it "includes scheduled publication date" do
-      content_item = create(:content_item)
-      scheduled_publishing = create(:scheduled_publishing_log_entry)
-      presented = ContentItemPresenter.new(content_item, api_url_method, scheduled_publishing: scheduled_publishing).as_json
-      expect(presented["publishing_scheduled_at"]).to eq(scheduled_publishing.scheduled_publication_time)
-    end
-
+  context "when content has scheduled publishing details" do
     it "validates against the schema" do
-      content_item = create(:content_item, :with_content_id, schema_name: "generic")
-      scheduled_publishing = create(:scheduled_publishing_log_entry)
-      presented = ContentItemPresenter.new(content_item, api_url_method, scheduled_publishing: scheduled_publishing).as_json
+      content_item = create(
+        :content_item,
+        :with_content_id,
+        schema_name: "generic",
+        publishing_scheduled_at: Time.new(2018, 6, 1, 9, 30),
+        scheduled_publishing_delay_seconds: 130
+      )
+
+      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+
       expect(presented.to_json).to be_valid_against_schema("generic")
     end
   end
