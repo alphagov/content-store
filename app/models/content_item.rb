@@ -61,13 +61,10 @@ class ContentItem
   field :description, type: Hash, default: { "value" => nil }
   field :format, type: String
   field :document_type, type: String
-  field :content_purpose_document_supertype, type: String, default: ''
   field :content_purpose_subgroup, type: String, default: ''
   field :content_purpose_supergroup, type: String, default: ''
   field :email_document_supertype, type: String, default: ''
   field :government_document_supertype, type: String, default: ''
-  field :navigation_document_supertype, type: String, default: ''
-  field :search_user_need_document_supertype, type: String, default: ''
   field :user_journey_document_supertype, type: String, default: ''
 
   field :schema_name, type: String
