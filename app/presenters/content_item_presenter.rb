@@ -10,7 +10,6 @@ class ContentItemPresenter
     analytics_identifier
     base_path
     content_id
-    content_purpose_document_supertype
     content_purpose_supergroup
     content_purpose_subgroup
     document_type
@@ -18,7 +17,6 @@ class ContentItemPresenter
     first_published_at
     government_document_supertype
     locale
-    navigation_document_supertype
     need_ids
     phase
     public_updated_at
@@ -27,7 +25,6 @@ class ContentItemPresenter
     rendering_app
     scheduled_publishing_delay_seconds
     schema_name
-    search_user_need_document_supertype
     title
     updated_at
     user_journey_document_supertype
