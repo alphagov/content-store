@@ -22,7 +22,7 @@ gem 'plek', '~> 2.1'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
-  gem 'database_cleaner', '~> 1.6.1'
+  gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot', '~> 4.8'
   gem 'webmock', '3.3.0', require: false
   gem 'timecop', '0.9.1'
