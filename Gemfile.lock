@@ -151,7 +151,7 @@ GEM
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     null_logger (0.0.1)
-    pact (1.23.0)
+    pact (1.24.0)
       json (> 1.8.5)
       pact-mock_service (~> 2.0)
       pact-support (~> 1.4)
