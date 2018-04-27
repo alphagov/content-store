@@ -11,7 +11,6 @@ describe "content item write API", type: :request do
       "format" => "answer",
       "schema_name" => "answer",
       "document_type" => "answer",
-      "need_ids" => %w(100123 100124),
       "locale" => "en",
       "public_updated_at" => "2014-05-14T13:00:06Z",
       "payload_version" => 1,
@@ -40,7 +39,6 @@ describe "content item write API", type: :request do
       expect(item.title).to eq("VAT rates")
       expect(item.description).to eq("Current VAT rates")
       expect(item.format).to eq("answer")
-      expect(item.need_ids).to eq(%w(100123 100124))
       expect(item.locale).to eq("en")
       expect(item.phase).to eq("live")
       expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
@@ -213,7 +211,6 @@ describe "content item write API", type: :request do
           title: "Original title",
           base_path: "/vat-rates",
           format: format,
-          need_ids: ["100321"],
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
           details: { "foo" => "bar" }
         )
@@ -230,7 +227,6 @@ describe "content item write API", type: :request do
       put_json "/content/vat-rates", @data
       @item.reload
       expect(@item.title).to eq("VAT rates")
-      expect(@item.need_ids).to eq(%w(100123 100124))
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq("body" => "<p>Some body text</p>\n")

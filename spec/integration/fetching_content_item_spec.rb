@@ -14,7 +14,6 @@ describe "Fetching content items", type: :request do
         format: "publication",
         schema_name: "publication",
         document_type: "travel_advice",
-        need_ids: ["100136"],
         public_updated_at: 30.minutes.ago,
         details: {
           "body" => "<div class=\"highlight-answer\">\n<p>The standard <abbr title=\"Value Added Tax\">VAT</abbr> rate is <em>20%</em></p>\n</div>\n",
@@ -50,7 +49,6 @@ describe "Fetching content items", type: :request do
         user_journey_document_supertype
         content_purpose_supergroup
         content_purpose_subgroup
-        need_ids
         locale
         analytics_identifier
         phase
@@ -74,7 +72,6 @@ describe "Fetching content items", type: :request do
         "description" => "Current VAT rates",
         "schema_name" => "publication",
         "document_type" => "travel_advice",
-        "need_ids" => ["100136"],
         "locale" => "en",
         "analytics_identifier" => nil,
         "phase" => "live",

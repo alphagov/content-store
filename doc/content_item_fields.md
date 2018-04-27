@@ -77,17 +77,6 @@ The description of the content. This will be used, for example, for the HTML
 meta-description of the content when formatted as HTML, but may also be used
 when linking to the content (eg, in search results).
 
-## `need_ids`
-
-An array of strings. Present in all contexts.
-
-An array of need ids associated with the content. These should be strings
-(though will typically be integers encoded as decimal strings); eg "100001".
-
-Note: currently needs are not published on GOV.UK, so there won't be an entry
-in the content store for them. If this changes in future, the `need_ids` field
-may be replaced by using the `links` field to store this relation.
-
 ## `locale`
 
 The I18n locale code for the content item. Present in all contexts.
