@@ -183,7 +183,7 @@ describe "content item write API", type: :request do
 
       content_item = ContentItem.find_by(base_path: "/vat-rates")
       expect(content_item.publishing_scheduled_at).to be_within(0.001.seconds).of(publish_time)
-      expect(content_item.scheduled_publishing_delay_seconds).to eq(25)
+      expect(content_item.scheduled_publishing_delay_seconds).to be_between(24, 25).inclusive
     end
   end
 
