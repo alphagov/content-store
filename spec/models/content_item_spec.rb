@@ -9,6 +9,18 @@ describe ContentItem, type: :model do
         .to receive(:check_availability!)
     end
 
+    it "sets updated_at and created_at timestamps" do
+      _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
+      expect(item.created_at).to be_kind_of(ActiveSupport::TimeWithZone)
+      expect(item.updated_at).to be_kind_of(ActiveSupport::TimeWithZone)
+    end
+
+    it "maintains the created_at value from previous item" do
+      @item.save
+      _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
+      expect(item.reload.created_at).to eq(@item.reload.created_at)
+    end
+
     describe "exceptions" do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }

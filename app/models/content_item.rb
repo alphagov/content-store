@@ -1,6 +1,6 @@
 class ContentItem
   include Mongoid::Document
-  include Mongoid::Timestamps::Updated
+  include Mongoid::Timestamps
 
   def self.revert(previous_item:, item:)
     item.remove unless previous_item
@@ -18,7 +18,15 @@ class ContentItem
 
     item = ContentItem.new(base_path: base_path)
 
-    item.assign_attributes(attributes.merge(scheduled_publication_details(log_entry)))
+    # This doesn't seem to get set correctly on an upsert so this is to
+    # maintain it
+    created_at = previous_item ? previous_item.created_at : Time.now.utc
+
+    item.assign_attributes(
+      attributes
+        .merge(scheduled_publication_details(log_entry))
+        .merge(created_at: created_at)
+    )
 
     if item.upsert
       begin
