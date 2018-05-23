@@ -30,3 +30,5 @@ production:
         server_selection_timeout: 5
         write:
           w: <%= ENV['MONGO_WRITE_CONCERN'] || 'majority' %>
+        read:
+          mode: :primary_preferred
