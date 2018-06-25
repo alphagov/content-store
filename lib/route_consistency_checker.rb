@@ -64,7 +64,8 @@ private
   end
 
   def find_content_item_for_field(path, kind)
-    items = ContentItem.where("#{kind}s.path" => path).entries
+    
+    items = ContentItem.where(path: "#{kind}s.path").entries
     if items.length > 1
       errors[path] << "Multiple content items returned for #{kind}."
       return nil
