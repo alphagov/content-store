@@ -8,4 +8,6 @@ task register_backends: :environment do
     puts "Adding backend #{backend} for #{rendering_app}"
     Rails.application.router_api.add_backend(rendering_app, backend)
   end
+
+  Rails.application.router_api.commit_routes
 end
