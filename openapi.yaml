@@ -83,7 +83,6 @@ components:
         - government_document_supertype
         - links
         - navigation_document_supertype
-        - need_ids
         - phase
         - public_updated_at
         - publishing_app
@@ -133,11 +132,6 @@ components:
         navigation_document_supertype:
           type: string
           description: Used to filter pages on the new taxonomy-based navigation pages.
-        need_ids:
-          type: array
-          description: An array of need IDs from Maslow.
-          items:
-            type: string
         phase:
           type: string
           enum: [alpha, beta, live]
@@ -292,7 +286,6 @@ components:
       government_document_supertype: other
       locale: en
       navigation_document_supertype: guidance
-      need_ids: []
       phase: live
       public_updated_at: '2014-12-12T14:55:23.000+00:00'
       publishing_app: publisher

@@ -44,7 +44,6 @@ describe "submitting redirect items to the content store", type: :request do
       @item = create(
         :content_item,
         base_path: "/crb-checks",
-        need_ids: ["100321"],
         public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
         details: { "foo" => "bar" }
       )
@@ -60,7 +59,6 @@ describe "submitting redirect items to the content store", type: :request do
       @item.reload
       expect(@item.format).to eq("redirect")
       expect(@item.title).to be_nil
-      expect(@item.need_ids).to eq([])
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq({})

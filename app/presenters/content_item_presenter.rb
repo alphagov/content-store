@@ -19,7 +19,6 @@ class ContentItemPresenter
     government_document_supertype
     locale
     navigation_document_supertype
-    need_ids
     phase
     public_updated_at
     publishing_app

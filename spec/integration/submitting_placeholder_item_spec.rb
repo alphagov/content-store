@@ -43,7 +43,6 @@ describe "submitting placeholder items to the content store", type: :request do
           :content_item,
           title: "Original title",
           base_path: "/vat-rates",
-          need_ids: ["100321"],
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
           details: { "foo" => "bar" }
         )

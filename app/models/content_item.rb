@@ -80,7 +80,6 @@ class ContentItem
 
   field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s
-  field :need_ids, type: Array, default: []
   field :first_published_at, type: DateTime
   field :public_updated_at, type: DateTime
   field :publishing_scheduled_at, type: DateTime
