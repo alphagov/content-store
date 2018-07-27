@@ -63,8 +63,7 @@ private
     nil
   end
 
-  def find_content_item_for_field(path, kind)
-    items = ContentItem.where("#{kind}s.path" => path).entries
+  def first_item_or_nil(items, kind)
     if items.length > 1
       errors[path] << "Multiple content items returned for #{kind}."
       return nil
@@ -73,11 +72,13 @@ private
   end
 
   def find_content_item_by_route(path)
-    find_content_item_for_field(path, "route")
+    items = ContentItem.where("routes" => path).entries
+    first_item_or_nil(items, "route")
   end
 
   def find_content_item_by_redirect(path)
-    find_content_item_for_field(path, "redirect")
+    items = ContentItem.where("redirects" => path).entries
+    first_item_or_nil(items, "redirect")
   end
 
   def find_content_item(path)
