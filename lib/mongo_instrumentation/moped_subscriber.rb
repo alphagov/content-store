@@ -19,8 +19,7 @@ module MongoInstrumentation
       self.runtime = 0
     end
 
-    def started(event)
-    end
+    def started(event); end
 
     def succeeded(event)
       self.class.runtime += event.duration
