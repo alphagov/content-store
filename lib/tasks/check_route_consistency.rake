@@ -14,7 +14,7 @@ def report_errors(errors)
 end
 
 desc "Check the routes for consistency with the router-api"
-task :check_route_consistency, [:routes, :router_data] => [:environment] do |_, args|
+task :check_route_consistency, %i[routes router_data] => [:environment] do |_, args|
   raise "Must pass routes.csv.gz file" unless args[:routes]
   raise "Must pass location to router-data" unless args[:router_data]
 
