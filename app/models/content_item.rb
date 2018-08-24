@@ -31,7 +31,7 @@ class ContentItem
     if item.upsert
       begin
         item.register_routes(previous_item: previous_item)
-      rescue => e
+      rescue StandardError => e
         revert(previous_item: previous_item, item: item)
         raise unless e.is_a?(GdsApi::BaseError)
         item.errors.add(:routes, "Could not communicated with router.")

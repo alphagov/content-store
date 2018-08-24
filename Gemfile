@@ -16,23 +16,23 @@ else
   gem 'gds-api-adapters', "~> 52.8.0"
 end
 
-gem 'govuk_app_config', '~> 1.8'
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
+gem 'govuk_app_config', '~> 1.8'
 gem 'plek', '~> 2.1'
 
 group :development, :test do
-  gem 'rspec-rails', '~> 3.8'
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot', '~> 4.11'
-  gem 'webmock', '3.4.2', require: false
+  gem 'rspec-rails', '~> 3.8'
   gem 'timecop', '0.9.1'
+  gem 'webmock', '3.4.2', require: false
 
+  gem 'ci_reporter_rspec', '~> 1.0.0'
   gem 'simplecov', '0.16.1', require: false
   gem 'simplecov-rcov', '0.2.3', require: false
-  gem 'ci_reporter_rspec', '~> 1.0.0'
 
-  gem "pry-byebug"
   gem "pact"
+  gem "pry-byebug"
 
   gem "govuk-lint"
 end

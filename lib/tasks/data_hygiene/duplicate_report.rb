@@ -17,7 +17,7 @@ module Tasks
         summary.duplicates = duplicates.count
 
         # Identify duplicate (content_id, locale) tuples and add count to summary
-        duplicates.reject! { |ci| ci.locale != locale }
+        duplicates.select! { |ci| ci.locale == locale }
         content_id_counts = count_repeated_content_ids_in(duplicates)
         duplicates_for_locale = content_id_counts.flat_map do |content_id_count|
           ContentItem.where(content_id: content_id_count.first, locale: locale).to_a

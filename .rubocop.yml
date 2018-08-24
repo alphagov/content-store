@@ -11,3 +11,7 @@ Style/BracesAroundHashParameters:
     # braces around it, but requires braces if the second to last parameter is
     # also a hash literal.
     - context_dependent
+
+# Don't quite know how to fix this, so ignore it for now
+Lint/UriEscapeUnescape:
+  Enabled: false

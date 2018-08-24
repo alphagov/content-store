@@ -1,11 +1,13 @@
-desc "
+# rubocop:disable Metrics/BlockLength
+
+desc <<DESCRIPTION
   Validate content items against their frontend schemas. Ignores formats without schemas.
 
   Optionally supply a comma separated list of format names to check.
 
   This assumes that govuk-content-schemas is in a sibling directory. Set
   GOVUK_CONTENT_SCHEMAS_PATH to override with a custom path.
-"
+DESCRIPTION
 task :check_content_items_against_schema, [:format_names] => :environment do |_task, args|
   GovukContentSchemaTestHelpers.configure do |config|
     config.schema_type = 'frontend'
@@ -15,7 +17,8 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
   formats_to_use = if args[:format_names].present?
                      args[:format_names].split(",")
                    else
-                     # placeholder items can have a format of 'placeholder' or 'placeholder_my_format_name'.
+                     # placeholder items can have a format of
+                     # 'placeholder' or 'placeholder_my_format_name'.
                      # redirect doesn't have a frontend schema.
                      (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - ['redirect']
                    end
@@ -50,3 +53,5 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
     puts ""
   end
 end
+
+# rubocop:enable Metrics/BlockLength

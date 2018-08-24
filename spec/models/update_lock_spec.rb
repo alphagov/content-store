@@ -27,7 +27,6 @@ describe UpdateLock, type: :model do
         double(
           :lockable,
           payload_version: "20"
-
         )
       }
       context "without payload_version" do
