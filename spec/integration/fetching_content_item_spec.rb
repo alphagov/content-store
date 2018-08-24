@@ -266,7 +266,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a withdrawn content item" do
-    let(:withdrawn_at) { DateTime.parse("2016-05-17 11:20") }
+    let(:withdrawn_at) { Time.parse("2016-05-17 11:20") }
     let(:withdrawn_item) do
       FactoryBot.create(
         :content_item,
@@ -283,7 +283,7 @@ describe "Fetching content items", type: :request do
       data = JSON.parse(response.body)
 
       expect(data["withdrawn_notice"]["explanation"]).to eq("This is no longer true")
-      expect(DateTime.iso8601(data["withdrawn_notice"]["withdrawn_at"])).to eq(withdrawn_at)
+      expect(Time.iso8601(data["withdrawn_notice"]["withdrawn_at"])).to eq(withdrawn_at)
     end
   end
 
