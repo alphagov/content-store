@@ -8,7 +8,7 @@ RSpec.describe DataHygiene::SchemaValidator, :report_errors do
   let(:schema) do
     {
       "type" => "object",
-      "required" => ["title"],
+      "required" => %w(title),
       "properties" => {
         "title" => { "type" => "string" }
       }
@@ -45,7 +45,7 @@ RSpec.describe DataHygiene::SchemaValidator, :report_errors do
     let(:schema) do
       {
         "type" => "object",
-        "required" => ["a"],
+        "required" => %w(a),
         "properties" => {
           "a" => { "type" => "integer" }
         }
