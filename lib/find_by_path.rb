@@ -57,8 +57,7 @@ private
     sorted = matches.sort_by do |item|
       best_match = routes_and_redirects(item)
         .select { |route| route["type"] == "prefix" && prefixes.include?(route["path"]) }
-        .sort_by { |route| -route["path"].length }
-        .first
+        .min_by { |route| -route["path"].length }
 
       -best_match["path"].length
     end

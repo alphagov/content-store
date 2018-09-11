@@ -5,7 +5,7 @@ require 'spec_helper'
 # Necessary to ensure consistent test runs across environments.
 ENV['GOVUK_APP_DOMAIN'] = "test.gov.uk"
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path("../config/environment", __dir__)
 require 'rspec/rails'
 require 'webmock/rspec'
 
