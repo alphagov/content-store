@@ -7,14 +7,14 @@ class PublishIntent
     result = intent.new_record? ? :created : :replaced
 
     result = false unless intent.update_attributes(attributes)
-    return result, intent
+    [result, intent]
   rescue Mongoid::Errors::UnknownAttribute
     extra_fields = attributes.keys - self.fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
-    return false, intent
+    [false, intent]
   rescue Mongoid::Errors::InvalidValue => e
     intent.errors.add(:base, e.message)
-    return false, intent
+    [false, intent]
   end
 
   def self.find_by_path(path)

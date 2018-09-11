@@ -41,22 +41,25 @@ class ContentItem
       result = false
     end
 
-    return result, item
+    [result, item]
   rescue Mongoid::Errors::UnknownAttribute
     extra_fields = attributes.keys - self.fields.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
-    return false, item
+    [false, item]
   rescue Mongoid::Errors::InvalidValue => e
     item.errors.add(:base, e.message)
-    return false, item
+    [false, item]
   rescue OutOfOrderTransmissionError => e
-    return :conflict, OpenStruct.new(
-      errors: {
-        type: "conflict",
-        code: "409",
-        message: e.message,
-      }
-    )
+    [
+      :conflict,
+      OpenStruct.new(
+        errors: {
+          type: "conflict",
+          code: "409",
+          message: e.message,
+        }
+      )
+    ]
   end
 
   def self.find_by_path(path)
