@@ -17,7 +17,7 @@ else
 end
 
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
-gem 'govuk_app_config', '~> 1.9'
+gem 'govuk_app_config', '~> 1.10'
 gem 'plek', '~> 2.1'
 
 group :development, :test do
