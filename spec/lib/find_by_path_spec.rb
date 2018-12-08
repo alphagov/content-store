@@ -12,10 +12,10 @@ describe FindByPath do
 
   FactoryBot.define do
     factory :compatible_model do
-      base_path "/base-path"
+      base_path { "/base-path" }
       transient do
-        exact_routes []
-        prefix_routes []
+        exact_routes { [] }
+        prefix_routes { [] }
       end
       routes do
         [{ path: base_path, type: "exact" }] +
