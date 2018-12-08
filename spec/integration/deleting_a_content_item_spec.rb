@@ -3,6 +3,18 @@ require 'rails_helper'
 RSpec.describe "Deleting a content item", type: :request do
   let(:base_path) { "/vat-rates" }
 
+  context "when the user is not authenticated" do
+    around do |example|
+      ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+    end
+
+    it "returns an unauthorized response" do
+      delete "/content/vat-rates"
+
+      expect(response).to be_unauthorized
+    end
+  end
+
   context "when the content item exists" do
     before do
       FactoryBot.create(:content_item, base_path: base_path)

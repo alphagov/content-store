@@ -98,6 +98,16 @@ describe "Fetching content items", type: :request do
       expect(cache_control["public"]).to eq(true)
     end
 
+    context "when the user is not authenticated" do
+      around do |example|
+        ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+      end
+
+      it "returns an unauthorized response" do
+        expect(response).to be_successful
+      end
+    end
+
     context "when the max_cache_time field is set on the content item" do
       let(:max_cache_time) { 123 }
 

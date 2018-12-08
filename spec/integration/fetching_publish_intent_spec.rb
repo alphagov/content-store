@@ -3,6 +3,19 @@ require 'rails_helper'
 describe "Fetching a content item with a publish intent", type: :request do
   let(:content_item) { create(:content_item, public_updated_at: 30.minutes.ago) }
 
+  context "when the user is not authenticated" do
+    around do |example|
+      ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+    end
+
+    it "returns an unauthorized response" do
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.ago)
+      get "/content/#{content_item.base_path}"
+
+      expect(response).to be_successful
+    end
+  end
+
   context "a publish intent long in the past" do
     before(:each) do
       create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.ago)
