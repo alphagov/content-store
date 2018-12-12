@@ -31,4 +31,4 @@ production:
         write:
           w: <%= ENV['MONGO_WRITE_CONCERN'] || 'majority' %>
         read:
-          mode: :primary_preferred
+          mode: :secondary_preferred
