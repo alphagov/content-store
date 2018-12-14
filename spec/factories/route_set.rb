@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :route_set do
     skip_create
 
-    base_path "/foo"
-    rendering_app "frontend"
+    base_path { "/foo" }
+    rendering_app { "frontend" }
 
     after :build do |rs|
       if rs.is_redirect

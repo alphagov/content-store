@@ -1,4 +1,5 @@
 class PublishIntentsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:show]
   before_action :parse_json_request, only: [:update]
 
   def show

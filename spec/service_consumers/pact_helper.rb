@@ -34,6 +34,7 @@ Pact.provider_states_for "Publishing API" do
     WebMock.enable!
     WebMock.reset!
     DatabaseCleaner.clean_with :truncation
+    User.find_or_create_by!(name: "Test user")
 
     escaped_router_api_prefix = Regexp.escape(Plek.find('router-api'))
     stub_request(

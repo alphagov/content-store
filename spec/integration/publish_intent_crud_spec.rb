@@ -15,6 +15,18 @@ describe "CRUD of publish intents", type: :request do
       }
     end
 
+    context "when the user is not authenticated" do
+      around do |example|
+        ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+      end
+
+      it "returns an unauthorized response" do
+        put_json "/publish-intent/vat-rates", data
+
+        expect(response).to be_unauthorized
+      end
+    end
+
     context "a new publish intent" do
       it "creates the publish intent" do
         put_json "/publish-intent/vat-rates", data
@@ -179,6 +191,18 @@ describe "CRUD of publish intents", type: :request do
 
   describe "deleting a publish intent" do
     let!(:intent) { create(:publish_intent, base_path: "/vat-rates") }
+
+    context "when the user is not authenticated" do
+      around do |example|
+        ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+      end
+
+      it "returns an unauthorized response" do
+        delete "/publish-intent/vat-rates"
+
+        expect(response).to be_unauthorized
+      end
+    end
 
     it "deletes the publish intent" do
       delete "/publish-intent/vat-rates"

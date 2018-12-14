@@ -27,6 +27,18 @@ describe "content item write API", type: :request do
   end
 
   describe "creating a new content item" do
+    context "when the user is not authenticated" do
+      around do |example|
+        ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }
+      end
+
+      it "returns an unauthorized response" do
+        put_json "/content/vat-rates", @data
+
+        expect(response).to be_unauthorized
+      end
+    end
+
     it "responds with a CREATED status" do
       put_json "/content/vat-rates", @data
       expect(response.status).to eq(201)
