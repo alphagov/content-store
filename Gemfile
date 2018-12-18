@@ -16,7 +16,7 @@ else
   gem 'gds-api-adapters', "~> 55.0.1"
 end
 
-gem 'gds-sso', '~> 13.6'
+gem 'gds-sso', '~> 14.0'
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
 gem 'govuk_app_config', '~> 1.10'
 gem 'plek', '~> 2.1'
