@@ -27,7 +27,7 @@ group :development, :test do
   gem 'factory_bot', '~> 4.11'
   gem 'rspec-rails', '~> 3.8'
   gem 'timecop', '0.9.1'
-  gem 'webmock', '3.4.2', require: false
+  gem 'webmock', '3.5.1', require: false
 
   gem 'ci_reporter_rspec', '~> 1.0.0'
   gem 'simplecov', '0.16.1', require: false
