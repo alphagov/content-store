@@ -126,12 +126,12 @@ private
 
   def max_cache_time(item)
     return unless item.try(:details)
+
     item.details["max_cache_time"]
   end
 
   def http_status(item)
-    return 410 if item.gone?
-    200
+    item.gone? ? 410 : 200
   end
 
   def find_or_create_scheduled_publishing_log(base_path, document_type, intent)

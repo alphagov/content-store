@@ -35,6 +35,7 @@ private
 
   def update_status(result)
     return :unprocessable_entity unless result
+
     result == :created ? :created : :ok
   end
 end

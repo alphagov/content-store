@@ -27,12 +27,11 @@ module ContentStore
     config.eager_load_paths << "#{config.root}/lib"
 
     config.i18n.enforce_available_locales = true
-    config.i18n.available_locales = [
-      :en, :ar, :az, :be, :bg, :bn, :cs, :cy, :de, :dr, :el, :es, :'es-419',
-      :et, :fa, :fr, :he, :hi, :hu, :hy, :id, :it, :ja, :ka, :ko, :lt,
-      :lv, :ms, :pl, :ps, :pt, :ro, :ru, :si, :sk, :so, :sq, :sr, :sw, :ta, :th,
-      :tk, :tr, :uk, :ur, :uz, :vi, :zh, :'zh-hk', :'zh-tw'
-    ]
+    config.i18n.available_locales = %i(
+      en ar az be bg bn cs cy de dr el es es-419 et fa fr he hi hu hy id it ja
+      ka ko lt lv ms pl ps pt ro ru si sk so sq sr sw ta th tk tr uk ur uz vi
+      zh zh-hk zh-tw
+    )
 
     # Caching defaults
     config.default_ttl = ENV.fetch('DEFAULT_TTL', 30.minutes).to_i.seconds
