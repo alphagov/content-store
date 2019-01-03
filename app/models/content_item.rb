@@ -34,6 +34,7 @@ class ContentItem
       rescue StandardError => e
         revert(previous_item: previous_item, item: item)
         raise unless e.is_a?(GdsApi::BaseError)
+
         item.errors.add(:routes, "Could not communicated with router.")
         result = false
       end
@@ -164,6 +165,7 @@ class ContentItem
     # This rather nastily fallsback to government frontend for gones that are
     # not gone and lack a rendering_app
     return rendering_app if schema_name != "gone" || gone?
+
     rendering_app || "government-frontend"
   end
 
@@ -207,6 +209,7 @@ private
 
   def should_register_routes?(previous_item: nil)
     return false if self.schema_name.start_with?("placeholder")
+
     if previous_item
       return previous_item.schema_name == "placeholder" ||
           previous_item.route_set != self.route_set

@@ -43,6 +43,7 @@ module Tasks
         puts "Fetching content items for duplicated content ids..."
         duplicates = duplicate_content_id_aggregation.flat_map do |content_id_count|
           next if content_id_count["_id"].blank?
+
           ContentItem.where(content_id: content_id_count["_id"]).to_a
         end
         duplicates.compact
