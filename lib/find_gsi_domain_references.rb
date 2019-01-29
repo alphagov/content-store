@@ -41,7 +41,7 @@ private
   def csv_row(content_item, domain)
     [
       content_item.try(:title),
-      content_item.try(:base_path),
+      "https://www.gov.uk#{content_item.try(:base_path)}",
       content_item.try(:publishing_app),
       content_item.expanded_links.dig(:organisations, 0, :title),
       content_item.try(:document_type),
@@ -51,10 +51,10 @@ private
   end
 
   def content_items(domain)
-    ContentItem.where('details.body': domain).entries +
-      ContentItem.where('details.parts.body': domain).entries +
-      ContentItem.where('details.email_addresses.email': domain).entries +
-      ContentItem.where('details.more_info_contact_form': domain).entries +
-      ContentItem.where('details.more_info_email_address': domain).entries
+    ContentItem.or('details.body': domain)
+      .or('details.parts.body.content': domain)
+      .or('details.email_addresses.email': domain)
+      .or('details.more_info_contact_form': domain)
+      .or('details.more_info_email_address': domain).entries
   end
 end
