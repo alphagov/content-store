@@ -89,7 +89,7 @@ GEM
     ffi (1.9.25)
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (57.2.3)
+    gds-api-adapters (57.4.1)
       addressable
       link_header
       null_logger
@@ -359,7 +359,7 @@ DEPENDENCIES
   climate_control (~> 0.2)
   database_cleaner (~> 1.7.0)
   factory_bot (~> 4.11)
-  gds-api-adapters (~> 57.2.3)
+  gds-api-adapters (~> 57.4.1)
   gds-sso (~> 14.0)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
