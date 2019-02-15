@@ -51,9 +51,12 @@ private
   end
 
   def content_items(domain)
-    ContentItem.or('details.body': domain)
+    ContentItem.or('details.body.content': domain)
       .or('details.parts.body.content': domain)
+      .or('details.nodes.body.content': domain)
       .or('details.email_addresses.email': domain)
+      .or('details.introductory_paragraph': domain)
+      .or('details.more_information': domain)
       .or('details.more_info_contact_form': domain)
       .or('details.more_info_email_address': domain).entries
   end
