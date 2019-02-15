@@ -59,7 +59,9 @@ private
       .or('details.nodes.body.content': domain)
       .or('details.email_addresses.email': domain)
       .or('details.introductory_paragraph': domain)
+      .or('details.introductory_paragraph.content': domain)
       .or('details.more_information': domain)
+      .or('details.more_information.content': domain)
       .or('details.more_info_contact_form': domain)
       .or('details.more_info_email_address': domain).entries
   end
