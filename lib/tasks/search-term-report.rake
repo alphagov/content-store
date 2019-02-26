@@ -5,7 +5,7 @@ namespace :report do
   end
   
   desc "Find all references to search term"
-  task find_specific_term_references: %i[term] => [:environment] do
+  task task :find_specific_term_references, %i[term] => [:environment] do |_, args|
     FindSpecificTerm.call(args[:term])
   end
 end
