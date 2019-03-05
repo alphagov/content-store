@@ -89,7 +89,7 @@ GEM
     ffi (1.10.0)
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (57.4.1)
+    gds-api-adapters (57.4.2)
       addressable
       link_header
       null_logger
@@ -221,7 +221,7 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.3)
     rack (2.0.6)
-    rack-cache (1.8.0)
+    rack-cache (1.9.0)
       rack (>= 0.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -359,7 +359,7 @@ DEPENDENCIES
   climate_control (~> 0.2)
   database_cleaner (~> 1.7.0)
   factory_bot (~> 5.0)
-  gds-api-adapters (~> 57.4.1)
+  gds-api-adapters (~> 57.4.2)
   gds-sso (~> 14.0)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
