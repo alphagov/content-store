@@ -36,6 +36,7 @@ private
 
     puts 'Finished searching'
     puts "CSV file at #{Rails.root}/tmp/search_term_content_items.csv"
+    puts File.read(Rails.root.join("tmp", "search_term_content_items.csv"))
   end
 
   def csv_row(content_item)
@@ -54,6 +55,7 @@ private
       .or('details.body.content': term)
       .or('details.parts.body': term)
       .or('details.parts.body.content': term)
+      .or('details.node.title.content': term)
       .or('details.nodes.body': term)
       .or('details.nodes.body.content': term)
       .or('details.email_addresses.email': term)
