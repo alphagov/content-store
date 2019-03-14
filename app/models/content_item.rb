@@ -201,8 +201,6 @@ class ContentItem
     base_path&.sub(%r{^/}, "")
   end
 
-protected
-
   def route_set
     @route_set ||= RouteSet.from_content_item(self)
   end
