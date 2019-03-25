@@ -52,6 +52,7 @@ private
 
   def content_items(term)
     ContentItem.or('details.body': term)
+      .or('description': term)
       .or('details.body.content': term)
       .or('details.parts.body': term)
       .or('details.parts.body.content': term)
