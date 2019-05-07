@@ -183,8 +183,8 @@ describe "content item write API", type: :request do
     let!(:log_entry) do
       Timecop.freeze(publish_time + 25.seconds) do
         create(:scheduled_publishing_log_entry,
-          base_path: @data["base_path"],
-          scheduled_publication_time: publish_time)
+               base_path: @data["base_path"],
+               scheduled_publication_time: publish_time)
       end
     end
 
