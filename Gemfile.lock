@@ -346,7 +346,7 @@ GEM
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
-    whenever (0.10.0)
+    whenever (0.11.0)
       chronic (>= 0.6.3)
 
 PLATFORMS
@@ -376,7 +376,7 @@ DEPENDENCIES
   timecop (= 0.9.1)
   uuidtools (= 2.1.5)
   webmock (= 3.5.1)
-  whenever (~> 0.10.0)
+  whenever (~> 0.11.0)
 
 BUNDLED WITH
    1.17.1
