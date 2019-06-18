@@ -118,7 +118,7 @@ GEM
       sentry-raven (~> 2.7.1)
       statsd-ruby (~> 1.4.0)
       unicorn (~> 5.4.0)
-    hashdiff (0.3.9)
+    hashdiff (0.4.0)
     hashie (3.6.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
