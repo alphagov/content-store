@@ -8,7 +8,7 @@ gem "mongoid_rails_migrations", git: "https://github.com/alphagov/mongoid_rails_
 
 gem 'hashdiff', require: false
 gem 'uuidtools', '2.1.5'
-gem 'whenever', '~> 0.11.0', require: false
+gem 'whenever', '~> 1.0.0', require: false
 
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
