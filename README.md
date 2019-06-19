@@ -1,15 +1,27 @@
 # The content store
 
-The central storage of *published* content on GOV.UK.
+The Content Store is a MongoDB database of almost all published content on GOV.UK.
 
-## Technical documentation
+## Reading and writing to the store
 
-The content store maps public-facing URLs to published items of content,
-represented as JSON data.
+Content is retrieved from the content store via the [content API][content-api-docs],
+which takes a path and responds with a JSON representation of the content that should
+be displayed on that path. This API is used by front-end apps but is also exposed externally
+at `/api/content/<path>`, such as https://www.gov.uk/api/content/take-pet-abroad
 
-Publishing applications add content to the content store via the Publishing API;
-public-facing applications read content from the content store and render them
-on GOV.UK.
+Content is written by the [publishing API][publishing-api-docs], which is used by
+back-end publishing apps such as Travel Advice Publisher.
+
+### Content schemas
+
+Not all content exists as a standalone page like the `/take-pet-abroad` example. Some
+content exists as a collection that references other pieces of content, and some content
+exists as meta content designed to describe a wider whole. We use
+[govuk-content-schemas](govuk-content-schemas) to describe all these different content
+types. The content API itself is not prescriptive about this; it takes any JSON structure.
+
+Detailed technical information can be found in the
+[content store documentation](doc/technical-information.md).
 
 ## Running the application
 
@@ -28,9 +40,7 @@ Example API requests and corresponding responses can be found in the
 
 [MIT License](LICENCE)
 
-## Further technical information
-
-Detailed technical information can be found in the
-[content store documentation](doc/technical-information.md).
-
+[content-api-docs]: https://content-api.publishing.service.gov.uk
+[govuk-content-schemas]: https://github.com/alphagov/govuk-content-schemas
 [pact-broker-docs]: https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest
+[publishing-api-docs]: https://docs.publishing.service.gov.uk/apps/publishing-api.html
