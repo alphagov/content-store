@@ -292,7 +292,7 @@ GEM
     rubocop-rspec (1.32.0)
       rubocop (>= 0.60.0)
     ruby-progressbar (1.10.0)
-    safe_yaml (1.0.4)
+    safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -338,10 +338,10 @@ GEM
       rack (>= 2.0.6)
     warden-oauth2 (0.0.1)
       warden
-    webmock (3.5.1)
+    webmock (3.6.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-      hashdiff
+      hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.4.2)
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
@@ -375,7 +375,7 @@ DEPENDENCIES
   simplecov-rcov (= 0.2.3)
   timecop (= 0.9.1)
   uuidtools (= 2.1.5)
-  webmock (= 3.5.1)
+  webmock (= 3.6.0)
   whenever (~> 1.0.0)
 
 BUNDLED WITH
