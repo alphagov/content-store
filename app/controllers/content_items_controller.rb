@@ -68,20 +68,32 @@ private
     if auth_bypass_id_header.present?
       item.includes_auth_bypass_id?(auth_bypass_id_header)
     else
-      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
+      user_can_view?(item) || user_organisation_can_view?(item)
     end
+  end
+
+  def user_can_view?(item)
+    return false if authenticated_user_uid == 'invalid'
+
+    item.viewable_by_user?(authenticated_user_uid)
+  end
+
+  def user_organisation_can_view?(item)
+    return false if authenticated_user_organisation_content_id == 'invalid'
+
+    item.viewable_by_user_organisation?(authenticated_user_organisation_content_id)
   end
 
   def authenticated_user_uid
     request.headers['X-Govuk-Authenticated-User']
   end
 
-  def auth_bypass_id_header
-    request.headers['Govuk-Auth-Bypass-Id']
+  def authenticated_user_organisation_content_id
+    request.headers['X-Govuk-Authenticated-User-Organisation']
   end
 
-  def invalid_user_id?
-    authenticated_user_uid == 'invalid'
+  def auth_bypass_id_header
+    request.headers['Govuk-Auth-Bypass-Id']
   end
 
   def json_forbidden_response

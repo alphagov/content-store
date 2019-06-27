@@ -171,8 +171,12 @@ class ContentItem
     rendering_app || "government-frontend"
   end
 
-  def viewable_by?(user_uid)
-    authorised_user_uids.empty? || authorised_user_uids.include?(user_uid)
+  def viewable_by_user?(id)
+    authorised_user_uids.empty? || authorised_user_uids.include?(id)
+  end
+
+  def viewable_by_user_organisation?(id)
+    authorised_user_organisation_content_ids.empty? || authorised_user_organisation_content_ids.include?(id)
   end
 
   def includes_auth_bypass_id?(auth_bypass_id)
@@ -219,6 +223,10 @@ private
 
   def authorised_user_uids
     access_limited.fetch('users', [])
+  end
+
+  def authorised_user_organisation_content_ids
+    access_limited.fetch('organisations', [])
   end
 
   def auth_bypass_ids

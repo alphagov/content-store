@@ -251,8 +251,8 @@ describe ContentItem, type: :model do
       end
 
       it 'is viewable by all' do
-        expect(content_item.viewable_by?(nil)).to be(true)
-        expect(content_item.viewable_by?('a-user-uid')).to be(true)
+        expect(content_item.viewable_by_user?(nil)).to be(true)
+        expect(content_item.viewable_by_user?('a-user-uid')).to be(true)
       end
     end
 
@@ -265,12 +265,30 @@ describe ContentItem, type: :model do
       end
 
       it 'is viewable by an authorised user' do
-        expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
+        expect(content_item.viewable_by_user?(authorised_user_uid)).to be(true)
       end
 
       it 'is not viewable by an unauthorised user' do
-        expect(content_item.viewable_by?('unauthorised-user')).to be(false)
-        expect(content_item.viewable_by?(nil)).to be(false)
+        expect(content_item.viewable_by_user?('unauthorised-user')).to be(false)
+        expect(content_item.viewable_by_user?(nil)).to be(false)
+      end
+    end
+
+    context 'an access-limited content item by user organisation content id' do
+      let!(:content_item) { create(:access_limited_content_item, :by_user_organisation_id) }
+      let(:authorised_user_organisation_content_id) { content_item.access_limited['organisations'].first }
+
+      it 'is access limited' do
+        expect(content_item.access_limited?).to be(true)
+      end
+
+      it 'is viewable by an authorised user' do
+        expect(content_item.viewable_by_user_organisation?(authorised_user_organisation_content_id)).to be(true)
+      end
+
+      it 'is not viewable by an unauthorised user' do
+        expect(content_item.viewable_by_user_organisation?('unauthorised-user')).to be(false)
+        expect(content_item.viewable_by_user_organisation?(nil)).to be(false)
       end
     end
 
@@ -292,7 +310,7 @@ describe ContentItem, type: :model do
       end
 
       it 'is viewable by an authenticated user' do
-        expect(content_item.viewable_by?(logged_in_user)).to be(true)
+        expect(content_item.viewable_by_user?(logged_in_user)).to be(true)
       end
     end
   end
