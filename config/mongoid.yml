@@ -11,7 +11,7 @@ development:
 test:
   clients:
     default:
-      uri: mongodb://localhost/content_store_test
+      uri: <%= ENV['TEST_MONGODB_URI'] || 'mongodb://localhost/content_store_test' %>
       options:
         write:
           w: 1
