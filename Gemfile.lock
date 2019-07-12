@@ -112,12 +112,12 @@ GEM
       rubocop (~> 0.64)
       rubocop-rspec (~> 1.28)
       scss_lint
-    govuk_app_config (1.19.0)
+    govuk_app_config (1.20.0)
       aws-xray-sdk (~> 0.10.0)
-      logstasher (~> 1.2.2)
-      sentry-raven (~> 2.7.1)
+      logstasher (>= 1.2.2, < 1.4.0)
+      sentry-raven (>= 2.7.1, < 2.10.0)
       statsd-ruby (~> 1.4.0)
-      unicorn (~> 5.4.0)
+      unicorn (>= 5.4, < 5.6)
     hashdiff (0.4.0)
     hashie (3.6.0)
     http-cookie (1.0.3)
@@ -132,7 +132,7 @@ GEM
     kgio (2.11.2)
     link_header (0.0.8)
     logstash-event (1.2.02)
-    logstasher (1.2.2)
+    logstasher (1.3.0)
       activesupport (>= 4.0)
       logstash-event (~> 1.2.0)
       request_store
@@ -301,7 +301,7 @@ GEM
     scss_lint (0.58.0)
       rake (>= 0.9, < 13)
       sass (~> 3.5, >= 3.5.5)
-    sentry-raven (2.7.4)
+    sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     simplecov (0.17.0)
       docile (~> 1.1)
@@ -330,7 +330,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode-display_width (1.5.0)
-    unicorn (5.4.1)
+    unicorn (5.5.1)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uuidtools (2.1.5)
@@ -361,7 +361,7 @@ DEPENDENCIES
   gds-sso (~> 14.0)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
-  govuk_app_config (~> 1.19)
+  govuk_app_config (~> 1.20)
   hashdiff
   mongo (= 2.4.3)
   mongoid (= 6.2.1)
