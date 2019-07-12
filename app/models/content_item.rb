@@ -171,12 +171,16 @@ class ContentItem
     rendering_app || "government-frontend"
   end
 
-  def viewable_by?(user_uid)
-    authorised_user_uids.empty? || authorised_user_uids.include?(user_uid)
+  def viewable_by_user_id?(user_id)
+    auth_user_ids.include?(user_id)
   end
 
-  def includes_auth_bypass_id?(auth_bypass_id)
-    auth_bypass_ids.include?(auth_bypass_id)
+  def viewable_by_bypass_id?(bypass_id)
+    auth_bypass_ids.include?(bypass_id)
+  end
+
+  def access_limited?
+    auth_bypass_ids.present? || auth_user_ids.present?
   end
 
   def register_routes(previous_item: nil)
@@ -217,7 +221,7 @@ private
     true
   end
 
-  def authorised_user_uids
+  def auth_user_ids
     access_limited.fetch('users', [])
   end
 

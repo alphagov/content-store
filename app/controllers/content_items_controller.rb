@@ -64,24 +64,44 @@ private
     redirect_to route, status: 303
   end
 
+#  def can_view(item)
+#    auth_user_id != 'invalid' && (check_bypass_id(item) || check_user_id(item) || not_access_limited(item))
+#  end
+
   def can_view(item)
-    if auth_bypass_id_header.present?
-      item.includes_auth_bypass_id?(auth_bypass_id_header)
+    if valid_user?(auth_user_id)
+        if item.access_limited?
+          item.viewable_by_bypass_id?(auth_bypass_id) || item.viewable_by_user_id?(auth_user_id)
+        else
+          true
+        end
     else
-      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
+      false
     end
   end
 
-  def authenticated_user_uid
+  def valid_user?(user_id)
+    user_id != 'invalid'
+  end
+
+  def auth_user_id
     request.headers['X-Govuk-Authenticated-User']
   end
 
-  def auth_bypass_id_header
+  def auth_bypass_id
     request.headers['Govuk-Auth-Bypass-Id']
   end
 
-  def invalid_user_id?
-    authenticated_user_uid == 'invalid'
+  def not_access_limited(item)
+    !item.access_limited_by_user_id? && !item.access_limited_by_bypass_id?
+  end
+
+  def check_user_id(item)
+    item.user_id_allowed?(auth_user_id)
+  end
+
+  def check_bypass_id(item)
+    item.auth_bypass_id_allowed?(auth_bypass_id)
   end
 
   def json_forbidden_response
@@ -103,7 +123,7 @@ private
 
     if intent && !intent.past?
       cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
-    elsif item && (auth_bypass_id_header.present? || item.access_limited?)
+    elsif item && (auth_bypass_id.present? || item.access_limited?)
       cache_time = config.minimum_ttl
       is_public = false
     elsif item && max_cache_time(item)

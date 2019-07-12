@@ -24,7 +24,6 @@ describe "Public API requests for content items", type: :request do
   it "corrrectly expands linked items with Public API URLs" do
     get "/api/content#{content_item.base_path}"
     data = JSON.parse(response.body)
-
     expect(data["links"]["related"].first["content_id"]).to eq(linked_item.content_id)
   end
 
