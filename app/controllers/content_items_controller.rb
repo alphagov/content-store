@@ -16,7 +16,7 @@ class ContentItemsController < ApplicationController
     return error_404 unless item
     return redirect_canonical(item) if item.base_path != encoded_request_path
 
-    if can_view(item)
+    if can_view?(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
     else
       render json_forbidden_response
@@ -64,44 +64,25 @@ private
     redirect_to route, status: 303
   end
 
-#  def can_view(item)
-#    auth_user_id != 'invalid' && (check_bypass_id(item) || check_user_id(item) || not_access_limited(item))
-#  end
+  def can_view?(item)
+    return item.valid_bypass_id?(auth_bypass_id) if auth_bypass_id
 
-  def can_view(item)
-    if valid_user?(auth_user_id)
-        if item.access_limited?
-          item.viewable_by_bypass_id?(auth_bypass_id) || item.viewable_by_user_id?(auth_user_id)
-        else
-          true
-        end
-    else
-      false
-    end
-  end
-
-  def valid_user?(user_id)
-    user_id != 'invalid'
+    item.user_access?(
+      user_id: auth_user_id,
+      user_organisation_id: auth_organisation_id
+    )
   end
 
   def auth_user_id
     request.headers['X-Govuk-Authenticated-User']
   end
 
+  def auth_organisation_id
+    request.headers['X-Govuk-Authenticated-User-Organisation']
+  end
+
   def auth_bypass_id
     request.headers['Govuk-Auth-Bypass-Id']
-  end
-
-  def not_access_limited(item)
-    !item.access_limited_by_user_id? && !item.access_limited_by_bypass_id?
-  end
-
-  def check_user_id(item)
-    item.user_id_allowed?(auth_user_id)
-  end
-
-  def check_bypass_id(item)
-    item.auth_bypass_id_allowed?(auth_bypass_id)
   end
 
   def json_forbidden_response

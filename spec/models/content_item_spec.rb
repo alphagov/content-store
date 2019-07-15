@@ -249,6 +249,18 @@ describe ContentItem, type: :model do
       it 'is not access limited' do
         expect(content_item.access_limited?).to be(false)
       end
+
+      it 'is viewable by an any user' do
+        expect(content_item.user_access?(user_id: 'some-id')).to be(true)
+      end
+
+      it 'is not viewable using any user_organisation_id' do
+        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(true)
+      end
+
+      it 'is not viewable using no access limity things' do
+        expect(content_item.user_access?).to be(true)
+      end
     end
 
     context 'access-limited by user-id' do
@@ -260,11 +272,28 @@ describe ContentItem, type: :model do
       end
 
       it 'is viewable by an authorised user' do
-        expect(content_item.viewable_by_user_id?(authorised_user_uid)).to be(true)
+        expect(content_item.user_access?(user_id: authorised_user_uid)).to be(true)
       end
 
       it 'is not viewable by an unauthorised user' do
-        expect(content_item.viewable_by_user_id?('fake-id')).to be(false)
+        expect(content_item.user_access?(user_id: 'fake-id')).to be(false)
+      end
+    end
+
+    context 'access-limited by org-id' do
+      let!(:content_item) { create(:access_limited_content_item, :by_org_id) }
+      let(:auth_org_id) { content_item.access_limited['organisations'].first }
+
+      it 'is access limited' do
+        expect(content_item.access_limited?).to be(true)
+      end
+
+      it 'is viewable by an authorised org' do
+        expect(content_item.user_access?(user_organisation_id: auth_org_id)).to be(true)
+      end
+
+      it 'is not viewable by an unauthorised org' do
+        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(false)
       end
     end
 
@@ -273,16 +302,12 @@ describe ContentItem, type: :model do
       let(:auth_bypass_id) { content_item.access_limited['auth_bypass_ids'].first }
       let(:logged_in_user) { 'authenticated_user_uid' }
 
-      it "is access limited" do
-        expect(content_item.access_limited?).to be(true)
-      end
-
       it 'is viewable by an authorised bypass id' do
-        expect(content_item.viewable_by_bypass_id?(auth_bypass_id)).to be(true)
+        expect(content_item.valid_bypass_id?(auth_bypass_id)).to be(true)
       end
 
       it 'is not viewable by an unauthorised user' do
-        expect(content_item.viewable_by_bypass_id?('fake-id')).to be(false)
+        expect(content_item.valid_bypass_id?('fake-id')).to be(false)
       end
     end
   end
