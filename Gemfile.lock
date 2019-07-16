@@ -362,7 +362,6 @@ DEPENDENCIES
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
   govuk_app_config (~> 1.20)
-  hashdiff
   mongo (= 2.4.3)
   mongoid (= 6.2.1)
   mongoid_rails_migrations!
@@ -379,4 +378,4 @@ DEPENDENCIES
   whenever (~> 1.0.0)
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
