@@ -295,7 +295,7 @@ describe "content item write API", type: :request do
   end
 
   describe "creating an access-limited content item" do
-    let(:authorised_users) { ['a-user-identifier', 'another-user-identifier'] }
+    let(:authorised_users) { %w(a-user-identifier another-user-identifier) }
     before :each do
       @data["access_limited"] = {
         "users" => authorised_users
