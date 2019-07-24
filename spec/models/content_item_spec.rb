@@ -250,13 +250,20 @@ describe ContentItem, type: :model do
         expect(content_item.access_limited?).to be(false)
       end
 
-      it 'is viewable by all' do
-        expect(content_item.viewable_by?(nil)).to be(true)
-        expect(content_item.viewable_by?('a-user-uid')).to be(true)
+      it 'is viewable by an any user' do
+        expect(content_item.user_access?(user_id: 'some-id')).to be(true)
+      end
+
+      it 'is not viewable using any user_organisation_id' do
+        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(true)
+      end
+
+      it 'is not viewable using no access limity things' do
+        expect(content_item.user_access?).to be(true)
       end
     end
 
-    context 'an access-limited by user-id content item' do
+    context 'access-limited by user-id' do
       let!(:content_item) { create(:access_limited_content_item, :by_user_id) }
       let(:authorised_user_uid) { content_item.access_limited['users'].first }
 
@@ -265,34 +272,42 @@ describe ContentItem, type: :model do
       end
 
       it 'is viewable by an authorised user' do
-        expect(content_item.viewable_by?(authorised_user_uid)).to be(true)
+        expect(content_item.user_access?(user_id: authorised_user_uid)).to be(true)
       end
 
       it 'is not viewable by an unauthorised user' do
-        expect(content_item.viewable_by?('unauthorised-user')).to be(false)
-        expect(content_item.viewable_by?(nil)).to be(false)
+        expect(content_item.user_access?(user_id: 'fake-id')).to be(false)
       end
     end
 
-    context "an access-limited by auth_bypass_id content item" do
+    context 'access-limited by org-id' do
+      let!(:content_item) { create(:access_limited_content_item, :by_org_id) }
+      let(:auth_org_id) { content_item.access_limited['organisations'].first }
+
+      it 'is access limited' do
+        expect(content_item.access_limited?).to be(true)
+      end
+
+      it 'is viewable by an authorised org' do
+        expect(content_item.user_access?(user_organisation_id: auth_org_id)).to be(true)
+      end
+
+      it 'is not viewable by an unauthorised org' do
+        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(false)
+      end
+    end
+
+    context "access-limited by bypass_id" do
       let!(:content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
       let(:auth_bypass_id) { content_item.access_limited['auth_bypass_ids'].first }
       let(:logged_in_user) { 'authenticated_user_uid' }
 
-      it "is access limited" do
-        expect(content_item.access_limited?).to be(true)
+      it 'is viewable by an authorised bypass id' do
+        expect(content_item.valid_bypass_id?(auth_bypass_id)).to be(true)
       end
 
-      it "includes a valid auth_bypass_id" do
-        expect(content_item.includes_auth_bypass_id?(auth_bypass_id)).to be(true)
-      end
-
-      it "does not include a valid auth bypass token when the id is invalid" do
-        expect(content_item.includes_auth_bypass_id?("foo")).to be(false)
-      end
-
-      it 'is viewable by an authenticated user' do
-        expect(content_item.viewable_by?(logged_in_user)).to be(true)
+      it 'is not viewable by an unauthorised user' do
+        expect(content_item.valid_bypass_id?('fake-id')).to be(false)
       end
     end
   end

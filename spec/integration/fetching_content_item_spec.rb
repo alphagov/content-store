@@ -140,19 +140,6 @@ describe "Fetching content items", type: :request do
     end
   end
 
-  context "when the authenticated_user_uid header is invalid" do
-    let(:content_item) { create(:content_item) }
-
-    before do
-      get "/content/#{content_item.base_path}", params: {},
-        headers: { 'X-Govuk-Authenticated-User' => "invalid" }
-    end
-
-    it "returns a 403 Forbidden response" do
-      expect(response.status).to eq(403)
-    end
-  end
-
   context "a non-existent content item" do
     before(:each) { get "/content/does/not/exist" }
 

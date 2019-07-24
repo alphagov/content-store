@@ -16,7 +16,7 @@ class ContentItemsController < ApplicationController
     return error_404 unless item
     return redirect_canonical(item) if item.base_path != encoded_request_path
 
-    if can_view(item)
+    if can_view?(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
     else
       render json_forbidden_response
@@ -64,24 +64,25 @@ private
     redirect_to route, status: 303
   end
 
-  def can_view(item)
-    if auth_bypass_id_header.present?
-      item.includes_auth_bypass_id?(auth_bypass_id_header)
-    else
-      !invalid_user_id? && item.viewable_by?(authenticated_user_uid)
-    end
+  def can_view?(item)
+    return item.valid_bypass_id?(auth_bypass_id) if auth_bypass_id
+
+    item.user_access?(
+      user_id: auth_user_id,
+      user_organisation_id: auth_organisation_id
+    )
   end
 
-  def authenticated_user_uid
+  def auth_user_id
     request.headers['X-Govuk-Authenticated-User']
   end
 
-  def auth_bypass_id_header
-    request.headers['Govuk-Auth-Bypass-Id']
+  def auth_organisation_id
+    request.headers['X-Govuk-Authenticated-User-Organisation']
   end
 
-  def invalid_user_id?
-    authenticated_user_uid == 'invalid'
+  def auth_bypass_id
+    request.headers['Govuk-Auth-Bypass-Id']
   end
 
   def json_forbidden_response
@@ -103,7 +104,7 @@ private
 
     if intent && !intent.past?
       cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
-    elsif item && (auth_bypass_id_header.present? || item.access_limited?)
+    elsif item && (auth_bypass_id.present? || item.access_limited?)
       cache_time = config.minimum_ttl
       is_public = false
     elsif item && max_cache_time(item)
