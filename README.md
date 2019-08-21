@@ -17,11 +17,11 @@ back-end publishing apps such as Travel Advice Publisher.
 Not all content exists as a standalone page like the `/take-pet-abroad` example. Some
 content exists as a collection that references other pieces of content, and some content
 exists as meta content designed to describe a wider whole. We use
-[govuk-content-schemas](govuk-content-schemas) to describe all these different content
+[govuk-content-schemas] to describe all these different content
 types. The content API itself is not prescriptive about this; it takes any JSON structure.
 
 Detailed technical information can be found in the
-[content store documentation](doc/technical-information.md).
+[content store documentation][content-store-docs].
 
 ## Running the application
 
@@ -40,7 +40,8 @@ Example API requests and corresponding responses can be found in the
 
 [MIT License](LICENCE)
 
-[content-api-docs]: https://content-api.publishing.service.gov.uk
+[content-api-docs]: https://content-api.publishing.service.gov.uk/
+[content-store-docs]: https://github.com/alphagov/content-store/blob/master/doc/technical-information.md
 [govuk-content-schemas]: https://github.com/alphagov/govuk-content-schemas
 [pact-broker-docs]: https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest
 [publishing-api-docs]: https://docs.publishing.service.gov.uk/apps/publishing-api.html
