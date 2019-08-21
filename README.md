@@ -38,7 +38,7 @@ Example API requests and corresponding responses can be found in the
 
 ## Licence
 
-[MIT License](LICENCE)
+[MIT License](https://github.com/alphagov/content-store/blob/master/LICENSE)
 
 [content-api-docs]: https://content-api.publishing.service.gov.uk/
 [content-store-docs]: https://github.com/alphagov/content-store/blob/master/doc/technical-information.md
