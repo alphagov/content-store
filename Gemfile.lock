@@ -89,7 +89,7 @@ GEM
     ffi (1.11.1)
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (59.6.0)
+    gds-api-adapters (60.0.0)
       addressable
       link_header
       null_logger
@@ -121,6 +121,7 @@ GEM
       unicorn (>= 5.4, < 5.6)
     hashdiff (1.0.0)
     hashie (3.6.0)
+    http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (1.6.0)
@@ -258,7 +259,8 @@ GEM
       ffi (~> 1.0)
     request_store (1.4.1)
       rack (>= 1.4)
-    rest-client (2.0.2)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
@@ -361,7 +363,7 @@ DEPENDENCIES
   climate_control (~> 0.2)
   database_cleaner (~> 1.7.0)
   factory_bot (~> 5.0)
-  gds-api-adapters (~> 59.6.0)
+  gds-api-adapters (~> 60.0.0)
   gds-sso (~> 14.1)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
