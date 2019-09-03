@@ -17,7 +17,7 @@ end
 
 gem 'gds-sso', '~> 14.1'
 gem 'govuk-content-schema-test-helpers', '~> 1.6'
-gem 'govuk_app_config', '~> 1.20'
+gem 'govuk_app_config', '~> 2.0'
 gem 'plek', '~> 3.0'
 
 group :development, :test do
