@@ -87,7 +87,7 @@ GEM
     ffi (1.11.1)
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (60.0.0)
+    gds-api-adapters (60.1.0)
       addressable
       link_header
       null_logger
@@ -143,9 +143,9 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (0.9.2)
-    mime-types (3.2.2)
+    mime-types (3.3)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.0331)
+    mime-types-data (3.2019.0904)
     mimemagic (0.3.3)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
@@ -359,7 +359,7 @@ DEPENDENCIES
   climate_control (~> 0.2)
   database_cleaner (~> 1.7.0)
   factory_bot (~> 5.0)
-  gds-api-adapters (~> 60.0.0)
+  gds-api-adapters (~> 60.1.0)
   gds-sso (~> 14.1)
   govuk-content-schema-test-helpers (~> 1.6)
   govuk-lint
