@@ -1,6 +1,6 @@
 task validate_content_against_schema: :environment do
   GovukContentSchemaTestHelpers.configure do |config|
-    config.schema_type = 'frontend'
+    config.schema_type = "frontend"
     config.project_root = Rails.root
   end
 
@@ -32,7 +32,7 @@ def validate_content_for_schema(schema_name)
   errors = []
 
   items.each do |content_item|
-    print '.'
+    print "."
 
     counts[:checked] += 1
 

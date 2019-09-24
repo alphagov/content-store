@@ -1,5 +1,5 @@
-require 'rails_helper'
-require 'update_lock'
+require "rails_helper"
+require "update_lock"
 
 describe ContentItem, type: :model do
   describe ".create_or_replace" do
@@ -33,7 +33,7 @@ describe ContentItem, type: :model do
           }.to_not raise_error
 
           expect(result).to be false
-          expect(item.errors[:base]).to include('unrecognised field(s) foo, bar in input')
+          expect(item.errors[:base]).to include("unrecognised field(s) foo, bar in input")
         end
       end
 
@@ -118,7 +118,7 @@ describe ContentItem, type: :model do
           build(
             :scheduled_publishing_log_entry,
             scheduled_publication_time: scheduled_publication_time,
-            delay_in_milliseconds: 14700
+            delay_in_milliseconds: 14700,
           )
         }
 
@@ -150,20 +150,20 @@ describe ContentItem, type: :model do
   describe "registering routes" do
     before do
       @routes = [
-        { 'path' => '/a-path', 'type' => 'exact' },
-        { 'path' => '/a-path.json', 'type' => 'exact' },
-        { 'path' => '/a-path/subpath', 'type' => 'prefix' }
+        { "path" => "/a-path", "type" => "exact" },
+        { "path" => "/a-path.json", "type" => "exact" },
+        { "path" => "/a-path/subpath", "type" => "prefix" },
       ]
 
-      @item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: @routes)
+      @item = build(:content_item, base_path: "/a-path", rendering_app: "an-app", routes: @routes)
     end
 
-    it 'registers the assigned routes' do
+    it "registers the assigned routes" do
       @item.register_routes
-      assert_routes_registered('an-app', [
-        ['/a-path', 'exact'],
-        ['/a-path.json', 'exact'],
-        ['/a-path/subpath', 'prefix']
+      assert_routes_registered("an-app", [
+        ["/a-path", "exact"],
+        ["/a-path.json", "exact"],
+        ["/a-path/subpath", "prefix"],
       ])
     end
 
@@ -171,45 +171,45 @@ describe ContentItem, type: :model do
       before :each do
         # dup the routes so they can be modified without affecting @item
         previous_routes = @routes.map(&:dup)
-        @previous_item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', routes: previous_routes)
+        @previous_item = build(:content_item, base_path: "/a-path", rendering_app: "an-app", routes: previous_routes)
       end
 
-      it 'does not register the routes when they are unchanged' do
+      it "does not register the routes when they are unchanged" do
         @item.register_routes(previous_item: @previous_item)
-        refute_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
+        refute_routes_registered("an-app", [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
         ])
       end
 
-      it 'registers routes when the routes are different' do
-        @previous_item.routes[1]['type'] = 'prefix'
+      it "registers routes when the routes are different" do
+        @previous_item.routes[1]["type"] = "prefix"
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
+        assert_routes_registered("an-app", [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
         ])
       end
 
-      it 'registers routes when the redirects are different' do
-        @previous_item.redirects << { 'path' => '/a-path/old-part', 'type' => 'exact', 'destination' => '/somewhere' }
+      it "registers routes when the redirects are different" do
+        @previous_item.redirects << { "path" => "/a-path/old-part", "type" => "exact", "destination" => "/somewhere" }
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
+        assert_routes_registered("an-app", [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
         ])
       end
 
-      it 'registers routes when the rendering_app is different' do
-        @previous_item.rendering_app = 'another-app'
+      it "registers routes when the rendering_app is different" do
+        @previous_item.rendering_app = "another-app"
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
-          ['/a-path/subpath', 'prefix']
+        assert_routes_registered("an-app", [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
         ])
       end
     end
@@ -217,23 +217,23 @@ describe ContentItem, type: :model do
     context "when previous item is a placeholder" do
       before :each do
         previous_routes = @routes.map(&:dup)
-        @previous_item = build(:content_item, base_path: '/a-path', rendering_app: 'an-app', format: "placeholder", routes: previous_routes)
+        @previous_item = build(:content_item, base_path: "/a-path", rendering_app: "an-app", format: "placeholder", routes: previous_routes)
       end
 
       it "registers routes even though they haven't changed" do
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered('an-app', [
-          ['/a-path', 'exact'],
-          ['/a-path.json', 'exact'],
+        assert_routes_registered("an-app", [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
         ])
       end
     end
   end
 
 
-  context 'when loaded from the content store' do
+  context "when loaded from the content store" do
     before do
-      create(:content_item, base_path: '/base_path', routes: [{ 'path' => '/base_path', 'type' => 'exact' }])
+      create(:content_item, base_path: "/base_path", routes: [{ "path" => "/base_path", "type" => "exact" }])
       @item = ContentItem.last
     end
 
@@ -242,72 +242,72 @@ describe ContentItem, type: :model do
     end
   end
 
-  describe 'access limiting' do
-    context 'a content item that is not access limited' do
+  describe "access limiting" do
+    context "a content item that is not access limited" do
       let!(:content_item) { create(:content_item) }
 
-      it 'is not access limited' do
+      it "is not access limited" do
         expect(content_item.access_limited?).to be(false)
       end
 
-      it 'is viewable by an any user' do
-        expect(content_item.user_access?(user_id: 'some-id')).to be(true)
+      it "is viewable by an any user" do
+        expect(content_item.user_access?(user_id: "some-id")).to be(true)
       end
 
-      it 'is not viewable using any user_organisation_id' do
-        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(true)
+      it "is not viewable using any user_organisation_id" do
+        expect(content_item.user_access?(user_organisation_id: "fake-id")).to be(true)
       end
 
-      it 'is not viewable using no access limity things' do
+      it "is not viewable using no access limity things" do
         expect(content_item.user_access?).to be(true)
       end
     end
 
-    context 'access-limited by user-id' do
+    context "access-limited by user-id" do
       let!(:content_item) { create(:access_limited_content_item, :by_user_id) }
-      let(:authorised_user_uid) { content_item.access_limited['users'].first }
+      let(:authorised_user_uid) { content_item.access_limited["users"].first }
 
-      it 'is access limited' do
+      it "is access limited" do
         expect(content_item.access_limited?).to be(true)
       end
 
-      it 'is viewable by an authorised user' do
+      it "is viewable by an authorised user" do
         expect(content_item.user_access?(user_id: authorised_user_uid)).to be(true)
       end
 
-      it 'is not viewable by an unauthorised user' do
-        expect(content_item.user_access?(user_id: 'fake-id')).to be(false)
+      it "is not viewable by an unauthorised user" do
+        expect(content_item.user_access?(user_id: "fake-id")).to be(false)
       end
     end
 
-    context 'access-limited by org-id' do
+    context "access-limited by org-id" do
       let!(:content_item) { create(:access_limited_content_item, :by_org_id) }
-      let(:auth_org_id) { content_item.access_limited['organisations'].first }
+      let(:auth_org_id) { content_item.access_limited["organisations"].first }
 
-      it 'is access limited' do
+      it "is access limited" do
         expect(content_item.access_limited?).to be(true)
       end
 
-      it 'is viewable by an authorised org' do
+      it "is viewable by an authorised org" do
         expect(content_item.user_access?(user_organisation_id: auth_org_id)).to be(true)
       end
 
-      it 'is not viewable by an unauthorised org' do
-        expect(content_item.user_access?(user_organisation_id: 'fake-id')).to be(false)
+      it "is not viewable by an unauthorised org" do
+        expect(content_item.user_access?(user_organisation_id: "fake-id")).to be(false)
       end
     end
 
     context "access-limited by bypass_id" do
       let!(:content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
-      let(:auth_bypass_id) { content_item.access_limited['auth_bypass_ids'].first }
-      let(:logged_in_user) { 'authenticated_user_uid' }
+      let(:auth_bypass_id) { content_item.access_limited["auth_bypass_ids"].first }
+      let(:logged_in_user) { "authenticated_user_uid" }
 
-      it 'is viewable by an authorised bypass id' do
+      it "is viewable by an authorised bypass id" do
         expect(content_item.valid_bypass_id?(auth_bypass_id)).to be(true)
       end
 
-      it 'is not viewable by an unauthorised user' do
-        expect(content_item.valid_bypass_id?('fake-id')).to be(false)
+      it "is not viewable by an unauthorised user" do
+        expect(content_item.valid_bypass_id?("fake-id")).to be(false)
       end
     end
   end

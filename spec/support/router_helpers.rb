@@ -1,4 +1,4 @@
-require 'gds_api/test_helpers/router'
+require "gds_api/test_helpers/router"
 
 module RouterHelpers
   include GdsApi::TestHelpers::Router

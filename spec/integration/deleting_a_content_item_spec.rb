@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Deleting a content item", type: :request do
   let(:base_path) { "/vat-rates" }
@@ -20,7 +20,7 @@ RSpec.describe "Deleting a content item", type: :request do
       FactoryBot.create(:content_item, base_path: base_path)
 
       @delete_stubs = ContentItem.find_by(
-        base_path: base_path
+        base_path: base_path,
       ).routes.map do |route|
         stub_route_deleted(route["path"], hard_delete: true)
       end

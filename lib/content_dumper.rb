@@ -33,7 +33,7 @@ private
 
   def hash_field(object)
     Digest::SHA1.hexdigest(
-      JSON.generate(object)
+      JSON.generate(object),
     )
   end
 end

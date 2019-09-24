@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "submitting redirect items to the content store", type: :request do
   before :each do
@@ -11,7 +11,7 @@ describe "submitting redirect items to the content store", type: :request do
       "publishing_app" => "publisher",
       "redirects" => [
         { "path" => "/crb-checks", "type" => "prefix", "destination" => "/dbs-checks" },
-        { "path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks" }
+        { "path" => "/crb-checks.json", "type" => "exact", "destination" => "/api/content/dbs-checks" },
       ],
       "payload_version" => 1,
     }
@@ -35,7 +35,7 @@ describe "submitting redirect items to the content store", type: :request do
     end
 
     it "registers redirect routes for the item" do
-      assert_redirect_routes_registered([['/crb-checks', 'prefix', '/dbs-checks'], ['/crb-checks.json', 'exact', '/api/content/dbs-checks']])
+      assert_redirect_routes_registered([["/crb-checks", "prefix", "/dbs-checks"], ["/crb-checks.json", "exact", "/api/content/dbs-checks"]])
     end
   end
 
@@ -45,7 +45,7 @@ describe "submitting redirect items to the content store", type: :request do
         :content_item,
         base_path: "/crb-checks",
         public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
-        details: { "foo" => "bar" }
+        details: { "foo" => "bar" },
       )
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/crb-checks", @data
@@ -65,7 +65,7 @@ describe "submitting redirect items to the content store", type: :request do
     end
 
     it "updates routes for the content item" do
-      assert_redirect_routes_registered([['/crb-checks', 'prefix', '/dbs-checks'], ['/crb-checks.json', 'exact', '/api/content/dbs-checks']])
+      assert_redirect_routes_registered([["/crb-checks", "prefix", "/dbs-checks"], ["/crb-checks.json", "exact", "/api/content/dbs-checks"]])
     end
   end
 end

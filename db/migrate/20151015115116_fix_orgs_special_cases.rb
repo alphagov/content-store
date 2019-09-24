@@ -4,7 +4,7 @@ class FixOrgsSpecialCases < Mongoid::Migration
       "/government/world/organisations/british-trade-cultural-office-taiwan/about/recruitment" =>
         "/government/world/organisations/british-office-taipei/about/recruitment",
       "/government/organisations/court-of-protection" =>
-        "/courts-tribunals/court-of-protection"
+        "/courts-tribunals/court-of-protection",
     }
 
     existing_redirects.each do |from_base_path, to_base_path|
@@ -14,7 +14,7 @@ class FixOrgsSpecialCases < Mongoid::Migration
         format: "redirect",
         publishing_app: "whitehall",
         rendering_app: nil,
-        redirects: [{ path: from_base_path, type: 'exact', destination: to_base_path }],
+        redirects: [{ path: from_base_path, type: "exact", destination: to_base_path }],
         routes: [],
       )
     end

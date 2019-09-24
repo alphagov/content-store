@@ -47,7 +47,7 @@ module Tasks
           duplicate_content_id_aggregation.each do |content_id_count|
             ary << ContentItem.where(
               content_id: content_id_count["_id"]["content_id"],
-              locale: content_id_count["_id"]["locale"]
+              locale: content_id_count["_id"]["locale"],
             ).to_a
           end
         end
@@ -60,10 +60,10 @@ module Tasks
             "$group" => {
               "_id" => { "content_id" => "$content_id", "locale" => "$locale" },
               "uniqueIds" => { "$addToSet" => "$_id" },
-              "count" => { "$sum" => 1 }
-            }
+              "count" => { "$sum" => 1 },
+            },
           },
-          { "$match" => { "_id.content_id" => { "$ne" => nil }, "count" => { "$gt" => 1 } } }
+          { "$match" => { "_id.content_id" => { "$ne" => nil }, "count" => { "$gt" => 1 } } },
         ])
       end
 

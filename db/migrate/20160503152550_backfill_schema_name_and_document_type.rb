@@ -9,8 +9,8 @@ class BackfillSchemaNameAndDocumentType < Mongoid::Migration
     EOF
 
     cmd = {
-      '$eval' => js,
-      'nolock' => true
+      "$eval" => js,
+      "nolock" => true,
     }
 
     result = ContentItem.collection.database.command(cmd)

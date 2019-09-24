@@ -1,5 +1,5 @@
-require 'rails_helper'
-require 'active_support/log_subscriber/test_helper'
+require "rails_helper"
+require "active_support/log_subscriber/test_helper"
 
 describe "monitoring mongo query runtimes", type: :request do
   let(:logger) { ActiveSupport::LogSubscriber::TestHelper::MockLogger.new }

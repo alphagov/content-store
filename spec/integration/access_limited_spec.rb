@@ -1,9 +1,9 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "Fetching an access-limited by content item", type: :request do
   context "access limited by user id" do
     let(:access_limited_content_item) { create(:access_limited_content_item, :by_user_id) }
-    let(:authorised_user_uid) { access_limited_content_item.access_limited['users'].first }
+    let(:authorised_user_uid) { access_limited_content_item.access_limited["users"].first }
     context "request without an authentication header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}"
@@ -19,7 +19,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an authorised user ID specified in the header" do
       before do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User' => authorised_user_uid }
+            params: {}, headers: { "X-Govuk-Authenticated-User" => authorised_user_uid }
       end
 
       it "returns the details for the requested item" do
@@ -27,7 +27,7 @@ describe "Fetching an access-limited by content item", type: :request do
         expect(response.content_type).to eq("application/json")
 
         data = JSON.parse(response.body)
-        expect(data['title']).to eq(access_limited_content_item.title)
+        expect(data["title"]).to eq(access_limited_content_item.title)
       end
 
       it "marks the cache-control as private" do
@@ -38,7 +38,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an unauthorised user ID specified in the header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User' => 'unauthorised-user' }
+            params: {}, headers: { "X-Govuk-Authenticated-User" => "unauthorised-user" }
 
         json = JSON.parse(response.body)
 
@@ -51,7 +51,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an invalid user ID specified in the header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User' => 'invalid' }
+            params: {}, headers: { "X-Govuk-Authenticated-User" => "invalid" }
 
         json = JSON.parse(response.body)
 
@@ -66,8 +66,8 @@ describe "Fetching an access-limited by content item", type: :request do
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
-              'X-Govuk-Authenticated-User' => authorised_user_uid,
-              'Govuk-Auth-Bypass-Id' => "fake id"
+              "X-Govuk-Authenticated-User" => authorised_user_uid,
+              "Govuk-Auth-Bypass-Id" => "fake id",
              }
       end
 
@@ -85,8 +85,8 @@ describe "Fetching an access-limited by content item", type: :request do
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
-              'X-Govuk-Authenticated-User' => "fake user id",
-              'Govuk-Auth-Bypass-Id' => "fake bypass id"
+              "X-Govuk-Authenticated-User" => "fake user id",
+              "Govuk-Auth-Bypass-Id" => "fake bypass id",
              }
       end
 
@@ -102,7 +102,7 @@ describe "Fetching an access-limited by content item", type: :request do
 
   context "access limited by org id" do
     let(:access_limited_content_item) { create(:access_limited_content_item, :by_org_id) }
-    let(:auth_org_id) { access_limited_content_item.access_limited['organisations'].first }
+    let(:auth_org_id) { access_limited_content_item.access_limited["organisations"].first }
     context "request without an authentication header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}"
@@ -118,7 +118,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an authorised org ID specified in the header" do
       before do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User-Organisation' => auth_org_id }
+            params: {}, headers: { "X-Govuk-Authenticated-User-Organisation" => auth_org_id }
       end
 
       it "returns the details for the requested item" do
@@ -126,7 +126,7 @@ describe "Fetching an access-limited by content item", type: :request do
         expect(response.content_type).to eq("application/json")
 
         data = JSON.parse(response.body)
-        expect(data['title']).to eq(access_limited_content_item.title)
+        expect(data["title"]).to eq(access_limited_content_item.title)
       end
 
       it "marks the cache-control as private" do
@@ -137,7 +137,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an unauthorised org ID specified in the header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User-Organisation' => 'unauthorised-org' }
+            params: {}, headers: { "X-Govuk-Authenticated-User-Organisation" => "unauthorised-org" }
 
         json = JSON.parse(response.body)
 
@@ -150,7 +150,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an invalid org ID specified in the header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User-Organisation' => 'invalid' }
+            params: {}, headers: { "X-Govuk-Authenticated-User-Organisation" => "invalid" }
 
         json = JSON.parse(response.body)
 
@@ -165,8 +165,8 @@ describe "Fetching an access-limited by content item", type: :request do
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
-              'X-Govuk-Authenticated-User-Organisation' => auth_org_id,
-              'Govuk-Auth-Bypass-Id' => "fake id"
+              "X-Govuk-Authenticated-User-Organisation" => auth_org_id,
+              "Govuk-Auth-Bypass-Id" => "fake id",
              }
       end
 
@@ -189,7 +189,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request with an authorised bypass ID specified in the header" do
       before do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'Govuk-Auth-Bypass-Id' => auth_bypass_id }
+            params: {}, headers: { "Govuk-Auth-Bypass-Id" => auth_bypass_id }
       end
 
       it "returns the details for the requested item" do
@@ -197,7 +197,7 @@ describe "Fetching an access-limited by content item", type: :request do
         expect(response.content_type).to eq("application/json")
 
         data = JSON.parse(response.body)
-        expect(data['title']).to eq(access_limited_content_item.title)
+        expect(data["title"]).to eq(access_limited_content_item.title)
       end
 
       it "marks the cache-control as private" do
@@ -208,7 +208,7 @@ describe "Fetching an access-limited by content item", type: :request do
     context "request without an bypass ID, but a user ID specified in the header" do
       before do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'X-Govuk-Authenticated-User' => 'some-user' }
+            params: {}, headers: { "X-Govuk-Authenticated-User" => "some-user" }
       end
 
       it "returns the details for the requested item" do
@@ -216,14 +216,14 @@ describe "Fetching an access-limited by content item", type: :request do
         expect(response.content_type).to eq("application/json")
 
         data = JSON.parse(response.body)
-        expect(data['title']).to eq(access_limited_content_item.title)
+        expect(data["title"]).to eq(access_limited_content_item.title)
       end
     end
 
     context "request with an unauthorised bypass ID specified in the header" do
       it "returns a 403 (Forbidden) response" do
         get "/content/#{access_limited_content_item.base_path}",
-            params: {}, headers: { 'Govuk-Auth-Bypass-Id' => SecureRandom.uuid }
+            params: {}, headers: { "Govuk-Auth-Bypass-Id" => SecureRandom.uuid }
 
         json = JSON.parse(response.body)
 
@@ -237,8 +237,8 @@ describe "Fetching an access-limited by content item", type: :request do
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
-              'X-Govuk-Authenticated-User' => 'invalid',
-              'Govuk-Auth-Bypass-Id' => auth_bypass_id
+              "X-Govuk-Authenticated-User" => "invalid",
+              "Govuk-Auth-Bypass-Id" => auth_bypass_id,
             }
       end
 
@@ -247,7 +247,7 @@ describe "Fetching an access-limited by content item", type: :request do
         expect(response.content_type).to eq("application/json")
 
         data = JSON.parse(response.body)
-        expect(data['title']).to eq(access_limited_content_item.title)
+        expect(data["title"]).to eq(access_limited_content_item.title)
       end
     end
   end

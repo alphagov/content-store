@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "End-to-end behaviour", type: :request do
   let(:data) do
@@ -21,7 +21,7 @@ describe "End-to-end behaviour", type: :request do
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "routes" => [
-        { "path" => "/vat-rates", "type" => 'exact' }
+        { "path" => "/vat-rates", "type" => "exact" },
       ],
       "public_updated_at" => Time.now,
       "payload_version" => "1",

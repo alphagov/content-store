@@ -54,11 +54,11 @@ module Tasks
           {
             "$group" => {
               "_id" => "$content_id", "count" => { "$sum" => 1 }
-            }
+            },
           },
           {
-            "$match" => { "count" => { "$gt" => 1 } }
-          }
+            "$match" => { "count" => { "$gt" => 1 } },
+          },
         ])
       end
 
@@ -83,7 +83,7 @@ module Tasks
         filename = "duplicate_content_ids_#{current_time}"
         filename = "#{locale}_#{filename}" if locale
 
-        CSV.open("tmp/#{filename}.csv", 'wb') do |csv|
+        CSV.open("tmp/#{filename}.csv", "wb") do |csv|
           content_item_fields = %w(
             _id content_id title format locale publishing_app
             rendering_app routes redirects phase analytics_identifier

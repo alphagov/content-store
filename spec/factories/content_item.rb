@@ -3,11 +3,11 @@ FactoryBot.define do
   # attributes and traits
   factory :base_content_item, class: ContentItem do
     sequence(:base_path) { |n| "/test-content-#{n}" }
-    format { 'gone' } # Using gone as it allows the smallest valid base
+    format { "gone" } # Using gone as it allows the smallest valid base
     schema_name { format }
     document_type { format }
-    publishing_app { 'publisher' }
-    routes { [{ 'path' => base_path, 'type' => 'exact' }] }
+    publishing_app { "publisher" }
+    routes { [{ "path" => base_path, "type" => "exact" }] }
     payload_version { 0 }
     first_published_at { Time.now }
     publishing_request_id { "432.432523.233242" }
@@ -23,7 +23,7 @@ FactoryBot.define do
     factory :content_item do
       format { "answer" }
       title { "Test content" }
-      rendering_app { 'frontend' }
+      rendering_app { "frontend" }
       public_updated_at { Time.now }
     end
 
@@ -33,7 +33,7 @@ FactoryBot.define do
       sequence(:base_path) { |n| "/test-redirect-#{n}" }
       format { "redirect" }
       routes { [] }
-      redirects { [{ 'path' => base_path, 'type' => 'exact', 'destination' => '/somewhere' }] }
+      redirects { [{ "path" => base_path, "type" => "exact", "destination" => "/somewhere" }] }
     end
 
     factory :gone_content_item do
@@ -47,7 +47,7 @@ FactoryBot.define do
       details {
         {
           explanation: "<div class=\"govspeak\"><p>Explanation…</p> </div>",
-          alternative_path: "/example"
+          alternative_path: "/example",
         }
       }
     end
@@ -58,7 +58,7 @@ FactoryBot.define do
       details {
         {
           explanation: "",
-          alternative_path: ""
+          alternative_path: "",
         }
       }
     end
@@ -85,7 +85,7 @@ FactoryBot.define do
       trait :by_auth_bypass_id do
         access_limited {
           {
-            "auth_bypass_ids" => %w(85aa9fd5-c514-4964-b931-5b597e4ec668)
+            "auth_bypass_ids" => %w(85aa9fd5-c514-4964-b931-5b597e4ec668),
           }
         }
       end

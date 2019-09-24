@@ -9,7 +9,7 @@ namespace :data_hygiene do
 
     desc "Generate a report of content_id duplicates among items with an EN locale"
     task en_locale: [:environment] do
-      Tasks::DataHygiene::DuplicateReport.new.scoped_to(locale: 'en')
+      Tasks::DataHygiene::DuplicateReport.new.scoped_to(locale: "en")
     end
   end
 end

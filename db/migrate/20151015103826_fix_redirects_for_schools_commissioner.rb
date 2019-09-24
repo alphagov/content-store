@@ -9,7 +9,7 @@ class FixRedirectsForSchoolsCommissioner < Mongoid::Migration
         format: "redirect",
         publishing_app: "whitehall",
         rendering_app: nil,
-        redirects: [{ path: from_base_path, type: 'exact', destination: to_base_path }],
+        redirects: [{ path: from_base_path, type: "exact", destination: to_base_path }],
         routes: [],
       )
     end

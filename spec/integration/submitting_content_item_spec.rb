@@ -1,5 +1,5 @@
-require 'rails_helper'
-require 'update_lock'
+require "rails_helper"
+require "update_lock"
 
 describe "content item write API", type: :request do
   before :each do
@@ -20,7 +20,7 @@ describe "content item write API", type: :request do
         "body" => "<p>Some body text</p>\n",
       },
       "routes" => [
-        { "path" => "/vat-rates", "type" => 'exact' }
+        { "path" => "/vat-rates", "type" => "exact" },
       ],
       "publishing_request_id" => "test test test",
     }
@@ -61,12 +61,12 @@ describe "content item write API", type: :request do
 
     it "responds with an empty JSON document in the body" do
       put_json "/content/vat-rates", @data
-      expect(response.body).to eq('{}')
+      expect(response.body).to eq("{}")
     end
 
     it "registers routes for the content item" do
       put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+      assert_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
 
     context "with no content ID" do
@@ -200,10 +200,10 @@ describe "content item write API", type: :request do
   describe "creating a non-English content item" do
     it "creates the content item" do
       foreign_data = @data.merge("title" => "Taux de TVA",
-                                 "locale" => 'fr',
+                                 "locale" => "fr",
                                  "base_path" => "/vat-rates.fr",
                                  "routes" => [
-                                   { "path" => "/vat-rates.fr", "type" => 'exact' }
+                                   { "path" => "/vat-rates.fr", "type" => "exact" },
                                 ])
 
       put_json "/content/vat-rates.fr", foreign_data
@@ -214,7 +214,7 @@ describe "content item write API", type: :request do
     end
   end
 
-  describe 'updating an existing content item' do
+  describe "updating an existing content item" do
     let(:format) { "gone" }
     before(:each) do
       Timecop.travel(30.minutes.ago) do
@@ -224,7 +224,7 @@ describe "content item write API", type: :request do
           base_path: "/vat-rates",
           format: format,
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
-          details: { "foo" => "bar" }
+          details: { "foo" => "bar" },
         )
       end
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
@@ -246,13 +246,13 @@ describe "content item write API", type: :request do
 
     it "does not register routes when they haven't changed" do
       put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
+      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
 
     it "registers routes for the content item when they have changed" do
-      @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
+      @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
       put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [['/vat-rates', 'exact'], ['/vat-rates.json', 'exact']])
+      assert_routes_registered("frontend", [["/vat-rates", "exact"], ["/vat-rates.json", "exact"]])
     end
 
     context "when the original item is a placeholder" do
@@ -260,7 +260,7 @@ describe "content item write API", type: :request do
 
       it "registers routes for the content item" do
         put_json "/content/vat-rates", @data
-        assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+        assert_routes_registered("frontend", [["/vat-rates", "exact"]])
       end
     end
 
@@ -271,7 +271,7 @@ describe "content item write API", type: :request do
       end
 
       it "fails to update content item" do
-        @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
+        @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
         put_json "/content/vat-rates", @data
         @item.reload
         expect(@item.title).to eq("Original title")
@@ -283,14 +283,14 @@ describe "content item write API", type: :request do
   describe "creating a content item with both routes and redirects" do
     before :each do
       @data["redirects"] = [
-        { "path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates" }
+        { "path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates" },
       ]
     end
 
     it "registeres the routes and the redirects" do
       put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [['/vat-rates', 'exact']])
-      assert_redirect_routes_registered([['/vat-rates.json', 'exact', '/api/content/vat-rates']])
+      assert_routes_registered("frontend", [["/vat-rates", "exact"]])
+      assert_redirect_routes_registered([["/vat-rates.json", "exact", "/api/content/vat-rates"]])
     end
   end
 
@@ -298,7 +298,7 @@ describe "content item write API", type: :request do
     let(:authorised_users) { %w(a-user-identifier another-user-identifier) }
     before :each do
       @data["access_limited"] = {
-        "users" => authorised_users
+        "users" => authorised_users,
       }
       put_json "/content/vat-rates", @data
     end
@@ -311,7 +311,7 @@ describe "content item write API", type: :request do
 
     it "responds with CREATED and an empty JSON response" do
       expect(response.status).to eq(201)
-      expect(response.body).to eq('{}')
+      expect(response.body).to eq("{}")
     end
   end
 
@@ -354,16 +354,16 @@ describe "content item write API", type: :request do
 
     it "includes an error message" do
       data = JSON.parse(response.body)
-      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, @data['routes'].class).message
+      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, @data["routes"].class).message
       expect(data["errors"]).to eq("base" => [expected_error_message])
     end
   end
 
   context "copes with non-ASCII paths" do
-    let(:path) { URI.encode('/news/בוט לאינד') }
+    let(:path) { URI.encode("/news/בוט לאינד") }
     before :each do
-      @data['base_path'] = path
-      @data['routes'][0]['path'] = path
+      @data["base_path"] = path
+      @data["routes"][0]["path"] = path
     end
 
     it "should accept a request with non-ASCII path" do
@@ -384,7 +384,7 @@ describe "content item write API", type: :request do
       create(
         :content_item,
         base_path: "/vat-rates",
-        payload_version: "2"
+        payload_version: "2",
       )
     end
 
@@ -399,7 +399,7 @@ describe "content item write API", type: :request do
 
       it "provides a helpful error body" do
         expect(response.body).to include(
-          "the latest ContentItem has a newer (or equal) payload_version of 2"
+          "the latest ContentItem has a newer (or equal) payload_version of 2",
         )
       end
 
@@ -415,14 +415,14 @@ describe "content item write API", type: :request do
       create(
         :content_item,
         base_path: "/vat-rates",
-        payload_version: "1"
+        payload_version: "1",
       )
     end
 
     it "raises a MissingAttributeError" do
       expect {
         put_json "/content/vat-rates", @data.to_h.except(
-          "payload_version"
+          "payload_version",
         )
       }.to raise_error(MissingAttributeError)
     end

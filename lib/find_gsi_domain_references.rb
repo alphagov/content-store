@@ -1,4 +1,4 @@
-require 'csv'
+require "csv"
 
 class FindGsiDomainReferences
   CSV_HEADERS = ["Title", "URL", "Publishing application", "Publishing organisation", "Format", "Domain", "Content ID"].freeze
@@ -16,7 +16,7 @@ class FindGsiDomainReferences
 private
 
   def write_csv
-    CSV.open("#{Rails.root}/tmp/gsi_domain_content_items.csv", 'wb') do |csv|
+    CSV.open("#{Rails.root}/tmp/gsi_domain_content_items.csv", "wb") do |csv|
       csv << CSV_HEADERS
 
       domains = %w(gsi gse gcsx gsx)
@@ -34,7 +34,7 @@ private
       end
     end
 
-    puts 'Finished searching'
+    puts "Finished searching"
     puts "CSV file at #{Rails.root}/tmp/gsi_domain_content_items.csv"
   end
 
@@ -46,7 +46,7 @@ private
       content_item.expanded_links.dig(:organisations, 0, :title),
       content_item.try(:document_type),
       domain,
-      content_item.try(:content_id)
+      content_item.try(:content_id),
     ]
   end
 

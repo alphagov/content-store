@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "CRUD of publish intents", type: :request do
   describe "submitting a publish intent" do
@@ -40,7 +40,7 @@ describe "CRUD of publish intents", type: :request do
         put_json "/publish-intent/vat-rates", data
 
         expect(response.status).to eq(201)
-        expect(response.body).to eq('{}')
+        expect(response.body).to eq("{}")
       end
     end
 
@@ -65,7 +65,7 @@ describe "CRUD of publish intents", type: :request do
       context "with no corresponding content-item" do
         it "registers routes for the publish intent" do
           put_json "/publish-intent/vat-rates", data
-          assert_routes_registered("frontend", [['/vat-rates', 'exact']])
+          assert_routes_registered("frontend", [["/vat-rates", "exact"]])
         end
       end
 
@@ -75,7 +75,7 @@ describe "CRUD of publish intents", type: :request do
             :content_item,
             base_path: "/vat-rates",
             rendering_app: "frontend",
-            routes: [{ "path" => "/vat-rates", "type" => "exact" }]
+            routes: [{ "path" => "/vat-rates", "type" => "exact" }],
           )
           WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
         end
@@ -103,7 +103,7 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "handles non-ascii paths" do
-      path = URI.encode('/news/בוט לאינד')
+      path = URI.encode("/news/בוט לאינד")
       put_json "/publish-intent#{path}", data.merge("base_path" => path, "routes" => [{ "path" => path, "type" => "exact" }])
 
       expect(response.status).to eq(201)
@@ -153,19 +153,19 @@ describe "CRUD of publish intents", type: :request do
       expect(response.content_type).to eq("application/json")
 
       data = JSON.parse(response.body)
-      expect(data['base_path']).to eq('/vat-rates')
+      expect(data["base_path"]).to eq("/vat-rates")
 
-      expect(data['publish_time']).to match_datetime(intent.publish_time)
+      expect(data["publish_time"]).to match_datetime(intent.publish_time)
     end
 
     it "handles non-ascii paths" do
-      path = URI.encode('/news/בוט לאינד')
+      path = URI.encode("/news/בוט לאינד")
       create(:publish_intent, base_path: path)
       get "/publish-intent#{path}"
       expect(response.status).to eq(200)
 
       data = JSON.parse(response.body)
-      expect(data['base_path']).to eq(path)
+      expect(data["base_path"]).to eq(path)
     end
 
     it "returns 404 for non-existent intent" do
@@ -180,7 +180,7 @@ describe "CRUD of publish intents", type: :request do
         routes: [
           { path: "/vat-rates", type: "exact" },
           { path: "/vat-rates/exact", type: "exact" },
-        ]
+        ],
       )
 
       get "/publish-intent/vat-rates/exact"

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe FindByPath do
   # Using an actual Model as it's a real pain to mock mongoid criterias and
@@ -64,8 +64,8 @@ describe FindByPath do
           :compatible_model,
           routes: [],
           redirects: [
-            { path: exact_route_path, type: "exact", destination: "/somewhere" }
-          ]
+            { path: exact_route_path, type: "exact", destination: "/somewhere" },
+          ],
         )
       end
 

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "Fetching a content item with a publish intent", type: :request do
   let(:content_item) { create(:content_item, public_updated_at: 30.minutes.ago) }

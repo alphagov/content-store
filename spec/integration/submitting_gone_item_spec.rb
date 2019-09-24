@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "submitting gone items to the content store", type: :request do
   context "creating a new gone item" do
@@ -12,8 +12,8 @@ describe "submitting gone items to the content store", type: :request do
         "payload_version" => "1",
         "routes" => [
           { "path" => "/dodo-sanctuary", "type" => "prefix" },
-          { "path" => "/dodo-sanctuary.json", "type" => "exact" }
-        ]
+          { "path" => "/dodo-sanctuary.json", "type" => "exact" },
+        ],
       }
 
       put_json "/content/dodo-sanctuary", @data
@@ -30,7 +30,7 @@ describe "submitting gone items to the content store", type: :request do
     end
 
     it "registers gone routes for the item" do
-      assert_gone_routes_registered([['/dodo-sanctuary', 'prefix'], ['/dodo-sanctuary.json', 'exact']])
+      assert_gone_routes_registered([["/dodo-sanctuary", "prefix"], ["/dodo-sanctuary.json", "exact"]])
     end
   end
 end
