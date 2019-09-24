@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "submitting placeholder items to the content store", type: :request do
   before :each do
@@ -15,7 +15,7 @@ describe "submitting placeholder items to the content store", type: :request do
       "publishing_app" => "publisher",
       "rendering_app" => "frontend",
       "routes" => [
-        { "path" => "/vat-rates", "type" => 'exact' }
+        { "path" => "/vat-rates", "type" => "exact" },
       ],
     }
   end
@@ -32,11 +32,11 @@ describe "submitting placeholder items to the content store", type: :request do
 
     it "does not register routes for the content item" do
       put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
+      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
   end
 
-  context 'updating an existing content item' do
+  context "updating an existing content item" do
     before(:each) do
       Timecop.travel(30.minutes.ago) do
         @item = create(
@@ -44,7 +44,7 @@ describe "submitting placeholder items to the content store", type: :request do
           title: "Original title",
           base_path: "/vat-rates",
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
-          details: { "foo" => "bar" }
+          details: { "foo" => "bar" },
         )
       end
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
@@ -58,9 +58,9 @@ describe "submitting placeholder items to the content store", type: :request do
     end
 
     it "does not update routes for the content item" do
-      @data["routes"] << { "path" => "/vat-rates.json", "type" => 'exact' }
+      @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
       put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
+      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
   end
 
@@ -80,7 +80,7 @@ describe "submitting placeholder items to the content store", type: :request do
 
     it "does not register routes for the content item" do
       put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [['/vat-rates', 'exact']])
+      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
   end
 end

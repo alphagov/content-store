@@ -1,1 +1,1 @@
-require 'mongo_instrumentation'
+require "mongo_instrumentation"

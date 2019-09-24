@@ -28,11 +28,11 @@ describe Tasks::DataHygiene::DuplicateReport do
 
   describe "#scoped_to(locale:)" do
     it "runs without issue" do
-      content_item = create(:content_item_with_content_id, locale: 'en')
-      create(:content_item, content_id: content_item.content_id, locale: 'en')
-      create(:content_item, content_id: content_item.content_id, locale: 'fr')
+      content_item = create(:content_item_with_content_id, locale: "en")
+      create(:content_item, content_id: content_item.content_id, locale: "en")
+      create(:content_item, content_id: content_item.content_id, locale: "fr")
 
-      subject.scoped_to(locale: 'en')
+      subject.scoped_to(locale: "en")
       fake_stdout.rewind
       output = fake_stdout.read
       expect(output).to match(/duplicates: 3/)

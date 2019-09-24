@@ -17,8 +17,8 @@ end
 
 Pact.service_provider "Content Store" do
   honours_pact_with "Publishing API" do
-    if ENV['USE_LOCAL_PACT']
-      pact_uri ENV.fetch('PUBLISHING_API_PACT_PATH', '../publishing-api/spec/pacts/publishing_api-content_store.json')
+    if ENV["USE_LOCAL_PACT"]
+      pact_uri ENV.fetch("PUBLISHING_API_PACT_PATH", "../publishing-api/spec/pacts/publishing_api-content_store.json")
     else
       base_url = ENV.fetch("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
       url = "#{base_url}/pacts/provider/#{url_encode(name)}/consumer/#{url_encode(consumer_name)}"
@@ -36,23 +36,23 @@ Pact.provider_states_for "Publishing API" do
     DatabaseCleaner.clean_with :truncation
     User.find_or_create_by!(name: "Test user")
 
-    escaped_router_api_prefix = Regexp.escape(Plek.find('router-api'))
+    escaped_router_api_prefix = Regexp.escape(Plek.find("router-api"))
     stub_request(
       :delete,
-      %r(\A#{escaped_router_api_prefix}/routes)
+      %r(\A#{escaped_router_api_prefix}/routes),
     ).to_return(
       status: 404,
       body: "{}",
-      headers: { "Content-Type" => "application/json" }
+      headers: { "Content-Type" => "application/json" },
     )
 
     stub_request(
       :post,
-      %r(\A#{escaped_router_api_prefix}/routes/commit)
+      %r(\A#{escaped_router_api_prefix}/routes/commit),
     ).to_return(
       status: 200,
       body: "{}",
-      headers: { "Content-Type" => "application/json" }
+      headers: { "Content-Type" => "application/json" },
     )
   end
 

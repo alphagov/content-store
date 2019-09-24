@@ -10,7 +10,7 @@ desc <<DESCRIPTION
 DESCRIPTION
 task :check_content_items_against_schema, [:format_names] => :environment do |_task, args|
   GovukContentSchemaTestHelpers.configure do |config|
-    config.schema_type = 'frontend'
+    config.schema_type = "frontend"
     config.project_root = Rails.root
   end
 

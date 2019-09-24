@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe ExpandedLinksPresenter do
   describe ".present" do
@@ -9,7 +9,7 @@ RSpec.describe ExpandedLinksPresenter do
     let(:api_path) { "/api/content/test-page" }
     let(:links) do
       {
-        link_group: [{ base_path: base_path, api_path: api_path }]
+        link_group: [{ base_path: base_path, api_path: api_path }],
       }
     end
 
@@ -21,8 +21,8 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               web_url: "#{production_prefix}#{base_path}",
               api_url: "#{production_prefix}#{api_path}",
-            )
-          ]
+            ),
+          ],
         }
       end
 
@@ -42,8 +42,8 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               web_url: "#{development_prefix}#{base_path}",
               api_url: "#{development_prefix}#{api_path}",
-            )
-          ]
+            ),
+          ],
         }
       end
 
@@ -92,7 +92,7 @@ RSpec.describe ExpandedLinksPresenter do
     context "link without api_path set" do
       let(:links) do
         {
-          link_group: [{ base_path: base_path }]
+          link_group: [{ base_path: base_path }],
         }
       end
       let(:api_path) { "/api/content#{base_path}" }
@@ -102,7 +102,7 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               api_path: api_path,
               api_url: "#{prefix}#{api_path}",
-            )
+            ),
           ],
         }
       end
@@ -115,7 +115,7 @@ RSpec.describe ExpandedLinksPresenter do
     context "link without base_path" do
       let(:links) do
         {
-          link_group: [{}]
+          link_group: [{}],
         }
       end
 
@@ -123,9 +123,9 @@ RSpec.describe ExpandedLinksPresenter do
         {
           link_group: [
             {
-              links: {}
-            }
-          ]
+              links: {},
+            },
+          ],
         }
       end
 
@@ -153,8 +153,8 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               web_url: "#{prefix}/grand-parent",
               links: expected_parent,
-            )
-          ]
+            ),
+          ],
         }
       end
 
@@ -164,8 +164,8 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               web_url: "#{prefix}/grand-parent/parent",
               links: expected_child,
-            )
-          ]
+            ),
+          ],
         }
       end
 
@@ -175,8 +175,8 @@ RSpec.describe ExpandedLinksPresenter do
             a_hash_including(
               web_url: "#{prefix}/grand-parent/parent/child",
               links: {},
-            )
-          ]
+            ),
+          ],
         }
       end
 

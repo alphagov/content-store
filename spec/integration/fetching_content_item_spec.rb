@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe "Fetching content items", type: :request do
   context "an existing content item" do
@@ -126,7 +126,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a content item with a non-ASCII base_path" do
-    let(:content_item) { create(:content_item, base_path: URI.encode('/news/בוט לאינד')) }
+    let(:content_item) { create(:content_item, base_path: URI.encode("/news/בוט לאינד")) }
 
     before(:each) { get "/content#{content_item.base_path}" }
 
@@ -175,7 +175,7 @@ describe "Fetching content items", type: :request do
       FactoryBot.create(
         :content_item,
         base_path: colliding_path,
-        content_id: SecureRandom.uuid
+        content_id: SecureRandom.uuid,
       )
     end
 
@@ -262,7 +262,7 @@ describe "Fetching content items", type: :request do
         withdrawn_notice: {
           explanation: "This is no longer true",
           withdrawn_at: withdrawn_at,
-        }
+        },
       )
     end
 

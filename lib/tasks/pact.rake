@@ -1,7 +1,7 @@
 return if Rails.env.production?
 
-require 'pact/tasks'
-require 'pact/tasks/task_helper'
+require "pact/tasks"
+require "pact/tasks/task_helper"
 
 desc "Verifies a particular branch of Publishing API against pacts"
 task "pact:verify:branch", [:branch_name] do |t, args|

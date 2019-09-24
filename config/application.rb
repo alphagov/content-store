@@ -1,4 +1,4 @@
-require_relative 'boot'
+require_relative "boot"
 
 # Pick the frameworks you want:
 # require "active_record/railtie"
@@ -12,8 +12,8 @@ require "action_controller/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require 'plek'
-require 'gds_api/router'
+require "plek"
+require "gds_api/router"
 
 module ContentStore
   class Application < Rails::Application
@@ -37,7 +37,7 @@ module ContentStore
     )
 
     # Caching defaults
-    config.default_ttl = ENV.fetch('DEFAULT_TTL', 30.minutes).to_i.seconds
+    config.default_ttl = ENV.fetch("DEFAULT_TTL", 30.minutes).to_i.seconds
     config.minimum_ttl = [config.default_ttl, 5.seconds].min
 
     config.paths["log"] = ENV["LOG_PATH"] if ENV["LOG_PATH"]
@@ -46,8 +46,8 @@ module ContentStore
 
     def router_api
       @router_api ||= GdsApi::Router.new(
-        Plek.current.find('router-api'),
-        bearer_token: ENV['ROUTER_API_BEARER_TOKEN'] || 'example'
+        Plek.current.find("router-api"),
+        bearer_token: ENV["ROUTER_API_BEARER_TOKEN"] || "example",
       )
     end
   end

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe ContentItemPresenter do
   let(:expanded_links) do
@@ -11,8 +11,8 @@ describe ContentItemPresenter do
         {
           "base_path" => "/bar",
           "title" => "bar",
-        }
-      ]
+        },
+      ],
     }
   end
   let(:item) { build(:content_item, document_type: "travel_advice", links: links, locale: locale, expanded_links: expanded_links) }
@@ -47,7 +47,7 @@ describe ContentItemPresenter do
             { content_type: "text/html", content: "<p>content</p>" },
             { content_type: "text/plain", content: "content" },
           ],
-        }
+        },
       )
     end
 
@@ -91,7 +91,7 @@ describe ContentItemPresenter do
         :with_content_id,
         schema_name: "generic",
         publishing_scheduled_at: Time.new(2018, 6, 1, 9, 30),
-        scheduled_publishing_delay_seconds: 130
+        scheduled_publishing_delay_seconds: 130,
       )
 
       presented = ContentItemPresenter.new(content_item, api_url_method).as_json

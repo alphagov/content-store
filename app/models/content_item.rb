@@ -25,7 +25,7 @@ class ContentItem
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
-        .merge(created_at: created_at)
+        .merge(created_at: created_at),
     )
 
     if item.upsert
@@ -58,8 +58,8 @@ class ContentItem
           type: "conflict",
           code: "409",
           message: e.message,
-        }
-      )
+        },
+      ),
     ]
   end
 
@@ -75,14 +75,14 @@ class ContentItem
   field :document_type, type: String
 
   # Supertypes are deprecated, but are still sent by the publishing-api.
-  field :content_purpose_document_supertype, type: String, default: ''
-  field :content_purpose_subgroup, type: String, default: ''
-  field :content_purpose_supergroup, type: String, default: ''
-  field :email_document_supertype, type: String, default: ''
-  field :government_document_supertype, type: String, default: ''
-  field :navigation_document_supertype, type: String, default: ''
-  field :search_user_need_document_supertype, type: String, default: ''
-  field :user_journey_document_supertype, type: String, default: ''
+  field :content_purpose_document_supertype, type: String, default: ""
+  field :content_purpose_subgroup, type: String, default: ""
+  field :content_purpose_supergroup, type: String, default: ""
+  field :email_document_supertype, type: String, default: ""
+  field :government_document_supertype, type: String, default: ""
+  field :navigation_document_supertype, type: String, default: ""
+  field :search_user_need_document_supertype, type: String, default: ""
+  field :user_journey_document_supertype, type: String, default: ""
 
   field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s
@@ -98,7 +98,7 @@ class ContentItem
   field :links, type: Hash, default: {}
   field :expanded_links, type: Hash, default: {}
   field :access_limited, type: Hash, default: {}
-  field :phase, type: String, default: 'live'
+  field :phase, type: String, default: "live"
   field :analytics_identifier, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
@@ -224,15 +224,15 @@ private
   end
 
   def auth_user_ids
-    access_limited.fetch('users', [])
+    access_limited.fetch("users", [])
   end
 
   def auth_organisation_ids
-    access_limited.fetch('organisations', [])
+    access_limited.fetch("organisations", [])
   end
 
   def auth_bypass_ids
-    access_limited.fetch('auth_bypass_ids', [])
+    access_limited.fetch("auth_bypass_ids", [])
   end
 
   def details_is_empty?
@@ -244,7 +244,7 @@ private
 
     {
       publishing_scheduled_at: log_entry.scheduled_publication_time,
-      scheduled_publishing_delay_seconds: log_entry.delay_in_milliseconds / 1000
+      scheduled_publishing_delay_seconds: log_entry.delay_in_milliseconds / 1000,
     }
   end
 

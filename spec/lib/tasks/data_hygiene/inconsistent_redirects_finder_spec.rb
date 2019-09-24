@@ -1,11 +1,11 @@
-require 'rails_helper'
-require 'tasks/data_hygiene/inconsistent_redirect_finder'
+require "rails_helper"
+require "tasks/data_hygiene/inconsistent_redirect_finder"
 
 describe InconsistentRedirectFinder do
-  describe '#items_with_inconsistent_redirects' do
+  describe "#items_with_inconsistent_redirects" do
     it "returns items that redirect in the router" do
-      stub_router(path: '/path-with-redirect-route', status: 200, body: { handler: 'redirect' })
-      content_item = create(:content_item, base_path: '/path-with-redirect-route')
+      stub_router(path: "/path-with-redirect-route", status: 200, body: { handler: "redirect" })
+      content_item = create(:content_item, base_path: "/path-with-redirect-route")
 
       found_items = find_inconsistent_redirects([content_item])
 
@@ -21,8 +21,8 @@ describe InconsistentRedirectFinder do
     end
 
     it "doesn't return items that don't have a route, like most of Whitehall's content" do
-      stub_router(path: '/some-path-without-route', status: 404, body: {})
-      content_item = create(:content_item, base_path: '/some-path-without-route')
+      stub_router(path: "/some-path-without-route", status: 404, body: {})
+      content_item = create(:content_item, base_path: "/some-path-without-route")
 
       found_items = find_inconsistent_redirects([content_item])
 
@@ -30,8 +30,8 @@ describe InconsistentRedirectFinder do
     end
 
     it "only returns redirects" do
-      stub_router(path: '/path-with-not-a-redirect-route', status: 200, body: { handler: 'not-redirect' })
-      content_item = create(:content_item, base_path: '/path-with-not-a-redirect-route')
+      stub_router(path: "/path-with-not-a-redirect-route", status: 200, body: { handler: "not-redirect" })
+      content_item = create(:content_item, base_path: "/path-with-not-a-redirect-route")
 
       found_items = find_inconsistent_redirects([content_item])
 

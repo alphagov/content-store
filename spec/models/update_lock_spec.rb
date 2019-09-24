@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe UpdateLock, type: :model do
   describe "initializing without a lockable instance" do
@@ -26,7 +26,7 @@ describe UpdateLock, type: :model do
       let(:lockable) {
         double(
           :lockable,
-          payload_version: "20"
+          payload_version: "20",
         )
       }
       context "without payload_version" do
@@ -35,7 +35,7 @@ describe UpdateLock, type: :model do
           expect {
             subject.check_availability!(attributes)
           }.to raise_error(
-            MissingAttributeError
+            MissingAttributeError,
           )
         end
       end
@@ -49,7 +49,7 @@ describe UpdateLock, type: :model do
               subject.check_availability!(payload_version)
             }.to raise_error(
               OutOfOrderTransmissionError,
-              /has a newer \(or equal\) payload_version/
+              /has a newer \(or equal\) payload_version/,
             )
           end
         end
@@ -62,7 +62,7 @@ describe UpdateLock, type: :model do
               subject.check_availability!(payload_version)
             }.to raise_error(
               OutOfOrderTransmissionError,
-              /has a newer \(or equal\) payload_version/
+              /has a newer \(or equal\) payload_version/,
             )
           end
         end

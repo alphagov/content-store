@@ -1,4 +1,4 @@
-require 'active_support/per_thread_registry'
+require "active_support/per_thread_registry"
 
 module MongoInstrumentation
   # This is a namespaced thread locals registry for tracking the duration of

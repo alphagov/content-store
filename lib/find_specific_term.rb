@@ -1,4 +1,4 @@
-require 'csv'
+require "csv"
 
 class FindSpecificTerm
   attr_reader :term
@@ -20,7 +20,7 @@ class FindSpecificTerm
 private
 
   def write_csv
-    CSV.open("#{Rails.root}/tmp/search_term_content_items.csv", 'wb') do |csv|
+    CSV.open("#{Rails.root}/tmp/search_term_content_items.csv", "wb") do |csv|
       csv << CSV_HEADERS
 
       puts "Searching for #{term}..."
@@ -34,7 +34,7 @@ private
       puts "Found #{term_content_items.count} items containing #{term}"
     end
 
-    puts 'Finished searching'
+    puts "Finished searching"
     puts "CSV file at #{Rails.root}/tmp/search_term_content_items.csv"
     puts File.read(Rails.root.join("tmp", "search_term_content_items.csv"))
   end
@@ -46,7 +46,7 @@ private
       content_item.try(:publishing_app),
       content_item.expanded_links.dig(:organisations, 0, :title),
       content_item.try(:document_type),
-      content_item.try(:content_id)
+      content_item.try(:content_id),
     ]
   end
 

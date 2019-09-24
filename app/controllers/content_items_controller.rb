@@ -3,11 +3,11 @@ class ContentItemsController < ApplicationController
   before_action :parse_json_request, only: [:update]
 
   def show
-    item = GovukStatsd.time('show.find_content_item') do
+    item = GovukStatsd.time("show.find_content_item") do
       ContentItem.find_by_path(encoded_request_path)
     end
 
-    intent = GovukStatsd.time('show.find_publish_intent') do
+    intent = GovukStatsd.time("show.find_publish_intent") do
       PublishIntent.find_by_path(encoded_request_path)
     end
 
@@ -27,7 +27,7 @@ class ContentItemsController < ApplicationController
     intent = PublishIntent.find_by_path(encoded_base_path)
     log_entry = find_or_create_scheduled_publishing_log(encoded_base_path, @request_data["document_type"], intent)
 
-    result, item = GovukStatsd.time('update.create_or_replace') do
+    result, item = GovukStatsd.time("update.create_or_replace") do
       ContentItem.create_or_replace(encoded_base_path, @request_data, log_entry)
     end
 
@@ -69,20 +69,20 @@ private
 
     item.user_access?(
       user_id: auth_user_id,
-      user_organisation_id: auth_organisation_id
+      user_organisation_id: auth_organisation_id,
     )
   end
 
   def auth_user_id
-    request.headers['X-Govuk-Authenticated-User']
+    request.headers["X-Govuk-Authenticated-User"]
   end
 
   def auth_organisation_id
-    request.headers['X-Govuk-Authenticated-User-Organisation']
+    request.headers["X-Govuk-Authenticated-User-Organisation"]
   end
 
   def auth_bypass_id
-    request.headers['Govuk-Auth-Bypass-Id']
+    request.headers["Govuk-Auth-Bypass-Id"]
   end
 
   def json_forbidden_response
@@ -92,9 +92,9 @@ private
           type: "access_forbidden",
           code: "403",
           message: "You do not have permission to access this resource",
-        }
+        },
       },
-      status: 403
+      status: 403,
     }
   end
 

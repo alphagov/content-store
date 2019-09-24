@@ -1,13 +1,13 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
-require 'spec_helper'
+ENV["RAILS_ENV"] ||= "test"
+require "spec_helper"
 
 # Necessary to ensure consistent test runs across environments.
-ENV['GOVUK_APP_DOMAIN'] = "test.gov.uk"
+ENV["GOVUK_APP_DOMAIN"] = "test.gov.uk"
 
 require File.expand_path("../config/environment", __dir__)
-require 'rspec/rails'
-require 'webmock/rspec'
+require "rspec/rails"
+require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

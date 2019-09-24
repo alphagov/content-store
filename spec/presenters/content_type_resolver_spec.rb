@@ -8,11 +8,11 @@ RSpec.describe ContentTypeResolver do
       body: [
         { content_type: "html", content: "<p>body</p>" },
         { content_type: "text", content: "body" },
-      ]
+      ],
     )
 
     expect(result).to eq(
-      body: "<p>body</p>"
+      body: "<p>body</p>",
     )
   end
 
@@ -21,11 +21,11 @@ RSpec.describe ContentTypeResolver do
       "body" => [
         { "content_type" => "html", "content" => "<p>body</p>" },
         { "content_type" => "text", "content" => "body" },
-      ]
+      ],
     )
 
     expect(result).to eq(
-      "body" => "<p>body</p>"
+      "body" => "<p>body</p>",
     )
   end
 
@@ -61,21 +61,21 @@ RSpec.describe ContentTypeResolver do
         foo: {
           bar: {
             content: [
-              { content_type: "html", content: "<p>body</p>" }
-            ]
-          }
-        }
-      }
+              { content_type: "html", content: "<p>body</p>" },
+            ],
+          },
+        },
+      },
     )
 
     expect(result).to eq(
       details: {
         foo: {
           bar: {
-            content: "<p>body</p>"
-          }
-        }
-      }
+            content: "<p>body</p>",
+          },
+        },
+      },
     )
   end
 
@@ -86,12 +86,12 @@ RSpec.describe ContentTypeResolver do
           [
             {
               body: [
-                { content_type: "html", content: "<p>body</p>" }
-              ]
-            }
-          ]
-        ]
-      ]
+                { content_type: "html", content: "<p>body</p>" },
+              ],
+            },
+          ],
+        ],
+      ],
     )
 
     expect(result).to eq(
@@ -99,11 +99,11 @@ RSpec.describe ContentTypeResolver do
         [
           [
             {
-              body: "<p>body</p>"
-            }
-          ]
-        ]
-      ]
+              body: "<p>body</p>",
+            },
+          ],
+        ],
+      ],
     )
   end
 
@@ -113,20 +113,20 @@ RSpec.describe ContentTypeResolver do
         body: {
           content: [
             { content: "<p>body</p>" },
-            { content_type: "html" }
-          ]
-        }
-      }
+            { content_type: "html" },
+          ],
+        },
+      },
     )
     expect(result).to eq(
       details: {
         body: {
           content: [
             { content: "<p>body</p>" },
-            { content_type: "html" }
-          ]
-        }
-      }
+            { content_type: "html" },
+          ],
+        },
+      },
     )
   end
 end
