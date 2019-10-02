@@ -9,7 +9,7 @@ class ExpandedLinksPresenter
     expanded_links.each_with_object({}) do |(type, links), memo|
       links = Array.wrap(links)
       memo[type] = links.map do |link|
-        link.dup.merge(
+        link.dup.except(:auth_bypass_ids).merge(
           api_path: api_path(link),
           api_url: api_url(link),
           web_url: web_url(link),
