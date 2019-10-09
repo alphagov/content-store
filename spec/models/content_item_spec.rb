@@ -312,6 +312,23 @@ describe ContentItem, type: :model do
     end
   end
 
+  describe "populate auth bypass ids field" do
+    it "automatically populates auth bypass ids on save" do
+      content_item = create(:access_limited_content_item, :by_auth_bypass_id)
+      expect(content_item["auth_bypass_ids"]).not_to be_empty
+      expect(content_item["auth_bypass_ids"])
+        .to eq(content_item.access_limited["auth_bypass_ids"])
+    end
+
+    it "automatically populates auth bypass ids on upsert" do
+      content_item = build(:access_limited_content_item, :by_auth_bypass_id)
+      expect { content_item.upsert }
+        .to change { content_item["auth_bypass_ids"] }
+        .from([])
+        .to(content_item.access_limited["auth_bypass_ids"])
+    end
+  end
+
   describe "description" do
     it "wraps the description as a hash" do
       content_item = FactoryBot.create(:content_item, description: "foo")
