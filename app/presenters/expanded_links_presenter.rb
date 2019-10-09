@@ -9,7 +9,7 @@ class ExpandedLinksPresenter
     expanded_links.each_with_object({}) do |(type, links), memo|
       links = Array.wrap(links)
       memo[type] = links.map do |link|
-        link.dup.merge(
+        link.dup.except(secret_fields).merge(
           api_path: api_path(link),
           api_url: api_url(link),
           web_url: web_url(link),
@@ -34,5 +34,9 @@ private
 
   def web_url(link)
     Plek.current.website_root + link[:base_path] if link[:base_path]
+  end
+
+  def secret_fields
+    :auth_bypass_ids
   end
 end

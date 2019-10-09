@@ -55,6 +55,21 @@ RSpec.describe ExpandedLinksPresenter do
       it { is_expected.to include expected }
     end
 
+    context "links with arbitrary custom fields" do
+      let(:links) do
+        {
+          link_group: [{ foo: "bar", auth_bypass_ids: "secret" }],
+        }
+      end
+
+      subject { described_class.new(links).present[:link_group][0] }
+
+      it "contains the custom fields but does not contain fields marked as secret" do
+        is_expected.to include(:foo)
+        is_expected.not_to include(:auth_bypass_ids)
+      end
+    end
+
     context "groups of links" do
       let(:links) do
         {
