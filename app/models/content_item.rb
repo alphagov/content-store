@@ -98,6 +98,7 @@ class ContentItem
   field :links, type: Hash, default: {}
   field :expanded_links, type: Hash, default: {}
   field :access_limited, type: Hash, default: {}
+  field :auth_bypass_ids, type: Array, default: []
   field :phase, type: String, default: "live"
   field :analytics_identifier, type: String
   field :payload_version, type: Integer
@@ -106,6 +107,9 @@ class ContentItem
 
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
+
+  before_save :populate_auth_bypass_ids
+  before_upsert :populate_auth_bypass_ids
 
   # We want to look up content items by whether they match a route and the type
   # of route.
@@ -169,6 +173,10 @@ class ContentItem
     return rendering_app if schema_name != "gone" || gone?
 
     rendering_app || "government-frontend"
+  end
+
+  def populate_auth_bypass_ids
+    self.auth_bypass_ids = auth_bypass_ids
   end
 
   def valid_bypass_id?(bypass_id)
