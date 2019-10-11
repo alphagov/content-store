@@ -108,9 +108,6 @@ class ContentItem
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
 
-  before_save :populate_auth_bypass_ids
-  before_upsert :populate_auth_bypass_ids
-
   # We want to look up content items by whether they match a route and the type
   # of route.
   index("routes.path" => 1, "routes.type" => 1)
@@ -173,10 +170,6 @@ class ContentItem
     return rendering_app if schema_name != "gone" || gone?
 
     rendering_app || "government-frontend"
-  end
-
-  def populate_auth_bypass_ids
-    self.auth_bypass_ids = auth_bypass_ids
   end
 
   def valid_bypass_id?(bypass_id)
