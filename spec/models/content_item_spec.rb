@@ -298,8 +298,8 @@ describe ContentItem, type: :model do
     end
 
     context "access-limited by bypass_id" do
-      let!(:content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
-      let(:auth_bypass_id) { content_item.access_limited["auth_bypass_ids"].first }
+      let!(:content_item) { create(:content_item, :with_auth_bypass_id) }
+      let(:auth_bypass_id) { content_item.auth_bypass_ids.first }
       let(:logged_in_user) { "authenticated_user_uid" }
 
       it "is viewable by an authorised bypass id" do

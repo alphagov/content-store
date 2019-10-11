@@ -232,10 +232,6 @@ private
     access_limited.fetch("organisations", [])
   end
 
-  def auth_bypass_ids
-    access_limited.fetch("auth_bypass_ids", [])
-  end
-
   def details_is_empty?
     details.nil? || details.values.reject(&:blank?).empty?
   end
