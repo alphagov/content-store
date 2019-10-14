@@ -178,14 +178,15 @@ class ContentItem
     auth_bypass_ids.include?(bypass_id)
   end
 
-  def user_access?(user_id: nil, user_organisation_id: nil)
-    return true if auth_user_ids.empty? && auth_organisation_ids.empty?
+  def user_granted_access?(user_id:, user_organisation_id:)
+    return false if user_id.nil? && user_organisation_id.nil?
 
-    auth_user_ids.include?(user_id) || auth_organisation_ids.include?(user_organisation_id)
+    access_limited_user_ids.include?(user_id) ||
+      access_limited_organisation_ids.include?(user_organisation_id)
   end
 
   def access_limited?
-    auth_user_ids.any? || auth_organisation_ids.any?
+    access_limited_user_ids.any? || access_limited_organisation_ids.any?
   end
 
   def register_routes(previous_item: nil)
@@ -226,11 +227,11 @@ private
     true
   end
 
-  def auth_user_ids
+  def access_limited_user_ids
     access_limited.fetch("users", [])
   end
 
-  def auth_organisation_ids
+  def access_limited_organisation_ids
     access_limited.fetch("organisations", [])
   end
 
