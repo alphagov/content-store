@@ -349,6 +349,97 @@ describe ContentItem, type: :model do
     end
   end
 
+  describe "#valid_auth_bypass_id?" do
+    it "returns false for a nil input" do
+      content_item = build(:content_item)
+      expect(content_item.valid_auth_bypass_id?(nil)).to be(false)
+    end
+
+    context "when the content is access limited" do
+      let(:auth_bypass_id) { SecureRandom.uuid }
+
+      it "returns true for an auth_bypass_id matching the content items one" do
+        content_item = build(:access_limited_content_item,
+                             :by_user_id,
+                             auth_bypass_ids: [auth_bypass_id])
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
+      end
+
+      it "returns false for an auth_bypass_id only matching a linked item" do
+        content_item = build(
+          :access_limited_content_item,
+          :by_user_id,
+          expanded_links: {
+            "link" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [auth_bypass_id],
+              },
+            ],
+          },
+        )
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
+      end
+    end
+
+    context "when the content is not access limited" do
+      let(:auth_bypass_id) { SecureRandom.uuid }
+
+      it "returns true for an auth_bypass_id matching the content items one" do
+        content_item = build(:content_item, auth_bypass_ids: [auth_bypass_id])
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
+      end
+
+      it "returns true for an auth_bypass_id matching a linked items one" do
+        content_item = build(
+          :content_item,
+          expanded_links: {
+            "link_type" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [auth_bypass_id],
+              },
+            ],
+          },
+        )
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
+      end
+
+      it "returns false if no links have a matching auth_bypass_id" do
+        content_item = build(
+          :content_item,
+          expanded_links: {
+            "link_type" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [SecureRandom.uuid],
+              },
+            ],
+            "other_link" => [
+              { "content_id" => SecureRandom.uuid },
+            ],
+          },
+        )
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
+      end
+
+      it "returns false if a link of a link has a matching auth_bypass_id" do
+        nested_links = { "other_link" => [{ "content_id" => SecureRandom.uuid,
+                                            "auth_bypass_id" => [auth_bypass_id] }] }
+        links = { "link_type" => [{ "content_id" => SecureRandom.uuid,
+                                    "links" => nested_links }] }
+        content_item = build(:content_item, expanded_links: links)
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
+      end
+    end
+  end
+
   describe "description" do
     it "wraps the description as a hash" do
       content_item = FactoryBot.create(:content_item, description: "foo")

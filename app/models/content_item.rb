@@ -174,8 +174,15 @@ class ContentItem
     rendering_app || "government-frontend"
   end
 
-  def valid_bypass_id?(bypass_id)
-    auth_bypass_ids.include?(bypass_id)
+  def valid_auth_bypass_id?(auth_bypass_id)
+    return false unless auth_bypass_id
+    return true if auth_bypass_ids.include?(auth_bypass_id)
+    return false if access_limited?
+
+    # check for linked auth_bypass_id in top level expanded links
+    expanded_links.values.flatten.any? do |link|
+      link.fetch("auth_bypass_ids", []).include?(auth_bypass_id)
+    end
   end
 
   def user_granted_access?(user_id:, user_organisation_id:)
