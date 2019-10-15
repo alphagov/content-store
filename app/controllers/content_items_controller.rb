@@ -116,11 +116,11 @@ private
     cache_time = config.default_ttl
     is_public = true
 
-    if intent && !intent.past?
-      cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
-    elsif item && (auth_bypass_id.present? || item.access_limited?)
+    if item && (auth_bypass_id.present? || item.access_limited?)
       cache_time = config.minimum_ttl
       is_public = false
+    elsif intent && !intent.past?
+      cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
     elsif item && max_cache_time(item)
       cache_time = max_cache_time(item)
     end
