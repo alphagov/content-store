@@ -130,6 +130,51 @@ describe ContentItem, type: :model do
         end
       end
     end
+
+    describe "transition_auth_bypass_id_fields" do
+      let(:auth_bypass_id) { SecureRandom.hex }
+
+      it "sets auth_bypass_ids from new auth_bypass_ids field" do
+        attributes = {
+          "schema_name" => "publication",
+          "auth_bypass_ids" => [auth_bypass_id],
+        }
+
+        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+
+        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
+      end
+
+      it "sets auth_bypass_ids from access_limited and removes from access_limited" do
+        user_id = SecureRandom.hex
+        attributes = {
+          "schema_name" => "publication",
+          "access_limited" => {
+            "auth_bypass_ids" => [auth_bypass_id],
+            "users" => [user_id],
+          },
+        }
+
+        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+
+        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
+        expect(item.access_limited).to eq("users" => [user_id])
+      end
+
+      it "sets the auth_bypass_id from new auth_bypass_ids field only if also set in access_limited" do
+        attributes = {
+          "schema_name" => "publication",
+          "auth_bypass_ids" => [auth_bypass_id],
+          "access_limited" => {
+            "auth_bypass_ids" => [SecureRandom.hex],
+          },
+        }
+        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+
+        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
+        expect(item.auth_bypass_ids.count).to eq(1)
+      end
+    end
   end
 
   describe ".find_by_path" do
@@ -298,8 +343,8 @@ describe ContentItem, type: :model do
     end
 
     context "access-limited by bypass_id" do
-      let!(:content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
-      let(:auth_bypass_id) { content_item.access_limited["auth_bypass_ids"].first }
+      let!(:content_item) { create(:content_item, :with_auth_bypass_id) }
+      let(:auth_bypass_id) { content_item.auth_bypass_ids.first }
       let(:logged_in_user) { "authenticated_user_uid" }
 
       it "is viewable by an authorised bypass id" do
@@ -309,23 +354,6 @@ describe ContentItem, type: :model do
       it "is not viewable by an unauthorised user" do
         expect(content_item.valid_bypass_id?("fake-id")).to be(false)
       end
-    end
-  end
-
-  describe "populate auth bypass ids field" do
-    it "automatically populates auth bypass ids on save" do
-      content_item = create(:access_limited_content_item, :by_auth_bypass_id)
-      expect(content_item["auth_bypass_ids"]).not_to be_empty
-      expect(content_item["auth_bypass_ids"])
-        .to eq(content_item.access_limited["auth_bypass_ids"])
-    end
-
-    it "automatically populates auth bypass ids on upsert" do
-      content_item = build(:access_limited_content_item, :by_auth_bypass_id)
-      expect { content_item.upsert }
-        .to change { content_item["auth_bypass_ids"] }
-        .from([])
-        .to(content_item.access_limited["auth_bypass_ids"])
     end
   end
 

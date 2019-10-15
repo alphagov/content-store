@@ -62,7 +62,7 @@ describe "Fetching an access-limited by content item", type: :request do
     end
 
     context "request has valid user ID but invalid bypass ID" do
-      let(:access_limited_content_item) { create(:access_limited_content_item, :by_auth_bypass_id_and_user_id) }
+      let(:access_limited_content_item) { create(:access_limited_content_item, :by_user_id, :with_auth_bypass_id) }
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
@@ -81,7 +81,7 @@ describe "Fetching an access-limited by content item", type: :request do
     end
 
     context "request has an invalid user ID and invalid bypass ID" do
-      let(:access_limited_content_item) { create(:access_limited_content_item, :by_auth_bypass_id_and_user_id) }
+      let(:access_limited_content_item) { create(:access_limited_content_item, :by_user_id, :with_auth_bypass_id) }
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
@@ -161,7 +161,7 @@ describe "Fetching an access-limited by content item", type: :request do
     end
 
     context "request has valid org ID but invalid bypass ID" do
-      let(:access_limited_content_item) { create(:access_limited_content_item, :by_auth_bypass_id_and_org_id) }
+      let(:access_limited_content_item) { create(:access_limited_content_item, :by_org_id, :with_auth_bypass_id) }
       before do
         get "/content/#{access_limited_content_item.base_path}",
             params: {}, headers: {
@@ -181,8 +181,8 @@ describe "Fetching an access-limited by content item", type: :request do
   end
 
   context "access limited by bypass id" do
-    let(:access_limited_content_item) { create(:access_limited_content_item, :by_auth_bypass_id) }
-    let(:auth_bypass_id) { access_limited_content_item.access_limited["auth_bypass_ids"].first }
+    let(:access_limited_content_item) { create(:access_limited_content_item, :with_auth_bypass_id) }
+    let(:auth_bypass_id) { access_limited_content_item.auth_bypass_ids.first }
 
 
 

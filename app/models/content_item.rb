@@ -11,6 +11,8 @@ class ContentItem
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
+    attributes = transition_auth_bypass_id_fields(attributes)
+
     payload_version = attributes["payload_version"]
     lock.check_availability!(payload_version)
 
@@ -108,9 +110,6 @@ class ContentItem
   # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
   before_upsert :set_updated_at
 
-  before_save :populate_auth_bypass_ids
-  before_upsert :populate_auth_bypass_ids
-
   # We want to look up content items by whether they match a route and the type
   # of route.
   index("routes.path" => 1, "routes.type" => 1)
@@ -175,10 +174,6 @@ class ContentItem
     rendering_app || "government-frontend"
   end
 
-  def populate_auth_bypass_ids
-    self.auth_bypass_ids = auth_bypass_ids
-  end
-
   def valid_bypass_id?(bypass_id)
     auth_bypass_ids.include?(bypass_id)
   end
@@ -239,10 +234,6 @@ private
     access_limited.fetch("organisations", [])
   end
 
-  def auth_bypass_ids
-    access_limited.fetch("auth_bypass_ids", [])
-  end
-
   def details_is_empty?
     details.nil? || details.values.reject(&:blank?).empty?
   end
@@ -256,5 +247,11 @@ private
     }
   end
 
-  private_class_method :scheduled_publication_details
+  def self.transition_auth_bypass_id_fields(attributes)
+    attributes["auth_bypass_ids"] ||= attributes.dig("access_limited", "auth_bypass_ids") || []
+    attributes.fetch("access_limited", {}).delete("auth_bypass_ids")
+    attributes
+  end
+
+  private_class_method :scheduled_publication_details, :transition_auth_bypass_id_fields
 end

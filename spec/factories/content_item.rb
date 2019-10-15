@@ -20,6 +20,10 @@ FactoryBot.define do
       title { "" }
     end
 
+    trait :with_auth_bypass_id do
+      auth_bypass_ids { [SecureRandom.uuid] }
+    end
+
     factory :content_item do
       format { "answer" }
       title { "Test content" }
@@ -77,32 +81,6 @@ FactoryBot.define do
       trait :by_org_id do
         access_limited {
           {
-            "organisations" => %w(f17250b0-7540-0131-f036-005056030202),
-          }
-        }
-      end
-
-      trait :by_auth_bypass_id do
-        access_limited {
-          {
-            "auth_bypass_ids" => %w(85aa9fd5-c514-4964-b931-5b597e4ec668),
-          }
-        }
-      end
-
-      trait :by_auth_bypass_id_and_user_id do
-        access_limited {
-          {
-            "auth_bypass_ids" => %w(85aa9fd5-c514-4964-b931-5b597e4ec668),
-            "users" => %w(M6GdNZggrbGiJrLjMSbKqA f17250b0-7540-0131-f036-005056030202),
-          }
-        }
-      end
-
-      trait :by_auth_bypass_id_and_org_id do
-        access_limited {
-          {
-            "auth_bypass_ids" => %w(85aa9fd5-c514-4964-b931-5b597e4ec668),
             "organisations" => %w(f17250b0-7540-0131-f036-005056030202),
           }
         }
