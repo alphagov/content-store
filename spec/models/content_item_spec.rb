@@ -130,51 +130,6 @@ describe ContentItem, type: :model do
         end
       end
     end
-
-    describe "transition_auth_bypass_id_fields" do
-      let(:auth_bypass_id) { SecureRandom.hex }
-
-      it "sets auth_bypass_ids from new auth_bypass_ids field" do
-        attributes = {
-          "schema_name" => "publication",
-          "auth_bypass_ids" => [auth_bypass_id],
-        }
-
-        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
-
-        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
-      end
-
-      it "sets auth_bypass_ids from access_limited and removes from access_limited" do
-        user_id = SecureRandom.hex
-        attributes = {
-          "schema_name" => "publication",
-          "access_limited" => {
-            "auth_bypass_ids" => [auth_bypass_id],
-            "users" => [user_id],
-          },
-        }
-
-        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
-
-        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
-        expect(item.access_limited).to eq("users" => [user_id])
-      end
-
-      it "sets the auth_bypass_id from new auth_bypass_ids field only if also set in access_limited" do
-        attributes = {
-          "schema_name" => "publication",
-          "auth_bypass_ids" => [auth_bypass_id],
-          "access_limited" => {
-            "auth_bypass_ids" => [SecureRandom.hex],
-          },
-        }
-        _, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
-
-        expect(item.auth_bypass_ids).to eq([auth_bypass_id])
-        expect(item.auth_bypass_ids.count).to eq(1)
-      end
-    end
   end
 
   describe ".find_by_path" do
