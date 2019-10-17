@@ -287,72 +287,155 @@ describe ContentItem, type: :model do
     end
   end
 
-  describe "access limiting" do
-    context "a content item that is not access limited" do
-      let!(:content_item) { create(:content_item) }
+  describe "#access_limited?" do
+    it "returns true for user ids" do
+      content_item = build(
+        :content_item,
+        access_limited: { "users" => [SecureRandom.uuid] },
+      )
 
-      it "is not access limited" do
-        expect(content_item.access_limited?).to be(false)
+      expect(content_item.access_limited?).to be(true)
+    end
+
+    it "returns true for organisation ids" do
+      content_item = build(
+        :content_item,
+        access_limited: { "organisations" => [SecureRandom.uuid] },
+      )
+      expect(content_item.access_limited?).to be(true)
+    end
+
+    it "returns false for no user ids or organisation ids" do
+      content_item = build(:content_item, access_limited: {})
+      expect(content_item.access_limited?).to be(false)
+    end
+  end
+
+  describe "#user_granted_access?" do
+    it "returns false for nil inputs" do
+      content_item = build(:content_item)
+      expect(content_item.user_granted_access?(user_id: nil,
+                                               user_organisation_id: nil))
+        .to be(false)
+    end
+
+    it "returns true if a user matches the user ids" do
+      user_id = SecureRandom.uuid
+      content_item = build(:content_item,
+                           access_limited: { "users" => [user_id] })
+      expect(content_item.user_granted_access?(user_id: user_id,
+                                               user_organisation_id: nil))
+        .to be(true)
+    end
+
+    it "returns true if an organisation matches the organisation ids" do
+      organisation_id = SecureRandom.uuid
+      content_item = build(:content_item,
+                           access_limited: { "organisations" => [organisation_id] })
+      expect(content_item.user_granted_access?(user_id: nil,
+                                               user_organisation_id: organisation_id))
+        .to be(true)
+    end
+
+    it "returns false if user ids and organisation ids don't match" do
+      user_id = SecureRandom.uuid
+      organisation_id = SecureRandom.uuid
+      content_item = build(:content_item,
+                           access_limited: { "users" => [user_id],
+                                             "organisations" => [organisation_id] })
+      expect(content_item.user_granted_access?(user_id: organisation_id,
+                                               user_organisation_id: user_id))
+        .to be(false)
+    end
+  end
+
+  describe "#valid_auth_bypass_id?" do
+    it "returns false for a nil input" do
+      content_item = build(:content_item)
+      expect(content_item.valid_auth_bypass_id?(nil)).to be(false)
+    end
+
+    context "when the content is access limited" do
+      let(:auth_bypass_id) { SecureRandom.uuid }
+
+      it "returns true for an auth_bypass_id matching the content items one" do
+        content_item = build(:access_limited_content_item,
+                             :by_user_id,
+                             auth_bypass_ids: [auth_bypass_id])
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
       end
 
-      it "is viewable by an any user" do
-        expect(content_item.user_access?(user_id: "some-id")).to be(true)
-      end
+      it "returns false for an auth_bypass_id only matching a linked item" do
+        content_item = build(
+          :access_limited_content_item,
+          :by_user_id,
+          expanded_links: {
+            "link" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [auth_bypass_id],
+              },
+            ],
+          },
+        )
 
-      it "is not viewable using any user_organisation_id" do
-        expect(content_item.user_access?(user_organisation_id: "fake-id")).to be(true)
-      end
-
-      it "is not viewable using no access limity things" do
-        expect(content_item.user_access?).to be(true)
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
       end
     end
 
-    context "access-limited by user-id" do
-      let!(:content_item) { create(:access_limited_content_item, :by_user_id) }
-      let(:authorised_user_uid) { content_item.access_limited["users"].first }
+    context "when the content is not access limited" do
+      let(:auth_bypass_id) { SecureRandom.uuid }
 
-      it "is access limited" do
-        expect(content_item.access_limited?).to be(true)
+      it "returns true for an auth_bypass_id matching the content items one" do
+        content_item = build(:content_item, auth_bypass_ids: [auth_bypass_id])
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
       end
 
-      it "is viewable by an authorised user" do
-        expect(content_item.user_access?(user_id: authorised_user_uid)).to be(true)
+      it "returns true for an auth_bypass_id matching a linked items one" do
+        content_item = build(
+          :content_item,
+          expanded_links: {
+            "link_type" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [auth_bypass_id],
+              },
+            ],
+          },
+        )
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
       end
 
-      it "is not viewable by an unauthorised user" do
-        expect(content_item.user_access?(user_id: "fake-id")).to be(false)
-      end
-    end
+      it "returns false if no links have a matching auth_bypass_id" do
+        content_item = build(
+          :content_item,
+          expanded_links: {
+            "link_type" => [
+              {
+                "content_id" => SecureRandom.uuid,
+                "auth_bypass_ids" => [SecureRandom.uuid],
+              },
+            ],
+            "other_link" => [
+              { "content_id" => SecureRandom.uuid },
+            ],
+          },
+        )
 
-    context "access-limited by org-id" do
-      let!(:content_item) { create(:access_limited_content_item, :by_org_id) }
-      let(:auth_org_id) { content_item.access_limited["organisations"].first }
-
-      it "is access limited" do
-        expect(content_item.access_limited?).to be(true)
-      end
-
-      it "is viewable by an authorised org" do
-        expect(content_item.user_access?(user_organisation_id: auth_org_id)).to be(true)
-      end
-
-      it "is not viewable by an unauthorised org" do
-        expect(content_item.user_access?(user_organisation_id: "fake-id")).to be(false)
-      end
-    end
-
-    context "access-limited by bypass_id" do
-      let!(:content_item) { create(:content_item, :with_auth_bypass_id) }
-      let(:auth_bypass_id) { content_item.auth_bypass_ids.first }
-      let(:logged_in_user) { "authenticated_user_uid" }
-
-      it "is viewable by an authorised bypass id" do
-        expect(content_item.valid_bypass_id?(auth_bypass_id)).to be(true)
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
       end
 
-      it "is not viewable by an unauthorised user" do
-        expect(content_item.valid_bypass_id?("fake-id")).to be(false)
+      it "returns false if a link of a link has a matching auth_bypass_id" do
+        nested_links = { "other_link" => [{ "content_id" => SecureRandom.uuid,
+                                            "auth_bypass_id" => [auth_bypass_id] }] }
+        links = { "link_type" => [{ "content_id" => SecureRandom.uuid,
+                                    "links" => nested_links }] }
+        content_item = build(:content_item, expanded_links: links)
+
+        expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
       end
     end
   end

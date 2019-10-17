@@ -78,7 +78,6 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
   end
 
-
   context "a publish intent before the default TTL time" do
     before(:each) do
       Timecop.freeze
@@ -97,6 +96,55 @@ describe "Fetching a content item with a publish intent", type: :request do
 
     it "sets a cache-control directive of public" do
       expect(cache_control["public"]).to eq(true)
+    end
+  end
+
+  context "a publish intent for access limited content" do
+    let(:content_item) { create(:access_limited_content_item, :by_user_id) }
+
+    before(:each) do
+      Timecop.freeze
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.from_now)
+      get "/content/#{content_item.base_path}",
+          headers: { "X-Govuk-Authenticated-User": content_item.access_limited["users"].first }
+    end
+
+    it "returns the presented content item as JSON data" do
+      expect(response.content_type).to eq("application/json")
+      expect(response.body).to eq(present(content_item))
+    end
+
+    it "sets cache headers to to the minimum ttl" do
+      expect(cache_control["max-age"]).to eq(Rails.application.config.minimum_ttl.to_s)
+    end
+
+    it "sets a cache-control directive of private" do
+      expect(cache_control["private"]).to eq(true)
+    end
+  end
+
+  context "a publish intent for content accessed by auth_bypass_id" do
+    let(:auth_bypass_id) { SecureRandom.uuid }
+    let(:content_item) { create(:content_item, auth_bypass_ids: [auth_bypass_id]) }
+
+    before(:each) do
+      Timecop.freeze
+      create(:publish_intent, base_path: content_item.base_path, publish_time: 5.minutes.from_now)
+      get "/content/#{content_item.base_path}",
+          headers: { "Govuk-Auth-Bypass-Id" => auth_bypass_id }
+    end
+
+    it "returns the presented content item as JSON data" do
+      expect(response.content_type).to eq("application/json")
+      expect(response.body).to eq(present(content_item))
+    end
+
+    it "sets cache headers to to the minimum ttl" do
+      expect(cache_control["max-age"]).to eq(Rails.application.config.minimum_ttl.to_s)
+    end
+
+    it "sets a cache-control directive of private" do
+      expect(cache_control["private"]).to eq(true)
     end
   end
 end

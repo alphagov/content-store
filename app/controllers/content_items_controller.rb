@@ -65,24 +65,38 @@ private
   end
 
   def can_view?(item)
-    return item.valid_bypass_id?(auth_bypass_id) if auth_bypass_id
+    return true if item.user_granted_access?(user_id: auth_user_id,
+                                             user_organisation_id: auth_organisation_id)
+    return true if item.valid_auth_bypass_id?(auth_bypass_id)
+    return false if item.access_limited?
 
-    item.user_access?(
-      user_id: auth_user_id,
-      user_organisation_id: auth_organisation_id,
-    )
+    !restricted_access?
+  end
+
+  def restricted_access?
+    # we assume that the presence of an auth_bypass_id without an auth_user_id
+    # means a user on the draft stack using only a token without being signed
+    # in. These users should only be able to access specific content that
+    # is valid for that auth bypass id
+    auth_user_id.nil? && auth_bypass_id.present?
   end
 
   def auth_user_id
-    request.headers["X-Govuk-Authenticated-User"]
+    request.headers["X-Govuk-Authenticated-User"].then do |user_id|
+      # Authenticating proxy sets this to invalid rather than nil when a user
+      # is not signed in.
+      user_id == "invalid" ? nil : user_id.presence
+    end
   end
 
   def auth_organisation_id
-    request.headers["X-Govuk-Authenticated-User-Organisation"]
+    request.headers["X-Govuk-Authenticated-User-Organisation"].then do |org_id|
+      org_id == "invalid" ? nil : org_id.presence
+    end
   end
 
   def auth_bypass_id
-    request.headers["Govuk-Auth-Bypass-Id"]
+    request.headers["Govuk-Auth-Bypass-Id"].presence
   end
 
   def json_forbidden_response
@@ -102,11 +116,11 @@ private
     cache_time = config.default_ttl
     is_public = true
 
-    if intent && !intent.past?
-      cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
-    elsif item && (auth_bypass_id.present? || item.access_limited?)
+    if item && (auth_bypass_id.present? || item.access_limited?)
       cache_time = config.minimum_ttl
       is_public = false
+    elsif intent && !intent.past?
+      cache_time = (intent.publish_time.to_i - Time.zone.now.to_i)
     elsif item && max_cache_time(item)
       cache_time = max_cache_time(item)
     end
