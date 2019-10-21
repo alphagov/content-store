@@ -11,8 +11,6 @@ class ContentItem
     previous_item = ContentItem.where(base_path: base_path).first
     lock = UpdateLock.new(previous_item)
 
-    attributes = transition_auth_bypass_id_fields(attributes)
-
     payload_version = attributes["payload_version"]
     lock.check_availability!(payload_version)
 
@@ -255,11 +253,5 @@ private
     }
   end
 
-  def self.transition_auth_bypass_id_fields(attributes)
-    attributes["auth_bypass_ids"] ||= attributes.dig("access_limited", "auth_bypass_ids") || []
-    attributes.fetch("access_limited", {}).delete("auth_bypass_ids")
-    attributes
-  end
-
-  private_class_method :scheduled_publication_details, :transition_auth_bypass_id_fields
+  private_class_method :scheduled_publication_details
 end
