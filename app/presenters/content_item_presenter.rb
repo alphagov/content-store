@@ -33,7 +33,7 @@ class ContentItemPresenter
 
   def as_json(options = nil)
     item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
-      "links" => links,
+      "links" => RESOLVER.resolve(links),
       "description" => RESOLVER.resolve(item.description),
       "details" => RESOLVER.resolve(item.details),
     ).tap do |i|

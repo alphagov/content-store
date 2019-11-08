@@ -37,7 +37,18 @@ describe ContentItemPresenter do
     let(:item) do
       FactoryBot.create(
         :content_item,
-        links: links,
+        expanded_links: {
+          person: [
+            {
+              details: {
+                body: [
+                  { content_type: "text/html", content: "<p>content</p>" },
+                  { content_type: "text/plain", content: "content" },
+                ],
+              },
+            },
+          ],
+        },
         description: [
           { content_type: "text/html", content: "<p>content</p>" },
           { content_type: "text/plain", content: "content" },
@@ -57,6 +68,10 @@ describe ContentItemPresenter do
 
     it "inlines the 'text/html' content type in the details" do
       expect(presenter.as_json["details"]).to eq(body: "<p>content</p>")
+    end
+
+    it "inlines the 'text/html' content type in the links" do
+      expect(presenter.as_json["links"][:person].first[:details]).to eq(body: "<p>content</p>")
     end
   end
 
