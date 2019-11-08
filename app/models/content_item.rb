@@ -95,7 +95,6 @@ class ContentItem
   field :rendering_app, type: String
   field :routes, type: Array, default: []
   field :redirects, type: Array, default: []
-  field :links, type: Hash, default: {}
   field :expanded_links, type: Hash, default: {}
   field :access_limited, type: Hash, default: {}
   field :auth_bypass_ids, type: Array, default: []
