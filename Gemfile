@@ -12,7 +12,7 @@ gem 'whenever', '~> 1.0.0', require: false
 if ENV['GDS_API_ADAPTERS_DEV']
   gem 'gds-api-adapters', path: '../gds-api-adapters'
 else
-  gem 'gds-api-adapters', "~> 61.0.0"
+  gem 'gds-api-adapters', "~> 61.1.0"
 end
 
 gem 'gds-sso', '~> 14'
