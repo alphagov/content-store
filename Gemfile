@@ -22,7 +22,7 @@ gem 'plek', '~> 3.0'
 
 group :development, :test do
   gem 'climate_control', '~> 0.2'
-  gem 'database_cleaner', '~> 1.7.0'
+  gem 'database_cleaner', '~> 1.8.2'
   gem 'factory_bot', '~> 5.1'
   gem 'rspec-rails', '~> 3.9'
   gem 'timecop', '0.9.1'
