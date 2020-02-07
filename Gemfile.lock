@@ -111,7 +111,7 @@ GEM
       rubocop-rails (~> 2)
       rubocop-rspec (~> 1.28)
       scss_lint
-    govuk_app_config (2.0.2)
+    govuk_app_config (2.0.3)
       logstasher (>= 1.2.2, < 1.4.0)
       sentry-raven (>= 2.7.1, < 2.14.0)
       statsd-ruby (~> 1.4.0)
@@ -212,7 +212,7 @@ GEM
       byebug (~> 11.0)
       pry (~> 0.10)
     public_suffix (4.0.3)
-    rack (2.1.1)
+    rack (2.1.2)
     rack-cache (1.11.0)
       rack (>= 0.4)
     rack-test (1.1.0)
@@ -327,7 +327,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode-display_width (1.6.0)
-    unicorn (5.5.2)
+    unicorn (5.5.3)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uuidtools (2.1.5)
