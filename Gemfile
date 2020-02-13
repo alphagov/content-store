@@ -29,7 +29,7 @@ group :development, :test do
   gem 'webmock', '3.8.2', require: false
 
   gem 'ci_reporter_rspec', '~> 1.0.0'
-  gem 'simplecov', '0.18.1', require: false
+  gem 'simplecov', '0.18.2', require: false
   gem 'simplecov-rcov', '0.2.3', require: false
 
   gem "pact"
