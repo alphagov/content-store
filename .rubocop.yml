@@ -1,3 +1,8 @@
+inherit_gem:
+  rubocop-govuk:
+    - config/default.yml
+    - config/rails.yml
+
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
   SupportedStyles:

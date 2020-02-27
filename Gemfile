@@ -34,6 +34,5 @@ group :development, :test do
 
   gem "pact"
   gem "pry-byebug"
-
-  gem "govuk-lint"
+  gem "rubocop-govuk"
 end
