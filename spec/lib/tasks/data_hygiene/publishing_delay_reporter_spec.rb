@@ -40,23 +40,23 @@ describe Tasks::DataHygiene::PublishingDelayReporter do
 
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.all_document_types.95_percentile_ms", 45.minutes.in_milliseconds)
 
-    Timecop.freeze(Time.new(2018, 3, 1, 12, 0)) do
+    Timecop.freeze(Time.zone.local(2018, 3, 1, 12, 0)) do
       described_class.new.report
     end
   end
 
   it "splits stats by statistics document type" do
-    now = Time.new(2018, 3, 1, 10, 0)
+    now = Time.zone.local(2018, 3, 1, 10, 0)
     Timecop.freeze(now) do
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 1.minutes, document_type: "national_statistics")
+      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 1.minute, document_type: "national_statistics")
       ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 2.minutes, document_type: "official_statistics")
       ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 3.minutes, document_type: "national_statistics_announcement")
       ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 4.minutes, document_type: "official_statistics_announcement")
       ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 5.minutes, document_type: "other")
     end
 
-    expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.national_statistics.mean_ms", 1.minutes.in_milliseconds)
-    expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.national_statistics.95_percentile_ms", 1.minutes.in_milliseconds)
+    expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.national_statistics.mean_ms", 1.minute.in_milliseconds)
+    expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.national_statistics.95_percentile_ms", 1.minute.in_milliseconds)
 
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.official_statistics.mean_ms", 2.minutes.in_milliseconds)
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.official_statistics.95_percentile_ms", 2.minutes.in_milliseconds)
