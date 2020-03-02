@@ -30,7 +30,7 @@ private
 
   def redirect_canonical(intent)
     route = publish_intent_url(intent.base_path_without_root)
-    redirect_to route, status: 303
+    redirect_to route, status: :see_other
   end
 
   def update_status(result)
