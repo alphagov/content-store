@@ -112,7 +112,7 @@ describe ContentItem, type: :model do
 
       context "with a scheduled publishing log entry" do
         let(:attributes) { { "schema_name" => "publication" } }
-        let(:scheduled_publication_time) { Time.new(2017, 3, 1, 12, 0) }
+        let(:scheduled_publication_time) { Time.zone.local(2017, 3, 1, 12, 0) }
         let(:scheduled_publishing_delay) { 9200 }
         let(:log_entry) {
           build(

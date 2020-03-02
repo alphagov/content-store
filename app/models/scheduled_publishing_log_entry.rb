@@ -15,6 +15,6 @@ class ScheduledPublishingLogEntry
 private
 
   def set_delay_in_milliseconds
-    ((Time.now - scheduled_publication_time) * 1000.0).to_i
+    ((Time.zone.now - scheduled_publication_time) * 1000.0).to_i
   end
 end

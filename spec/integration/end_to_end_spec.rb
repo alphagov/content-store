@@ -23,7 +23,7 @@ describe "End-to-end behaviour", type: :request do
       "routes" => [
         { "path" => "/vat-rates", "type" => "exact" },
       ],
-      "public_updated_at" => Time.now,
+      "public_updated_at" => Time.zone.now,
       "payload_version" => "1",
     }
   end

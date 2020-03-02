@@ -104,7 +104,7 @@ describe ContentItemPresenter do
         :content_item,
         :with_content_id,
         schema_name: "generic",
-        publishing_scheduled_at: Time.new(2018, 6, 1, 9, 30),
+        publishing_scheduled_at: Time.zone.local(2018, 6, 1, 9, 30),
         scheduled_publishing_delay_seconds: 130,
       )
 

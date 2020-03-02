@@ -79,7 +79,7 @@ describe "Fetching content items", type: :request do
 
       data = JSON.parse(response.body)
       expect(data["public_updated_at"]).to eq(content_item.public_updated_at.as_json)
-      expect(Time.parse(data["updated_at"])).to be_within(1.second).of(Time.now.utc)
+      expect(Time.zone.parse(data["updated_at"])).to be_within(1.second).of(Time.now.utc)
     end
 
     it "sets cache headers to expire in the default TTL" do
@@ -255,7 +255,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a withdrawn content item" do
-    let(:withdrawn_at) { Time.parse("2016-05-17 11:20") }
+    let(:withdrawn_at) { Time.zone.parse("2016-05-17 11:20") }
     let(:withdrawn_item) do
       FactoryBot.create(
         :content_item,

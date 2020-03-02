@@ -9,7 +9,7 @@ FactoryBot.define do
     publishing_app { "publisher" }
     routes { [{ "path" => base_path, "type" => "exact" }] }
     payload_version { 0 }
-    first_published_at { Time.now }
+    first_published_at { Time.zone.now }
     publishing_request_id { "432.432523.233242" }
 
     trait :with_content_id do
@@ -28,7 +28,7 @@ FactoryBot.define do
       format { "answer" }
       title { "Test content" }
       rendering_app { "frontend" }
-      public_updated_at { Time.now }
+      public_updated_at { Time.zone.now }
     end
 
     factory :content_item_with_content_id, traits: [:with_content_id]
