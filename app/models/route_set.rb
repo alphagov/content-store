@@ -124,6 +124,7 @@ private
       route.fetch(:path),
       route.fetch(:type),
       rendering_app,
+      http_methods: route[:http_methods],
     )
   end
 
