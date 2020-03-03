@@ -1,3 +1,8 @@
+inherit_gem:
+  rubocop-govuk:
+    - config/default.yml
+    - config/rails.yml
+
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
   SupportedStyles:
@@ -14,4 +19,12 @@ Style/BracesAroundHashParameters:
 
 # Don't quite know how to fix this, so ignore it for now
 Lint/UriEscapeUnescape:
+  Enabled: false
+
+# Mongoid, not ActiveRecord, makes RuboCop's suggestions for the
+# following two cops not pass tests.
+Rails/FindBy:
+  Enabled: false
+
+Rails/DynamicFindBy:
   Enabled: false

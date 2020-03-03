@@ -16,7 +16,7 @@ class FindGsiDomainReferences
 private
 
   def write_csv
-    CSV.open("#{Rails.root}/tmp/gsi_domain_content_items.csv", "wb") do |csv|
+    CSV.open(Rails.root.join("tmp/gsi_domain_content_items.csv"), "wb") do |csv|
       csv << CSV_HEADERS
 
       domains = %w(gsi gse gcsx gsx)
@@ -35,7 +35,11 @@ private
     end
 
     puts "Finished searching"
-    puts "CSV file at #{Rails.root}/tmp/gsi_domain_content_items.csv"
+    # There's a subtle bug with RuboCop regexp where it thinks this
+    # format of interpolated `Rails.root.join` is incorrect.
+    # rubocop:disable Rails/FilePath
+    puts "CSV file at #{Rails.root.join('/tmp/gsi_domain_content_items.csv')}"
+    # rubocop:enable Rails/FilePath
   end
 
   def csv_row(content_item, domain)

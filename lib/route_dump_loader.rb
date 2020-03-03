@@ -14,7 +14,7 @@ module RouteDumpLoader
         route_hash = Hash[keys.zip(row)].symbolize_keys
         route = Route.new(*route_hash.values_at(*Route.members))
         route.disabled = route.disabled == "true"
-        route.updated_at = Time.parse(route.updated_at)
+        route.updated_at = Time.zone.parse(route.updated_at)
         hash[route.incoming_path.to_sym] = route
       end
     end

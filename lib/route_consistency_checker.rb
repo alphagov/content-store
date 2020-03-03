@@ -51,7 +51,7 @@ private
   end
 
   def is_valid_route?(route)
-    !route.disabled && route.handler != "gone" && !(route.handler == "redirect" && !route.backend_id.present?)
+    !route.disabled && route.handler != "gone" && !(route.handler == "redirect" && route.backend_id.blank?)
   end
 
   def get_route(path)

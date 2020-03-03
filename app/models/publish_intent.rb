@@ -6,7 +6,7 @@ class PublishIntent
     intent = PublishIntent.find_or_initialize_by(base_path: base_path)
     result = intent.new_record? ? :created : :replaced
 
-    result = false unless intent.update_attributes(attributes)
+    result = false unless intent.update(attributes)
     [result, intent]
   rescue Mongoid::Errors::UnknownAttribute
     extra_fields = attributes.keys - self.fields.keys

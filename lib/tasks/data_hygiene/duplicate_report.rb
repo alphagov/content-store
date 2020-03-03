@@ -79,7 +79,7 @@ module Tasks
 
       def write_to_csv(content_items, locale = nil)
         puts "Writing content items to csv..."
-        current_time = Time.now.strftime("%Y-%m-%d-%H-%M")
+        current_time = Time.zone.now.strftime("%Y-%m-%d-%H-%M")
         filename = "duplicate_content_ids_#{current_time}"
         filename = "#{locale}_#{filename}" if locale
 

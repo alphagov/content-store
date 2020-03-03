@@ -61,7 +61,7 @@ private
 
   def redirect_canonical(content_item)
     route = api_url_method.(content_item.base_path_without_root)
-    redirect_to route, status: 303
+    redirect_to route, status: :see_other
   end
 
   def can_view?(item)

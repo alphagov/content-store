@@ -8,7 +8,7 @@ class UpdateLock
   end
 
   def check_availability!(payload_version)
-    return unless lockable.present?
+    return if lockable.blank?
 
     raise MissingAttributeError, "payload_version is required" if payload_version.blank?
 

@@ -19,7 +19,7 @@ RSpec.describe DataHygiene::SchemaValidator, :report_errors do
     FactoryBot.create(:content_item, schema_name: "some_format")
 
     allow(File).to receive(:open)
-      .with(Rails.root.join("tmp", "some_format-validation-errors.csv"), "w")
+      .with(Rails.root.join("tmp/some_format-validation-errors.csv"), "w")
       .and_yield(csv_file)
 
     allow(File).to receive(:read).with(%r{/formats/some_format/frontend/schema.json$})

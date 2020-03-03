@@ -3,7 +3,7 @@ require "rails_helper"
 describe ScheduledPublishingLogEntry do
   describe "when created" do
     it "sets the delay" do
-      publication_time = Time.now
+      publication_time = Time.zone.now
       allow(Time).to receive(:now)
         .and_return(publication_time + 20)
       log_entry = ScheduledPublishingLogEntry.create(
