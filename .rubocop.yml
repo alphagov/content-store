@@ -3,6 +3,10 @@ inherit_gem:
     - config/default.yml
     - config/rails.yml
 
+inherit_mode:
+  merge:
+    - Exclude
+
 # Don't quite know how to fix this, so ignore it for now
 Lint/UriEscapeUnescape:
   Enabled: false
