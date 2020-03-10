@@ -105,7 +105,7 @@ GEM
       activesupport (>= 4.2.0)
     govuk-content-schema-test-helpers (1.6.1)
       json-schema (~> 2.8.0)
-    govuk_app_config (2.0.3)
+    govuk_app_config (2.1.0)
       logstasher (>= 1.2.2, < 1.4.0)
       sentry-raven (>= 2.7.1, < 2.14.0)
       statsd-ruby (~> 1.4.0)
@@ -347,7 +347,7 @@ DEPENDENCIES
   gds-api-adapters (~> 63.5.1)
   gds-sso (~> 14)
   govuk-content-schema-test-helpers (~> 1.6)
-  govuk_app_config (~> 2.0)
+  govuk_app_config (~> 2.1)
   mongo (= 2.4.3)
   mongoid (= 6.2.1)
   mongoid_rails_migrations!
