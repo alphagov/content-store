@@ -20,7 +20,7 @@ class FindSpecificTerm
 private
 
   def write_csv
-    CSV.open(Rails.root.join("/tmp/search_term_content_items.csv"), "wb") do |csv|
+    CSV.open(Rails.root.join("tmp/search_term_content_items.csv"), "wb") do |csv|
       csv << CSV_HEADERS
 
       puts "Searching for #{term}..."
@@ -38,7 +38,7 @@ private
     # There's a subtle bug with RuboCop regexp where it thinks this
     # format of interpolated `Rails.root.join` is incorrect.
     # rubocop:disable Rails/FilePath
-    puts "CSV file at #{Rails.root.join('/tmp/search_term_content_items.csv')}"
+    puts "CSV file at #{Rails.root.join('tmp/search_term_content_items.csv')}"
     # rubocop:enable Rails/FilePath
     puts File.read(Rails.root.join("tmp/search_term_content_items.csv"))
   end
