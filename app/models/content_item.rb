@@ -35,7 +35,7 @@ class ContentItem
         revert(previous_item: previous_item, item: item)
         raise unless e.is_a?(GdsApi::BaseError)
 
-        item.errors.add(:routes, "Could not communicated with router.")
+        item.errors.add(:routes, "Could not communicate with router.")
         result = false
       end
     else
