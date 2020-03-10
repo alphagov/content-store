@@ -5,6 +5,5 @@ class RemoveAuthByPassIDsFromAccessLimited < Mongoid::Migration
       .each { |ci| ci.unset("access_limited.auth_bypass_ids") }
   end
 
-  def self.down
-  end
+  def self.down; end
 end

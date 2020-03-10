@@ -13,8 +13,7 @@ class UpdateBlankHmrcManualsContentIds < Mongoid::Migration
     report_missing_content_ids(report_path, content_items)
   end
 
-  def self.down
-  end
+  def self.down; end
 
 private
 
