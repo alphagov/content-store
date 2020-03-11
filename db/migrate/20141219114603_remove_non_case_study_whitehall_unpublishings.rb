@@ -19,18 +19,18 @@ class RemoveNonCaseStudyWhitehallUnpublishings < Mongoid::Migration
     content_item.redirects.each do |redirect|
       begin
         router_api.delete_route(redirect["path"], redirect["type"])
-        puts "  Removed redirect '#{redirect["path"]}'"
+        puts "  Removed redirect '#{redirect['path']}'"
       rescue GdsApi::HTTPNotFound => e
-        puts "  Redirect #{redirect["path"]} not found. Nothing done."
+        puts "  Redirect #{redirect['path']} not found. Nothing done."
       end
     end
   end
 
   def self.content_items
     ContentItem.where(
-      base_path: {"$in" => all_paths},
+      base_path: { "$in" => all_paths },
       publishing_app: "whitehall",
-      format: {"$in" => ["unpublishing", "redirect"]},
+      format: { "$in" => %w[unpublishing redirect] },
     )
   end
 

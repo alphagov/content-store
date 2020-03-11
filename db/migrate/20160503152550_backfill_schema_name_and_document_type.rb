@@ -16,6 +16,5 @@ class BackfillSchemaNameAndDocumentType < Mongoid::Migration
     result = ContentItem.collection.database.command(cmd)
   end
 
-  def self.down
-  end
+  def self.down; end
 end

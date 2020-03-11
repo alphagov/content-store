@@ -7,6 +7,5 @@ class BackfillAuthBypassIds < Mongoid::Migration
       .each { |ci| ci.set(auth_bypass_ids: ci.access_limited.fetch("auth_bypass_ids", [])) }
   end
 
-  def self.down
-  end
+  def self.down; end
 end

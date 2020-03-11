@@ -9,7 +9,7 @@ class FixOrgsSpecialCases < Mongoid::Migration
 
     existing_redirects.each do |from_base_path, to_base_path|
       content_item = ContentItem.find_by(base_path: from_base_path)
-      content_item.update_attributes!(
+      content_item.update!(
         content_id: nil,
         format: "redirect",
         publishing_app: "whitehall",
@@ -21,6 +21,5 @@ class FixOrgsSpecialCases < Mongoid::Migration
   rescue Mongoid::Errors::DocumentNotFound
   end
 
-  def self.down
-  end
+  def self.down; end
 end

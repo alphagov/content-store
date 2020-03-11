@@ -18,3 +18,7 @@ Rails/FindBy:
 
 Rails/DynamicFindBy:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - db/migrate/201*.rb
