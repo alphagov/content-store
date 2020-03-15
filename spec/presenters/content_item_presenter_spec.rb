@@ -21,7 +21,7 @@ describe ContentItemPresenter do
   let(:presenter) { ContentItemPresenter.new(item) }
 
   it "includes public attributes" do
-    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(links description details)
+    expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(links description details updated_at)
     expect(presenter.as_json.keys).to match_array(expected_fields)
   end
 
@@ -108,6 +108,45 @@ describe ContentItemPresenter do
       presented = ContentItemPresenter.new(content_item).as_json
 
       expect(presented.to_json).to be_valid_against_schema("generic")
+    end
+  end
+
+  context "when there is a homepage content item" do
+    it "embeds the global field when data is set on the homepage" do
+      global = { "header" => "header", "footer" => "footer" }
+      create(:content_item_with_content_id,
+             base_path: "/",
+             details: { global: global })
+      content_item = create(:content_item)
+      presented = ContentItemPresenter.new(content_item).as_json
+      expect(presented["global"]).to eq(global)
+    end
+
+    it "omits the global field when it isn't set on the homepage" do
+      create(:content_item_with_content_id,
+             base_path: "/",
+             details: {})
+      content_item = create(:content_item)
+      presented = ContentItemPresenter.new(content_item).as_json
+      expect(presented.keys).not_to include("global")
+    end
+
+    it "uses the homepage's updated_at when it is more recently updated" do
+      create(:content_item_with_content_id,
+             base_path: "/",
+             updated_at: Date.today.noon)
+      content_item = create(:content_item, updated_at: Date.yesterday.noon)
+      presented = ContentItemPresenter.new(content_item).as_json
+      expect(presented["updated_at"]).to eq(Date.today.noon)
+    end
+
+    it "uses the content_items's updated_at when it is more recently updated" do
+      create(:content_item_with_content_id,
+             base_path: "/",
+             updated_at: 3.weeks.ago)
+      content_item = create(:content_item, updated_at: Date.yesterday.noon)
+      presented = ContentItemPresenter.new(content_item).as_json
+      expect(presented["updated_at"]).to eq(Date.yesterday.noon)
     end
   end
 end

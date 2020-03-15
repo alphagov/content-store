@@ -21,13 +21,13 @@ class ContentItemPresenter
     scheduled_publishing_delay_seconds
     schema_name
     title
-    updated_at
     withdrawn_notice
     publishing_request_id
   ).freeze
 
   def initialize(item)
     @item = item
+    @homepage_content_item = ContentItem.where(id: "/").first
   end
 
   def as_json(options = nil)
@@ -35,14 +35,21 @@ class ContentItemPresenter
       "links" => RESOLVER.resolve(links),
       "description" => RESOLVER.resolve(item.description),
       "details" => RESOLVER.resolve(item.details),
+      "updated_at" => updated_at,
     ).tap do |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
+      global = homepage_content_item&.details&.dig("global")
+      i["global"] = global if global
     end
   end
 
 private
 
-  attr_reader :item
+  attr_reader :item, :homepage_content_item
+
+  def updated_at
+    [item.updated_at, homepage_content_item&.updated_at].compact.max
+  end
 
   def links
     ExpandedLinksPresenter.new(item.expanded_links).present
