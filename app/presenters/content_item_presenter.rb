@@ -26,9 +26,8 @@ class ContentItemPresenter
     publishing_request_id
   ).freeze
 
-  def initialize(item, api_url_method)
+  def initialize(item)
     @item = item
-    @api_url_method = api_url_method
   end
 
   def as_json(options = nil)
@@ -43,7 +42,7 @@ class ContentItemPresenter
 
 private
 
-  attr_reader :item, :api_url_method
+  attr_reader :item
 
   def links
     ExpandedLinksPresenter.new(item.expanded_links).present

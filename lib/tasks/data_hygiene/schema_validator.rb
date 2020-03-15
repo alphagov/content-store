@@ -46,8 +46,7 @@ module DataHygiene
     end
 
     def payload(item)
-      api_url_method = Rails.application.routes.url_helpers.method(:content_item_path)
-      ContentItemPresenter.new(item, api_url_method).to_json
+      ContentItemPresenter.new(item).to_json
     end
 
     def schema

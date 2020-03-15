@@ -18,10 +18,7 @@ describe ContentItemPresenter do
   let(:item) { build(:content_item, document_type: "travel_advice", locale: locale, expanded_links: expanded_links) }
   let(:locale) { "en" }
 
-  let(:api_url_method) do
-    lambda { |base_path| "http://api.example.com/content/#{base_path}" }
-  end
-  let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
+  let(:presenter) { ContentItemPresenter.new(item) }
 
   it "includes public attributes" do
     expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w(links description details)
@@ -77,7 +74,7 @@ describe ContentItemPresenter do
   it "validates against the schema" do
     content_item = create(:content_item, :with_content_id, schema_name: "generic")
 
-    presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+    presented = ContentItemPresenter.new(content_item).as_json
 
     expect(presented.to_json).to be_valid_against_schema("generic")
   end
@@ -85,7 +82,7 @@ describe ContentItemPresenter do
   context "when schema_name is not redirect" do
     it "doesn't include redirects field" do
       content_item = create(:content_item)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
       expect(presented.keys).to_not include("redirects")
     end
   end
@@ -93,7 +90,7 @@ describe ContentItemPresenter do
   context "when schema_name is redirect" do
     it "includes the redirects field" do
       content_item = create(:redirect_content_item)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
       expect(presented.keys).to include("redirects")
     end
   end
@@ -108,7 +105,7 @@ describe ContentItemPresenter do
         scheduled_publishing_delay_seconds: 130,
       )
 
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
 
       expect(presented.to_json).to be_valid_against_schema("generic")
     end

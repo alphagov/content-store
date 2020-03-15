@@ -12,9 +12,7 @@ module RequestHelpers
   end
 
   def present(content_item)
-    stubbed_api_url_method = Proc.new { |path| "http://www.example.com/content/#{URI.encode(path)}" }
-
-    ContentItemPresenter.new(content_item.reload, stubbed_api_url_method).to_json
+    ContentItemPresenter.new(content_item.reload).to_json
   end
 end
 

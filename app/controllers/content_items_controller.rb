@@ -17,7 +17,7 @@ class ContentItemsController < ApplicationController
     return redirect_canonical(item) if item.base_path != encoded_request_path
 
     if can_view?(item)
-      render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
+      render json: ContentItemPresenter.new(item), status: http_status(item)
     else
       render json_forbidden_response
     end
