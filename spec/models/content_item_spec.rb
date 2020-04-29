@@ -230,7 +230,6 @@ describe ContentItem, type: :model do
     end
   end
 
-
   context "when loaded from the content store" do
     before do
       create(:content_item, base_path: "/base_path", routes: [{ "path" => "/base_path", "type" => "exact" }])

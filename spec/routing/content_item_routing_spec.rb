@@ -32,7 +32,6 @@ describe "routing of content_item requests", type: :routing do
       expect(get: "/api/contentfoo").not_to be_routable
     end
 
-
     it "should accept the root path" do
       expect(get: "/api/content/").to route_to(
         controller: "content_items",
@@ -52,7 +51,6 @@ describe "routing of content_item requests", type: :routing do
     it "should not match a base_path without a leading /" do
       expect(put: "/contentfoo").not_to be_routable
     end
-
 
     it "should accept the root path" do
       expect(put: "/content/").to route_to(

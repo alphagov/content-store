@@ -36,7 +36,6 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
   end
 
-
   context "a publish intent that has newly passed" do
     before(:each) do
       create(:publish_intent, base_path: content_item.base_path, publish_time: 10.seconds.ago)
@@ -56,7 +55,6 @@ describe "Fetching a content item with a publish intent", type: :request do
       expect(cache_control["public"]).to eq(true)
     end
   end
-
 
   context "a publish intent more than the default TTL away" do
     before(:each) do
