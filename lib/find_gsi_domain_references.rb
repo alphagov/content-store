@@ -19,7 +19,7 @@ private
     CSV.open(Rails.root.join("tmp/gsi_domain_content_items.csv"), "wb") do |csv|
       csv << CSV_HEADERS
 
-      domains = %w(gsi gse gcsx gsx)
+      domains = %w[gsi gse gcsx gsx]
 
       domains.each do |domain|
         puts "Searching for #{domain}.gov.uk..."

@@ -44,7 +44,7 @@ class ContentItem
 
     [result, item]
   rescue Mongoid::Errors::UnknownAttribute
-    extra_fields = attributes.keys - self.fields.keys
+    extra_fields = attributes.keys - fields.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, item]
   rescue Mongoid::Errors::InvalidValue => e
@@ -143,16 +143,16 @@ class ContentItem
   end
 
   def redirect?
-    self.schema_name == "redirect"
+    schema_name == "redirect"
   end
 
   def gone?
-    #we've overloaded gone a bit by adding explanation and alternative
-    #url to the schema to support Whitehall unpublishing. We need to consider
-    #things with an explanation as only being a bit gone and not return 410 from
-    #content store or register a gone route. This is a fix until we implement an
-    #alternative type of unpublishing through the stack as it is causing issues
-    #in production
+    # we've overloaded gone a bit by adding explanation and alternative
+    # url to the schema to support Whitehall unpublishing. We need to consider
+    # things with an explanation as only being a bit gone and not return 410 from
+    # content store or register a gone route. This is a fix until we implement an
+    # alternative type of unpublishing through the stack as it is causing issues
+    # in production
     schema_name == "gone" && details_is_empty?
   end
 
@@ -222,11 +222,11 @@ class ContentItem
 private
 
   def should_register_routes?(previous_item: nil)
-    return false if self.schema_name.start_with?("placeholder")
+    return false if schema_name.start_with?("placeholder")
 
     if previous_item
       return previous_item.schema_name == "placeholder" ||
-          previous_item.route_set != self.route_set
+          previous_item.route_set != route_set
     end
     true
   end

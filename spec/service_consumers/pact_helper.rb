@@ -39,7 +39,7 @@ Pact.provider_states_for "Publishing API" do
     escaped_router_api_prefix = Regexp.escape(Plek.find("router-api"))
     stub_request(
       :delete,
-      %r(\A#{escaped_router_api_prefix}/routes),
+      %r{\A#{escaped_router_api_prefix}/routes},
     ).to_return(
       status: 404,
       body: "{}",
@@ -48,7 +48,7 @@ Pact.provider_states_for "Publishing API" do
 
     stub_request(
       :post,
-      %r(\A#{escaped_router_api_prefix}/routes/commit),
+      %r{\A#{escaped_router_api_prefix}/routes/commit},
     ).to_return(
       status: 200,
       body: "{}",

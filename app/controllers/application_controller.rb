@@ -14,7 +14,7 @@ private
   end
 
   def parse_json_request
-    # FIXME base_path in the request body is deprecated and will be considered
+    # FIXME: base_path in the request body is deprecated and will be considered
     # an error once all clients have been updated.
     @request_data = JSON.parse(request.body.read).except("base_path")
   rescue JSON::ParserError

@@ -20,7 +20,7 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
                      # placeholder items can have a format of
                      # 'placeholder' or 'placeholder_my_format_name'.
                      # redirect doesn't have a frontend schema.
-                     (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - %w(redirect)
+                     (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - %w[redirect]
                    end
 
   validatable_content_items = ContentItem.where(:format.in => formats_to_use)

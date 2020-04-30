@@ -4,8 +4,8 @@ describe "routing of publish_intent requests", type: :routing do
   context "GET route" do
     it "should route to the controller passing on the path" do
       expect(get: "/publish-intent/foo/bar").to route_to(controller: "publish_intents",
-        action: "show",
-        path_without_root: "foo/bar")
+                                                         action: "show",
+                                                         path_without_root: "foo/bar")
     end
 
     it "should not match a path without a leading /" do
@@ -23,8 +23,8 @@ describe "routing of publish_intent requests", type: :routing do
   context "PUT route" do
     it "should route to the controller passing on the base_path" do
       expect(put: "/publish-intent/foo/bar").to route_to(controller: "publish_intents",
-        action: "update",
-        base_path_without_root: "foo/bar")
+                                                         action: "update",
+                                                         base_path_without_root: "foo/bar")
     end
 
     it "should not match a base_path without a leading /" do
@@ -42,8 +42,8 @@ describe "routing of publish_intent requests", type: :routing do
   context "DELETE route" do
     it "should route to the controller passing on the base_path" do
       expect(delete: "/publish-intent/foo/bar").to route_to(controller: "publish_intents",
-        action: "destroy",
-        base_path_without_root: "foo/bar")
+                                                            action: "destroy",
+                                                            base_path_without_root: "foo/bar")
     end
 
     it "should not match a base_path without a leading /" do
