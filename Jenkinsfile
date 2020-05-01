@@ -5,7 +5,7 @@ library("govuk")
 node("mongodb-2.4") {
   govuk.buildProject(
     brakeman: true,
-    rubyLintDiff: false,
+    rubyLintDirs: "",
     extraParameters: [
       stringParam(
         name: "PUBLISHING_API_PACT_BRANCH",
