@@ -1,10 +1,10 @@
 class Tasks::DataHygiene::PublishingDelayReporter
-  STATISTICS_TYPES = %w(
+  STATISTICS_TYPES = %w[
     national_statistics
     official_statistics
     national_statistics_announcement
     official_statistics_announcement
-  ).freeze
+  ].freeze
 
   def report
     now = Time.zone.now

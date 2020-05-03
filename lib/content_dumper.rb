@@ -2,8 +2,8 @@ require "csv"
 require "zlib"
 
 class ContentDumper
-  FIELDS = %w(base_path content_id locale document_type schema_name rendering_app publishing_app updated_at).freeze
-  HASH_FIELDS = %w(details expanded_links routes redirects).freeze
+  FIELDS = %w[base_path content_id locale document_type schema_name rendering_app publishing_app updated_at].freeze
+  HASH_FIELDS = %w[details expanded_links routes redirects].freeze
 
   def initialize(filename)
     @filename = filename

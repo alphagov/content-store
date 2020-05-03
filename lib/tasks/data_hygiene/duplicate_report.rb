@@ -84,11 +84,11 @@ module Tasks
         filename = "#{locale}_#{filename}" if locale
 
         CSV.open("tmp/#{filename}.csv", "wb") do |csv|
-          content_item_fields = %w(
+          content_item_fields = %w[
             _id content_id title format locale publishing_app
             rendering_app routes redirects phase analytics_identifier
             updated_at
-          )
+          ]
 
           csv << content_item_fields
           content_items.each do |content_item|

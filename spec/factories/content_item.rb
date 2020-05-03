@@ -73,7 +73,7 @@ FactoryBot.define do
       trait :by_user_id do
         access_limited {
           {
-            "users" => %w(M6GdNZggrbGiJrLjMSbKqA f17250b0-7540-0131-f036-005056030202),
+            "users" => %w[M6GdNZggrbGiJrLjMSbKqA f17250b0-7540-0131-f036-005056030202],
           }
         }
       end
@@ -81,7 +81,7 @@ FactoryBot.define do
       trait :by_org_id do
         access_limited {
           {
-            "organisations" => %w(f17250b0-7540-0131-f036-005056030202),
+            "organisations" => %w[f17250b0-7540-0131-f036-005056030202],
           }
         }
       end

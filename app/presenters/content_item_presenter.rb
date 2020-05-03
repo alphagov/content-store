@@ -6,7 +6,7 @@
 class ContentItemPresenter
   RESOLVER = ContentTypeResolver.new("text/html")
 
-  PUBLIC_ATTRIBUTES = %w(
+  PUBLIC_ATTRIBUTES = %w[
     analytics_identifier
     base_path
     content_id
@@ -24,7 +24,7 @@ class ContentItemPresenter
     updated_at
     withdrawn_notice
     publishing_request_id
-  ).freeze
+  ].freeze
 
   def initialize(item, api_url_method)
     @item = item

@@ -9,7 +9,7 @@ class PublishIntent
     result = false unless intent.update(attributes)
     [result, intent]
   rescue Mongoid::Errors::UnknownAttribute
-    extra_fields = attributes.keys - self.fields.keys
+    extra_fields = attributes.keys - fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, intent]
   rescue Mongoid::Errors::InvalidValue => e
@@ -41,7 +41,7 @@ class PublishIntent
   def as_json(options = nil)
     super(options).tap do |hash|
       hash["base_path"] = hash.delete("_id")
-      hash["errors"] = self.errors.as_json.stringify_keys if self.errors.any?
+      hash["errors"] = errors.as_json.stringify_keys if errors.any?
     end
   end
 
@@ -50,7 +50,7 @@ class PublishIntent
   end
 
   def content_item
-    ContentItem.where(base_path: self.base_path).first
+    ContentItem.where(base_path: base_path).first
   end
 
   def base_path_without_root

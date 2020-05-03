@@ -43,8 +43,8 @@ describe InconsistentRedirectFinder do
     end
 
     def stub_router(path:, status:, body:)
-      stub_request(:get, "#{Plek.find('router-api')}/routes?incoming_path=#{path}").
-        to_return(status: status, body: body.to_json)
+      stub_request(:get, "#{Plek.find('router-api')}/routes?incoming_path=#{path}")
+        .to_return(status: status, body: body.to_json)
     end
   end
 end
