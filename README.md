@@ -36,6 +36,21 @@ Detailed technical information can be found in the
 Example API requests and corresponding responses can be found in the
 [content store pact-broker documentation][pact-broker-docs].
 
+## Limitations of the content API
+
+- Not all content is in the content-store yet. There are pages that
+don't use the publishing platform and can't be found in the content store
+(at the time of writing, [pages about past prime ministers][past-prime-ministers]).
+- For some pages the content store will not return all the content on the page (an
+[organisation page][organisation-page] for example).
+- Not all content in the store has a publicly queryable path, e.g. facets. They can
+only be queried via their ID, using the search API:
+  - https://www.gov.uk/api/search.json?filter_content_id=894a7c88-40bb-46-a234-b7e15d8a0c21
+  - https://www.gov.uk/api/search.json?filter_facet_values=77764805-73e6-4d47-9f20-aedd6de7dab9
+
+[organisation-page]: https://www.gov.uk/api/content/government/organisations/hm-revenue-customs
+[past-prime-ministers]: https://www.gov.uk/government/history/past-prime-ministers/gordon-brown
+
 ## Licence
 
 [MIT License](https://github.com/alphagov/content-store/blob/master/LICENSE)
