@@ -204,7 +204,7 @@ describe "content item write API", type: :request do
                                  "base_path" => "/vat-rates.fr",
                                  "routes" => [
                                    { "path" => "/vat-rates.fr", "type" => "exact" },
-                                ])
+                                 ])
 
       put_json "/content/vat-rates.fr", foreign_data
       item = ContentItem.where(base_path: "/vat-rates.fr").first

@@ -48,9 +48,9 @@ describe PublishIntent, type: :model do
 
       it "requires rendering_app to be a valid DNS hostname" do
         %w[
-            word
-            alpha12numeric
-            dashed-item
+          word
+          alpha12numeric
+          dashed-item
         ].each do |value|
           intent.rendering_app = value
           expect(intent).to be_valid
