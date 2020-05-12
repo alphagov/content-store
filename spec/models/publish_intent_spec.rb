@@ -139,9 +139,9 @@ describe PublishIntent, type: :model do
       ]
     end
 
-    let(:intent) {
+    let(:intent) do
       build(:publish_intent, base_path: "/a-path", rendering_app: "an-app", routes: routes)
-    }
+    end
 
     it "registers the assigned routes when created" do
       intent.save!

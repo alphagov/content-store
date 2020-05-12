@@ -85,9 +85,9 @@ describe RouteSet, type: :model do
     end
 
     context "with a corresponding content item" do
-      let!(:item) {
+      let!(:item) do
         create(:content_item, base_path: "/path", routes: [{ "path" => "/path", "type" => "exact" }])
-      }
+      end
 
       it "constructs a supplimentary route set for the intent" do
         intent = build(:publish_intent, base_path: "/path", rendering_app: "frontend")

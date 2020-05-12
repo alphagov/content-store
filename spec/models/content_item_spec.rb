@@ -114,13 +114,13 @@ describe ContentItem, type: :model do
         let(:attributes) { { "schema_name" => "publication" } }
         let(:scheduled_publication_time) { Time.zone.local(2017, 3, 1, 12, 0) }
         let(:scheduled_publishing_delay) { 9200 }
-        let(:log_entry) {
+        let(:log_entry) do
           build(
             :scheduled_publishing_log_entry,
             scheduled_publication_time: scheduled_publication_time,
             delay_in_milliseconds: 14700,
           )
-        }
+        end
 
         it "sets the scheduled publishing details" do
           _, item = ContentItem.create_or_replace(@item.base_path, attributes, log_entry)

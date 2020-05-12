@@ -16,7 +16,7 @@ module MongoInstrumentation
       def log_process_action(payload)
         super.tap do |messages|
           runtime = payload[:db_runtime]
-          messages << ("Mongo: %.1fms" % (runtime.to_f * 1000))
+          messages << format("Mongo: %.1fms", (runtime.to_f * 1000))
         end
       end
     end
