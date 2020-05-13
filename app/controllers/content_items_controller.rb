@@ -60,7 +60,7 @@ class ContentItemsController < ApplicationController
 private
 
   def redirect_canonical(content_item)
-    route = api_url_method.(content_item.base_path_without_root)
+    route = api_url_method.call(content_item.base_path_without_root)
     redirect_to route, status: :see_other
   end
 

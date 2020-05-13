@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/BlockLength
-
 desc <<DESCRIPTION
   Validate content items against their frontend schemas. Ignores formats without schemas.
 
@@ -24,7 +22,7 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
                    end
 
   validatable_content_items = ContentItem.where(:format.in => formats_to_use)
-  api_url_callable = lambda { |base_path| "http://api.example.com/content#{base_path}" }
+  api_url_callable = ->(base_path) { "http://api.example.com/content#{base_path}" }
 
   invalid_content_items = []
 
@@ -53,5 +51,3 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
     puts ""
   end
 end
-
-# rubocop:enable Metrics/BlockLength

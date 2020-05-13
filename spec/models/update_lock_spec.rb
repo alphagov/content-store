@@ -23,12 +23,12 @@ describe UpdateLock, type: :model do
     end
 
     context "for a locked item" do
-      let(:lockable) {
+      let(:lockable) do
         double(
           :lockable,
           payload_version: "20",
         )
-      }
+      end
       context "without payload_version" do
         let(:attributes) { {} }
         it "raises an error" do

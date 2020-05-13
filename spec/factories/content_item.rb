@@ -48,42 +48,42 @@ FactoryBot.define do
     factory :gone_content_item_with_details do
       sequence(:base_path) { |n| "/messy-language-stuff-#{n}" }
       format { "gone" }
-      details {
+      details do
         {
           explanation: "<div class=\"govspeak\"><p>Explanation…</p> </div>",
           alternative_path: "/example",
         }
-      }
+      end
     end
 
     factory :gone_content_time_with_empty_details_fields do
       sequence(:base_path) { |n| "/more-gone-than-the-other-gone-#{n}" }
       format { "gone" }
-      details {
+      details do
         {
           explanation: "",
           alternative_path: "",
         }
-      }
+      end
     end
 
     factory :access_limited_content_item, parent: :content_item do
       sequence(:base_path) { |n| "/access-limited-#{n}" }
 
       trait :by_user_id do
-        access_limited {
+        access_limited do
           {
             "users" => %w[M6GdNZggrbGiJrLjMSbKqA f17250b0-7540-0131-f036-005056030202],
           }
-        }
+        end
       end
 
       trait :by_org_id do
-        access_limited {
+        access_limited do
           {
             "organisations" => %w[f17250b0-7540-0131-f036-005056030202],
           }
-        }
+        end
       end
     end
   end

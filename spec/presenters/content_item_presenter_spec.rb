@@ -19,7 +19,7 @@ describe ContentItemPresenter do
   let(:locale) { "en" }
 
   let(:api_url_method) do
-    lambda { |base_path| "http://api.example.com/content/#{base_path}" }
+    ->(base_path) { "http://api.example.com/content/#{base_path}" }
   end
   let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
 
