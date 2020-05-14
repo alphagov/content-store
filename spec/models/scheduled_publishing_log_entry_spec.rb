@@ -12,7 +12,7 @@ describe ScheduledPublishingLogEntry do
         scheduled_publication_time: publication_time,
       )
 
-      expect(log_entry.delay_in_milliseconds).to be_within(1).of(20000)
+      expect(log_entry.delay_in_milliseconds).to be_within(1).of(20_000)
     end
   end
 end

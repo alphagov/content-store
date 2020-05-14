@@ -3,7 +3,7 @@ class UpdateLock
     @lockable = lockable
 
     unless object_is_lockable?(lockable)
-      raise ArgumentError.new("#{lockable.class} must implement payload_version")
+      raise ArgumentError, "#{lockable.class} must implement payload_version"
     end
   end
 

@@ -145,11 +145,14 @@ describe PublishIntent, type: :model do
 
     it "registers the assigned routes when created" do
       intent.save!
-      assert_routes_registered("an-app", [
-        ["/a-path", "exact"],
-        ["/a-path.json", "exact"],
-        ["/a-path/subpath", "prefix"],
-      ])
+      assert_routes_registered(
+        "an-app",
+        [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
+        ],
+      )
     end
   end
 end

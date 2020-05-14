@@ -40,13 +40,13 @@ end
 
 class Tasks::DataHygiene::PublishingDelayReporter::Stats
   def self.mean(values)
-    raise ArgumentError.new("Cannot calculate the mean of an empty array") if values.empty?
+    raise ArgumentError, "Cannot calculate the mean of an empty array" if values.empty?
 
     values.sum / values.size.to_f
   end
 
   def self.percentile(values, percentile)
-    raise ArgumentError.new("Cannot calculate percentile #{percentile} of an empty array") if values.empty?
+    raise ArgumentError, "Cannot calculate percentile #{percentile} of an empty array" if values.empty?
 
     ordinal = (values.length * percentile.to_f / 100).ceil
     index = [0, ordinal - 1].max

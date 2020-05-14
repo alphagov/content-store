@@ -85,8 +85,17 @@ module Tasks
 
         CSV.open("tmp/#{filename}.csv", "wb") do |csv|
           content_item_fields = %w[
-            _id content_id title format locale publishing_app
-            rendering_app routes redirects phase analytics_identifier
+            _id
+            content_id
+            title
+            format
+            locale
+            publishing_app
+            rendering_app
+            routes
+            redirects
+            phase
+            analytics_identifier
             updated_at
           ]
 

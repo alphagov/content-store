@@ -118,7 +118,7 @@ describe ContentItem, type: :model do
           build(
             :scheduled_publishing_log_entry,
             scheduled_publication_time: scheduled_publication_time,
-            delay_in_milliseconds: 14700,
+            delay_in_milliseconds: 14_700,
           )
         end
 
@@ -160,11 +160,14 @@ describe ContentItem, type: :model do
 
     it "registers the assigned routes" do
       @item.register_routes
-      assert_routes_registered("an-app", [
-        ["/a-path", "exact"],
-        ["/a-path.json", "exact"],
-        ["/a-path/subpath", "prefix"],
-      ])
+      assert_routes_registered(
+        "an-app",
+        [
+          ["/a-path", "exact"],
+          ["/a-path.json", "exact"],
+          ["/a-path/subpath", "prefix"],
+        ],
+      )
     end
 
     context "with a previous item" do
@@ -176,41 +179,53 @@ describe ContentItem, type: :model do
 
       it "does not register the routes when they are unchanged" do
         @item.register_routes(previous_item: @previous_item)
-        refute_routes_registered("an-app", [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-          ["/a-path/subpath", "prefix"],
-        ])
+        refute_routes_registered(
+          "an-app",
+          [
+            ["/a-path", "exact"],
+            ["/a-path.json", "exact"],
+            ["/a-path/subpath", "prefix"],
+          ],
+        )
       end
 
       it "registers routes when the routes are different" do
         @previous_item.routes[1]["type"] = "prefix"
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered("an-app", [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-          ["/a-path/subpath", "prefix"],
-        ])
+        assert_routes_registered(
+          "an-app",
+          [
+            ["/a-path", "exact"],
+            ["/a-path.json", "exact"],
+            ["/a-path/subpath", "prefix"],
+          ],
+        )
       end
 
       it "registers routes when the redirects are different" do
         @previous_item.redirects << { "path" => "/a-path/old-part", "type" => "exact", "destination" => "/somewhere" }
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered("an-app", [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-          ["/a-path/subpath", "prefix"],
-        ])
+        assert_routes_registered(
+          "an-app",
+          [
+            ["/a-path", "exact"],
+            ["/a-path.json", "exact"],
+            ["/a-path/subpath", "prefix"],
+          ],
+        )
       end
 
       it "registers routes when the rendering_app is different" do
         @previous_item.rendering_app = "another-app"
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered("an-app", [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-          ["/a-path/subpath", "prefix"],
-        ])
+        assert_routes_registered(
+          "an-app",
+          [
+            ["/a-path", "exact"],
+            ["/a-path.json", "exact"],
+            ["/a-path/subpath", "prefix"],
+          ],
+        )
       end
     end
 
@@ -222,10 +237,13 @@ describe ContentItem, type: :model do
 
       it "registers routes even though they haven't changed" do
         @item.register_routes(previous_item: @previous_item)
-        assert_routes_registered("an-app", [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-        ])
+        assert_routes_registered(
+          "an-app",
+          [
+            ["/a-path", "exact"],
+            ["/a-path.json", "exact"],
+          ],
+        )
       end
     end
   end
@@ -268,37 +286,51 @@ describe ContentItem, type: :model do
   describe "#user_granted_access?" do
     it "returns false for nil inputs" do
       content_item = build(:content_item)
-      expect(content_item.user_granted_access?(user_id: nil,
-                                               user_organisation_id: nil))
+      expect(content_item.user_granted_access?(
+               user_id: nil,
+               user_organisation_id: nil,
+             ))
         .to be(false)
     end
 
     it "returns true if a user matches the user ids" do
       user_id = SecureRandom.uuid
-      content_item = build(:content_item,
-                           access_limited: { "users" => [user_id] })
-      expect(content_item.user_granted_access?(user_id: user_id,
-                                               user_organisation_id: nil))
+      content_item = build(
+        :content_item,
+        access_limited: { "users" => [user_id] },
+      )
+      expect(content_item.user_granted_access?(
+               user_id: user_id,
+               user_organisation_id: nil,
+             ))
         .to be(true)
     end
 
     it "returns true if an organisation matches the organisation ids" do
       organisation_id = SecureRandom.uuid
-      content_item = build(:content_item,
-                           access_limited: { "organisations" => [organisation_id] })
-      expect(content_item.user_granted_access?(user_id: nil,
-                                               user_organisation_id: organisation_id))
+      content_item = build(
+        :content_item,
+        access_limited: { "organisations" => [organisation_id] },
+      )
+      expect(content_item.user_granted_access?(
+               user_id: nil,
+               user_organisation_id: organisation_id,
+             ))
         .to be(true)
     end
 
     it "returns false if user ids and organisation ids don't match" do
       user_id = SecureRandom.uuid
       organisation_id = SecureRandom.uuid
-      content_item = build(:content_item,
-                           access_limited: { "users" => [user_id],
-                                             "organisations" => [organisation_id] })
-      expect(content_item.user_granted_access?(user_id: organisation_id,
-                                               user_organisation_id: user_id))
+      content_item = build(
+        :content_item,
+        access_limited: { "users" => [user_id],
+                          "organisations" => [organisation_id] },
+      )
+      expect(content_item.user_granted_access?(
+               user_id: organisation_id,
+               user_organisation_id: user_id,
+             ))
         .to be(false)
     end
   end
@@ -313,9 +345,11 @@ describe ContentItem, type: :model do
       let(:auth_bypass_id) { SecureRandom.uuid }
 
       it "returns true for an auth_bypass_id matching the content items one" do
-        content_item = build(:access_limited_content_item,
-                             :by_user_id,
-                             auth_bypass_ids: [auth_bypass_id])
+        content_item = build(
+          :access_limited_content_item,
+          :by_user_id,
+          auth_bypass_ids: [auth_bypass_id],
+        )
 
         expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(true)
       end

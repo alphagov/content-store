@@ -65,8 +65,10 @@ private
   end
 
   def can_view?(item)
-    return true if item.user_granted_access?(user_id: auth_user_id,
-                                             user_organisation_id: auth_organisation_id)
+    return true if item.user_granted_access?(
+      user_id: auth_user_id,
+      user_organisation_id: auth_organisation_id,
+    )
     return true if item.valid_auth_bypass_id?(auth_bypass_id)
     return false if item.access_limited?
 
