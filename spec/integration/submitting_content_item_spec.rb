@@ -182,9 +182,11 @@ describe "content item write API", type: :request do
     let(:publish_time) { 10.days.ago.to_datetime }
     let!(:log_entry) do
       Timecop.freeze(publish_time + 25.seconds) do
-        create(:scheduled_publishing_log_entry,
-               base_path: @data["base_path"],
-               scheduled_publication_time: publish_time)
+        create(
+          :scheduled_publishing_log_entry,
+          base_path: @data["base_path"],
+          scheduled_publication_time: publish_time,
+        )
       end
     end
 
@@ -199,12 +201,14 @@ describe "content item write API", type: :request do
 
   describe "creating a non-English content item" do
     it "creates the content item" do
-      foreign_data = @data.merge("title" => "Taux de TVA",
-                                 "locale" => "fr",
-                                 "base_path" => "/vat-rates.fr",
-                                 "routes" => [
-                                   { "path" => "/vat-rates.fr", "type" => "exact" },
-                                 ])
+      foreign_data = @data.merge(
+        "title" => "Taux de TVA",
+        "locale" => "fr",
+        "base_path" => "/vat-rates.fr",
+        "routes" => [
+          { "path" => "/vat-rates.fr", "type" => "exact" },
+        ],
+      )
 
       put_json "/content/vat-rates.fr", foreign_data
       item = ContentItem.where(base_path: "/vat-rates.fr").first
@@ -421,9 +425,10 @@ describe "content item write API", type: :request do
 
     it "raises a MissingAttributeError" do
       expect {
-        put_json "/content/vat-rates", @data.to_h.except(
-          "payload_version",
-        )
+        put_json "/content/vat-rates",
+                 @data.to_h.except(
+                   "payload_version",
+                 )
       }.to raise_error(MissingAttributeError)
     end
   end

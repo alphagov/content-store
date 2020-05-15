@@ -3,9 +3,11 @@ require "rails_helper"
 describe "routing of content_item requests", type: :routing do
   context "GET route" do
     it "should route to the controller passing on the path" do
-      expect(get: "/content/foo/bar").to route_to(controller: "content_items",
-                                                  action: "show",
-                                                  path_without_root: "foo/bar")
+      expect(get: "/content/foo/bar").to route_to(
+        controller: "content_items",
+        action: "show",
+        path_without_root: "foo/bar",
+      )
     end
 
     it "should not match a path without a leading /" do
@@ -22,10 +24,12 @@ describe "routing of content_item requests", type: :routing do
 
   context "GET API route" do
     it "should route to the controller passing on the path" do
-      expect(get: "/api/content/foo/bar").to route_to(controller: "content_items",
-                                                      action: "show",
-                                                      path_without_root: "foo/bar",
-                                                      public_api_request: true)
+      expect(get: "/api/content/foo/bar").to route_to(
+        controller: "content_items",
+        action: "show",
+        path_without_root: "foo/bar",
+        public_api_request: true,
+      )
     end
 
     it "should not match a path without a leading /" do
@@ -43,9 +47,11 @@ describe "routing of content_item requests", type: :routing do
 
   context "PUT route" do
     it "should route to the controller passing on the base_path" do
-      expect(put: "/content/foo/bar").to route_to(controller: "content_items",
-                                                  action: "update",
-                                                  base_path_without_root: "foo/bar")
+      expect(put: "/content/foo/bar").to route_to(
+        controller: "content_items",
+        action: "update",
+        base_path_without_root: "foo/bar",
+      )
     end
 
     it "should not match a base_path without a leading /" do

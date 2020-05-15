@@ -136,10 +136,13 @@ describe RouteSet, type: :model do
 
       it "registers and commits all registerable routes" do
         @route_set.register!
-        assert_routes_registered("frontend", [
-          ["/path", "exact"],
-          ["/path/sub/path", "prefix"],
-        ])
+        assert_routes_registered(
+          "frontend",
+          [
+            ["/path", "exact"],
+            ["/path/sub/path", "prefix"],
+          ],
+        )
       end
 
       it "registers and commits all registerable routes and redirects" do
@@ -147,10 +150,13 @@ describe RouteSet, type: :model do
           { path: "/path.json", type: "exact", destination: "/api/content/path" },
         ]
         @route_set.register!
-        assert_routes_registered("frontend", [
-          ["/path", "exact"],
-          ["/path/sub/path", "prefix"],
-        ])
+        assert_routes_registered(
+          "frontend",
+          [
+            ["/path", "exact"],
+            ["/path/sub/path", "prefix"],
+          ],
+        )
         assert_redirect_routes_registered([["/path.json", "exact", "/api/content/path"]])
       end
     end

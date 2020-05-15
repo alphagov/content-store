@@ -1,10 +1,12 @@
 module RouteDumpLoader
-  Route = Struct.new(:incoming_path,
-                     :handler,
-                     :backend_id,
-                     :disabled,
-                     :redirect_to,
-                     :updated_at)
+  Route = Struct.new(
+    :incoming_path,
+    :handler,
+    :backend_id,
+    :disabled,
+    :redirect_to,
+    :updated_at,
+  )
 
   def self.load(filename)
     Zlib::GzipReader.open(filename) do |file|
