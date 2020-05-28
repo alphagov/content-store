@@ -1,7 +1,7 @@
 # The Content Item Format
 
 A content item consists of a set key/value pairs. Different key/value pairs are
-present or required, depending on the context. The three contexts are:
+present or required, depending on the context. The two contexts are:
 
  - storing: content items being sent to the content store.
  - retrieving: content items being retrieved from the content store.
