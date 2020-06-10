@@ -1,7 +1,7 @@
 # Presenter for generating the public-facing representation of content items.
 #
 # Any linked content items that exist in the content store are expanded out to
-# include their title, base_path, api_url and web_url. See doc/output_examples
+# include their title, base_path, api_url and web_url. See docs/output_examples
 # for an example of what this representation looks like.
 class ContentItemPresenter
   RESOLVER = ContentTypeResolver.new("text/html")

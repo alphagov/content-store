@@ -41,7 +41,7 @@ Example API requests and corresponding responses can be found in the
 [MIT License](https://github.com/alphagov/content-store/blob/master/LICENSE)
 
 [content-api-docs]: https://content-api.publishing.service.gov.uk/
-[content-store-docs]: https://github.com/alphagov/content-store/blob/master/doc/technical-information.md
+[content-store-docs]: https://github.com/alphagov/content-store/blob/master/docs/technical-information.md
 [govuk-content-schemas]: https://github.com/alphagov/govuk-content-schemas
 [pact-broker-docs]: https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest
 [publishing-api-docs]: https://docs.publishing.service.gov.uk/apps/publishing-api.html
