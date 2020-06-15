@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "gds-api-adapters", "~> 67.0.0"
-gem "gds-sso", "~> 14"
+gem "gds-sso", "~> 15"
 gem "govuk-content-schema-test-helpers", "~> 1.6"
 gem "govuk_app_config", "~> 2.2"
 gem "mongo", "2.4.3"
