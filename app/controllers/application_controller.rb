@@ -22,11 +22,11 @@ private
   end
 
   def encoded_request_path
-    URI.escape(request_path)
+    Addressable::URI.encode(request_path)
   end
 
   def encoded_base_path
-    URI.escape(base_path)
+    Addressable::URI.encode(base_path)
   end
 
   def request_path

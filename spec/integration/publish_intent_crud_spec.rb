@@ -103,7 +103,7 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "handles non-ascii paths" do
-      path = URI.encode("/news/בוט לאינד")
+      path = Addressable::URI.encode("/news/בוט לאינד")
       put_json "/publish-intent#{path}", data.merge("base_path" => path, "routes" => [{ "path" => path, "type" => "exact" }])
 
       expect(response.status).to eq(201)
@@ -159,7 +159,7 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "handles non-ascii paths" do
-      path = URI.encode("/news/בוט לאינד")
+      path = Addressable::URI.encode("/news/בוט לאינד")
       create(:publish_intent, base_path: path)
       get "/publish-intent#{path}"
       expect(response.status).to eq(200)

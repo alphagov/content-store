@@ -364,7 +364,7 @@ describe "content item write API", type: :request do
   end
 
   context "copes with non-ASCII paths" do
-    let(:path) { URI.encode("/news/בוט לאינד") }
+    let(:path) { Addressable::URI.encode("/news/בוט לאינד") }
     before :each do
       @data["base_path"] = path
       @data["routes"][0]["path"] = path

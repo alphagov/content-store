@@ -126,7 +126,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a content item with a non-ASCII base_path" do
-    let(:content_item) { create(:content_item, base_path: URI.encode("/news/בוט לאינד")) }
+    let(:content_item) { create(:content_item, base_path: Addressable::URI.encode("/news/בוט לאינד")) }
 
     before(:each) { get "/content#{content_item.base_path}" }
 

@@ -7,10 +7,6 @@ inherit_mode:
   merge:
     - Exclude
 
-# Don't quite know how to fix this, so ignore it for now
-Lint/UriEscapeUnescape:
-  Enabled: false
-
 # Mongoid doesn't support this
 Rails/FindBy:
   Enabled: false
