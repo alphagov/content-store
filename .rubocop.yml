@@ -11,14 +11,6 @@ inherit_mode:
 Lint/UriEscapeUnescape:
   Enabled: false
 
-# Mongoid, not ActiveRecord, makes RuboCop's suggestions for the
-# following two cops not pass tests.
+# Mongoid doesn't support this
 Rails/FindBy:
   Enabled: false
-
-Rails/DynamicFindBy:
-  Enabled: false
-
-AllCops:
-  Exclude:
-    - db/migrate/201*.rb
