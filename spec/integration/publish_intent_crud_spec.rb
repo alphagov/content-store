@@ -103,7 +103,10 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "handles non-ascii paths" do
-      path = Addressable::URI.encode("/news/בוט לאינד")
+      # rubocop:disable Style/AsciiComments
+      # URI.escape("/news/בוט לאינד")
+      # rubocop:enable Style/AsciiComments
+      path = "/news/%D7%91%D7%95%D7%98%20%D7%9C%D7%90%D7%99%D7%A0%D7%93"
       put_json "/publish-intent#{path}", data.merge("base_path" => path, "routes" => [{ "path" => path, "type" => "exact" }])
 
       expect(response.status).to eq(201)
@@ -159,7 +162,10 @@ describe "CRUD of publish intents", type: :request do
     end
 
     it "handles non-ascii paths" do
-      path = Addressable::URI.encode("/news/בוט לאינד")
+      # rubocop:disable Style/AsciiComments
+      # URI.escape("/news/בוט לאינד")
+      # rubocop:enable Style/AsciiComments
+      path = "/news/%D7%91%D7%95%D7%98%20%D7%9C%D7%90%D7%99%D7%A0%D7%93"
       create(:publish_intent, base_path: path)
       get "/publish-intent#{path}"
       expect(response.status).to eq(200)
