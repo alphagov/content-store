@@ -8,7 +8,7 @@ gem "mongo"
 gem "mongoid"
 gem "plek"
 gem "rack-cache"
-gem "rails", "5.2.4.3"
+gem "rails", "~> 6.0.3", ">= 6.0.3.2"
 gem "uuidtools"
 gem "whenever", require: false
 
