@@ -13,18 +13,16 @@ gem "uuidtools"
 gem "whenever", require: false
 
 group :development, :test do
+  gem "ci_reporter_rspec"
   gem "climate_control"
   gem "database_cleaner"
   gem "factory_bot"
-  gem "rspec-rails"
-  gem "timecop"
-  gem "webmock", require: false
-
-  gem "ci_reporter_rspec"
-  gem "simplecov", require: false
-  gem "simplecov-rcov", require: false
-
   gem "pact"
   gem "pry-byebug"
+  gem "rspec-rails"
   gem "rubocop-govuk"
+  gem "simplecov", require: false
+  gem "simplecov-rcov", require: false
+  gem "timecop"
+  gem "webmock", require: false
 end
