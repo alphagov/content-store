@@ -332,28 +332,28 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ci_reporter_rspec (~> 1.0.0)
-  climate_control (~> 0.2)
-  database_cleaner (~> 1.8.5)
-  factory_bot (~> 6.1)
-  gds-api-adapters (~> 67.0.1)
-  gds-sso (~> 15)
-  govuk-content-schema-test-helpers (~> 1.6)
-  govuk_app_config (~> 2.3)
-  mongo (= 2.4.3)
-  mongoid (= 6.2.1)
+  ci_reporter_rspec
+  climate_control
+  database_cleaner
+  factory_bot
+  gds-api-adapters
+  gds-sso
+  govuk-content-schema-test-helpers
+  govuk_app_config
+  mongo
+  mongoid
   pact
-  plek (~> 4.0)
+  plek
   pry-byebug
   rack-cache
   rails (= 5.2.4.4)
-  rspec-rails (~> 4.0)
+  rspec-rails
   rubocop-govuk
-  simplecov (= 0.18.5)
-  timecop (= 0.9.1)
-  uuidtools (= 2.2.0)
-  webmock (= 3.8.3)
-  whenever (~> 1.0.0)
+  simplecov
+  timecop
+  uuidtools
+  webmock
+  whenever
 
 BUNDLED WITH
    1.17.3
