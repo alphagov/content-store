@@ -9,6 +9,8 @@ class RemoveNonCaseStudyWhitehallUnpublishings < Mongoid::Migration
       puts "Destroyed content item #{content_item.id}"
     end
     router_api.commit_routes
+  rescue GdsApi::SocketErrorException
+    puts "Router API is not available, skipping RemoveNonCaseStudyWhitehallUnpublishings"
   end
 
   def self.down
@@ -20,7 +22,7 @@ class RemoveNonCaseStudyWhitehallUnpublishings < Mongoid::Migration
       begin
         router_api.delete_route(redirect["path"], redirect["type"])
         puts "  Removed redirect '#{redirect['path']}'"
-      rescue GdsApi::HTTPNotFound => e
+      rescue GdsApi::HTTPNotFound, GdsApi::SocketErrorException => e
         puts "  Redirect #{redirect['path']} not found. Nothing done."
       end
     end
