@@ -6,6 +6,7 @@ class Fix404ingContentItems < Mongoid::Migration
       content_item = ContentItem.find_by(base_path: row.first)
       content_item.delete
     end
+  rescue Mongoid::Errors::DocumentNotFound
   end
 
   def self.down; end

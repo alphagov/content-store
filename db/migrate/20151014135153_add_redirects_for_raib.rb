@@ -13,6 +13,7 @@ class AddRedirectsForRaib < Mongoid::Migration
         routes: [],
       )
     end
+  rescue Mongoid::Errors::DocumentNotFound
   end
 
   def self.down; end
