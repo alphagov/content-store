@@ -1,6 +1,8 @@
 class RemoveObseleteContentItemsIndex < Mongoid::Migration
   def self.up
     collection.indexes.drop_one(key)
+  rescue StandardError
+    # if the collection doesn't exist, we don't care.
   end
 
   def self.down
