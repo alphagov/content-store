@@ -31,7 +31,7 @@ describe "Fetching content items", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       data = JSON.parse(response.body)
 
       expect(data.keys).to match_array(%w[
@@ -139,7 +139,7 @@ describe "Fetching content items", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
   end
@@ -198,7 +198,7 @@ describe "Fetching content items", type: :request do
     context "and a different content item has the base_path of the route" do
       let(:colliding_path) { "/base-path/exact" }
       it "returns the colliding content item" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response.body).to eq(present(colliding_content_item))
       end
     end

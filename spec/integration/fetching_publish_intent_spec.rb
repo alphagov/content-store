@@ -23,7 +23,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
@@ -43,7 +43,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
@@ -63,7 +63,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
@@ -84,7 +84,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
@@ -108,7 +108,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
@@ -133,7 +133,7 @@ describe "Fetching a content item with a publish intent", type: :request do
     end
 
     it "returns the presented content item as JSON data" do
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response.body).to eq(present(content_item))
     end
 
