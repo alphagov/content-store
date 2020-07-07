@@ -1,7 +1,7 @@
 require "rails_helper"
 require "tasks/data_hygiene/inconsistent_redirect_finder"
 
-describe InconsistentRedirectFinder do
+describe Tasks::DataHygiene::InconsistentRedirectFinder do
   describe "#items_with_inconsistent_redirects" do
     it "returns items that redirect in the router" do
       stub_router(path: "/path-with-redirect-route", status: 200, body: { handler: "redirect" })
@@ -39,7 +39,7 @@ describe InconsistentRedirectFinder do
     end
 
     def find_inconsistent_redirects(content_items)
-      InconsistentRedirectFinder.new(content_items).items_with_inconsistent_redirects
+      Tasks::DataHygiene::InconsistentRedirectFinder.new(content_items).items_with_inconsistent_redirects
     end
 
     def stub_router(path:, status:, body:)
