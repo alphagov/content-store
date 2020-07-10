@@ -315,7 +315,7 @@ GEM
     unicorn (5.5.5)
       kgio (~> 2.6)
       raindrops (~> 0.7)
-    uuidtools (2.1.5)
+    uuidtools (2.2.0)
     warden (1.2.8)
       rack (>= 2.0.6)
     warden-oauth2 (0.0.1)
@@ -354,7 +354,7 @@ DEPENDENCIES
   simplecov (= 0.18.5)
   simplecov-rcov (= 0.2.3)
   timecop (= 0.9.1)
-  uuidtools (= 2.1.5)
+  uuidtools (= 2.2.0)
   webmock (= 3.8.3)
   whenever (~> 1.0.0)
 

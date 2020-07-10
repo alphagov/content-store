@@ -8,7 +8,7 @@ gem "mongo", "2.4.3"
 gem "mongoid", "6.2.1"
 gem "plek", "~> 3.0"
 gem "rails", "5.2.4.3"
-gem "uuidtools", "2.1.5"
+gem "uuidtools", "2.2.0"
 gem "whenever", "~> 1.0.0", require: false
 
 group :development, :test do
