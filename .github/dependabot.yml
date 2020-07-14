@@ -9,11 +9,13 @@ updates:
       - dependency-name: brakeman
         dependency-type: direct
       # Internal gems
-      - dependency-name: "gds*"
-        dependency-type: direct
       - dependency-name: "govuk*"
         dependency-type: direct
       - dependency-name: "rubocop-govuk"
+        dependency-type: direct
+      - dependency-name: "gds-api-adapters"
+        dependency-type: direct
+      - dependency-name: "gds-sso"
         dependency-type: direct
       - dependency-name: plek
         dependency-type: direct
