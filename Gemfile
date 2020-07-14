@@ -14,7 +14,7 @@ gem "whenever", "~> 1.0.0", require: false
 group :development, :test do
   gem "climate_control", "~> 0.2"
   gem "database_cleaner", "~> 1.8.5"
-  gem "factory_bot", "~> 6.0"
+  gem "factory_bot", "~> 6.1"
   gem "rspec-rails", "~> 4.0"
   gem "timecop", "0.9.1"
   gem "webmock", "3.8.3", require: false
