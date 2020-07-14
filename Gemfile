@@ -6,7 +6,7 @@ gem "govuk-content-schema-test-helpers", "~> 1.6"
 gem "govuk_app_config", "~> 2.2"
 gem "mongo", "2.4.3"
 gem "mongoid", "6.2.1"
-gem "plek", "~> 3.0"
+gem "plek", "~> 4.0"
 gem "rails", "5.2.4.3"
 gem "uuidtools", "2.2.0"
 gem "whenever", "~> 1.0.0", require: false
