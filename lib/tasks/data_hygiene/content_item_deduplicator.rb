@@ -34,7 +34,7 @@ module Tasks
           duplicate_set.each do |duplicate|
             @deduplicated << "#{duplicate.content_id},#{duplicate.locale},#{duplicate.updated_at},#{duplicate.base_path}"
 
-            duplicate.destroy if do_destroy
+            duplicate.destroy! if do_destroy
           end
         end
 

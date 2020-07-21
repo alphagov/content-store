@@ -52,7 +52,7 @@ class ContentItemsController < ApplicationController
     content_item = ContentItem.find_by(base_path: encoded_base_path)
 
     content_item.delete_routes
-    content_item.destroy
+    content_item.destroy!
 
     render status: :ok
   end
@@ -158,7 +158,7 @@ private
       .first
 
     if new_scheduled_publishing?(intent, document_type, latest_log_entry)
-      latest_log_entry = ScheduledPublishingLogEntry.create(
+      latest_log_entry = ScheduledPublishingLogEntry.create!(
         base_path: base_path,
         document_type: document_type,
         scheduled_publication_time: intent.publish_time,

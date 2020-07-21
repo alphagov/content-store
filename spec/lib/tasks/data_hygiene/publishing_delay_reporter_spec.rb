@@ -32,10 +32,10 @@ describe Tasks::DataHygiene::PublishingDelayReporter do
   it "reports 95th percentile of publishing delays" do
     now = Time.zone.local(2018, 3, 1, 10, 0)
     Timecop.freeze(now) do
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 30.minutes)
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 45.minutes)
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 1.minute)
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 15.minutes)
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 30.minutes)
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 45.minutes)
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 1.minute)
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 15.minutes)
     end
 
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.all_document_types.95_percentile_ms", 45.minutes.in_milliseconds)
@@ -48,11 +48,11 @@ describe Tasks::DataHygiene::PublishingDelayReporter do
   it "splits stats by statistics document type" do
     now = Time.zone.local(2018, 3, 1, 10, 0)
     Timecop.freeze(now) do
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 1.minute, document_type: "national_statistics")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 2.minutes, document_type: "official_statistics")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 3.minutes, document_type: "national_statistics_announcement")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 4.minutes, document_type: "official_statistics_announcement")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 5.minutes, document_type: "other")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 1.minute, document_type: "national_statistics")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 2.minutes, document_type: "official_statistics")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 3.minutes, document_type: "national_statistics_announcement")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 4.minutes, document_type: "official_statistics_announcement")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 5.minutes, document_type: "other")
     end
 
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.national_statistics.mean_ms", 1.minute.in_milliseconds)
@@ -75,10 +75,10 @@ describe Tasks::DataHygiene::PublishingDelayReporter do
   it "groups stats for all other document types" do
     now = Time.zone.local(2018, 3, 1, 10, 0)
     Timecop.freeze(now) do
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 10.minutes, document_type: "news_article")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 20.minutes, document_type: "guidance")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 30.minutes, document_type: "national_statistics")
-      ScheduledPublishingLogEntry.create(scheduled_publication_time: now - 40.minutes, document_type: "official_statistics_announcement")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 10.minutes, document_type: "news_article")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 20.minutes, document_type: "guidance")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 30.minutes, document_type: "national_statistics")
+      ScheduledPublishingLogEntry.create!(scheduled_publication_time: now - 40.minutes, document_type: "official_statistics_announcement")
     end
 
     expect(GovukStatsd).to receive(:gauge).with("scheduled_publishing.aggregate.other_document_types.mean_ms", 15.minutes.in_milliseconds)
