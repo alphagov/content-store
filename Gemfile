@@ -1,12 +1,13 @@
 source "https://rubygems.org"
 
-gem "gds-api-adapters", "~> 67.0.0"
+gem "gds-api-adapters", "~> 67.0.1"
 gem "gds-sso", "~> 15"
 gem "govuk-content-schema-test-helpers", "~> 1.6"
 gem "govuk_app_config", "~> 2.2"
 gem "mongo", "2.4.3"
 gem "mongoid", "6.2.1"
 gem "plek", "~> 4.0"
+gem "rack-cache"
 gem "rails", "5.2.4.3"
 gem "uuidtools", "2.2.0"
 gem "whenever", "~> 1.0.0", require: false
