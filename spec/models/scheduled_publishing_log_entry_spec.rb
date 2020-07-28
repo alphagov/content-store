@@ -6,7 +6,7 @@ describe ScheduledPublishingLogEntry do
       publication_time = Time.zone.now
       allow(Time).to receive(:now)
         .and_return(publication_time + 20)
-      log_entry = ScheduledPublishingLogEntry.create(
+      log_entry = ScheduledPublishingLogEntry.create!(
         base_path: "/booyah",
         document_type: "stats",
         scheduled_publication_time: publication_time,

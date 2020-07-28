@@ -16,7 +16,7 @@ describe ContentItem, type: :model do
     end
 
     it "maintains the created_at value from previous item" do
-      @item.save
+      @item.save!
       _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
       expect(item.reload.created_at).to eq(@item.reload.created_at)
     end

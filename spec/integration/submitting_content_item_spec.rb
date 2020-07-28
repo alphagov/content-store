@@ -101,7 +101,7 @@ describe "content item write API", type: :request do
     end
 
     context "with a publish intent in the past" do
-      let(:publish_time) { 10.seconds.ago.to_datetime }
+      let(:publish_time) { 10.seconds.ago }
       let!(:publish_intent) do
         create(:publish_intent, base_path: @data["base_path"], publish_time: publish_time)
       end
@@ -115,14 +115,14 @@ describe "content item write API", type: :request do
         put_json "/content/vat-rates", @data
 
         log_entry = ScheduledPublishingLogEntry.find_by(base_path: "/vat-rates")
-        expect(log_entry.scheduled_publication_time).to be_within(0.001.seconds).of(publish_time)
+        expect(log_entry.scheduled_publication_time.in_time_zone).to be_within(0.001.seconds).of(publish_time)
       end
 
       it "adds the latency to the content item" do
         put_json "/content/vat-rates", @data
 
         content_item = ContentItem.find_by(base_path: "/vat-rates")
-        expect(content_item.publishing_scheduled_at).to be_within(0.001.seconds).of(publish_time)
+        expect(content_item.publishing_scheduled_at.in_time_zone).to be_within(0.001.seconds).of(publish_time)
         expect(content_item.scheduled_publishing_delay_seconds).to_not be_nil
       end
 
@@ -144,11 +144,11 @@ describe "content item write API", type: :request do
 
     context "with an earlier scheduled publishing" do
       it "logs the publishing delays for each scheduled publishing" do
-        first_scheduled_time = 1.day.ago.to_datetime
+        first_scheduled_time = 1.day.ago
         publish_intent = create(:publish_intent, base_path: @data["base_path"], publish_time: first_scheduled_time)
         put_json "/content/vat-rates", @data
 
-        second_scheduled_time = 1.day.ago.to_datetime
+        second_scheduled_time = 1.day.ago
         publish_intent.publish_time = second_scheduled_time
         publish_intent.save!
         put_json "/content/vat-rates", @data
@@ -156,8 +156,8 @@ describe "content item write API", type: :request do
         log_entries = ScheduledPublishingLogEntry.where(base_path: "/vat-rates")
         expect(log_entries.count).to eq(2)
 
-        expect(log_entries[0].scheduled_publication_time).to be_within(0.001.seconds).of(first_scheduled_time)
-        expect(log_entries[1].scheduled_publication_time).to be_within(0.001.seconds).of(second_scheduled_time)
+        expect(log_entries[0].scheduled_publication_time.in_time_zone).to be_within(0.001.seconds).of(first_scheduled_time)
+        expect(log_entries[1].scheduled_publication_time.in_time_zone).to be_within(0.001.seconds).of(second_scheduled_time)
       end
     end
 
@@ -179,7 +179,7 @@ describe "content item write API", type: :request do
   end
 
   context "with an earlier scheduled publishing log entry" do
-    let(:publish_time) { 10.days.ago.to_datetime }
+    let(:publish_time) { 10.days.ago }
     let!(:log_entry) do
       Timecop.freeze(publish_time + 25.seconds) do
         create(
@@ -194,7 +194,7 @@ describe "content item write API", type: :request do
       put_json "/content/vat-rates", @data
 
       content_item = ContentItem.find_by(base_path: "/vat-rates")
-      expect(content_item.publishing_scheduled_at).to be_within(0.001.seconds).of(publish_time)
+      expect(content_item.publishing_scheduled_at.in_time_zone).to be_within(0.001.seconds).of(publish_time)
       expect(content_item.scheduled_publishing_delay_seconds).to be_between(24, 25).inclusive
     end
   end

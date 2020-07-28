@@ -20,7 +20,7 @@ class ContentItem
 
     # This doesn't seem to get set correctly on an upsert so this is to
     # maintain it
-    created_at = previous_item ? previous_item.created_at : Time.now.utc
+    created_at = previous_item ? previous_item.created_at : Time.zone.now.utc
 
     item.assign_attributes(
       attributes

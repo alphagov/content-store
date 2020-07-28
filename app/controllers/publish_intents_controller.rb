@@ -21,7 +21,7 @@ class PublishIntentsController < ApplicationController
 
   def destroy
     intent = PublishIntent.find_by(base_path: encoded_base_path)
-    intent.destroy
+    intent.destroy!
 
     render json: {}
   end
