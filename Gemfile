@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+gem "rails", "6.0.3.2"
+
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk-content-schema-test-helpers"
@@ -8,7 +10,6 @@ gem "mongo"
 gem "mongoid"
 gem "plek"
 gem "rack-cache"
-gem "rails", "~> 6.0.3", ">= 6.0.3.2"
 gem "uuidtools"
 gem "whenever", require: false
 
