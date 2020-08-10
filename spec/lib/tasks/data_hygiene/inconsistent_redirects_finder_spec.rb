@@ -1,5 +1,4 @@
 require "rails_helper"
-require "tasks/data_hygiene/inconsistent_redirect_finder"
 
 describe Tasks::DataHygiene::InconsistentRedirectFinder do
   describe "#items_with_inconsistent_redirects" do

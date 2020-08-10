@@ -1,5 +1,4 @@
 require "rails_helper"
-require "tasks/data_hygiene/duplicate_report"
 
 describe Tasks::DataHygiene::DuplicateReport do
   let(:fake_stdout) { StringIO.new }

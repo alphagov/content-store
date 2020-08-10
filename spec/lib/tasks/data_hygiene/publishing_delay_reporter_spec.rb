@@ -1,5 +1,4 @@
 require "rails_helper"
-require "tasks/data_hygiene/publishing_delay_reporter"
 
 describe Tasks::DataHygiene::PublishingDelayReporter do
   before(:each) do

@@ -1,5 +1,4 @@
 require "rails_helper"
-require "tasks/data_hygiene/content_item_deduplicator"
 
 describe Tasks::DataHygiene::ContentItemDeduplicator do
   let(:fake_stdout) { StringIO.new }
