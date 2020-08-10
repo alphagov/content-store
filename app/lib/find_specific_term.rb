@@ -23,7 +23,7 @@ private
     CSV.open(Rails.root.join("tmp/search_term_content_items.csv"), "wb") do |csv|
       csv << CSV_HEADERS
 
-      puts "Searching for #{term}..."
+      logger.info "Searching for #{term}..."
 
       term_content_items = content_items(/#{term}/)
 
@@ -31,15 +31,15 @@ private
         csv << csv_row(content_item)
       end
 
-      puts "Found #{term_content_items.count} items containing #{term}"
+      logger.info "Found #{term_content_items.count} items containing #{term}"
     end
 
-    puts "Finished searching"
+    logger.info "Finished searching"
     # There's a subtle bug with RuboCop regexp where it thinks this
     # format of interpolated `Rails.root.join` is incorrect.
-    puts "CSV file at #{Rails.root.join('tmp/search_term_content_items.csv')}"
+    logger.info "CSV file at #{Rails.root.join('tmp/search_term_content_items.csv')}"
 
-    puts File.read(Rails.root.join("tmp/search_term_content_items.csv"))
+    logger.info File.read(Rails.root.join("tmp/search_term_content_items.csv"))
   end
 
   def csv_row(content_item)

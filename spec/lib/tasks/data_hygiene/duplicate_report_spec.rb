@@ -1,31 +1,24 @@
 require "rails_helper"
 
-<<<<<<< HEAD
-describe Tasks::DataHygiene::DuplicateReport do
-  let(:fake_stdout) { StringIO.new }
-=======
 describe DataHygiene::DuplicateReport do
->>>>>>> 04b3927... Remove TASK:: module class
   let(:fake_csv) { StringIO.new }
 
   before do
-    @real_stdout = $stdout
-    $stdout = fake_stdout
     allow(CSV).to receive(:open).and_return(fake_csv)
   end
-
-  after { $stdout = @real_stdout }
 
   describe "#full" do
     it "runs without issue" do
       content_item = create(:content_item_with_content_id)
       create(:content_item, content_id: content_item.content_id)
 
-      subject.full
+      expect(Rails.logger).to receive(:info).with("Fetching content items for duplicated content ids...")
+      expect(Rails.logger).to receive(:info).with("Writing content items to csv...")
+      expect(Rails.logger).to receive(:info).with("~~~~~~~~~\n Summary \n~~~~~~~~~\n")
+      expect(Rails.logger).to receive(:info).with("blank_content_ids: 0")
+      expect(Rails.logger).to receive(:info).with("duplicates: 2")
 
-      fake_stdout.rewind
-      output = fake_stdout.read
-      expect(output).to match(/duplicates: 2/)
+      subject.full
     end
   end
 
@@ -35,11 +28,14 @@ describe DataHygiene::DuplicateReport do
       create(:content_item, content_id: content_item.content_id, locale: "en")
       create(:content_item, content_id: content_item.content_id, locale: "fr")
 
+      expect(Rails.logger).to receive(:info).with("Fetching content items for duplicated content ids...")
+      expect(Rails.logger).to receive(:info).with("Writing content items to csv...")
+      expect(Rails.logger).to receive(:info).with("~~~~~~~~~\n Summary \n~~~~~~~~~\n")
+      expect(Rails.logger).to receive(:info).with("blank_content_ids: 0")
+      expect(Rails.logger).to receive(:info).with("duplicates: 3")
+      expect(Rails.logger).to receive(:info).with("duplicates_for_locale: 2")
+
       subject.scoped_to(locale: "en")
-      fake_stdout.rewind
-      output = fake_stdout.read
-      expect(output).to match(/duplicates: 3/)
-      expect(output).to match(/duplicates_for_locale: 2/)
     end
   end
 end
