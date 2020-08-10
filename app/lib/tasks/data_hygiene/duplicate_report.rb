@@ -40,7 +40,7 @@ module Tasks
     private
 
       def fetch_all_duplicate_content_items
-        puts "Fetching content items for duplicated content ids..."
+        logger.info "Fetching content items for duplicated content ids..."
         duplicates = duplicate_content_id_aggregation.flat_map do |content_id_count|
           next if content_id_count["_id"].blank?
 
@@ -71,14 +71,14 @@ module Tasks
       end
 
       def summarise
-        puts "~~~~~~~~~\n Summary \n~~~~~~~~~\n"
+        logger.info "~~~~~~~~~\n Summary \n~~~~~~~~~\n"
         summary.each_pair do |attr, val|
-          puts "#{attr}: #{val}"
+          logger.info "#{attr}: #{val}"
         end
       end
 
       def write_to_csv(content_items, locale = nil)
-        puts "Writing content items to csv..."
+        logger.info "Writing content items to csv..."
         current_time = Time.zone.now.strftime("%Y-%m-%d-%H-%M")
         filename = "duplicate_content_ids_#{current_time}"
         filename = "#{locale}_#{filename}" if locale

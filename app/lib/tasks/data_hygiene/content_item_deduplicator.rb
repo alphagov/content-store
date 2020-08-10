@@ -69,19 +69,20 @@ module Tasks
 
       def report
         aux_verb = do_destroy ? "were" : "would be"
-        puts "These duplicates #{aux_verb} destroyed..."
-        puts deduplicated.join("\n")
+        logger.info "These duplicates #{aux_verb} destroyed..."
 
-        puts "-----------------------------------------------------------------"
+        logger.info deduplicated.join("\n")
 
-        puts "These records #{aux_verb} preserved..."
-        puts preserved.join("\n")
+        logger.info "-----------------------------------------------------------------"
 
-        puts "-----------------------------------------------------------------"
+        logger.info "These records #{aux_verb} preserved..."
+        logger.info preserved.join("\n")
 
-        puts "#{total} duplicates found."
-        puts "#{preserved.size} records #{aux_verb} removed."
-        puts "#{deduplicated.size} records #{aux_verb} preserved."
+        logger.info "-----------------------------------------------------------------"
+
+        logger.info "#{total} duplicates found."
+        logger.info "#{preserved.size} records #{aux_verb} removed."
+        logger.info "#{deduplicated.size} records #{aux_verb} preserved."
       end
     end
   end
