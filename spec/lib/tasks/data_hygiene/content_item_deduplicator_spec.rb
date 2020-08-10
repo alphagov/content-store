@@ -1,8 +1,12 @@
 require "rails_helper"
-require "tasks/data_hygiene/content_item_deduplicator"
 
+<<<<<<< HEAD
 describe Tasks::DataHygiene::ContentItemDeduplicator do
   let(:fake_stdout) { StringIO.new }
+=======
+describe DataHygiene::ContentItemDeduplicator do
+  include ActiveSupport::Testing::TimeHelpers
+>>>>>>> 04b3927... Remove TASK:: module class
 
   before do
     @real_stdout = $stdout

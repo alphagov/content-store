@@ -1,7 +1,6 @@
 require "rails_helper"
-require "tasks/data_hygiene/publishing_delay_reporter"
 
-describe Tasks::DataHygiene::PublishingDelayReporter do
+describe DataHygiene::PublishingDelayReporter do
   before(:each) do
     allow(GovukStatsd).to receive(:gauge)
   end
@@ -109,7 +108,7 @@ describe Tasks::DataHygiene::PublishingDelayReporter do
   end
 end
 
-describe Tasks::DataHygiene::PublishingDelayReporter::Stats do
+describe DataHygiene::PublishingDelayReporter::Stats do
   describe "#mean" do
     it "calculates the mean of a single value" do
       expect(described_class.mean([4])).to eq(4)

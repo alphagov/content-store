@@ -1,7 +1,6 @@
 require "rails_helper"
-require "tasks/data_hygiene/schema_validator"
 
-RSpec.describe Tasks::DataHygiene::SchemaValidator, :report_errors do
+RSpec.describe DataHygiene::SchemaValidator, :report_errors do
   let(:csv_file) { double(:csv_file) }
   let(:log) { double(:log) }
 

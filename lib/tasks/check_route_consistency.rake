@@ -1,5 +1,3 @@
-require "route_consistency_checker"
-
 def report_errors(errors)
   GovukError.notify(
     "Inconsistent routes",

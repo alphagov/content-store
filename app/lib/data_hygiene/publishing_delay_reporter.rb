@@ -1,4 +1,4 @@
-class Tasks::DataHygiene::PublishingDelayReporter
+class DataHygiene::PublishingDelayReporter
   STATISTICS_TYPES = %w[
     national_statistics
     official_statistics
@@ -38,7 +38,7 @@ class Tasks::DataHygiene::PublishingDelayReporter
   end
 end
 
-class Tasks::DataHygiene::PublishingDelayReporter::Stats
+class DataHygiene::PublishingDelayReporter::Stats
   def self.mean(values)
     raise ArgumentError, "Cannot calculate the mean of an empty array" if values.empty?
 

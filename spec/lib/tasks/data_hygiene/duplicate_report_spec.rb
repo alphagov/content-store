@@ -1,8 +1,11 @@
 require "rails_helper"
-require "tasks/data_hygiene/duplicate_report"
 
+<<<<<<< HEAD
 describe Tasks::DataHygiene::DuplicateReport do
   let(:fake_stdout) { StringIO.new }
+=======
+describe DataHygiene::DuplicateReport do
+>>>>>>> 04b3927... Remove TASK:: module class
   let(:fake_csv) { StringIO.new }
 
   before do
