@@ -13,15 +13,17 @@ class FindByPath
   end
 
   def find(path)
-    matches = find_matching_items(path)
-    matches.present? ? best_match(matches, path) : nil
+    exact_match = model_class.where(base_path: path).find_first
+    return exact_match if exact_match
+
+    matches = find_route_matches(path)
+    matches.any? ? best_route_match(matches, path) : nil
   end
 
 private
 
-  def find_matching_items(path)
+  def find_route_matches(path)
     query = model_class
-              .or(base_path: path)
               .or(routes: { "$elemMatch" => { path: path, type: "exact" } })
               .or(routes: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
 
@@ -34,19 +36,13 @@ private
     query.entries
   end
 
-  def best_match(matches, path)
-    base_path_match(matches, path) ||
-      exact_route_match(matches, path) ||
-      best_prefix_match(matches, path)
+  def best_route_match(matches, path)
+    exact_route_match(matches, path) || best_prefix_match(matches, path)
   end
 
   def potential_prefixes(path)
     paths = path.split("/").reject(&:empty?)
     (0...paths.size).map { |i| "/#{paths[0..i].join('/')}" }
-  end
-
-  def base_path_match(matches, path)
-    matches.detect { |item| item.base_path == path }
   end
 
   def exact_route_match(matches, path)
