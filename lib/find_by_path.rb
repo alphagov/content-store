@@ -20,13 +20,18 @@ class FindByPath
 private
 
   def find_matching_items(path)
-    model_class
-      .or(base_path: path)
-      .or(routes: { "$elemMatch" => { path: path, type: "exact" } })
-      .or(redirects: { "$elemMatch" => { path: path, type: "exact" } })
-      .or(routes: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
-      .or(redirects: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
-      .entries
+    query = model_class
+              .or(base_path: path)
+              .or(routes: { "$elemMatch" => { path: path, type: "exact" } })
+              .or(routes: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
+
+    if model_class.fields.key?("redirects")
+      query = query
+        .or(redirects: { "$elemMatch" => { path: path, type: "exact" } })
+        .or(redirects: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
+    end
+
+    query.entries
   end
 
   def best_match(matches, path)
