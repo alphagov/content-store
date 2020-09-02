@@ -155,6 +155,7 @@ describe "content item write API", type: :request do
           put_json "/content/vat-rates", @data
 
           log_entries = ScheduledPublishingLogEntry.where(base_path: "/vat-rates")
+                                                   .order(scheduled_publication_time: :asc)
           expect(log_entries.count).to eq(2)
 
           expect(log_entries[0].scheduled_publication_time).to eq(first_scheduled_time)
