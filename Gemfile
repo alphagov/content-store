@@ -22,7 +22,6 @@ group :development, :test do
 
   gem "ci_reporter_rspec", "~> 1.0.0"
   gem "simplecov", "0.18.5", require: false
-  gem "simplecov-rcov", "0.2.3", require: false
 
   gem "pact"
   gem "pry-byebug"
