@@ -1,5 +1,3 @@
-require "tasks/data_hygiene/schema_validator"
-
 namespace :schema_validation do
   desc "validates all content items for a given format producing a report of errors"
   task :errors_for_format, [:schema_name] => :environment do |_t, args|

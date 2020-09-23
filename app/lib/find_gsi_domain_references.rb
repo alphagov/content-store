@@ -22,7 +22,7 @@ private
       domains = %w[gsi gse gcsx gsx]
 
       domains.each do |domain|
-        puts "Searching for #{domain}.gov.uk..."
+        logger.info "Searching for #{domain}.gov.uk..."
 
         domain_content_items = content_items(/#{domain}\.gov\.uk/)
 
@@ -30,14 +30,14 @@ private
           csv << csv_row(content_item, domain)
         end
 
-        puts "Found #{domain_content_items.count} items containing #{domain}.gov.uk"
+        logger.info "Found #{domain_content_items.count} items containing #{domain}.gov.uk"
       end
     end
 
-    puts "Finished searching"
+    logger.info "Finished searching"
     # There's a subtle bug with RuboCop regexp where it thinks this
     # format of interpolated `Rails.root.join` is incorrect.
-    puts "CSV file at #{Rails.root.join('tmp/gsi_domain_content_items.csv')}"
+    logger.info "CSV file at #{Rails.root.join('tmp/gsi_domain_content_items.csv')}"
   end
 
   def csv_row(content_item, domain)

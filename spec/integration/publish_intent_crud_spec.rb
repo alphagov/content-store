@@ -153,7 +153,7 @@ describe "CRUD of publish intents", type: :request do
       intent = create(:publish_intent, base_path: "/vat-rates", publish_time: 30.minutes.from_now)
       get "/publish-intent/vat-rates"
       expect(response.status).to eq(200)
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
 
       data = JSON.parse(response.body)
       expect(data["base_path"]).to eq("/vat-rates")

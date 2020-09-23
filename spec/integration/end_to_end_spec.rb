@@ -38,7 +38,7 @@ describe "End-to-end behaviour", type: :request do
 
     get "/content/vat-rates"
     expect(response.status).to eq(200)
-    expect(response.content_type).to eq("application/json")
+    expect(response.media_type).to eq("application/json")
     response_data = JSON.parse(response.body)
 
     expect(response_data["title"]).to eq("VAT rates")

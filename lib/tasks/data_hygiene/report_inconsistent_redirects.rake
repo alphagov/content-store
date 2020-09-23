@@ -1,5 +1,3 @@
-require "tasks/data_hygiene/inconsistent_redirect_finder"
-
 namespace :data_hygiene do
   desc "Find policies that redirect to somewhere, but don't have the correct content item set up"
   task inconstent_policy_redirects: :environment do
