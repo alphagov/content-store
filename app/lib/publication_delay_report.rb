@@ -21,7 +21,7 @@ private
   CSV_HEADERS = ["URL", "Document Type", "Scheduled Time", "Delay (seconds)"].freeze
 
   def write_csv
-    CSV(file, headers: CSV_HEADERS, write_headers: true) do |csv|
+    CSV.instance(file, headers: CSV_HEADERS, write_headers: true) do |csv|
       delayed_content_items.each do |content_item|
         csv << csv_row(content_item)
       end
