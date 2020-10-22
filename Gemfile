@@ -23,7 +23,7 @@ group :development, :test do
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rubocop-govuk"
-  gem "simplecov", require: false
+  gem "simplecov", "0.17.0", require: false
   gem "simplecov-rcov", require: false
   gem "timecop"
   gem "webmock", require: false
