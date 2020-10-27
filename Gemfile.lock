@@ -93,11 +93,12 @@ GEM
       null_logger
       plek (>= 1.9.0)
       rest-client (~> 2.0)
-    gds-sso (15.0.1)
+    gds-sso (15.1.0)
       multi_json (~> 1.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
       omniauth-gds (~> 3.2)
+      plek (~> 4.0)
       rails (>= 5)
       warden (~> 1.2)
       warden-oauth2 (~> 0.0.1)
