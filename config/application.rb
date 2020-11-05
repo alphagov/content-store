@@ -45,6 +45,7 @@ module ContentStore
       fi
       fr
       gd
+      gu
       he
       hi
       hr
@@ -63,6 +64,7 @@ module ContentStore
       mt
       nl
       no
+      pa
       pl
       ps
       pt
