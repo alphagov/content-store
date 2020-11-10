@@ -5,6 +5,6 @@ describe "healthcheck path", type: :request do
     get "/healthcheck"
 
     expect(response.status).to eq(200)
-    expect(response.body).to eq("OK")
+    expect(response.body).to include("status")
   end
 end
