@@ -1,3 +1,5 @@
 FactoryBot.define do
-  factory :user
+  factory :user do
+    uid { SecureRandom.uuid }
+  end
 end
