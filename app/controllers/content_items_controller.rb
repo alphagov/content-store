@@ -1,5 +1,5 @@
 class ContentItemsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:show]
+  skip_before_action :authenticate_user!, only: %i[show show_by_id]
   before_action :parse_json_request, only: [:update]
 
   def show
@@ -15,6 +15,29 @@ class ContentItemsController < ApplicationController
 
     return error_404 unless item
     return redirect_canonical(item) if item.base_path != encoded_request_path
+
+    if can_view?(item)
+      render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
+    else
+      render json_forbidden_response
+    end
+  end
+
+  def show_by_id
+    item = GovukStatsd.time("show.find_content_item") do
+      ContentItem.find_by(content_id: params[:content_id])
+    end
+
+    intent = nil
+    if item
+      intent = GovukStatsd.time("show.find_publish_intent") do
+        PublishIntent.find_by_path(item.base_path)
+      end
+    end
+
+    set_cache_headers(item, intent)
+
+    return error_404 unless item
 
     if can_view?(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
