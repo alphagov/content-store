@@ -87,7 +87,7 @@ GEM
       ruby2_keywords
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (67.2.1)
+    gds-api-adapters (68.0.0)
       addressable
       link_header
       null_logger
