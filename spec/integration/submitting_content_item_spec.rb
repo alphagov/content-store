@@ -279,7 +279,8 @@ describe "content item write API", type: :request do
 
       it "fails to update content item" do
         @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
-        put_json "/content/vat-rates", @data
+        expect { put_json "/content/vat-rates", @data }
+          .to raise_error(GdsApi::HTTPInternalServerError)
         @item.reload
         expect(@item.title).to eq("Original title")
         expect(WebMock::RequestRegistry.instance.times_executed(stub.request_pattern)).to eq(3)
