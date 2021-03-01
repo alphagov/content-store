@@ -65,6 +65,7 @@ module ContentStore
       nl
       no
       pa
+      pa-pk
       pa-ur
       pl
       ps
