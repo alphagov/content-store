@@ -1,3 +1,5 @@
+# Reading and writing to the Content Store
+
 ## Content items
 
 `ContentItem` is the base unit of content in the content store. They have both a
