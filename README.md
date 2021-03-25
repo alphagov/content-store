@@ -1,8 +1,10 @@
-# The content store
+# Content Store
 
 The Content Store is a MongoDB database of almost all published content on GOV.UK.
 
-## Reading and writing to the store
+## Technical documentation
+
+### Reading and writing to the store
 
 Content is retrieved from the content store via the [content API][content-api-docs],
 which takes a path and responds with a JSON representation of the content that should
@@ -12,7 +14,7 @@ at `/api/content/<path>`, such as https://www.gov.uk/api/content/take-pet-abroad
 Content is written by the [publishing API][publishing-api-docs], which is used by
 back-end publishing apps such as Travel Advice Publisher.
 
-### Content schemas
+#### Content schemas
 
 Not all content exists as a standalone page like the `/take-pet-abroad` example. Some
 content exists as a collection that references other pieces of content, and some content
@@ -23,15 +25,15 @@ types. The content API itself is not prescriptive about this; it takes any JSON 
 Detailed technical information can be found in the
 [content store documentation][content-store-docs].
 
-## Running the application
+### Running the application
 
 `./startup.sh`
 
-## Running the test suite
+### Running the test suite
 
 `bundle exec rake`
 
-## Example API output
+### Example API output
 
 Example API requests and corresponding responses can be found in the
 [content store pact-broker documentation][pact-broker-docs].
