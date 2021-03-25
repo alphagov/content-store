@@ -23,6 +23,7 @@ Example API requests and corresponding responses can be found in the
 
 - [Reading and writing to the Content Store](./docs/content-store-read-write.md)
 - [Publish intents](./docs/publish_intents.md)
+- [Access-limited content items](./docs/access-limited-content-items.md)
 
 ## Licence
 
