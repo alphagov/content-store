@@ -45,17 +45,3 @@ If the `path` matches a `base_path` content will be returned, whereas if the
 Examples of the JSON representation of content items can be found in [output_examples](output_examples).
 
 Not all content exists as a standalone page like the `/take-pet-abroad` example. Some content exists as a collection that references other pieces of content, and some content exists as meta content designed to describe a wider whole. We use [govuk-content-schemas](https://github.com/alphagov/govuk-content-schemas) to describe all these different content types. The content API itself is not prescriptive about this; it takes any JSON structure.
-
-## Running draft-content-store in development
-
-On a development VM you may want to run an instance of content-store
-to accept draft content sent to publishing-api. You can:
-
-```
-  bowl draft-content-store
-```
-
-from the development directory to run the content-store application at
-`draft-content-store.dev.gov.uk`. This instance stores data in a separate
-database: 'draft_content_store_development', and logs to the same rails log file
-as content-store, with a tag [DRAFT].
