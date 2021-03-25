@@ -24,6 +24,10 @@ Example API requests and corresponding responses can be found in the
 - [Reading and writing to the Content Store](./docs/content-store-read-write.md)
 - [Publish intents](./docs/publish_intents.md)
 - [Access-limited content items](./docs/access-limited-content-items.md)
+- [Content item fields](./docs/content_item_fields.md)
+- [Gone items](./docs/gone_item.md)
+- [Redirect items](./docs/redirect_item.md)
+- [Placeholder items](./docs/placeholder_item.md)
 
 ## Licence
 

@@ -1,4 +1,4 @@
-# The Content Item Format
+# Content Item Fields
 
 A content item consists of a set key/value pairs. Different key/value pairs are
 present or required, depending on the context. The three contexts are:
