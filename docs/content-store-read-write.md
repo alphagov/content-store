@@ -66,16 +66,6 @@ details on how to create an access-limited content item, see
 
 Note: the access-limiting behaviour should only be active on the draft stack.
 
-## Publish intents
-
-In order to support the timely publishing of items scheduled for publication,
-content-store allows publishing tools to register their intent to publish
-something at a given time.  If a publish intent is present for a content item,
-content-store will reduce the TTL in its cache headers as the publish time
-approaches, allowing the new item to be fetched as soon as it's published.
-
-See [publish_intents.md](publish_intents.md) for more details.
-
 ## Running draft-content-store in development
 
 On a development VM you may want to run an instance of content-store
