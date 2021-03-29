@@ -1,6 +1,7 @@
 # Content Store
 
 The Content Store is a MongoDB database of almost all published content on GOV.UK.
+See the [Content Store API](./docs/content-store-api.md) for basic usage.
 
 ## Technical documentation
 
@@ -21,7 +22,7 @@ Example API requests and corresponding responses can be found in the
 
 ## Further documentation
 
-- [Reading and writing to the Content Store](./docs/content-store-read-write.md)
+- [Content Store API](./docs/content-store-api.md)
 - [Publish intents](./docs/publish_intents.md)
 - [Access-limited content items](./docs/access-limited-content-items.md)
 - [Content item fields](./docs/content_item_fields.md)

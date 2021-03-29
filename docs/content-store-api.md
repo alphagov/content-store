@@ -1,4 +1,4 @@
-# Reading and writing to the Content Store
+# Content Store API
 
 ## Content items
 
