@@ -1,47 +1,35 @@
-# The content store
+# Content Store
 
 The Content Store is a MongoDB database of almost all published content on GOV.UK.
+See the [Content Store API](./docs/content-store-api.md) for basic usage.
 
-## Reading and writing to the store
+## Technical documentation
 
-Content is retrieved from the content store via the [content API][content-api-docs],
-which takes a path and responds with a JSON representation of the content that should
-be displayed on that path. This API is used by front-end apps but is also exposed externally
-at `/api/content/<path>`, such as https://www.gov.uk/api/content/take-pet-abroad
+This is a Ruby on Rails app, and should follow [our Rails app conventions](https://docs.publishing.service.gov.uk/manual/conventions-for-rails-applications.html).
 
-Content is written by the [publishing API][publishing-api-docs], which is used by
-back-end publishing apps such as Travel Advice Publisher.
+You can use the [GOV.UK Docker environment](https://github.com/alphagov/govuk-docker) to run the application and its tests with all the necessary dependencies. Follow [the usage instructions](https://github.com/alphagov/govuk-docker#usage) to get started.
 
-### Content schemas
+**Use GOV.UK Docker to run any commands that follow.**
 
-Not all content exists as a standalone page like the `/take-pet-abroad` example. Some
-content exists as a collection that references other pieces of content, and some content
-exists as meta content designed to describe a wider whole. We use
-[govuk-content-schemas] to describe all these different content
-types. The content API itself is not prescriptive about this; it takes any JSON structure.
-
-Detailed technical information can be found in the
-[content store documentation][content-store-docs].
-
-## Running the application
-
-`./startup.sh`
-
-## Running the test suite
+### Running the test suite
 
 `bundle exec rake`
 
-## Example API output
+### Example API output
 
 Example API requests and corresponding responses can be found in the
-[content store pact-broker documentation][pact-broker-docs].
+[content store pact-broker documentation](https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest).
+
+## Further documentation
+
+- [Content Store API](./docs/content-store-api.md)
+- [Publish intents](./docs/publish_intents.md)
+- [Access-limited content items](./docs/access-limited-content-items.md)
+- [Content item fields](./docs/content_item_fields.md)
+- [Gone items](./docs/gone_item.md)
+- [Redirect items](./docs/redirect_item.md)
+- [Placeholder items](./docs/placeholder_item.md)
 
 ## Licence
 
 [MIT License](https://github.com/alphagov/content-store/blob/master/LICENSE)
-
-[content-api-docs]: https://content-api.publishing.service.gov.uk/
-[content-store-docs]: https://github.com/alphagov/content-store/blob/master/docs/technical-information.md
-[govuk-content-schemas]: https://github.com/alphagov/govuk-content-schemas
-[pact-broker-docs]: https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest
-[publishing-api-docs]: https://docs.publishing.service.gov.uk/apps/publishing-api.html
