@@ -18,7 +18,7 @@ group :development, :test do
   gem "climate_control"
   gem "database_cleaner"
   gem "factory_bot"
-
+  gem "govuk_test"
   gem "pact"
   gem "pry-byebug"
   gem "rspec-rails"
