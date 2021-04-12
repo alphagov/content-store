@@ -1,1 +1,1 @@
-web: bundle exec unicorn -c ./config/unicorn.rb -p ${PORT:-3086}
+web: bundle exec unicorn -c ./config/unicorn.rb -p ${PORT:-3068}
