@@ -7,7 +7,7 @@ node("mongodb-2.4") {
     extraParameters: [
       stringParam(
         name: "PACT_CONSUMER_VERSION",
-        defaultValue: "deployed-to-production",
+        defaultValue: "branch-deployed-to-production",
         description: "The branch of Publishing API pact tests to run against"
       ),
       stringParam(
