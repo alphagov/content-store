@@ -10,10 +10,12 @@ node("mongodb-2.4") {
         defaultValue: "deployed-to-production",
         description: "The branch of Publishing API pact tests to run against"
       ),
+      stringParam(
+        name: "PACT_BROKER_BASE_URL",
+        defaultValue: "https://pact-broker.cloudapps.digital",
+        description: "The Pact Broker to run Pact tests against"
+      ),
     ],
-    beforeTest: {
-      govuk.setEnvar("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
-    },
     publishingE2ETests: true,
   )
 }
