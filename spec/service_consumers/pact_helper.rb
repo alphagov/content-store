@@ -17,8 +17,8 @@ end
 
 Pact.service_provider "Content Store" do
   honours_pact_with "Publishing API" do
-    if ENV["USE_LOCAL_PACT"]
-      pact_uri ENV.fetch("PUBLISHING_API_PACT_PATH", "../publishing-api/spec/pacts/publishing_api-content_store.json")
+    if ENV["PACT_URI"]
+      pact_uri(ENV["PACT_URI"])
     else
       base_url = ENV.fetch("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
       url = "#{base_url}/pacts/provider/#{url_encode(name)}/consumer/#{url_encode(consumer_name)}"
