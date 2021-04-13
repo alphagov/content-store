@@ -22,7 +22,7 @@ Pact.service_provider "Content Store" do
     else
       base_url = ENV.fetch("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
       url = "#{base_url}/pacts/provider/#{url_encode(name)}/consumer/#{url_encode(consumer_name)}"
-      version_part = "versions/#{url_encode(ENV.fetch('PUBLISHING_API_PACT_VERSION', 'branch-deployed-to-production'))}"
+      version_part = "versions/#{url_encode(ENV.fetch('PACT_CONSUMER_VERSION', 'branch-deployed-to-production'))}"
 
       pact_uri "#{url}/#{version_part}"
     end

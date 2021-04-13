@@ -6,7 +6,7 @@ node("mongodb-2.4") {
   govuk.buildProject(
     extraParameters: [
       stringParam(
-        name: "PUBLISHING_API_PACT_BRANCH",
+        name: "PACT_CONSUMER_VERSION",
         defaultValue: "deployed-to-production",
         description: "The branch of Publishing API pact tests to run against"
       ),
@@ -17,7 +17,7 @@ node("mongodb-2.4") {
     publishingE2ETests: true,
     afterTest: {
       stage("Test pact with Publishing API") {
-        govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
+        govuk.runRakeTask("pact:verify")
       }
     }
   )
