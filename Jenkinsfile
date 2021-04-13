@@ -15,10 +15,5 @@ node("mongodb-2.4") {
       govuk.setEnvar("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
     },
     publishingE2ETests: true,
-    afterTest: {
-      stage("Test pact with Publishing API") {
-        govuk.runRakeTask("pact:verify")
-      }
-    }
   )
 }
