@@ -6,19 +6,16 @@ node("mongodb-2.4") {
   govuk.buildProject(
     extraParameters: [
       stringParam(
-        name: "PUBLISHING_API_PACT_BRANCH",
-        defaultValue: "deployed-to-production",
+        name: "PACT_CONSUMER_VERSION",
+        defaultValue: "branch-deployed-to-production",
         description: "The branch of Publishing API pact tests to run against"
       ),
+      stringParam(
+        name: "PACT_BROKER_BASE_URL",
+        defaultValue: "https://pact-broker.cloudapps.digital",
+        description: "The Pact Broker to run Pact tests against"
+      ),
     ],
-    beforeTest: {
-      govuk.setEnvar("PACT_BROKER_BASE_URL", "https://pact-broker.cloudapps.digital")
-    },
     publishingE2ETests: true,
-    afterTest: {
-      stage("Test pact with Publishing API") {
-        govuk.runRakeTask("pact:verify:branch[${env.PUBLISHING_API_PACT_BRANCH}]")
-      }
-    }
   )
 }
