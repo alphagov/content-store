@@ -1,5 +1,5 @@
 class ContentItemsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:show]
+  skip_before_action :authenticate_user!, only: [:show, :sleep_ruby, :sleep_mongo]
   before_action :parse_json_request, only: [:update]
 
   def show
@@ -55,6 +55,20 @@ class ContentItemsController < ApplicationController
     content_item.destroy!
 
     render status: :ok
+  end
+
+  def sleep_ruby
+    wait = params[:wait].to_i
+    sleep wait
+
+    render json: { wait: wait }
+  end
+
+  def sleep_mongo
+    wait = params[:wait].to_i
+    ContentItem.where(:$where => "sleep(#{wait * 1000}) || true" ).first
+
+    render json: { wait: wait }
   end
 
 private

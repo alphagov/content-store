@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     get "/publish-intent(/*path_without_root)" => "publish_intents#show", :as => :publish_intent
     put "/publish-intent(/*base_path_without_root)" => "publish_intents#update"
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"
+
+    get "/sleep/ruby/:wait" => "content_items#sleep_ruby"
+    get "/sleep/mongo/:wait" => "content_items#sleep_mongo"
   end
 
   get "/healthcheck", to: GovukHealthcheck.rack_response(
