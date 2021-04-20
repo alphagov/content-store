@@ -1,3 +1,9 @@
+begin
+  require "pact/tasks"
+rescue LoadError
+  # Pact isn't available in all environments
+end
+
 require File.expand_path("config/application", __dir__)
 
 Rails.application.load_tasks
