@@ -12,10 +12,6 @@ Rails.application.routes.draw do
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"
   end
 
-  get "/healthcheck", to: GovukHealthcheck.rack_response(
-    GovukHealthcheck::Mongoid,
-  )
-
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
   get "/healthcheck/ready", to: GovukHealthcheck.rack_response(
     GovukHealthcheck::Mongoid,
