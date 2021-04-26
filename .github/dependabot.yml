@@ -27,7 +27,7 @@ updates:
       - dependency-name: rspec-rails
         dependency-type: direct
       - dependency-name: mongoid
-        dependency-name: direct
+        dependency-type: direct
   - package-ecosystem: docker
     directory: /
     schedule:
