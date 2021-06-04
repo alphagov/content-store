@@ -4,7 +4,7 @@ module RouterHelpers
   include GdsApi::TestHelpers::Router
 
   def assert_routes_registered(rendering_app, routes)
-    # Note: WebMock stubs allow you to assert against already executed requests.
+    # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     be_signature = stub_router_backend_registration(rendering_app, "https://#{rendering_app}.test.gov.uk/")
     assert_requested(be_signature, times: 1)
@@ -17,7 +17,7 @@ module RouterHelpers
   end
 
   def assert_gone_routes_registered(routes)
-    # Note: WebMock stubs allow you to assert against already executed requests.
+    # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     routes.each do |(path, type)|
       route_signature, = stub_gone_route_registration(path, type)
@@ -27,7 +27,7 @@ module RouterHelpers
   end
 
   def assert_redirect_routes_registered(redirects)
-    # Note: WebMock stubs allow you to assert against already executed requests.
+    # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     redirects.each do |(path, type, destination, segments_mode)|
       redirect_signature, = stub_redirect_registration(path, type, destination, "permanent", segments_mode)
