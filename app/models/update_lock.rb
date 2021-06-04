@@ -37,5 +37,6 @@ private
   end
 
   class ::MissingAttributeError < StandardError; end
+
   class ::OutOfOrderTransmissionError < StandardError; end
 end
