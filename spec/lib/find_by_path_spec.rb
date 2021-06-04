@@ -1,31 +1,30 @@
 require "rails_helper"
 
 describe FindByPath do
-  # Using an actual Model as it's a real pain to mock mongoid criterias and
-  # similar
-  class CompatibleModel
-    include Mongoid::Document
-    field :base_path, type: String
-    field :routes, type: Array, default: []
-    field :redirects, type: Array, default: []
-  end
+  let(:model_class) do
+    # Using an actual Model as it's a real pain to mock mongoid criterias and
+    # similar
+    Class.new do
+      include Mongoid::Document
+      store_in collection: "find_by_path_examples"
 
-  FactoryBot.define do
-    factory :compatible_model do
-      base_path { "/base-path" }
-      transient do
-        exact_routes { [] }
-        prefix_routes { [] }
-      end
-      routes do
-        [{ path: base_path, type: "exact" }] +
-          Array(exact_routes).map { |path| { path: path, type: "exact" } } +
-          Array(prefix_routes).map { |path| { path: path, type: "prefix" } }
+      field :base_path, type: String
+      field :routes, type: Array, default: []
+      field :redirects, type: Array, default: []
+
+      def self.create(base_path: "/base-path", exact_routes: [], prefix_routes: [], redirects: [])
+        routes =
+          if redirects.any?
+            []
+          else
+            [{ path: base_path, type: "exact" }] +
+              Array(exact_routes).map { |path| { path: path, type: "exact" } } +
+              Array(prefix_routes).map { |path| { path: path, type: "prefix" } }
+          end
+        super(base_path: base_path, routes: routes, redirects: redirects)
       end
     end
   end
-
-  let(:model_class) { CompatibleModel }
 
   describe ".find" do
     subject { described_class.new(model_class).find(path) }
@@ -37,7 +36,7 @@ describe FindByPath do
 
     context "when there is a base_path that matches the path" do
       let(:path) { "/base-path" }
-      let!(:instance) { create(:compatible_model, base_path: "/base-path") }
+      let!(:instance) { model_class.create }
 
       it { is_expected.to eq instance }
     end
@@ -45,12 +44,12 @@ describe FindByPath do
     context "when there is a route exact match for the path" do
       let(:exact_route_path) { "/base-path/exact-route" }
       let(:path) { exact_route_path }
-      let!(:instance) { create(:compatible_model, exact_routes: exact_route_path) }
+      let!(:instance) { model_class.create(exact_routes: exact_route_path) }
 
       it { is_expected.to eq instance }
 
       context "and there is also a base_path that matches the exact route path" do
-        let!(:superseding_instance) { create(:compatible_model, base_path: exact_route_path) }
+        let!(:superseding_instance) { model_class.create(base_path: exact_route_path) }
 
         it { is_expected.to eq superseding_instance }
       end
@@ -60,9 +59,7 @@ describe FindByPath do
       let(:exact_route_path) { "/base-path/exact-route" }
       let(:path) { exact_route_path }
       let!(:instance) do
-        create(
-          :compatible_model,
-          routes: [],
+        model_class.create(
           redirects: [
             { path: exact_route_path, type: "exact", destination: "/somewhere" },
           ],
@@ -75,7 +72,7 @@ describe FindByPath do
     context "when there is a route with a prefix match" do
       let(:prefix_route_path) { "/base-path/prefix-route" }
 
-      let!(:instance) { create(:compatible_model, prefix_routes: prefix_route_path) }
+      let!(:instance) { model_class.create(prefix_routes: prefix_route_path) }
 
       context "and the path matches the prefix path" do
         let(:path) { prefix_route_path }
@@ -97,8 +94,7 @@ describe FindByPath do
       context "but there is another item with a better path match" do
         let(:path) { "/base-path/prefix-route/with-extra/segments" }
         let!(:better_prefix_match) do
-          create(
-            :compatible_model,
+          model_class.create(
             base_path: "/base_path/prefix-route",
             prefix_routes: "/base-path/prefix-route/with-extra",
           )
@@ -111,8 +107,7 @@ describe FindByPath do
         let(:path) { prefix_route_path }
         let(:matching_base_path) { "/base-path/prefix-route" }
         let!(:exact_match) do
-          create(
-            :compatible_model,
+          model_class.create(
             base_path: matching_base_path,
             exact_routes: prefix_route_path,
           )
