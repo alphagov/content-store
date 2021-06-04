@@ -15,7 +15,7 @@ module DataHygiene
           if validation_errors.any?
             log.print "E"
             csv_row = [item.base_path, validation_errors].flatten.join(",")
-            file.write(csv_row + " \n")
+            file.write("#{csv_row} \n")
             error_count += 1
           else
             log.print "."

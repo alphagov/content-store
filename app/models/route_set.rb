@@ -97,7 +97,7 @@ class RouteSet < OpenStruct
 private
 
   def register_rendering_app
-    router_api.add_backend(rendering_app, Plek.find(rendering_app) + "/")
+    router_api.add_backend(rendering_app, "#{Plek.find(rendering_app)}/")
   end
 
   def register_redirect(route)
