@@ -1,6 +1,6 @@
 module DataHygiene
   class SchemaValidator
-    def initialize(schema_name, log = STDOUT)
+    def initialize(schema_name, log = $stdout)
       @schema_name = schema_name
       @log = log
     end
