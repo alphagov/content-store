@@ -62,6 +62,7 @@ module ContentStore
       lv
       ms
       mt
+      ne
       nl
       no
       pa
