@@ -24,9 +24,9 @@ describe "monitoring mongo query runtimes", type: :request do
     end
 
     it "includes the mongo runtime info in the log output" do
-      expect(logger.logged(:info).last).to match(/Views: [\d\.]+ms/)
+      expect(logger.logged(:info).last).to match(/Views: [\d.]+ms/)
 
-      runtime = logger.logged(:info).last.match(/Mongo: ([\d\.]+)ms/)[1].to_f
+      runtime = logger.logged(:info).last.match(/Mongo: ([\d.]+)ms/)[1].to_f
 
       expect(runtime).to be > 0
     end

@@ -24,7 +24,7 @@ private
   def api_path(link)
     return link[:api_path] if link[:api_path]
 
-    "/api/content" + link[:base_path] if link[:base_path]
+    "/api/content#{link[:base_path]}" if link[:base_path]
   end
 
   def api_url(link)
