@@ -88,6 +88,7 @@ module ContentStore
       ur
       uz
       vi
+      yi
       zh
       zh-hk
       zh-tw
