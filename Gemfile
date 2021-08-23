@@ -29,3 +29,7 @@ group :development, :test do
   gem "timecop"
   gem "webmock", require: false
 end
+
+group :development do
+  gem "listen"
+end

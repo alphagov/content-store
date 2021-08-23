@@ -113,6 +113,7 @@ GEM
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
+    ffi (1.15.3)
     filelock (1.1.1)
     find_a_port (1.0.1)
     gds-api-adapters (73.1.0)
@@ -159,6 +160,9 @@ GEM
     jwt (2.2.3)
     kgio (2.11.4)
     link_header (0.0.8)
+    listen (3.7.0)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     logstasher (2.1.5)
       activesupport (>= 5.2)
       request_store
@@ -280,6 +284,9 @@ GEM
     raindrops (0.19.2)
     rake (13.0.6)
     randexp (0.1.7)
+    rb-fsevent (0.11.0)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
     regexp_parser (2.1.1)
     request_store (1.5.0)
       rack (>= 1.4)
@@ -418,6 +425,7 @@ DEPENDENCIES
   govuk-content-schema-test-helpers
   govuk_app_config
   govuk_test
+  listen
   mongo
   mongoid
   pact
