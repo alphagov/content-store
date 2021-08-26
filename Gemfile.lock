@@ -111,7 +111,7 @@ GEM
     faraday-patron (1.0.0)
     filelock (1.1.1)
     find_a_port (1.0.1)
-    gds-api-adapters (72.1.0)
+    gds-api-adapters (73.0.0)
       addressable
       link_header
       null_logger
