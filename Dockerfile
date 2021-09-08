@@ -1,4 +1,5 @@
-FROM govuk-ruby-2.7.2
+ARG  base_image=govuk-ruby-2.7.2:latest
+FROM ${base_image}
 RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean
 RUN gem install foreman
 
