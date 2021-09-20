@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "6.0.3.6"
+gem "rails", "6.1.4.1"
 
 gem "gds-api-adapters"
 gem "gds-sso"
@@ -28,4 +28,8 @@ group :development, :test do
   gem "simplecov-rcov", require: false
   gem "timecop"
   gem "webmock", require: false
+end
+
+group :development do
+  gem "listen"
 end
