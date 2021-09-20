@@ -126,9 +126,7 @@ describe "Fetching content items", type: :request do
   end
 
   context "a content item with a non-ASCII base_path" do
-    # rubocop:disable Style/AsciiComments
     # URI.escape("/news/בוט לאינד")
-    # rubocop:enable Style/AsciiComments
     path = "/news/%D7%91%D7%95%D7%98%20%D7%9C%D7%90%D7%99%D7%A0%D7%93"
     let(:content_item) { create(:content_item, base_path: path) }
 
