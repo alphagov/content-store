@@ -368,9 +368,7 @@ describe "content item write API", type: :request do
   end
 
   context "copes with non-ASCII paths" do
-    # rubocop:disable Style/AsciiComments
     # URI.escape("/news/בוט לאינד")
-    # rubocop:enable Style/AsciiComments
     let(:path) { "/news/%D7%91%D7%95%D7%98%20%D7%9C%D7%90%D7%99%D7%A0%D7%93" }
 
     before :each do
