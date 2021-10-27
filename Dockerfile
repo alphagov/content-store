@@ -1,7 +1,6 @@
 ARG base_image=ruby:2.7.2
 FROM ${base_image}
 RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean
-RUN gem install foreman
 
 ENV GOVUK_APP_NAME content-store
 ENV GOVUK_CONTENT_SCHEMAS_PATH /govuk-content-schemas
@@ -17,4 +16,4 @@ ADD Gemfile* $APP_HOME/
 RUN bundle install
 ADD . $APP_HOME
 
-CMD foreman run web
+CMD bundle exec puma
