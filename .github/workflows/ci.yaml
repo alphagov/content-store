@@ -7,10 +7,6 @@ on:
     paths-ignore:
       - "Jenkinsfile"
       - ".git**"
-  pull_request:
-    paths-ignore:
-      - "Jenkinsfile"
-      - ".git**"
 
 jobs:
   publish:
