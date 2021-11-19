@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - bilbof/test-branch-deploy
     paths-ignore:
       - "Jenkinsfile"
       - ".git**"
