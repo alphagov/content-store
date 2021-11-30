@@ -1,19 +1,26 @@
-ARG base_image=ruby:2.7.2
-FROM ${base_image}
-RUN apt-get update -qq && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean
+# TODO: make this default to govuk-ruby once it's being pushed somewhere public
+# (unless we decide to use Bitnami instead)
+ARG base_image=ruby:2.7.2-slim-buster
 
-ENV GOVUK_APP_NAME content-store
-ENV GOVUK_CONTENT_SCHEMAS_PATH /govuk-content-schemas
-ENV MONGODB_URI mongodb://mongo/content-store
-ENV PORT 3068
-ENV RAILS_ENV development
+FROM $base_image AS builder
+ENV RAILS_ENV=production
+# TODO: have a separate build image which already contains the build-only deps.
+RUN apt-get update -qy && \
+    apt-get upgrade -y && \
+    apt-get install -y build-essential
+RUN mkdir /app
+WORKDIR /app
+COPY Gemfile Gemfile.lock .ruby-version ./
+RUN bundle config set without 'development test' && \
+    bundle install -j8 --retry=2
+COPY . ./
 
-ENV APP_HOME /app
-RUN mkdir $APP_HOME
-
-WORKDIR $APP_HOME
-ADD Gemfile* $APP_HOME/
-RUN bundle install
-ADD . $APP_HOME
-
+FROM $base_image
+ENV RAILS_ENV=production GOVUK_APP_NAME=content-store
+# TODO: apt-get upgrade in the base image
+RUN apt-get update -qy && \
+    apt-get upgrade -y
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
+COPY --from=builder /app /app/
+WORKDIR /app
 CMD bundle exec puma
