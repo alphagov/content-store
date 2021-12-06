@@ -15,3 +15,9 @@ If the supplied identifier is in the list of authorised users, the content item
 will be returned. If not, a 403 (Forbidden) response will be returned.
 
 Note: the access-limiting behaviour should only be active on the draft stack.
+
+## 2nd line access
+
+To help debug an issue for the user where the document has access limited permissions,
+you can change your organisation temporarily to match the user's organisation in
+[Signon](https://signon.publishing.service.gov.uk/).
