@@ -106,7 +106,7 @@ module ContentStore
     ]
 
     # Caching defaults
-    config.default_ttl = ENV.fetch("DEFAULT_TTL", 30.minutes).to_i.seconds
+    config.default_ttl = ENV.fetch("DEFAULT_TTL", 20.minutes).to_i.seconds
     config.minimum_ttl = [config.default_ttl, 5.seconds].min
 
     config.paths["log"] = ENV["LOG_PATH"] if ENV["LOG_PATH"]
