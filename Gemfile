@@ -6,7 +6,7 @@ gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
 gem "govuk-content-schema-test-helpers"
-gem "mongo"
+gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
 gem "mongoid"
 gem "plek"
 gem "rack-cache"
@@ -16,7 +16,7 @@ gem "whenever", require: false
 group :development, :test do
   gem "ci_reporter_rspec"
   gem "climate_control"
-  gem "database_cleaner"
+  gem "database_cleaner-mongoid"
   gem "factory_bot"
   gem "govuk_test"
 
