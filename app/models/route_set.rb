@@ -22,12 +22,12 @@ class RouteSet < OpenStruct
   # a route for the routes to be valid.
   def self.from_content_item(item)
     if item.gone?
-      gone_routes = item.routes.map(&:deep_symbolize_keys)
+      gone_routes = item.routes.map(&:to_h).map(&:deep_symbolize_keys)
     else
-      routes = item.routes.map(&:deep_symbolize_keys)
+      routes = item.routes.map(&:to_h).map(&:deep_symbolize_keys)
     end
 
-    redirects = item.redirects.map(&:deep_symbolize_keys)
+    redirects = item.redirects.map(&:to_h).map(&:deep_symbolize_keys)
 
     new(
       routes: routes,
