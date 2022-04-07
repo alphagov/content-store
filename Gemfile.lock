@@ -144,11 +144,11 @@ GEM
       sentry-ruby (~> 4.5.0)
       statsd-ruby (~> 1.5.0)
       unicorn (>= 5.4, < 5.9)
-    govuk_test (3.0.0)
+    govuk_test (3.0.1)
       brakeman (>= 5.0.2)
-      capybara
+      capybara (>= 3.36)
       puma
-      selenium-webdriver (>= 3.142)
+      selenium-webdriver (>= 4.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
     http-accept (1.7.0)
