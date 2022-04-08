@@ -1,5 +1,5 @@
 # (unless we decide to use Bitnami instead)
-ARG base_image=ruby:2.7.5-slim-buster
+ARG base_image=ruby:3.0.3-slim-buster
 
 FROM $base_image AS builder
 ENV RAILS_ENV=production
