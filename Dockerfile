@@ -15,7 +15,7 @@ RUN bundle config set without 'development test' && \
 COPY . ./
 
 FROM $base_image
-ENV RAILS_ENV=production GOVUK_APP_NAME=content-store
+ENV GOVUK_PROMETHEUS_EXPORTER=true RAILS_ENV=production GOVUK_APP_NAME=content-store
 # TODO: apt-get upgrade in the base image
 RUN apt-get update -qy && \
     apt-get upgrade -y
