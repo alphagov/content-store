@@ -158,6 +158,17 @@ describe "Fetching content items", type: :request do
     end
   end
 
+  context "a content item with an invalid path" do
+    it "returns a 400 Bad Request response" do
+      # we can't run the test with an actual invalid URI so we have to mock that
+      expect(Addressable::URI).to receive(:encode).and_wrap_original do |m|
+        m.call("/path\nprotocol:")
+      end
+      get "/content/invalid-uri"
+      expect(response.status).to eq(400)
+    end
+  end
+
   context "when requesting an exact route within a base_path" do
     let!(:content_item) do
       FactoryBot.create(
