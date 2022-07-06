@@ -333,6 +333,17 @@ describe "content item write API", type: :request do
     end
   end
 
+  context "given an invalid base_path" do
+    it "returns a Bad Request status" do
+      # we can't run the test with an actual invalid URI so we have to mock that
+      expect(Addressable::URI).to receive(:encode).and_wrap_original do |m|
+        m.call("/path\nprotocol:")
+      end
+      put_json "/content/invalid-uri", @data
+      expect(response.status).to eq(400)
+    end
+  end
+
   context "create with extra fields in the input" do
     before :each do
       @data["foo"] = "bar"
