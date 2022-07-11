@@ -4,10 +4,10 @@ def update_hmrc_manual_section_titles(dry_run: false)
     if content_id
       manual_content_id = GdsApi.publishing_api.get_live_content(manual_content_id)
       ci.details["manual"]["title"] = manual_content_id["title"]
-      puts("Updating HMRC Manual Section #{ci.content_id} to set manual title to #{ci.details["manual"]["title"]}")
-      ci.save unless dry_run
+      puts("Updating HMRC Manual Section #{ci.content_id} to set manual title to #{ci.details['manual']['title']}")
+      ci.save! unless dry_run
     else
-      put("ERROR: Couldn't find manual content item for path #{ci.details["manual"]["base_path"]}")
+      put("ERROR: Couldn't find manual content item for path #{ci.details['manual']['base_path']}")
     end
   end
 end
