@@ -17,6 +17,11 @@ class FindSpecificTerm
     new(*args).call
   end
 
+  def csv_rows(term)
+    content_items = content_items(/#{term}/)
+    content_items.map{ |content_item| csv_row(content_item) }
+  end
+
 private
 
   def write_csv
@@ -25,11 +30,7 @@ private
 
       logger.info "Searching for #{term}..."
 
-      term_content_items = content_items(/#{term}/)
-
-      term_content_items.each do |content_item|
-        csv << csv_row(content_item)
-      end
+      csv_rows(term).each{ |csv_row| csv << csv_row }
 
       logger.info "Found #{term_content_items.count} items containing #{term}"
     end
