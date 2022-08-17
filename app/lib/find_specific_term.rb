@@ -3,14 +3,14 @@ require "csv"
 class FindSpecificTerm
   attr_reader :term
 
-  CSV_HEADERS = ["Title", "URL", "Publishing application", "Tagged organisation", "Format", "Content ID"].freeze
+  CONTENT_ITEM_HEADERS = ["Title", "URL", "Publishing application", "Tagged organisation", "Format", "Content ID"].freeze
 
   def initialize(term)
     @term = term
   end
 
   def call
-    write_csv
+    report
   end
 
   def self.call(*args)
@@ -19,30 +19,23 @@ class FindSpecificTerm
 
 private
 
-  def write_csv
-    CSV.open(Rails.root.join("tmp/search_term_content_items.csv"), "wb") do |csv|
-      csv << CSV_HEADERS
+  def report
+    logger.info "Searching for #{term}..."
 
-      logger.info "Searching for #{term}..."
+    term_content_items = content_items(/#{term}/)
 
-      term_content_items = content_items(/#{term}/)
+    logger.info CONTENT_ITEM_HEADERS.join(",")
 
-      term_content_items.each do |content_item|
-        csv << csv_row(content_item)
-      end
-
-      logger.info "Found #{term_content_items.count} items containing #{term}"
+    term_content_items.each do |content_item|
+      logger.info content_item_fields(content_item).join(", ")
     end
 
-    logger.info "Finished searching"
-    # There's a subtle bug with RuboCop regexp where it thinks this
-    # format of interpolated `Rails.root.join` is incorrect.
-    logger.info "CSV file at #{Rails.root.join('tmp/search_term_content_items.csv')}"
+    logger.info "Found #{term_content_items.count} items containing #{term}"
 
-    logger.info File.read(Rails.root.join("tmp/search_term_content_items.csv"))
+    logger.info "Finished searching"
   end
 
-  def csv_row(content_item)
+  def content_item_fields(content_item)
     [
       content_item.try(:title),
       "https://www.gov.uk#{content_item.try(:base_path)}",
