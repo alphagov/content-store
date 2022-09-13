@@ -17,10 +17,10 @@ RSpec.describe "Deleting a content item", type: :request do
 
   context "when the content item exists" do
     before do
-      FactoryBot.create(:content_item, base_path: base_path)
+      FactoryBot.create(:content_item, base_path:)
 
       @delete_stubs = ContentItem.find_by(
-        base_path: base_path,
+        base_path:,
       ).routes.map do |route|
         stub_route_deleted(route["path"], hard_delete: true)
       end
@@ -29,7 +29,7 @@ RSpec.describe "Deleting a content item", type: :request do
     it "deletes the content item" do
       delete "/content/vat-rates"
 
-      expect(ContentItem.where(base_path: base_path).count).to eq(0)
+      expect(ContentItem.where(base_path:).count).to eq(0)
     end
 
     it "deletes the routes" do

@@ -32,7 +32,7 @@ module DataHygiene
 
     def criteria
       ContentItem.any_of(
-        { schema_name: schema_name },
+        { schema_name: },
         { document_type: schema_name },
         { format: schema_name },
       )

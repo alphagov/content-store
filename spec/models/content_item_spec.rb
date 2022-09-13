@@ -117,7 +117,7 @@ describe ContentItem, type: :model do
         let(:log_entry) do
           build(
             :scheduled_publishing_log_entry,
-            scheduled_publication_time: scheduled_publication_time,
+            scheduled_publication_time:,
             delay_in_milliseconds: 14_700,
           )
         end
@@ -300,7 +300,7 @@ describe ContentItem, type: :model do
         access_limited: { "users" => [user_id] },
       )
       expect(content_item.user_granted_access?(
-               user_id: user_id,
+               user_id:,
                user_organisation_id: nil,
              ))
         .to be(true)

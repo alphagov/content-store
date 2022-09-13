@@ -9,7 +9,7 @@ RSpec.describe ExpandedLinksPresenter do
     let(:api_path) { "/api/content/test-page" }
     let(:links) do
       {
-        link_group: [{ base_path: base_path, api_path: api_path }],
+        link_group: [{ base_path:, api_path: }],
       }
     end
 
@@ -107,7 +107,7 @@ RSpec.describe ExpandedLinksPresenter do
     context "link without api_path set" do
       let(:links) do
         {
-          link_group: [{ base_path: base_path }],
+          link_group: [{ base_path: }],
         }
       end
       let(:api_path) { "/api/content#{base_path}" }
@@ -115,7 +115,7 @@ RSpec.describe ExpandedLinksPresenter do
         {
           link_group: [
             a_hash_including(
-              api_path: api_path,
+              api_path:,
               api_url: "#{prefix}#{api_path}",
             ),
           ],

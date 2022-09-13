@@ -19,7 +19,7 @@ module DataHygiene
       duplicates.select! { |ci| ci.locale == locale }
       content_id_counts = count_repeated_content_ids_in(duplicates)
       duplicates_for_locale = content_id_counts.flat_map do |content_id_count|
-        ContentItem.where(content_id: content_id_count.first, locale: locale).to_a
+        ContentItem.where(content_id: content_id_count.first, locale:).to_a
       end
       summary.duplicates_for_locale = duplicates_for_locale.count
 

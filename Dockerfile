@@ -1,5 +1,5 @@
-ARG base_image=ghcr.io/alphagov/govuk-ruby-base:3.0.4
-ARG builder_image=ghcr.io/alphagov/govuk-ruby-builder:3.0.4
+ARG base_image=ghcr.io/alphagov/govuk-ruby-base:3.1.2
+ARG builder_image=ghcr.io/alphagov/govuk-ruby-builder:3.1.2
 
 FROM $builder_image AS builder
 

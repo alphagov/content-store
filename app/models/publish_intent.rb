@@ -3,7 +3,7 @@ class PublishIntent
   include Mongoid::Timestamps
 
   def self.create_or_update(base_path, attributes)
-    intent = PublishIntent.find_or_initialize_by(base_path: base_path)
+    intent = PublishIntent.find_or_initialize_by(base_path:)
     result = intent.new_record? ? :created : :replaced
 
     result = false unless intent.update(attributes)
@@ -50,7 +50,7 @@ class PublishIntent
   end
 
   def content_item
-    ContentItem.where(base_path: base_path).first
+    ContentItem.where(base_path:).first
   end
 
   def base_path_without_root

@@ -45,7 +45,7 @@ class ContentItemsController < ApplicationController
       status = :ok
     end
 
-    render json: response_body, status: status
+    render json: response_body, status:
   end
 
   def destroy
@@ -153,14 +153,14 @@ private
 
   def find_or_create_scheduled_publishing_log(base_path, document_type, intent)
     latest_log_entry = ScheduledPublishingLogEntry
-      .where(base_path: base_path)
+      .where(base_path:)
       .order_by(:scheduled_publication_time.desc)
       .first
 
     if new_scheduled_publishing?(intent, document_type, latest_log_entry)
       latest_log_entry = ScheduledPublishingLogEntry.create!(
-        base_path: base_path,
-        document_type: document_type,
+        base_path:,
+        document_type:,
         scheduled_publication_time: intent.publish_time,
       )
       GovukStatsd.timing("scheduled_publishing.delay_ms", latest_log_entry.delay_in_milliseconds)
