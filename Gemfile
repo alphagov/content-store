@@ -6,7 +6,7 @@ gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
 gem "govuk-content-schema-test-helpers"
-gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
+gem "mongo", "2.16.3" # Later releases require Mongo >= 3.6
 gem "mongoid"
 gem "plek"
 gem "rack-cache"
