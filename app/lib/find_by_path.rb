@@ -24,12 +24,12 @@ private
 
   def find_route_matches(path)
     query = model_class
-              .or(routes: { "$elemMatch" => { path: path, type: "exact" } })
+              .or(routes: { "$elemMatch" => { path:, type: "exact" } })
               .or(routes: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
 
     if model_class.fields.key?("redirects")
       query = query
-        .or(redirects: { "$elemMatch" => { path: path, type: "exact" } })
+        .or(redirects: { "$elemMatch" => { path:, type: "exact" } })
         .or(redirects: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
     end
 

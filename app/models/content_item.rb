@@ -8,7 +8,7 @@ class ContentItem
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
-    previous_item = ContentItem.where(base_path: base_path).first
+    previous_item = ContentItem.where(base_path:).first
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
@@ -16,7 +16,7 @@ class ContentItem
 
     result = previous_item ? :replaced : :created
 
-    item = ContentItem.new(base_path: base_path)
+    item = ContentItem.new(base_path:)
 
     # This doesn't seem to get set correctly on an upsert so this is to
     # maintain it
@@ -25,14 +25,14 @@ class ContentItem
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
-        .merge(created_at: created_at),
+        .merge(created_at:),
     )
 
     if item.upsert
       begin
-        item.register_routes(previous_item: previous_item)
+        item.register_routes(previous_item:)
       rescue StandardError
-        revert(previous_item: previous_item, item: item)
+        revert(previous_item:, item:)
         raise
       end
     else
@@ -191,7 +191,7 @@ class ContentItem
   end
 
   def register_routes(previous_item: nil)
-    return unless should_register_routes?(previous_item: previous_item)
+    return unless should_register_routes?(previous_item:)
 
     tries = Rails.application.config.register_router_retries
     begin

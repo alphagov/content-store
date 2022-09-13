@@ -18,10 +18,10 @@ describe FindByPath do
             []
           else
             [{ path: base_path, type: "exact" }] +
-              Array(exact_routes).map { |path| { path: path, type: "exact" } } +
-              Array(prefix_routes).map { |path| { path: path, type: "prefix" } }
+              Array(exact_routes).map { |path| { path:, type: "exact" } } +
+              Array(prefix_routes).map { |path| { path:, type: "prefix" } }
           end
-        super(base_path: base_path, routes: routes, redirects: redirects)
+        super(base_path:, routes:, redirects:)
       end
     end
   end

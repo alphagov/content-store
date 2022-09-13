@@ -274,7 +274,7 @@ describe "Fetching content items", type: :request do
         :content_item,
         withdrawn_notice: {
           explanation: "This is no longer true",
-          withdrawn_at: withdrawn_at,
+          withdrawn_at:,
         },
       )
     end

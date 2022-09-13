@@ -181,7 +181,7 @@ describe RouteSet, type: :model do
           segments_mode: "ignore",
         },
       ]
-      route_set = RouteSet.new(redirects: redirects, base_path: "/path", is_redirect: true)
+      route_set = RouteSet.new(redirects:, base_path: "/path", is_redirect: true)
       route_set.register!
       assert_redirect_routes_registered([["/path", "exact", "/new-path"], ["/path/sub/path", "prefix", "/somewhere-else"], ["/path/longer/sub/path", "prefix", "/somewhere-else-2", "ignore"]])
     end

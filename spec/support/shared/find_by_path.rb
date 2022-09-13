@@ -18,7 +18,7 @@ shared_examples "find_by_path" do |factory|
         base_path: "/base-path",
         routes: [
           { path: "/base-path", type: "exact" },
-          { path: path, type: "exact" },
+          { path:, type: "exact" },
         ],
       )
     end

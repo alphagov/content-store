@@ -5,7 +5,7 @@ describe "Access controls for content items", type: :request do
     create(
       :content_item,
       auth_bypass_ids: [content_auth_bypass_id],
-      access_limited: access_limited,
+      access_limited:,
       expanded_links: {
         related: [
           {

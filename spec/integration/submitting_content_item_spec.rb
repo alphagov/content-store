@@ -103,7 +103,7 @@ describe "content item write API", type: :request do
     context "with a publish intent in the past" do
       let(:publish_time) { 10.seconds.ago }
       let!(:publish_intent) do
-        create(:publish_intent, base_path: @data["base_path"], publish_time: publish_time)
+        create(:publish_intent, base_path: @data["base_path"], publish_time:)
       end
 
       it "doesn't delete the publish intent" do
@@ -229,7 +229,7 @@ describe "content item write API", type: :request do
           :content_item,
           title: "Original title",
           base_path: "/vat-rates",
-          format: format,
+          format:,
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
           details: { "foo" => "bar" },
         )
