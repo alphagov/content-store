@@ -1,3 +1,10 @@
 .git
 .gitignore
+Jenkinsfile
+Procfile
 README.md
+docs
+log
+spec
+test
+tmp
