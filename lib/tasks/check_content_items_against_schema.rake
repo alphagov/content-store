@@ -7,18 +7,13 @@ desc <<DESCRIPTION
   GOVUK_CONTENT_SCHEMAS_PATH to override with a custom path.
 DESCRIPTION
 task :check_content_items_against_schema, [:format_names] => :environment do |_task, args|
-  GovukContentSchemaTestHelpers.configure do |config|
-    config.schema_type = "frontend"
-    config.project_root = Rails.root
-  end
-
   formats_to_use = if args[:format_names].present?
                      args[:format_names].split(",")
                    else
                      # placeholder items can have a format of
                      # 'placeholder' or 'placeholder_my_format_name'.
                      # redirect doesn't have a frontend schema.
-                     (GovukContentSchemaTestHelpers::Util.formats + [/\Aplaceholder_.+/]) - %w[redirect]
+                     (GovukSchemas::Schema.schema_names + [/\Aplaceholder_.+/]) - %w[redirect]
                    end
 
   validatable_content_items = ContentItem.where(:format.in => formats_to_use)
@@ -29,7 +24,7 @@ task :check_content_items_against_schema, [:format_names] => :environment do |_t
   puts "Validating #{validatable_content_items.count} content items"
   validatable_content_items.each do |content_item|
     presenter = ContentItemPresenter.new(content_item, api_url_callable)
-    validator = GovukContentSchemaTestHelpers::Validator.new(content_item.format, "schema", presenter.to_json)
+    validator = GovukSchemas::Validator.new(content_item.format, "frontend", presenter.to_json)
     if validator.valid?
       print "."
     else

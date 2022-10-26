@@ -133,8 +133,6 @@ GEM
       warden-oauth2 (~> 0.0.1)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    govuk-content-schema-test-helpers (1.6.1)
-      json-schema (~> 2.8.0)
     govuk_app_config (4.10.1)
       logstasher (~> 2.1)
       plek (~> 4)
@@ -145,6 +143,8 @@ GEM
       sentry-ruby (~> 5.3)
       statsd-ruby (~> 1.5)
       unicorn (~> 6.1)
+    govuk_schemas (4.4.1)
+      json-schema (~> 2.8.0)
     govuk_test (3.0.1)
       brakeman (>= 5.0.2)
       capybara (>= 3.36)
@@ -438,8 +438,8 @@ DEPENDENCIES
   factory_bot
   gds-api-adapters
   gds-sso
-  govuk-content-schema-test-helpers
   govuk_app_config
+  govuk_schemas
   govuk_test
   listen
   mongo (= 2.15.0)
