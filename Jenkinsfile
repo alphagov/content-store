@@ -16,6 +16,5 @@ node("mongodb-2.4") {
         description: "The Pact Broker to run Pact tests against"
       ),
     ],
-    publishingE2ETests: true,
   )
 }
