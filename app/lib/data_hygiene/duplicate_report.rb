@@ -87,7 +87,8 @@ module DataHygiene
           _id
           content_id
           title
-          format
+          document_type
+          schema_name
           locale
           publishing_app
           rendering_app
