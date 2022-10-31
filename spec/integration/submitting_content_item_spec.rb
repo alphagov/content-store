@@ -8,7 +8,6 @@ describe "content item write API", type: :request do
       "content_id" => SecureRandom.uuid,
       "title" => "VAT rates",
       "description" => "Current VAT rates",
-      "format" => "answer",
       "schema_name" => "answer",
       "document_type" => "answer",
       "locale" => "en",
@@ -50,7 +49,7 @@ describe "content item write API", type: :request do
       expect(item).to be
       expect(item.title).to eq("VAT rates")
       expect(item.description).to eq("Current VAT rates")
-      expect(item.format).to eq("answer")
+      expect(item.schema_name).to eq("answer")
       expect(item.locale).to eq("en")
       expect(item.phase).to eq("live")
       expect(item.public_updated_at).to match_datetime("2014-05-14T13:00:06Z")
@@ -222,14 +221,14 @@ describe "content item write API", type: :request do
   end
 
   describe "updating an existing content item" do
-    let(:format) { "gone" }
+    let(:schema_name) { "gone" }
     before(:each) do
       Timecop.travel(30.minutes.ago) do
         @item = create(
           :content_item,
           title: "Original title",
           base_path: "/vat-rates",
-          format:,
+          schema_name:,
           public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
           details: { "foo" => "bar" },
         )
@@ -263,7 +262,7 @@ describe "content item write API", type: :request do
     end
 
     context "when the original item is a placeholder" do
-      let(:format) { "placeholder" }
+      let(:schema_name) { "placeholder" }
 
       it "registers routes for the content item" do
         put_json "/content/vat-rates", @data

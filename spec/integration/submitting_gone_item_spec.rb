@@ -5,7 +5,6 @@ describe "submitting gone items to the content store", type: :request do
     before(:each) do
       @data = {
         "base_path" => "/dodo-sanctuary",
-        "format" => "gone",
         "schema_name" => "gone",
         "document_type" => "gone",
         "publishing_app" => "publisher",
@@ -26,7 +25,7 @@ describe "submitting gone items to the content store", type: :request do
     it "creates the content item" do
       item = ContentItem.where(base_path: "/dodo-sanctuary").first
       expect(item).to be
-      expect(item.format).to eq("gone")
+      expect(item.schema_name).to eq("gone")
     end
 
     it "registers gone routes for the item" do

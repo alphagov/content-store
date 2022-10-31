@@ -68,7 +68,6 @@ class ContentItem
   field :content_id, type: String
   field :title, type: String
   field :description, type: Hash, default: { "value" => nil }
-  field :format, type: String
   field :document_type, type: String
 
   # Supertypes are deprecated, but are still sent by the publishing-api.

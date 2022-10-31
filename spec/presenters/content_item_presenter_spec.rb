@@ -15,7 +15,7 @@ describe ContentItemPresenter do
       ],
     }
   end
-  let(:item) { build(:content_item, document_type: "travel_advice", locale:, expanded_links:) }
+  let(:item) { build(:content_item, schema_name: "travel_advice", locale:, expanded_links:) }
   let(:locale) { "en" }
 
   let(:api_url_method) do
@@ -75,7 +75,7 @@ describe ContentItemPresenter do
   end
 
   it "validates against the schema" do
-    content_item = create(:content_item, :with_content_id, schema_name: "generic")
+    content_item = create(:content_item, :with_content_id, schema_name: "generic", document_type: "answer")
 
     presented = ContentItemPresenter.new(content_item, api_url_method).as_json
 
@@ -104,6 +104,7 @@ describe ContentItemPresenter do
         :content_item,
         :with_content_id,
         schema_name: "generic",
+        document_type: "answer",
         publishing_scheduled_at: Time.zone.local(2018, 6, 1, 9, 30),
         scheduled_publishing_delay_seconds: 130,
       )

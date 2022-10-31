@@ -4,7 +4,6 @@ describe "submitting redirect items to the content store", type: :request do
   before :each do
     @data = {
       "base_path" => "/crb-checks",
-      "format" => "redirect",
       "schema_name" => "redirect",
       "document_type" => "redirect",
       "public_updated_at" => "2014-05-14T13:00:06Z",
@@ -29,7 +28,7 @@ describe "submitting redirect items to the content store", type: :request do
     it "creates the content item" do
       item = ContentItem.where(base_path: "/crb-checks").first
       expect(item).to be
-      expect(item.format).to eq("redirect")
+      expect(item.schema_name).to eq("redirect")
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
     end
@@ -57,7 +56,7 @@ describe "submitting redirect items to the content store", type: :request do
 
     it "updates the content item" do
       @item.reload
-      expect(@item.format).to eq("redirect")
+      expect(@item.schema_name).to eq("redirect")
       expect(@item.title).to be_nil
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
