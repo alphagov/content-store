@@ -5,7 +5,6 @@ gem "rails", "7.0.4"
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
-gem "govuk-content-schema-test-helpers"
 gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
 gem "mongoid"
 gem "plek"
@@ -18,8 +17,8 @@ group :development, :test do
   gem "climate_control"
   gem "database_cleaner-mongoid"
   gem "factory_bot"
+  gem "govuk_schemas"
   gem "govuk_test"
-
   gem "pact"
   gem "pry-byebug"
   gem "rspec-rails"

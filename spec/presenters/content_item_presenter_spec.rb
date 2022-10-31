@@ -79,7 +79,7 @@ describe ContentItemPresenter do
 
     presented = ContentItemPresenter.new(content_item, api_url_method).as_json
 
-    expect(presented.to_json).to be_valid_against_schema("generic")
+    expect(presented.to_json).to be_valid_against_frontend_schema("generic")
   end
 
   context "when schema_name is not redirect" do
@@ -110,7 +110,7 @@ describe ContentItemPresenter do
 
       presented = ContentItemPresenter.new(content_item, api_url_method).as_json
 
-      expect(presented.to_json).to be_valid_against_schema("generic")
+      expect(presented.to_json).to be_valid_against_frontend_schema("generic")
     end
   end
 end
