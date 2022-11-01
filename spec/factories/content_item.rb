@@ -3,9 +3,8 @@ FactoryBot.define do
   # attributes and traits
   factory :base_content_item, class: ContentItem do
     sequence(:base_path) { |n| "/test-content-#{n}" }
-    format { "gone" } # Using gone as it allows the smallest valid base
-    schema_name { format }
-    document_type { format }
+    schema_name { "gone" }
+    document_type { schema_name }
     publishing_app { "publisher" }
     routes { [{ "path" => base_path, "type" => "exact" }] }
     payload_version { 0 }
@@ -25,7 +24,7 @@ FactoryBot.define do
     end
 
     factory :content_item do
-      format { "answer" }
+      schema_name { "answer" }
       title { "Test content" }
       rendering_app { "frontend" }
       public_updated_at { Time.zone.now }
@@ -35,19 +34,19 @@ FactoryBot.define do
 
     factory :redirect_content_item do
       sequence(:base_path) { |n| "/test-redirect-#{n}" }
-      format { "redirect" }
+      schema_name { "redirect" }
       routes { [] }
       redirects { [{ "path" => base_path, "type" => "exact", "destination" => "/somewhere" }] }
     end
 
     factory :gone_content_item do
       sequence(:base_path) { |n| "/dodo-sanctuary-#{n}" }
-      format { "gone" }
+      schema_name { "gone" }
     end
 
     factory :gone_content_item_with_details do
       sequence(:base_path) { |n| "/messy-language-stuff-#{n}" }
-      format { "gone" }
+      schema_name { "gone" }
       details do
         {
           explanation: "<div class=\"govspeak\"><p>Explanation…</p> </div>",
@@ -58,7 +57,7 @@ FactoryBot.define do
 
     factory :gone_content_time_with_empty_details_fields do
       sequence(:base_path) { |n| "/more-gone-than-the-other-gone-#{n}" }
-      format { "gone" }
+      schema_name { "gone" }
       details do
         {
           explanation: "",

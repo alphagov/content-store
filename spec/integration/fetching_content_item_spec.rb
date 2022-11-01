@@ -11,7 +11,6 @@ describe "Fetching content items", type: :request do
         content_id: SecureRandom.uuid,
         title: "VAT rates",
         description: "Current VAT rates",
-        format: "publication",
         schema_name: "publication",
         document_type: "travel_advice",
         public_updated_at: 30.minutes.ago,

@@ -1,7 +1,7 @@
 ## Redirect items
 
 To represent content that can be found under a different `base_path`, the content store will support
-items with a format of "redirect".  These items have slightly different rules:
+items with a schema_name of "redirect".  These items have slightly different rules:
 
 * They must include a redirect for the `base_path` in their redirects array.
   They may additionally include other paths under the `base_path`.
@@ -12,7 +12,8 @@ For example, given the following request:
 
     PUT /content/moved-foo
     {
-      "format": "redirect",
+      "schema_name": "redirect",
+      "document_type": "redirect",
       "publishing_app": "publisher",
       "redirects": [
         {"path": "/moved-foo", "type": "prefix", "destination": "/new-foo"},

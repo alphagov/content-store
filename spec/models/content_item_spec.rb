@@ -232,7 +232,7 @@ describe ContentItem, type: :model do
     context "when previous item is a placeholder" do
       before :each do
         previous_routes = @routes.map(&:dup)
-        @previous_item = build(:content_item, base_path: "/a-path", rendering_app: "an-app", format: "placeholder", routes: previous_routes)
+        @previous_item = build(:content_item, base_path: "/a-path", rendering_app: "an-app", schema_name: "placeholder", routes: previous_routes)
       end
 
       it "registers routes even though they haven't changed" do

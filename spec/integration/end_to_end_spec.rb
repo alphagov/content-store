@@ -7,7 +7,6 @@ describe "End-to-end behaviour", type: :request do
       "base_path" => "/vat-rates",
       "content_id" => SecureRandom.uuid,
       "title" => "VAT rates",
-      "format" => "answer",
       "schema_name" => "answer",
       "document_type" => "travel_advice",
       "content_purpose_document_supertype" => "guidance",

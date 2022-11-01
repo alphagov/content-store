@@ -30,7 +30,7 @@ The following routes would be created:
 
 ### Placeholder items
 
-Items with a format starting with "placeholder" will not have the routes
+Items with a schema_name starting with "placeholder" will not have the routes
 registered with the router.
 
 ### Redirects for subpaths

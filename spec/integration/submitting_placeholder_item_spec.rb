@@ -7,7 +7,6 @@ describe "submitting placeholder items to the content store", type: :request do
       "content_id" => SecureRandom.uuid,
       "title" => "VAT rates",
       "description" => "Current VAT rates",
-      "format" => "placeholder",
       "schema_name" => "placeholder",
       "document_type" => "placeholder",
       "public_updated_at" => "2014-05-14T13:00:06Z",
@@ -27,7 +26,7 @@ describe "submitting placeholder items to the content store", type: :request do
       expect(item).to be
       expect(item.title).to eq("VAT rates")
       expect(item.description).to eq("Current VAT rates")
-      expect(item.format).to eq("placeholder")
+      expect(item.schema_name).to eq("placeholder")
     end
 
     it "does not register routes for the content item" do
@@ -54,7 +53,7 @@ describe "submitting placeholder items to the content store", type: :request do
       put_json "/content/vat-rates", @data
       @item.reload
       expect(@item.title).to eq("VAT rates")
-      expect(@item.format).to eq("placeholder")
+      expect(@item.schema_name).to eq("placeholder")
     end
 
     it "does not update routes for the content item" do
@@ -64,9 +63,9 @@ describe "submitting placeholder items to the content store", type: :request do
     end
   end
 
-  context "an item with a format prefixed with 'placeholder_'" do
+  context "an item with a document_type prefixed with 'placeholder_'" do
     before :each do
-      @data["format"] = "placeholder_answer"
+      @data["document_type"] = "placeholder_answer"
     end
 
     it "creates the content item" do
@@ -75,7 +74,7 @@ describe "submitting placeholder items to the content store", type: :request do
       expect(item).to be
       expect(item.title).to eq("VAT rates")
       expect(item.description).to eq("Current VAT rates")
-      expect(item.format).to eq("placeholder_answer")
+      expect(item.document_type).to eq("placeholder_answer")
     end
 
     it "does not register routes for the content item" do
