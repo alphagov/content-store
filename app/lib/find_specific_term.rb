@@ -1,13 +1,13 @@
 require "csv"
 
 class FindSpecificTerm
-  attr_reader :term, :exclude_type
+  attr_reader :term, :exclude_types
 
   CONTENT_ITEM_HEADERS = ["Title", "URL", "Publishing application", "Tagged organisation", "Format", "Content ID"].freeze
 
-  def initialize(term, exclude_type = nil)
+  def initialize(term, exclude_types = [])
     @term = term
-    @exclude_type = exclude_type
+    @exclude_types = exclude_types
   end
 
   def call
@@ -26,7 +26,7 @@ private
     logger.info CONTENT_ITEM_HEADERS.join(",")
 
     term_content_items.each do |content_item|
-      logger.info content_item_fields(content_item).join(", ") unless content_item.document_type == exclude_type
+      logger.info content_item_fields(content_item).join(", ") unless exclude_types.include?(content_item.document_type)
     end
 
     logger.info "Found #{number_of_terms_items} items containing #{term}"
@@ -67,7 +67,7 @@ private
   end
 
   def number_of_terms_items
-    term_content_items.count { |content_item| content_item.document_type != exclude_type }
+    term_content_items.count { |content_item| exclude_types.exclude?(content_item.document_type) }
   end
 
   def term_content_items

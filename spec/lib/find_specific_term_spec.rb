@@ -46,7 +46,7 @@ describe FindSpecificTerm do
 
       expect(Rails.logger).to receive(:info).with("Finished searching")
 
-      FindSpecificTerm.call(term, "test")
+      FindSpecificTerm.call(term, %w[test])
     end
   end
 end
