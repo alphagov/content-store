@@ -22,4 +22,4 @@ COPY --from=builder /app /app/
 
 USER app
 
-CMD bundle exec puma
+CMD ["bundle", "exec", "puma"]
