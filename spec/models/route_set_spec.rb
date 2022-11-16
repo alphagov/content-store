@@ -170,6 +170,26 @@ describe RouteSet, type: :model do
       route_set.register!
     end
 
+    describe "when NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH=1" do
+      around do |t|
+        ClimateControl.modify NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH: "1" do
+          t.run
+        end
+      end
+
+      it "does not call router_api.add_backend" do
+        expect(Rails.application.router_api).not_to receive(:add_backend)
+        expect(Rails.application.router_api).to receive(:commit_routes)
+
+        route_set = RouteSet.new(base_path: "/path", rendering_app: "frontend")
+        route_set.routes = [
+          { path: "/path", type: "exact" },
+          { path: "/path/sub/path", type: "prefix" },
+        ]
+        route_set.register!
+      end
+    end
+
     it "registers and commits all registerable redirects for a redirect item" do
       redirects = [
         { path: "/path", type: "exact", destination: "/new-path" },
