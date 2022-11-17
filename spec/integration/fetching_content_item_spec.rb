@@ -89,6 +89,10 @@ describe "Fetching content items", type: :request do
       expect(cache_control["public"]).to eq(true)
     end
 
+    it "sets a access-control-allow-origin header to allow cross origin requests" do
+      expect(response.headers.to_h).to include({ "Access-Control-Allow-Origin" => "*" })
+    end
+
     context "when the user is not authenticated" do
       around do |example|
         ClimateControl.modify(GDS_SSO_MOCK_INVALID: "1") { example.run }

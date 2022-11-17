@@ -1,6 +1,7 @@
 class ContentItemsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:show]
   before_action :parse_json_request, only: [:update]
+  before_action :set_cors_headers, only: [:show]
 
   def show
     item = GovukStatsd.time("show.find_content_item") do
@@ -128,6 +129,11 @@ private
     end
 
     expires_in bounded_max_age(cache_time), public: is_public
+  end
+
+  def set_cors_headers
+    # Allow any origin host to request the resource
+    response.headers["Access-Control-Allow-Origin"] = "*"
   end
 
   # Constrain the cache time to be within the minimum_ttl and default_ttl.
