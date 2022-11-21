@@ -29,11 +29,11 @@ private
 
   def api_url(link)
     api_path = api_path(link)
-    Plek.new.website_root + api_path if api_path
+    Plek.website_root + api_path if api_path
   end
 
   def web_url(link)
-    Plek.new.website_root + link[:base_path] if link[:base_path]
+    Plek.website_root + link[:base_path] if link[:base_path]
   end
 
   def secret_fields

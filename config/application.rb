@@ -114,7 +114,7 @@ module ContentStore
 
     def router_api
       @router_api ||= GdsApi::Router.new(
-        Plek.new.find("router-api"),
+        Plek.find("router-api"),
         bearer_token: ENV["ROUTER_API_BEARER_TOKEN"] || "example",
       )
     end
