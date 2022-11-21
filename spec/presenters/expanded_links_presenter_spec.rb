@@ -4,7 +4,7 @@ RSpec.describe ExpandedLinksPresenter do
   describe ".present" do
     subject { described_class.new(links).present }
 
-    let(:prefix) { Plek.new.website_root }
+    let(:prefix) { Plek.website_root }
     let(:base_path) { "/test-page" }
     let(:api_path) { "/api/content/test-page" }
     let(:links) do
@@ -26,10 +26,7 @@ RSpec.describe ExpandedLinksPresenter do
         }
       end
 
-      before do
-        double = instance_double(Plek, website_root: production_prefix)
-        allow(Plek).to receive(:new).and_return(double)
-      end
+      before { allow(Plek).to receive(:website_root).and_return(production_prefix) }
 
       it { is_expected.to include expected }
     end
@@ -47,10 +44,7 @@ RSpec.describe ExpandedLinksPresenter do
         }
       end
 
-      before do
-        double = instance_double(Plek, website_root: development_prefix)
-        allow(Plek).to receive(:new).and_return(double)
-      end
+      before { allow(Plek).to receive(:website_root).and_return(development_prefix) }
 
       it { is_expected.to include expected }
     end
