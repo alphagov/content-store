@@ -31,4 +31,4 @@ Example API requests and corresponding responses can be found in the
 
 ## Licence
 
-[MIT License](https://github.com/alphagov/content-store/blob/master/LICENSE)
+[MIT License](LICENCE)
