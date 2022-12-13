@@ -438,6 +438,7 @@ DEPENDENCIES
   govuk_schemas
   govuk_test
   listen
+  mail (~> 2.7.1)
   mongo (= 2.15.0)
   mongoid
   pact
