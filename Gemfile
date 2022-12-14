@@ -5,6 +5,7 @@ gem "rails", "7.0.4"
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
+gem "mail", "~> 2.7.1"  # TODO: remove once https://github.com/mikel/mail/issues/1489 is fixed.
 gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
 gem "mongoid"
 gem "plek"
