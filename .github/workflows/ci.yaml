@@ -10,21 +10,22 @@ on:
 jobs:
   cache-dependencies:
     name: Cache dependencies
-    uses: alphagov/govuk-infrastructure/.github/workflows/ci-cache-dependencies.yaml@add-individual-ci-jobs-non-services
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-cache-dependencies.yaml@add-individual-ci-jobs
 
   security-analysis-ruby:
     name: Security Analysis Ruby
     needs: cache-dependencies
-    uses: alphagov/govuk-infrastructure/.github/workflows/ci-security-analysis-ruby.yaml@add-individual-ci-jobs-non-services
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-security-analysis-ruby.yaml@add-individual-ci-jobs
 
   lint-ruby:
     name: Lint Ruby
     needs: cache-dependencies
-    uses: alphagov/govuk-infrastructure/.github/workflows/ci-lint-ruby.yaml@add-individual-ci-jobs-non-services
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-lint-ruby.yaml@add-individual-ci-jobs
 
   test-ruby:
     name: Test Ruby
     needs: cache-dependencies
-    uses: alphagov/govuk-infrastructure/.github/workflows/ci-test-ruby.yaml@add-individual-ci-jobs-non-services
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-test-ruby.yaml@add-individual-ci-jobs
     with:
       enableMongoDB: true
+      enablePostgres: true
