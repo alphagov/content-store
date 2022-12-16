@@ -8,8 +8,23 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Test Rails
-    uses: alphagov/govuk-infrastructure/.github/workflows/test-rails.yaml@main
+  cache-dependencies:
+    name: Cache dependencies
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-cache-dependencies.yaml@add-individual-ci-jobs-non-services
+
+  security-analysis-ruby:
+    name: Security Analysis Ruby
+    needs: cache-dependencies
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-security-analysis-ruby.yaml@add-individual-ci-jobs-non-services
+
+  lint-ruby:
+    name: Lint Ruby
+    needs: cache-dependencies
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-lint-ruby.yaml@add-individual-ci-jobs-non-services
+
+  test-ruby:
+    name: Test Ruby
+    needs: cache-dependencies
+    uses: alphagov/govuk-infrastructure/.github/workflows/ci-test-ruby.yaml@add-individual-ci-jobs-non-services
     with:
-      requiresMongoDB: true
+      enableMongoDB: true
