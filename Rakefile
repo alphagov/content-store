@@ -15,5 +15,12 @@ rescue LoadError
   # Rubocop isn't available in all environments
 end
 
+begin
+  require "rspec/core/rake_task"
+  RSpec::Core::RakeTask.new(:test)
+rescue LoadError
+  # RSpec isn't available in all environments
+end
+
 Rake::Task[:default].clear if Rake::Task.task_defined?(:default)
 task default: %i[rubocop spec pact:verify]
