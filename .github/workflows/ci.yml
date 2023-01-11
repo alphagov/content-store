@@ -54,3 +54,8 @@ jobs:
           GOVUK_CONTENT_SCHEMAS_PATH: vendor/publishing-api/content_schemas
         run: bundle exec rake spec
 
+  pact-test:
+    name: Run Pact tests
+    uses: ./.github/workflows/verify-pact.yml
+    with:
+      pact_consumer_version: 'branch-deployed-to-production'
