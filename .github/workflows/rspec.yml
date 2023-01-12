@@ -1,0 +1,53 @@
+name: Run RSpec
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The branch, tag or SHA to checkout'
+        required: false
+        type: string
+      publishingApiRef:
+        description: 'The branch, tag or SHA to checkout Publishing API'
+        required: false
+        default: 'deployed-to-production'
+        type: string
+
+jobs:
+  run-rspec:
+    name: Run RSpec
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup MongoDB
+        uses: alphagov/govuk-infrastructure/.github/actions/setup-mongodb@main
+        with:
+          version: 2.6
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: alphagov/content-store
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Checkout Publishing API (for Content Schemas)
+        uses: actions/checkout@v3
+        with:
+          repository: alphagov/publishing-api
+          ref: ${{ inputs.publishingApiRef }}
+          path: vendor/publishing-api
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Initialize database
+        env:
+          RAILS_ENV: test
+        run: bundle exec rails db:setup
+
+      - name: Run RSpec
+        env:
+          RAILS_ENV: test
+          GOVUK_CONTENT_SCHEMAS_PATH: vendor/publishing-api/content_schemas
+        run: bundle exec rake spec
