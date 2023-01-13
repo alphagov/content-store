@@ -70,6 +70,8 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     awesome_print (1.9.2)
+    bootsnap (1.15.0)
+      msgpack (~> 1.2)
     brakeman (5.3.1)
     bson (4.15.0)
     builder (3.2.4)
@@ -188,6 +190,7 @@ GEM
       activemodel (>= 5.1, < 7.1, != 7.0.0)
       mongo (>= 2.10.5, < 3.0.0)
       ruby2_keywords (~> 0.0.5)
+    msgpack (1.6.0)
     multi_xml (0.6.0)
     net-imap (0.3.1)
       net-protocol
@@ -428,6 +431,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bootsnap
   ci_reporter_rspec
   climate_control
   database_cleaner-mongoid
