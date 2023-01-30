@@ -60,4 +60,5 @@ jobs:
 
       - name: Verify pact artifact
         if: inputs.pact-artifact != ''
-        run: bundle exec rake pact:verify:at[tmp/pacts/publishing_api-content_store.json]
+        # run: bundle exec rake pact:verify:at[tmp/pacts/publishing_api-content_store.json]
+        run: exit 1
