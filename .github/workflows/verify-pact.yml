@@ -6,14 +6,25 @@ on:
       ref:
         required: false
         type: string
-      pact_consumer_version:
-        required: true
+      # A GitHub Action artifact which contains the pact definition files
+      # Publishing API calls this action to test new pacts against this
+      # workflow
+      pact_artifact:
+        required: false
         type: string
+      # Which version of the pacts to use from the Pact Broker service
+      # This option will be ignored if pact_artifact is set
+      pact_consumer_version:
+        required: false
+        type: string
+        default: branch-deployed-to-production
 
 jobs:
   pact_verify:
     name: Verify pact tests
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
     steps:
       - name: Setup MongoDB
         uses: alphagov/govuk-infrastructure/.github/actions/setup-mongodb@main
@@ -32,12 +43,21 @@ jobs:
           bundler-cache: true
 
       - name: Initialize database
-        env:
-          RAILS_ENV: test
         run: bundle exec rails db:setup
 
-      - name: Run Pact tests
+      - name: Verify pact consumer version
+        if: inputs.pact_artifact == ''
         env:
-          RAILS_ENV: test
           PACT_CONSUMER_VERSION: ${{ inputs.pact_consumer_version }}
         run: bundle exec rake pact:verify
+
+      - name: Download pact artifact
+        if: inputs.pact_artifact != ''
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.pact_artifact }}
+          path: tmp/pacts
+
+      - name: Verify pact artifact
+        if: inputs.pact_artifact != ''
+        run: bundle exec rake pact:verify:at[tmp/pacts/publishing_api-content_store.json]
