@@ -27,4 +27,4 @@ jobs:
     name: Run Pact tests
     uses: ./.github/workflows/verify-pact.yml
     with:
-      pact_consumer_version: 'branch-deployed-to-production'
+      pact-consumer-version: 'branch-deployed-to-production'
