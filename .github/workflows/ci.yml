@@ -27,4 +27,8 @@ jobs:
     name: Run Pact tests
     uses: ./.github/workflows/verify-pact.yml
     with:
+      # Note: As of January 2023 this relies on Jenkins CI to generate
+      # this Pact consumer version. Replatforming does not tag
+      # deployed-to-production and the Publishing API CI build doesn't run
+      # against the tag when one is created.
       pact_consumer_version: 'branch-deployed-to-production'
