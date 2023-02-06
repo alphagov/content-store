@@ -22,7 +22,7 @@ describe "Access controls for content items", type: :request do
 
   shared_examples "returns forbidden response" do
     it "returns a forbidden response" do
-      get "/content/#{content_item.base_path}", headers: headers
+      get("/content/#{content_item.base_path}", headers:)
 
       json = JSON.parse(response.body)
 
@@ -34,7 +34,7 @@ describe "Access controls for content items", type: :request do
 
   shared_examples "returns private response" do
     it "returns a success response with private cache control" do
-      get "/content/#{content_item.base_path}", headers: headers
+      get("/content/#{content_item.base_path}", headers:)
 
       json = JSON.parse(response.body)
 
@@ -46,7 +46,7 @@ describe "Access controls for content items", type: :request do
 
   shared_examples "returns public response" do
     it "returns a success response with public cache control" do
-      get "/content/#{content_item.base_path}", headers: headers
+      get("/content/#{content_item.base_path}", headers:)
 
       json = JSON.parse(response.body)
 
