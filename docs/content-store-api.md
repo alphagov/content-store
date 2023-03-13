@@ -34,4 +34,4 @@ If the `path` matches a `base_path` content will be returned, whereas if the
 `path` matches a route a 303 redirect will be returned to the content at the
 `base_path`.
 
-Not all content exists as a standalone page like the `/take-pet-abroad` example. Some content exists as a collection that references other pieces of content, and some content exists as meta content designed to describe a wider whole. We use [govuk-content-schemas](https://github.com/alphagov/govuk-content-schemas) to describe all these different content types. The content API itself is not prescriptive about this; it takes any JSON structure.
+Not all content exists as a standalone page like the `/take-pet-abroad` example. Some content exists as a collection that references other pieces of content, and some content exists as meta content designed to describe a wider whole. We use [content-schemas defined in publishing api](https://github.com/alphagov/publishing-api/tree/main/content_schemas) to describe all these different content types. The content API itself is not prescriptive about this; it takes any JSON structure.
