@@ -258,6 +258,7 @@ GEM
     parser (3.2.0.0)
       ast (~> 2.4.1)
     parslet (2.0.0)
+    pg (1.4.5)
     plek (5.0.0)
     prometheus_exporter (2.0.8)
       webrick
@@ -450,9 +451,8 @@ DEPENDENCIES
   govuk_schemas
   govuk_test
   listen
-  mongo (= 2.15.0)
-  mongoid
   pact
+  pg
   plek
   pry-byebug
   rack-cache
