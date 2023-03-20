@@ -1,18 +1,15 @@
-class PublishIntent
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
+class PublishIntent < ApplicationRecord
   def self.create_or_update(base_path, attributes)
     intent = PublishIntent.find_or_initialize_by(base_path:)
     result = intent.new_record? ? :created : :replaced
 
     result = false unless intent.update(attributes)
     [result, intent]
-  rescue Mongoid::Errors::UnknownAttribute
+  rescue ActiveRecord::UnknownAttributeError
     extra_fields = attributes.keys - fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, intent]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveModel::ValidationError => e
     intent.errors.add(:base, e.message)
     [false, intent]
   end
@@ -22,15 +19,6 @@ class PublishIntent
   end
 
   PUBLISH_TIME_LEEWAY = 5.minutes
-
-  field :_id, as: :base_path, type: String, overwrite: true
-  field :publish_time, type: DateTime
-  field :publishing_app, type: String
-  field :rendering_app, type: String
-  field :routes, type: Array, default: []
-
-  # We want to look up this model by route as well as the base_path
-  index("routes.path" => 1, "routes.type" => 1)
 
   validates :base_path, absolute_path: true
   validates :publish_time, presence: true

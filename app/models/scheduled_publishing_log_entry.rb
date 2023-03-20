@@ -1,13 +1,4 @@
-class ScheduledPublishingLogEntry
-  include Mongoid::Document
-  include Mongoid::Timestamps::Created
-  field :base_path, type: String
-  field :document_type, type: String
-  field :scheduled_publication_time, type: DateTime
-  field :delay_in_milliseconds
-
-  index(base_path: 1)
-
+class ScheduledPublishingLogEntry < ApplicationRecord
   before_save do |document|
     document.delay_in_milliseconds = set_delay_in_milliseconds
   end
