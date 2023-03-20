@@ -1,10 +1,12 @@
-class ContentItem
-  include Mongoid::Document
-  include Mongoid::Timestamps
+class ContentItem < ApplicationRecord
+
+  validates_each :routes, :redirects do |record, attr, value|
+    record.errors.add attr, "Value of type #{record.class} cannot be written to a field of type Array" unless value.nil? or value.respond_to?(:each)
+  end
 
   def self.revert(previous_item:, item:)
-    item.remove unless previous_item
-    previous_item&.upsert
+    item.destroy! unless previous_item
+    previous_item&.save
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
@@ -18,17 +20,12 @@ class ContentItem
 
     item = ContentItem.new(base_path:)
 
-    # This doesn't seem to get set correctly on an upsert so this is to
-    # maintain it
-    created_at = previous_item ? previous_item.created_at : Time.zone.now.utc
-
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
-        .merge(created_at:),
     )
 
-    if item.upsert
+    if item.save!
       begin
         item.register_routes(previous_item:)
       rescue StandardError
@@ -40,11 +37,11 @@ class ContentItem
     end
 
     [result, item]
-  rescue Mongoid::Errors::UnknownAttribute
-    extra_fields = attributes.keys - fields.keys
+  rescue ActiveRecord::UnknownAttributeError
+    extra_fields = attributes.keys - new.attributes.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, item]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveModel::ValidationError => e
     item.errors.add(:base, e.message)
     [false, item]
   rescue OutOfOrderTransmissionError => e
@@ -63,53 +60,6 @@ class ContentItem
   def self.find_by_path(path)
     ::FindByPath.new(self).find(path)
   end
-
-  field :_id, as: :base_path, type: String, overwrite: true
-  field :content_id, type: String
-  field :title, type: String
-  field :description, type: Hash, default: { "value" => nil }
-  field :document_type, type: String
-
-  # Supertypes are deprecated, but are still sent by the publishing-api.
-  field :content_purpose_document_supertype, type: String, default: ""
-  field :content_purpose_subgroup, type: String, default: ""
-  field :content_purpose_supergroup, type: String, default: ""
-  field :email_document_supertype, type: String, default: ""
-  field :government_document_supertype, type: String, default: ""
-  field :navigation_document_supertype, type: String, default: ""
-  field :search_user_need_document_supertype, type: String, default: ""
-  field :user_journey_document_supertype, type: String, default: ""
-
-  field :schema_name, type: String
-  field :locale, type: String, default: I18n.default_locale.to_s
-  field :first_published_at, type: DateTime
-  field :public_updated_at, type: DateTime
-  field :publishing_scheduled_at, type: DateTime
-  field :scheduled_publishing_delay_seconds, type: Integer
-  field :details, type: Hash, default: {}
-  field :publishing_app, type: String
-  field :rendering_app, type: String
-  field :routes, type: Array, default: []
-  field :redirects, type: Array, default: []
-  field :expanded_links, type: Hash, default: {}
-  field :access_limited, type: Hash, default: {}
-  field :auth_bypass_ids, type: Array, default: []
-  field :phase, type: String, default: "live"
-  field :analytics_identifier, type: String
-  field :payload_version, type: Integer
-  field :withdrawn_notice, type: Hash, default: {}
-  field :publishing_request_id, type: String, default: nil
-
-  # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
-  before_upsert :set_updated_at
-
-  # We want to look up content items by whether they match a route and the type
-  # of route.
-  index("routes.path" => 1, "routes.type" => 1)
-
-  # We want to look up content items by whether they match a redirect and the
-  # type of redirect.
-  index("redirects.path" => 1, "redirects.type" => 1)
 
   # We want to force the JSON representation to use "base_path" instead of
   # "_id" to prevent "_id" being exposed outside of the model.
@@ -218,7 +168,7 @@ class ContentItem
 private
 
   def should_register_routes?(previous_item: nil)
-    return false if schema_name.start_with?("placeholder")
+    return false if schema_name.to_s.start_with?("placeholder")
 
     if previous_item
       return previous_item.schema_name == "placeholder" ||
