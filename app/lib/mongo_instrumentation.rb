@@ -1,3 +1,0 @@
-require "mongo_instrumentation/runtime_registry"
-require "mongo_instrumentation/monitoring_subscriber"
-require "mongo_instrumentation/controller_runtime"
