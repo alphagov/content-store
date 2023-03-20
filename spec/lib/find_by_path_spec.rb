@@ -5,7 +5,7 @@ describe FindByPath do
     # Using an actual Model as it's a real pain to mock mongoid criterias and
     # similar
     Class.new do
-      include Mongoid::Document
+      extend ApplicationRecord
       store_in collection: "find_by_path_examples"
 
       field :base_path, type: String

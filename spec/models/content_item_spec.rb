@@ -30,7 +30,7 @@ describe ContentItem, type: :model do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
 
-        it "handles Mongoid::Errors::UnknownAttribute" do
+        it "handles ActiveRecord::UnknownAttributeError" do
           result = item = nil
 
           expect {
@@ -45,7 +45,7 @@ describe ContentItem, type: :model do
       context "when assigning a value of incorrect type" do
         let(:attributes) { { "routes" => 12 } }
 
-        it "handles Mongoid::Errors::InvalidValue" do
+        it "handles ActiveModel::ValidationError" do
           result = item = nil
 
           expect {
@@ -54,7 +54,7 @@ describe ContentItem, type: :model do
           }.to_not raise_error
 
           expect(result).to be false
-          expected_error_message = Mongoid::Errors::InvalidValue.new(Array, 12.class).message
+          expected_error_message = "Value of type Integer cannot be written to a field of type Array"
           expect(item.errors[:base]).to include(expected_error_message)
         end
       end
@@ -77,7 +77,7 @@ describe ContentItem, type: :model do
       context "with current attributes and no previous item" do
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -93,7 +93,7 @@ describe ContentItem, type: :model do
 
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -142,10 +142,10 @@ describe ContentItem, type: :model do
     it_behaves_like "find_by_path", :content_item
   end
 
-  it "should set updated_at on upsert" do
+  it "should set updated_at on save" do
     item = build(:content_item)
     Timecop.freeze do
-      item.upsert
+      item.save!
       item.reload
 
       expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
