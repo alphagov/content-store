@@ -17,6 +17,3 @@ inherit_mode:
 # See https://github.com/alphagov/rubocop-govuk/blob/main/CONTRIBUTING.md
 # **************************************************************
 
-# Mongoid doesn't support this
-Rails/FindBy:
-  Enabled: false

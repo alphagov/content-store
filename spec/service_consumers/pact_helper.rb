@@ -11,6 +11,15 @@ Pact.configure do |config|
   config.include WebMock::Matchers
 end
 
+Pact.set_up do
+  DatabaseCleaner.strategy = :transaction
+  DatabaseCleaner.start
+end
+
+Pact.tear_down do
+  DatabaseCleaner.clean
+end
+
 def url_encode(str)
   ERB::Util.url_encode(str)
 end

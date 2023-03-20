@@ -1,4 +1,4 @@
-# This class is designed to work with a Mongoid model that has base_path,
+# This class is designed to work with a model that has base_path,
 # routes and (optionally) redirect fields (where the routes and redirects
 # field matches the govuk schema of an array of objects with path and type
 # fields)
@@ -13,7 +13,7 @@ class FindByPath
   end
 
   def find(path)
-    exact_match = model_class.where(base_path: path).find_first
+    exact_match = model_class.where(base_path: path).first
     return exact_match if exact_match
 
     matches = find_route_matches(path)
@@ -24,16 +24,28 @@ private
 
   def find_route_matches(path)
     query = model_class
-              .or(routes: { "$elemMatch" => { path:, type: "exact" } })
-              .or(routes: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
+      .where("routes  @> ?", json_path_element(path, "exact"))
+      # ANY will match any of the given array elements (similar to IN(), but for JSON arrays)
+      # the ARRAY [?]::jsonb[] is typecasting for PostgreSQL's JSON operators
+      .or(model_class.where("routes @> ANY (ARRAY [?]::jsonb[])", potential_prefix_json_matches(path)))
 
-    if model_class.fields.key?("redirects")
+    if model_class.attribute_names.include?("redirects")
       query = query
-        .or(redirects: { "$elemMatch" => { path:, type: "exact" } })
-        .or(redirects: { "$elemMatch" => { :path.in => potential_prefixes(path), type: "prefix" } })
+      .or(model_class.where("redirects  @> ?", json_path_element(path, "exact")))
+      .or(model_class.where("redirects @> ANY (ARRAY [?]::jsonb[])", potential_prefix_json_matches(path)))
     end
+    query
+  end
 
-    query.entries
+  # Given a path, will decompose the path into path prefixes, and
+  # return a JSON array element that can be matched against the
+  # routes or redirects array in the model_class
+  def potential_prefix_json_matches(path)
+    potential_prefixes(path).map { |p| json_path_element(p, "prefix") }
+  end
+
+  def json_path_element(path, type)
+    [{ path:, type: }].to_json
   end
 
   def best_route_match(matches, path)

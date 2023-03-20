@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   class InvalidRequest < RuntimeError; end
 
   before_action :authenticate_user!
-  rescue_from Mongoid::Errors::DocumentNotFound, with: :error_404
+  rescue_from ActiveRecord::RecordNotFound, with: :error_404
   rescue_from InvalidRequest, with: :error_400
 
 private

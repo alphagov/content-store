@@ -27,7 +27,7 @@ describe PublishIntent, type: :model do
         intent.base_path = "/foo"
         expect {
           intent.save! validate: false
-        }.to raise_error(Mongo::Error::OperationFailure)
+        }.to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
 

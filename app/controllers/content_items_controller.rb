@@ -50,7 +50,7 @@ class ContentItemsController < ApplicationController
   end
 
   def destroy
-    content_item = ContentItem.find_by(base_path: encoded_base_path)
+    content_item = ContentItem.find_by!(base_path: encoded_base_path)
 
     content_item.delete_routes
     content_item.destroy!
@@ -160,7 +160,7 @@ private
   def find_or_create_scheduled_publishing_log(base_path, document_type, intent)
     latest_log_entry = ScheduledPublishingLogEntry
       .where(base_path:)
-      .order_by(:scheduled_publication_time.desc)
+      .order(scheduled_publication_time: :desc)
       .first
 
     if new_scheduled_publishing?(intent, document_type, latest_log_entry)
