@@ -73,7 +73,6 @@ GEM
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     brakeman (5.3.1)
-    bson (4.15.0)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.36.0)
@@ -98,10 +97,10 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    database_cleaner-core (2.0.1)
-    database_cleaner-mongoid (2.0.1)
+    database_cleaner-active_record (2.0.1)
+      activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
-      mongoid
+    database_cleaner-core (2.0.1)
     date (3.3.3)
     deepsort (0.4.5)
     diff-lcs (1.5.0)
@@ -194,15 +193,9 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.0218.1)
-    mini_mime (1.1.5)
-    mini_portile2 (2.8.4)
-    minitest (5.19.0)
-    mongo (2.15.0)
-      bson (>= 4.8.2, < 5.0.0)
-    mongoid (7.5.3)
-      activemodel (>= 5.1, < 7.1, != 7.0.0)
-      mongo (>= 2.10.5, < 3.0.0)
-      ruby2_keywords (~> 0.0.5)
+    mini_mime (1.1.2)
+    mini_portile2 (2.8.2)
+    minitest (5.18.0)
     msgpack (1.6.0)
     multi_xml (0.6.0)
     net-imap (0.3.7)
@@ -458,6 +451,7 @@ GEM
       ast (~> 2.4.1)
       racc
     parslet (2.0.0)
+    pg (1.4.5)
     plek (5.0.0)
     prometheus_exporter (2.0.8)
       webrick
@@ -644,8 +638,7 @@ DEPENDENCIES
   bootsnap
   ci_reporter_rspec
   climate_control
-  database_cleaner-mongoid
-  deepsort
+  database_cleaner-active_record
   factory_bot
   gds-api-adapters
   gds-sso
@@ -653,9 +646,8 @@ DEPENDENCIES
   govuk_schemas
   govuk_test
   listen
-  mongo (= 2.15.0)
-  mongoid
   pact
+  pg
   plek
   pry-byebug
   rack-cache
