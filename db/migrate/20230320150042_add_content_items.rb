@@ -1,6 +1,6 @@
 class AddContentItems < ActiveRecord::Migration[7.0]
   def change
-    create_table :content_items do |t|
+    create_table :content_items, id: :uuid  do |t|
 
       t.string    :base_path, unique: true
       t.string    :content_id

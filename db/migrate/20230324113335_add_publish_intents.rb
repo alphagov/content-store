@@ -1,6 +1,6 @@
 class AddPublishIntents < ActiveRecord::Migration[7.0]
   def change
-    create_table :publish_intents do |t|
+    create_table :publish_intents, id: :uuid  do |t|
       t.string :base_path, unique: true, overwrite: true
       t.date   :publish_time, type: DateTime
       t.string :publishing_app
