@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_27_101936) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_27_101936) do
     t.string "publishing_request_id"
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
+    t.index ["redirects"], name: "index_content_items_on_redirects", using: :gin
+    t.index ["routes"], name: "index_content_items_on_routes", using: :gin
   end
 
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
