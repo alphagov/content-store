@@ -6,8 +6,8 @@ gem "bootsnap", require: false
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
-#gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
-#gem "mongoid"
+# gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
+# gem "mongoid"
 gem "pg"
 gem "plek"
 gem "rack-cache"

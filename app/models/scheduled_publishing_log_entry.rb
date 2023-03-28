@@ -1,5 +1,4 @@
 class ScheduledPublishingLogEntry < ApplicationRecord
-
   before_save do |document|
     document.delay_in_milliseconds = set_delay_in_milliseconds
   end

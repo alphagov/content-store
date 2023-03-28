@@ -1,13 +1,12 @@
 class AddContentItems < ActiveRecord::Migration[7.0]
   def change
-    create_table :content_items, id: :uuid  do |t|
-
+    create_table :content_items, id: :uuid do |t|
       t.string    :base_path, unique: true
       t.string    :content_id
       t.string    :title
       t.jsonb     :description, default: { "value" => nil }
       t.string    :document_type
-    
+
       # Supertypes are deprecated, but are still sent by the publishing-api.
       t.string    :content_purpose_document_supertype, default: ""
       t.string    :content_purpose_subgroup, default: ""
@@ -17,7 +16,7 @@ class AddContentItems < ActiveRecord::Migration[7.0]
       t.string    :navigation_document_supertype, default: ""
       t.string    :search_user_need_document_supertype, default: ""
       t.string    :user_journey_document_supertype, default: ""
-    
+
       t.string    :schema_name
       t.string    :locale, default: I18n.default_locale.to_s
       t.datetime  :first_published_at

@@ -5,12 +5,12 @@ class AddScheduledPublishingLogEntries < ActiveRecord::Migration[7.0]
       t.string    :document_type
       t.datetime  :scheduled_publication_time
       t.integer   :delay_in_milliseconds
-      
+
       t.timestamps
     end
 
-    add_index :scheduled_publishing_log_entries, :base_path, name: 'ix_scheduled_pub_log_base_path'
-    add_index :scheduled_publishing_log_entries, :scheduled_publication_time, name: 'ix_scheduled_pub_log_time'
-    add_index :scheduled_publishing_log_entries, :created_at, name: 'ix_scheduled_pub_log_created'
+    add_index :scheduled_publishing_log_entries, :base_path, name: "ix_scheduled_pub_log_base_path"
+    add_index :scheduled_publishing_log_entries, :scheduled_publication_time, name: "ix_scheduled_pub_log_time"
+    add_index :scheduled_publishing_log_entries, :created_at, name: "ix_scheduled_pub_log_created"
   end
 end

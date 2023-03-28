@@ -9,9 +9,8 @@ class AddUsers < ActiveRecord::Migration[7.0]
       t.string  :organisation_slug
       t.boolean :disabled, default: false
       t.string  :organisation_content_id
-      
+
       t.timestamps
-      
     end
 
     add_index :users, :uid, unique: true
