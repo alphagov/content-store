@@ -37,9 +37,13 @@ class AddContentItems < ActiveRecord::Migration[7.0]
       t.integer   :payload_version
       t.jsonb     :withdrawn_notice, default: {}
       t.string    :publishing_request_id, null: true, default: nil
+
+      t.timestamps
     end
 
     add_index :content_items, :base_path, unique: true
     add_index :content_items, :content_id
+    add_index :content_items, :created_at
+    add_index :content_items, :updated_at
   end
 end

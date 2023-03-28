@@ -1,6 +1,4 @@
-class PublishIntent
-  include Mongoid::Document
-  include Mongoid::Timestamps
+class PublishIntent < ApplicationRecord 
 
   def self.create_or_update(base_path, attributes)
     intent = PublishIntent.find_or_initialize_by(base_path:)

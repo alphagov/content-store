@@ -1,7 +1,4 @@
-class ContentItem
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
+class ContentItem < ApplicationRecord
   def self.revert(previous_item:, item:)
     item.remove unless previous_item
     previous_item&.upsert

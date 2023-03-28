@@ -14,7 +14,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_27_101936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "content_items", force: :cascade do |t|
+  create_table "content_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
     t.string "content_id"
     t.string "title"
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_27_101936) do
     t.index ["content_id"], name: "index_content_items_on_content_id"
   end
 
-  create_table "publish_intents", force: :cascade do |t|
+  create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
     t.date "publish_time"
     t.string "publishing_app"
