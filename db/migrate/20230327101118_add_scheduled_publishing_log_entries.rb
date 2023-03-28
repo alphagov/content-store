@@ -4,7 +4,7 @@ class AddScheduledPublishingLogEntries < ActiveRecord::Migration[7.0]
       t.string    :base_path
       t.string    :document_type
       t.datetime  :scheduled_publication_time
-      t.integer   :delay_in_milliseconds
+      t.bigint    :delay_in_milliseconds
 
       t.timestamps
     end
