@@ -10,9 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_28_141957) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "content_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
@@ -47,10 +49,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
     t.integer "payload_version"
     t.jsonb "withdrawn_notice", default: {}
     t.string "publishing_request_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
+    t.index ["created_at"], name: "index_content_items_on_created_at"
     t.index ["redirects"], name: "index_content_items_on_redirects", using: :gin
     t.index ["routes"], name: "index_content_items_on_routes", using: :gin
+    t.index ["updated_at"], name: "index_content_items_on_updated_at"
   end
 
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -59,8 +65,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
     t.string "publishing_app"
     t.string "rendering_app"
     t.string "routes", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["base_path"], name: "index_publish_intents_on_base_path", unique: true
+    t.index ["created_at"], name: "index_publish_intents_on_created_at"
     t.index ["publish_time"], name: "index_publish_intents_on_publish_time"
+    t.index ["routes"], name: "index_publish_intents_on_routes", using: :gin
+    t.index ["updated_at"], name: "index_publish_intents_on_updated_at"
   end
 
   create_table "scheduled_publishing_log_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -68,7 +79,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
     t.string "document_type"
     t.datetime "scheduled_publication_time"
     t.integer "delay_in_milliseconds"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["base_path"], name: "ix_scheduled_pub_log_base_path"
+    t.index ["created_at"], name: "ix_scheduled_pub_log_created"
     t.index ["scheduled_publication_time"], name: "ix_scheduled_pub_log_time"
   end
 
@@ -81,11 +95,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_131042) do
     t.string "organisation_slug"
     t.boolean "disabled", default: false
     t.string "organisation_content_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_users_on_created_at"
+    t.index ["disabled"], name: "index_users_on_disabled"
     t.index ["email"], name: "index_users_on_email"
     t.index ["name"], name: "index_users_on_name"
     t.index ["organisation_content_id"], name: "index_users_on_organisation_content_id"
     t.index ["organisation_slug"], name: "index_users_on_organisation_slug"
     t.index ["uid"], name: "index_users_on_uid", unique: true
+    t.index ["updated_at"], name: "index_users_on_updated_at"
   end
 
 end

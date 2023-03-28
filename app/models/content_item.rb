@@ -41,7 +41,7 @@ class ContentItem < ApplicationRecord
     extra_fields = attributes.keys - new.attributes.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, item]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveModel::ValidationError => e
     item.errors.add(:base, e.message)
     [false, item]
   rescue OutOfOrderTransmissionError => e

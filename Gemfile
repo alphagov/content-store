@@ -17,7 +17,7 @@ gem "whenever", require: false
 group :development, :test do
   gem "ci_reporter_rspec"
   gem "climate_control"
-  gem "database_cleaner-mongoid"
+  gem "database_cleaner"
   gem "factory_bot"
   gem "govuk_schemas"
   gem "govuk_test"
