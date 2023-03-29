@@ -1,7 +1,12 @@
 class ContentItem < ApplicationRecord
+
+  validates_each :routes, :redirects do |record, attr, value|
+    record.errors.add attr, "Value of type #{record.class} cannot be written to a field of type Array" unless value.nil? or value.respond_to?(:each)
+  end
+
   def self.revert(previous_item:, item:)
-    item.remove unless previous_item
-    previous_item&.upsert
+    item.destroy! unless previous_item
+    previous_item&.save
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
@@ -15,17 +20,12 @@ class ContentItem < ApplicationRecord
 
     item = ContentItem.new(base_path:)
 
-    # This doesn't seem to get set correctly on an upsert so this is to
-    # maintain it
-    created_at = previous_item ? previous_item.created_at : Time.zone.now.utc
-
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
-        .merge(created_at:),
     )
 
-    if item.upsert
+    if item.save!
       begin
         item.register_routes(previous_item:)
       rescue StandardError
@@ -168,7 +168,7 @@ class ContentItem < ApplicationRecord
 private
 
   def should_register_routes?(previous_item: nil)
-    return false if schema_name.start_with?("placeholder")
+    return false if schema_name.to_s.start_with?("placeholder")
 
     if previous_item
       return previous_item.schema_name == "placeholder" ||

@@ -26,8 +26,8 @@ class AddContentItems < ActiveRecord::Migration[7.0]
       t.jsonb     :details, default: {}
       t.string    :publishing_app
       t.string    :rendering_app
-      t.string    :routes, array: true, default: []
-      t.string    :redirects, array: true, default: []
+      t.jsonb     :routes, default: []
+      t.jsonb     :redirects, default: []
       t.jsonb     :expanded_links, default: {}
       t.jsonb     :access_limited, default: {}
       t.string    :auth_bypass_ids, array: true, default: []

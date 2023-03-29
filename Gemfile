@@ -6,8 +6,6 @@ gem "bootsnap", require: false
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
-# gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
-# gem "mongoid"
 gem "pg"
 gem "plek"
 gem "rack-cache"
@@ -17,7 +15,7 @@ gem "whenever", require: false
 group :development, :test do
   gem "ci_reporter_rspec"
   gem "climate_control"
-  gem "database_cleaner"
+  gem "database_cleaner-active_record"
   gem "factory_bot"
   gem "govuk_schemas"
   gem "govuk_test"

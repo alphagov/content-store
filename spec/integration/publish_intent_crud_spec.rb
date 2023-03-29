@@ -136,7 +136,7 @@ describe "CRUD of publish intents", type: :request do
 
       expect(response.status).to eq(422)
       data = JSON.parse(response.body)
-      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, String).message
+      expected_error_message = ActiveModel::ValidationError.new(Array, String).message
       expect(data["errors"]).to eq("base" => [expected_error_message])
     end
 

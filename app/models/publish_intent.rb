@@ -5,11 +5,11 @@ class PublishIntent < ApplicationRecord
 
     result = false unless intent.update(attributes)
     [result, intent]
-  rescue Mongoid::Errors::UnknownAttribute
+  rescue ActiveRecord::UnknownAttributeError
     extra_fields = attributes.keys - fields.keys
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, intent]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveModel::ValidationError => e
     intent.errors.add(:base, e.message)
     [false, intent]
   end
