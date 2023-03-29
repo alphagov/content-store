@@ -97,8 +97,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    database_cleaner (2.0.1)
-      database_cleaner-active_record (~> 2.0.0)
     database_cleaner-active_record (2.0.1)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -438,7 +436,7 @@ DEPENDENCIES
   bootsnap
   ci_reporter_rspec
   climate_control
-  database_cleaner
+  database_cleaner-active_record
   factory_bot
   gds-api-adapters
   gds-sso
