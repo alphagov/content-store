@@ -39,8 +39,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_141957) do
     t.jsonb "details", default: {}
     t.string "publishing_app"
     t.string "rendering_app"
-    t.jsonb "routes", default: []
-    t.jsonb "redirects", default: []
+    t.string "routes", default: [], array: true
+    t.string "redirects", default: [], array: true
     t.jsonb "expanded_links", default: {}
     t.jsonb "access_limited", default: {}
     t.string "auth_bypass_ids", default: [], array: true
@@ -64,7 +64,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_141957) do
     t.date "publish_time"
     t.string "publishing_app"
     t.string "rendering_app"
-    t.jsonb "routes", default: []
+    t.string "routes", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["base_path"], name: "index_publish_intents_on_base_path", unique: true

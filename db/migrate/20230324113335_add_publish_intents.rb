@@ -5,7 +5,7 @@ class AddPublishIntents < ActiveRecord::Migration[7.0]
       t.date   :publish_time, type: DateTime
       t.string :publishing_app
       t.string :rendering_app
-      t.jsonb  :routes, default: []
+      t.string :routes, array: true, default: []
 
       t.timestamps
     end

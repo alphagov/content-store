@@ -1,4 +1,4 @@
-# This class is designed to work with a model that has base_path,
+# This class is designed to work with a Mongoid model that has base_path,
 # routes and (optionally) redirect fields (where the routes and redirects
 # field matches the govuk schema of an array of objects with path and type
 # fields)
@@ -13,7 +13,7 @@ class FindByPath
   end
 
   def find(path)
-    exact_match = model_class.where(base_path: path).first
+    exact_match = model_class.where(base_path: path).find_first
     return exact_match if exact_match
 
     matches = find_route_matches(path)
