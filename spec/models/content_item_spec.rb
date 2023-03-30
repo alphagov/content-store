@@ -55,7 +55,7 @@ describe ContentItem, type: :model do
 
           expect(result).to be false
           expected_error_message = "Value of type Integer cannot be written to a field of type Array"
-          expect(item.errors[:base]).to include(expected_error_message)
+          expect(item.errors[:base].find { |e| e.include?(expected_error_message) }).not_to be_nil
         end
       end
 

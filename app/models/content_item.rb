@@ -1,6 +1,8 @@
 class ContentItem < ApplicationRecord
   validates_each :routes, :redirects do |record, attr, value|
-    record.errors.add attr, "Value of type #{record.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
+    # This wording replicates the original Mongoid error message - we don't know if any downstream
+    # consumers rely on parsing error messages at the moment
+    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
   end
 
   def self.revert(previous_item:, item:)
@@ -9,30 +11,27 @@ class ContentItem < ApplicationRecord
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
-    previous_item = ContentItem.where(base_path:).first
+    item = ContentItem.find_or_initialize_by(base_path:)
+    previous_item = item.persisted? ? item : nil
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
     lock.check_availability!(payload_version)
 
     result = previous_item ? :replaced : :created
-
-    item = ContentItem.new(base_path:)
-
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry)),
     )
 
-    if item.save!
-      begin
-        item.register_routes
-      rescue StandardError
-        revert(previous_item:, item:)
-        raise
+    begin
+      transaction do
+        item.save!
+        item.register_routes(previous_item:)
       end
-    else
+    rescue StandardError
       result = false
+      raise
     end
 
     [result, item]
@@ -40,7 +39,7 @@ class ContentItem < ApplicationRecord
     extra_fields = attributes.keys - new.attributes.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, item]
-  rescue ActiveModel::ValidationError => e
+  rescue ActiveRecord::RecordInvalid => e
     item.errors.add(:base, e.message)
     [false, item]
   rescue OutOfOrderTransmissionError => e
