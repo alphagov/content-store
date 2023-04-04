@@ -61,7 +61,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_141957) do
 
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
-    t.date "publish_time"
+    t.datetime "publish_time"
     t.string "publishing_app"
     t.string "rendering_app"
     t.jsonb "routes", default: []
