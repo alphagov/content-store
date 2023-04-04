@@ -2,16 +2,7 @@ require "rails_helper"
 
 describe FindByPath do
   let(:model_class) do
-    # Using an actual Model as it's a real pain to mock mongoid criterias and
-    # similar
-    Class.new do
-      extend ApplicationRecord
-      store_in collection: "find_by_path_examples"
-
-      field :base_path, type: String
-      field :routes, type: Array, default: []
-      field :redirects, type: Array, default: []
-
+    Class.new(ContentItem) do
       def self.create(base_path: "/base-path", exact_routes: [], prefix_routes: [], redirects: [])
         routes =
           if redirects.any?
