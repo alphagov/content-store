@@ -3,7 +3,6 @@ require "rails_helper"
 describe FindByPath do
   let(:model_class) do
     Class.new(ContentItem) do
-
       def self.create(base_path: "/base-path", exact_routes: [], prefix_routes: [], redirects: [])
         routes =
           if redirects.any?

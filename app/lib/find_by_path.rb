@@ -24,27 +24,28 @@ private
 
   def find_route_matches(path)
     query = model_class
-      .where('routes  @> ?', json_path_element(path, "exact"))
+      .where("routes  @> ?", json_path_element(path, "exact"))
       # ANY will match any of the given array elements (similar to IN(), but for JSON arrays)
       # the ARRAY [?]::jsonb[] is typecasting for PostgreSQL's JSON operators
-      .or(model_class.where('routes @> ANY (ARRAY [?]::jsonb[])', potential_prefix_json_matches(path)))
-    
-      if model_class.attribute_names.include?('redirects')
-        query = query
-        .or(model_class.where('redirects  @> ?', json_path_element(path, "exact")))
-        .or(model_class.where('redirects @> ANY (ARRAY [?]::jsonb[])', potential_prefix_json_matches(path)))
-      end
+      .or(model_class.where("routes @> ANY (ARRAY [?]::jsonb[])", potential_prefix_json_matches(path)))
+
+    if model_class.attribute_names.include?("redirects")
+      query = query
+      .or(model_class.where("redirects  @> ?", json_path_element(path, "exact")))
+      .or(model_class.where("redirects @> ANY (ARRAY [?]::jsonb[])", potential_prefix_json_matches(path)))
+    end
+    query
   end
 
-  # Given a path, will decompose the path into path prefixes, and 
+  # Given a path, will decompose the path into path prefixes, and
   # return a JSON array element that can be matched against the
   # routes or redirects array in the model_class
   def potential_prefix_json_matches(path)
-    potential_prefixes(path).map{|p| json_path_element(p, "prefix") }
+    potential_prefixes(path).map { |p| json_path_element(p, "prefix") }
   end
 
   def json_path_element(path, type)
-    [{path: path, type: type}].to_json
+    [{ path:, type: }].to_json
   end
 
   def best_route_match(matches, path)
