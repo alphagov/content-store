@@ -1,14 +1,13 @@
 class ContentItem < ApplicationRecord
-
   validates_each :routes, :redirects do |record, attr, value|
     # This wording replicates the original Mongoid error message - we don't know if any downstream
     # consumers rely on parsing error messages at the moment
-    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? or value.respond_to?(:each)
+    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
   end
 
   def self.revert(previous_item:, item:)
     item.destroy! unless previous_item
-    previous_item&.save
+    previous_item&.save!
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
@@ -22,7 +21,7 @@ class ContentItem < ApplicationRecord
     result = previous_item ? :replaced : :created
     item.assign_attributes(
       attributes
-      .merge(scheduled_publication_details(log_entry))
+      .merge(scheduled_publication_details(log_entry)),
     )
 
     begin
@@ -36,7 +35,6 @@ class ContentItem < ApplicationRecord
     end
 
     [result, item]
-
   rescue ActiveRecord::UnknownAttributeError
     extra_fields = attributes.keys - new.attributes.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")

@@ -50,7 +50,7 @@ describe ContentItem, type: :model do
 
           expect(result).to be false
           expected_error_message = "Value of type Integer cannot be written to a field of type Array"
-          expect(item.errors[:base].find{|e| e.include?(expected_error_message) }).not_to be_nil
+          expect(item.errors[:base].find { |e| e.include?(expected_error_message) }).not_to be_nil
         end
       end
 
@@ -140,7 +140,7 @@ describe ContentItem, type: :model do
   it "should set updated_at on save" do
     item = build(:content_item)
     Timecop.freeze do
-      item.save
+      item.save!
       item.reload
 
       expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
