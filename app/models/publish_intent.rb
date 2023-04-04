@@ -28,7 +28,6 @@ class PublishIntent < ApplicationRecord
 
   def as_json(options = nil)
     super(options).tap do |hash|
-      hash["base_path"] = hash.delete("_id")
       hash["errors"] = errors.as_json.stringify_keys if errors.any?
     end
   end
