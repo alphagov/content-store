@@ -1,15 +1,22 @@
 class PublishIntent < ApplicationRecord
+  validates_each :routes do |record, attr, value|
+    # This wording replicates the original Mongoid error message - we don't know if any downstream
+    # consumers rely on parsing error messages at the moment
+    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
+  end
+
   def self.create_or_update(base_path, attributes)
     intent = PublishIntent.find_or_initialize_by(base_path:)
     result = intent.new_record? ? :created : :replaced
 
-    result = false unless intent.update(attributes)
+    intent.assign_attributes(attributes)
+    result = false unless intent.save!
     [result, intent]
   rescue ActiveRecord::UnknownAttributeError
-    extra_fields = attributes.keys - fields.keys
+    extra_fields = attributes.keys - attribute_names
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, intent]
-  rescue ActiveModel::ValidationError => e
+  rescue ActiveRecord::RecordInvalid => e
     intent.errors.add(:base, e.message)
     [false, intent]
   end
