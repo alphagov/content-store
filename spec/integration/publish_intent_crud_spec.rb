@@ -137,7 +137,7 @@ describe "CRUD of publish intents", type: :request do
       expect(response.status).to eq(422)
       data = JSON.parse(response.body)
       expected_error_message = "Value of type String cannot be written to a field of type Array"
-      expect(data["errors"]["base"].find{|e| e.include?(expected_error_message) }).not_to be_nil
+      expect(data["errors"]["base"].find { |e| e.include?(expected_error_message) }).not_to be_nil
     end
 
     it "returns a 400 with bad json" do
