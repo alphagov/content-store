@@ -66,11 +66,11 @@ describe ContentItemPresenter do
     end
 
     it "inlines the 'text/html' content type in the details" do
-      expect(presenter.as_json["details"]).to eq(body: "<p>content</p>")
+      expect(presenter.as_json["details"]).to eq( {body: "<p>content</p>"}.as_json )
     end
 
     it "inlines the 'text/html' content type in the links" do
-      expect(presenter.as_json["links"][:person].first[:details]).to eq(body: "<p>content</p>")
+      expect(presenter.as_json["links"]["person"].first["details"]).to eq( {body: "<p>content</p>"}.as_json )
     end
   end
 

@@ -59,12 +59,10 @@ class ContentItem < ApplicationRecord
     ::FindByPath.new(self).find(path)
   end
 
-  # We want to force the JSON representation to use "base_path" instead of
-  # "_id" to prevent "_id" being exposed outside of the model.
+  # We want to force the JSON representation to use "base_path"
+  # and prevent "id" being exposed outside of the model.
   def as_json(options = nil)
-    super(options).tap do |hash|
-      hash["base_path"] = hash.delete("_id")
-    end
+    super(options).except("id")
   end
 
   # We store the description in a hash because Publishing API can send through
