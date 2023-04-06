@@ -25,13 +25,25 @@ private
 
     logger.info CONTENT_ITEM_HEADERS.join(",")
 
+    count = 0
     term_content_items.each do |content_item|
-      logger.info content_item_fields(content_item).join(", ") unless exclude_types.include?(content_item.document_type)
+      unless excluded?(content_item)
+        logger.info report_line(content_item)
+        count += 1
+      end
     end
 
-    logger.info "Found #{number_of_terms_items} items containing #{term}"
+    logger.info "Found #{count} items containing #{term}"
 
     logger.info "Finished searching"
+  end
+
+  def report_line(content_item)
+    content_item_fields(content_item).join(", ")
+  end
+
+  def excluded?(content_item)
+    exclude_types.include?(content_item.document_type)
   end
 
   def content_item_fields(content_item)
@@ -45,32 +57,18 @@ private
     ]
   end
 
-  def content_items(term)
-    ContentItem.or('title': term)
-      .or('details.body': term)
-      .or('description': term)
-      .or('description.content': term)
-      .or('details.body.content': term)
-      .or('details.parts.body': term)
-      .or('details.parts.body.content': term)
-      .or('details.nodes.title': term)
-      .or('details.nodes.options.label': term)
-      .or('details.nodes.body': term)
-      .or('details.nodes.body.content': term)
-      .or('details.email_addresses.email': term)
-      .or('details.introductory_paragraph': term)
-      .or('details.introductory_paragraph.content': term)
-      .or('details.more_information': term)
-      .or('details.more_information.content': term)
-      .or('details.more_info_contact_form': term)
-      .or('details.more_info_email_address': term).entries
+  def content_items_matching(term)
+    ContentItem.where('title ILIKE(?)', '%' + term + '%')
+      .or(ContentItem.where(term_vector_jsonb_search_in('details'), term))
+      .or(ContentItem.where(term_vector_jsonb_search_in('description'), term))
+      .entries
   end
 
-  def number_of_terms_items
-    term_content_items.count { |content_item| exclude_types.exclude?(content_item.document_type) }
+  def term_vector_jsonb_search_in(field)
+    "jsonb_to_tsvector('english', " + field + ", '\"string\"') @@ plainto_tsquery('english', ?)"
   end
 
   def term_content_items
-    @term_content_items ||= content_items(/#{term}/)
+    @term_content_items ||= content_items_matching(term)
   end
 end
