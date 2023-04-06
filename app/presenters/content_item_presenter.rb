@@ -38,7 +38,7 @@ class ContentItemPresenter
       "details" => RESOLVER.resolve(item.details),
     ).tap do |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
-    end
+    end.deep_stringify_keys
   end
 
 private
