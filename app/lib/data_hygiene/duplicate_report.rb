@@ -41,24 +41,17 @@ module DataHygiene
     def fetch_all_duplicate_content_items
       logger.info "Fetching content items for duplicated content ids..."
       duplicates = duplicate_content_id_aggregation.flat_map do |content_id_count|
-        next if content_id_count["_id"].blank?
-
-        ContentItem.where(content_id: content_id_count["_id"]).to_a
+        ContentItem.where(content_id: content_id_count.content_id).to_a
       end
       duplicates.compact
     end
 
     def duplicate_content_id_aggregation
-      @duplicate_content_id_aggregation ||= ContentItem.collection.aggregate([
-        {
-          "$group" => {
-            "_id" => "$content_id", "count" => { "$sum" => 1 }
-          },
-        },
-        {
-          "$match" => { "count" => { "$gt" => 1 } },
-        },
-      ])
+      @duplicate_content_id_aggregation ||= ContentItem
+        .select('content_id, count(*) as num_records')
+        .where('content_id IS NOT NULL')
+        .group(:content_id)
+        .having('count(*) > 1')
     end
 
     def count_repeated_content_ids_in(content_items)
