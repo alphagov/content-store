@@ -21,9 +21,27 @@ describe ContentItem, type: :model do
       expect(item.reload.created_at).to eq(@item.reload.created_at)
     end
 
-    it "does not overwrite default attribute values if called with nil attributes" do
-      _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "redirect", redirects: nil }, nil)
-      expect(item.redirects).to eq([])
+    context "when there is already an existing item with the same base_path" do
+      before do
+        @item.update!(
+          base_path: @item.base_path,
+          title: "existing title",
+          description: "existing description",
+          schema_name: "existing_schema",
+        )
+        ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
+      end
+
+      it "updates the given attributes" do
+        @item.reload
+        expect(@item.schema_name).to eq("publication")
+      end
+
+      it "does not retain values of any attributes which were not given" do
+        @item.reload
+        expect(@item.title).to be_nil
+        expect(@item.description).to eq("value" => nil)
+      end
     end
 
     describe "exceptions" do

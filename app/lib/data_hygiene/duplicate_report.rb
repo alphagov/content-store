@@ -48,10 +48,10 @@ module DataHygiene
 
     def duplicate_content_id_aggregation
       @duplicate_content_id_aggregation ||= ContentItem
-        .select('content_id, count(*) as num_records')
-        .where('content_id IS NOT NULL')
+        .select("content_id, count(*) as num_records")
+        .where("content_id IS NOT NULL")
         .group(:content_id)
-        .having('count(*) > 1')
+        .having("count(*) > 1")
     end
 
     def count_repeated_content_ids_in(content_items)
