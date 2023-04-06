@@ -58,14 +58,14 @@ private
   end
 
   def content_items_matching(term)
-    ContentItem.where('title ILIKE(?)', '%' + term + '%')
-      .or(ContentItem.where(term_vector_jsonb_search_in('details'), term))
-      .or(ContentItem.where(term_vector_jsonb_search_in('description'), term))
+    ContentItem.where("title ILIKE(?)", "%#{term}%")
+      .or(ContentItem.where(term_vector_jsonb_search_in("details"), term))
+      .or(ContentItem.where(term_vector_jsonb_search_in("description"), term))
       .entries
   end
 
   def term_vector_jsonb_search_in(field)
-    "jsonb_to_tsvector('english', " + field + ", '\"string\"') @@ plainto_tsquery('english', ?)"
+    "jsonb_to_tsvector('english', #{field}, '\"string\"') @@ plainto_tsquery('english', ?)"
   end
 
   def term_content_items
