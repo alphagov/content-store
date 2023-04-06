@@ -42,28 +42,18 @@ module DataHygiene
 
     # Produce an array of arrays containing duplicate ContentItems
     def fetch_duplicates_arrays
-      [].tap do |ary|
-        duplicate_content_id_aggregation.each do |content_id_count|
-          ary << ContentItem.where(
-            content_id: content_id_count["_id"]["content_id"],
-            locale: content_id_count["_id"]["locale"],
-          ).to_a
-        end
+      duplicate_content_id_aggregation.map do |row|
+        ContentItem.where(content_id: row.content_id, locale: row.locale).to_a
       end
     end
 
     # Fetch a count of all content items with content ids / locale duplicates.
     def duplicate_content_id_aggregation
-      @duplicate_content_id_aggregation ||= ContentItem.collection.aggregate([
-        {
-          "$group" => {
-            "_id" => { "content_id" => "$content_id", "locale" => "$locale" },
-            "uniqueIds" => { "$addToSet" => "$_id" },
-            "count" => { "$sum" => 1 },
-          },
-        },
-        { "$match" => { "_id.content_id" => { "$ne" => nil }, "count" => { "$gt" => 1 } } },
-      ])
+      @duplicate_content_id_aggregation ||= ContentItem
+        .select('content_id, locale, count(*) as num_records')
+        .where('content_id IS NOT NULL')
+        .group('content_id, locale')
+        .having('count(*) > 1')
     end
 
     def report
