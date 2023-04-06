@@ -50,10 +50,10 @@ module DataHygiene
     # Fetch a count of all content items with content ids / locale duplicates.
     def duplicate_content_id_aggregation
       @duplicate_content_id_aggregation ||= ContentItem
-        .select('content_id, locale, count(*) as num_records')
-        .where('content_id IS NOT NULL')
-        .group('content_id, locale')
-        .having('count(*) > 1')
+        .select("content_id, locale, count(*) as num_records")
+        .where("content_id IS NOT NULL")
+        .group("content_id, locale")
+        .having("count(*) > 1")
     end
 
     def report
