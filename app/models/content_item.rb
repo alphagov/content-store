@@ -11,27 +11,36 @@ class ContentItem < ApplicationRecord
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
-    item = ContentItem.find_or_initialize_by(base_path:)
-    # dup is needed to allow the before/after route_set comparison
-    # in should_register_routes to work. Without it, this sets 
-    # item & previous_item to be the same instance, meaning that
-    # assign_attributes assigns the same attributes to both 
-    previous_item = item.persisted? ? item.dup : nil
+    previous_item = ContentItem.where(base_path:).first
+    item_state_before_change = previous_item.dup
+
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
     lock.check_availability!(payload_version)
 
     result = previous_item ? :replaced : :created
+
+    # This awkward construction is necessary to maintain the required behaviour -
+    # a content item sent to Content Store is a complete entity (as defined in a schema)
+    # and no-remnants of the item it replaces should remain.
+    item = ContentItem.new(base_path:)
     item.assign_attributes(
       attributes
       .merge(scheduled_publication_details(log_entry)),
     )
 
+    if previous_item
+      previous_item.assign_attributes(
+        item.attributes.except("id", "created_at", "updated_at"),
+      )
+      item = previous_item
+    end
+
     begin
       transaction do
         item.save!
-        item.register_routes(previous_item:)
+        item.register_routes(previous_item: item_state_before_change)
       end
     rescue StandardError
       result = false
@@ -171,12 +180,10 @@ private
     return false if schema_name.to_s.start_with?("placeholder")
 
     if previous_item
-      # NOTE: this check is failing, because the way the find_or_replace works,
-      # by the time the route_set check is done, the new value has been assigned
-      # to the previous item (because it's the same instance as item)
       return previous_item.schema_name == "placeholder" ||
           previous_item.route_set != route_set
     end
+
     true
   end
 
