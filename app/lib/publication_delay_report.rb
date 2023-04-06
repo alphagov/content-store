@@ -39,8 +39,8 @@ private
 
   def delayed_content_items
     ContentItem
-      .where('scheduled_publishing_delay_seconds > ?', MINIMUM_DELAY_SECONDS)
-      .where('publishing_scheduled_at > ?', 7.days.ago)
+      .where("scheduled_publishing_delay_seconds > ?", MINIMUM_DELAY_SECONDS)
+      .where("publishing_scheduled_at > ?", 7.days.ago)
       .order(publishing_scheduled_at: :asc)
   end
 end
