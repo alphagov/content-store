@@ -29,7 +29,7 @@ class DataHygiene::PublishingDelayReporter
     end
 
     def report(namespace, &filter)
-      delays = log_entries.select(&filter).map(&:delay_in_milliseconds)
+      delays = log_entries.to_a.select(&filter).map(&:delay_in_milliseconds)
       return if delays.empty?
 
       GovukStatsd.gauge("scheduled_publishing.aggregate.#{namespace}.mean_ms", Stats.mean(delays))
