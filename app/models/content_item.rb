@@ -12,7 +12,11 @@ class ContentItem < ApplicationRecord
 
   def self.create_or_replace(base_path, attributes, log_entry)
     item = ContentItem.find_or_initialize_by(base_path:)
-    previous_item = item.persisted? ? item : nil
+    # dup is needed to allow the before/after route_set comparison
+    # in should_register_routes to work. Without it, this sets 
+    # item & previous_item to be the same instance, meaning that
+    # assign_attributes assigns the same attributes to both 
+    previous_item = item.persisted? ? item.dup : nil
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
@@ -59,12 +63,10 @@ class ContentItem < ApplicationRecord
     ::FindByPath.new(self).find(path)
   end
 
-  # We want to force the JSON representation to use "base_path" instead of
-  # "_id" to prevent "_id" being exposed outside of the model.
+  # We want to force the JSON representation to use "base_path"
+  # and prevent "id" being exposed outside of the model.
   def as_json(options = nil)
-    super(options).tap do |hash|
-      hash["base_path"] = hash.delete("_id")
-    end
+    super(options).except("id")
   end
 
   # We store the description in a hash because Publishing API can send through
@@ -168,6 +170,13 @@ private
   def should_register_routes?(previous_item: nil)
     return false if schema_name.to_s.start_with?("placeholder")
 
+    if previous_item
+      # NOTE: this check is failing, because the way the find_or_replace works,
+      # by the time the route_set check is done, the new value has been assigned
+      # to the previous item (because it's the same instance as item)
+      return previous_item.schema_name == "placeholder" ||
+          previous_item.route_set != route_set
+    end
     true
   end
 
