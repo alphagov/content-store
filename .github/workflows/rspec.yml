@@ -18,6 +18,10 @@ jobs:
     name: Run RSpec
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Postgres
+        id: setup-postgres
+        uses: alphagov/govuk-infrastructure/.github/actions/setup-postgres@main
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -39,10 +43,12 @@ jobs:
       - name: Initialize database
         env:
           RAILS_ENV: test
+          TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
         run: bundle exec rails db:setup
 
       - name: Run RSpec
         env:
           RAILS_ENV: test
+          TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
           GOVUK_CONTENT_SCHEMAS_PATH: vendor/publishing-api/content_schemas
         run: bundle exec rake spec

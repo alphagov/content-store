@@ -26,10 +26,9 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
-      - name: Setup MongoDB
-        uses: alphagov/govuk-infrastructure/.github/actions/setup-mongodb@main
-        with:
-          version: 2.6
+      - name: Setup Postgres
+        id: setup-postgres
+        uses: alphagov/govuk-infrastructure/.github/actions/setup-postgres@main
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -44,6 +43,8 @@ jobs:
 
       - name: Initialize database
         run: bundle exec rails db:setup
+        env: 
+          TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
 
       - name: Verify pact consumer version
         if: inputs.pact_artifact == ''
