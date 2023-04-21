@@ -58,6 +58,7 @@ describe MongoFieldMapper do
           "_uid" => "abc123",
           "_id" => "/some/base/path",
           "public_updated_at" => { "$date" => "2019-06-21T11:52:37Z" },
+          "first_published_at" => { "$numberLong" => "-473385600000" },
           "other_field" => "other_value",
           "details" => "details value",
         }
@@ -84,10 +85,53 @@ describe MongoFieldMapper do
 
       it "processes any fields which should be processed" do
         expect(result["public_updated_at"]).to eq("2019-06-21T11:52:37Z")
+        expect(result["first_published_at"]).to eq("1955-01-01T00:00:00Z")
       end
 
       it "does not change any fields which are not to be dropped, processed or renamed" do
         expect(result["details"]).to eq(mongo_object["details"])
+      end
+    end
+  end
+
+  describe ".unpack_datetime" do
+    context "given a Hash of '$date => 'value'" do
+      context "where value has timezone signifier Z" do
+        it "returns the value with a Z" do
+          expect(described_class.unpack_datetime({ "$date" => "2019-06-21T11:52:37Z" })).to eq("2019-06-21T11:52:37Z")
+        end
+      end
+      context "where value has timezone signifier +00:00" do
+        it "returns the value with a +00:00" do
+          expect(described_class.unpack_datetime({ "$date" => "2019-06-21T11:52:37+00:00" })).to eq("2019-06-21T11:52:37+00:00")
+        end
+      end
+    end
+
+    context "given a Hash of '$numberLong => value" do
+      it "returns the value in iso8601 format" do
+        expect(described_class.unpack_datetime({ "$numberLong" => -473_385_600_000 })).to eq("1955-01-01T00:00:00Z")
+      end
+    end
+
+    context "given a Hash of '$numberLong => \"value\"" do
+      it "returns the value in iso8601 format" do
+        expect(described_class.unpack_datetime({ "$numberLong" => "-473385600000" })).to eq("1955-01-01T00:00:00Z")
+      end
+    end
+
+    context "given nil" do
+      it "returns nil" do
+        expect(described_class.unpack_datetime(nil)).to be_nil
+      end
+    end
+
+    # as seen in
+    #  /government/publications/agreement-regarding-the-status-of-forces-of-parties-to-the-north-atlantic-treaty
+    # "first_published_at":{"$date":{"$numberLong":"-473385600000"}}
+    context "given a hash of hashes" do
+      it "returns the final value" do
+        expect(described_class.unpack_datetime({ "$date" => { "$numberLong" => "-473385600000" } })).to eq("1955-01-01T00:00:00Z")
       end
     end
   end

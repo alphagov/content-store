@@ -7,14 +7,15 @@ class MongoFieldMapper
         "_id" => "base_path",
       },
       process: {
-        "public_updated_at" => ->(key, value) { { key => value.try(:[], "$date") } },
-        "first_published_at" => ->(key, value) { { key => value.try(:[], "$date") } },
-        "created_at" => ->(key, value) { { key => value.try(:[], "$date") } },
-        "updated_at" => ->(key, value) { { key => value.try(:[], "$date") } },
-        "publishing_scheduled_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+        "public_updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "first_published_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "publishing_scheduled_at" => ->(key, value) { { key => unpack_datetime(value) } },
       },
     },
   }.freeze
+
   def initialize(model_class)
     @model_class = model_class
   end
@@ -31,11 +32,37 @@ class MongoFieldMapper
     attrs
   end
 
+  # Mongo datetimes can be $date => '...' or $numberLong => '...'
+  # or even in some cases $date => { $numberLong => (value) } }
+  def self.unpack_datetime(value)
+    if value.is_a?(Hash)
+      # Recurse until you get something that isn't a Hash with one of these keys
+      unpack_datetime(value["$date"] || value["$numberLong"].to_i / 1000)
+    elsif !value
+      nil
+    elsif value.is_a?(Integer)
+      # e.g. -473385600000
+      Time.zone.at(value).iso8601
+    else
+      begin
+        # e.g. "2019-06-21T11:52:37+00:00"
+        Time.zone.parse(value).iso8601
+        value
+      rescue Date::Error
+        # we also have some content with dates in the form {"$numberLong" => "(value)"}
+        # in which case you can end up here with a value like "-473385600000" (quoted)
+        Time.zone.at(value.to_i).iso8601
+      end
+    end
+  end
+
 private
 
   def process(key, value)
     if (proc = MAPPINGS[@model_class][:process][key])
+
       proc.call(key, value)
+
     else
       processed_key = target_key(key)
       keep_this_key?(processed_key) ? { processed_key => value } : {}
