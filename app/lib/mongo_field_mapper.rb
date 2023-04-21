@@ -4,27 +4,26 @@ class MongoFieldMapper
   MAPPINGS = {
     ContentItem => {
       rename: {
-        "_id" => "base_path"
+        "_id" => "base_path",
       },
       process: {
-        "public_updated_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "first_published_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "created_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "updated_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "publishing_scheduled_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-      }
-    }
-  }
-  def initialize(model_class:, mongo_object:)
+        "public_updated_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+        "first_published_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+        "created_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+        "updated_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+        "publishing_scheduled_at" => ->(key, value) { { key => value.try(:[], "$date") } },
+      },
+    },
+  }.freeze
+  def initialize(model_class)
     @model_class = model_class
-    @mongo_object = mongo_object
   end
 
-  def active_record_attributes
-    return @mongo_object.select{ |k, _| keep_this_key?(k) } unless MAPPINGS[@model_class]
+  def active_record_attributes(obj)
+    return obj.select { |k, _| keep_this_key?(k) } unless MAPPINGS[@model_class]
 
     attrs = {}
-    @mongo_object.each do |key, value|
+    obj.each do |key, value|
       mapped_attr = process(key, value)
       this_key = mapped_attr.keys.first
       attrs[this_key] = mapped_attr.values.first if this_key
@@ -32,8 +31,10 @@ class MongoFieldMapper
     attrs
   end
 
+private
+
   def process(key, value)
-    if proc = MAPPINGS[@model_class][:process][key]
+    if (proc = MAPPINGS[@model_class][:process][key])
       proc.call(key, value)
     else
       processed_key = target_key(key)
