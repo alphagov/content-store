@@ -1,9 +1,8 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe MongoFieldMapper do
-  let(:mongo_object) { {} }
   let(:model_class) { ContentItem }
-  subject { described_class.new(model_class: , mongo_object: mongo_object) }
+  subject { described_class.new(model_class) }
 
   describe "#process" do
     let(:result) { subject.send(:process, key, value) }
@@ -17,7 +16,7 @@ describe MongoFieldMapper do
       end
 
       it "returns the key mapped to its target name" do
-        expect(result.keys).to eq(["base_path"])
+        expect(result.keys).to eq(%w[base_path])
       end
 
       it "has the given value" do
@@ -27,14 +26,14 @@ describe MongoFieldMapper do
 
     context "given a key which should be processed" do
       let(:key)   { "public_updated_at" }
-      let(:value) { {"$date"=>"2019-06-21T11:52:37Z"} }
+      let(:value) { { "$date" => "2019-06-21T11:52:37Z" } }
 
       it "returns a Hash" do
         expect(result).to be_a(Hash)
       end
 
       it "returns the key mapped to its target name" do
-        expect(result.keys).to eq(["public_updated_at"])
+        expect(result.keys).to eq(%w[public_updated_at])
       end
 
       it "has the expected value after processing " do
@@ -53,19 +52,19 @@ describe MongoFieldMapper do
   end
 
   describe "#active_record_attributes" do
-    context "given a mongo_object with fields to be renamed, processed and dropped" do
-      let(:mongo_object) { 
+    context "given an object with fields to be renamed, processed and dropped" do
+      let(:mongo_object) do
         {
-          "_uid"              => "abc123",
-          "_id"               => "/some/base/path",
-          "public_updated_at" => {"$date"=>"2019-06-21T11:52:37Z"},
-          "other_field"       => "other_value",
-          "details"           => "details value"
+          "_uid" => "abc123",
+          "_id" => "/some/base/path",
+          "public_updated_at" => { "$date" => "2019-06-21T11:52:37Z" },
+          "other_field" => "other_value",
+          "details" => "details value",
         }
-      }
+      end
 
-      let(:result) { subject.active_record_attributes }
-      
+      let(:result) { subject.active_record_attributes(mongo_object) }
+
       it "returns a Hash" do
         expect(result).to be_a(Hash)
       end
