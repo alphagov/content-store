@@ -9,13 +9,14 @@
 class JsonImporter
   def initialize(model_class:, file:)
     @model_class = model_class.constantize
+    @mapper = MongoFieldMapper.new(@model_class)
     @file = file
   end
 
   def call
     line_no = 0
     IO.foreach(@file) do |line|
-      log line_no, "Processing" 
+      log line_no, "Processing"
       process_line(line)
       log line_no, "Completed"
       line_no += 1
@@ -27,18 +28,35 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
-    log(obj['_id'], "assigning attributes to #{@model_class}...")
-    model = @model_class.new
-    mapper = MongoFieldMapper.new(model_class: @model_class, mongo_object: obj)
-    processed_attributes = mapper.active_record_attributes
-    model.assign_attributes(processed_attributes)
-    log(obj['_id'], "saving...")
-    model.save!(touch: false)
-    log(obj['_id'], "saved")
+    id = id_value(obj)
+    log(id, " checking existence")
+    if exists?(id)
+      log(id, " exists, skipping")
+    else
+      log(id, " saving ")
+      @model_class.insert(@mapper.active_record_attributes(obj))
+      log(id, "saved")
+    end
+  end
+
+  def id_value(obj)
+    if obj["_id"].is_a?(Hash)
+      obj["_id"]["$oid"]
+    else
+      obj["_id"]
+    end
+  end
+
+  def exists?(id)
+    if @model_class == ContentItem
+      ContentItem.where(base_path: id).exists?
+    else
+      @model_class.where(id: id).exists?
+    end
   end
 
   def log(*args)
-    line = args.prepend(Time.now.iso8601).join("\t")
-    puts(line)
+    line = args.prepend(Time.zone.now.iso8601).join("\t")
+    Rails.logger.info line
   end
 end
