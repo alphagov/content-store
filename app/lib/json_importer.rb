@@ -28,11 +28,12 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
+    log(obj["_id"], " checking existence")
     if ContentItem.where(base_path: obj["_id"]).exists?
       log(obj["_id"], " exists, skipping")
     else
       log(obj["_id"], "assigning attributes to #{@model_class}...")
-      model = process_attributes(obj)
+      model = process_attributes!(obj)
       log(obj["_id"], "saving...")
       model.save!(touch: false)
       log(obj["_id"], "saved")
@@ -41,13 +42,13 @@ private
 
   def process_attributes!(obj)
     model = @model_class.new
-    processed_attributes = mapper.active_record_attributes(obj)
+    processed_attributes = @mapper.active_record_attributes(obj)
     model.assign_attributes(processed_attributes)
     model
   end
 
   def log(*args)
     line = args.prepend(Time.zone.now.iso8601).join("\t")
-    Rails.logger.debug(line)
+    Rails.logger.log line
   end
 end
