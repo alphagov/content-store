@@ -11,6 +11,7 @@ class MongoFieldMapper
         "first_published_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
         "created_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
         "updated_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
+        "publishing_scheduled_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
       }
     }
   }

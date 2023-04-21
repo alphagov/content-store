@@ -27,14 +27,14 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
-    log("assigning attributes to #{@model_class}...")
+    log(obj['_id'], "assigning attributes to #{@model_class}...")
     model = @model_class.new
     mapper = MongoFieldMapper.new(model_class: @model_class, mongo_object: obj)
     processed_attributes = mapper.active_record_attributes
     model.assign_attributes(processed_attributes)
-    log("saving...")
+    log(obj['_id'], "saving...")
     model.save!(touch: false)
-    log("saved")
+    log(obj['_id'], "saved")
   end
 
   def log(*args)
