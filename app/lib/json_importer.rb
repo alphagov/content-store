@@ -49,6 +49,6 @@ private
 
   def log(*args)
     line = args.prepend(Time.zone.now.iso8601).join("\t")
-    Rails.logger.log line
+    Rails.logger.info line
   end
 end
