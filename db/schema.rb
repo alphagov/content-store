@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_20_105019) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_074357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -60,6 +60,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_105019) do
     t.index ["updated_at"], name: "index_content_items_on_updated_at"
   end
 
+  create_table "content_items_import", id: false, force: :cascade do |t|
+    t.jsonb "data"
+  end
+
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
     t.datetime "publish_time"
@@ -82,8 +86,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_105019) do
     t.bigint "delay_in_milliseconds"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "mongo_id"
     t.index ["base_path"], name: "ix_scheduled_pub_log_base_path"
     t.index ["created_at"], name: "ix_scheduled_pub_log_created"
+    t.index ["mongo_id"], name: "index_scheduled_publishing_log_entries_on_mongo_id"
     t.index ["scheduled_publication_time"], name: "ix_scheduled_pub_log_time"
   end
 
@@ -98,9 +104,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_105019) do
     t.string "organisation_content_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "mongo_id"
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["disabled"], name: "index_users_on_disabled"
     t.index ["email"], name: "index_users_on_email"
+    t.index ["mongo_id"], name: "index_users_on_mongo_id"
     t.index ["name"], name: "index_users_on_name"
     t.index ["organisation_content_id"], name: "index_users_on_organisation_content_id"
     t.index ["organisation_slug"], name: "index_users_on_organisation_slug"

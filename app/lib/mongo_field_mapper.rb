@@ -4,27 +4,52 @@ class MongoFieldMapper
   MAPPINGS = {
     ContentItem => {
       rename: {
-        "_id" => "base_path"
+        "_id" => "base_path",
       },
       process: {
-        "public_updated_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "first_published_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "created_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "updated_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
-        "publishing_scheduled_at" => lambda{ |key, value| {key => value.try(:[], "$date")} },
+        "public_updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "first_published_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
+        "publishing_scheduled_at" => ->(key, value) { { key => unpack_datetime(value) } },
+      },
+    },
+    PublishIntent => {
+      rename: {
+        "_id" => "base_path",
+      },
+      process: {
+        "publish_time" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
+        
+      }
+    },
+    ScheduledPublishingLogEntry => {
+      process: {
+        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
+        "scheduled_publication_time" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
+      }
+    },
+    User => {
+      process: {
+        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
       }
     }
-  }
-  def initialize(model_class:, mongo_object:)
+  }.freeze
+
+  def initialize(model_class)
     @model_class = model_class
-    @mongo_object = mongo_object
   end
 
-  def active_record_attributes
-    return @mongo_object.select{ |k, _| keep_this_key?(k) } unless MAPPINGS[@model_class]
+  def active_record_attributes(obj)
+    return obj.select { |k, _| keep_this_key?(k) } unless MAPPINGS[@model_class]
 
     attrs = {}
-    @mongo_object.each do |key, value|
+    obj.each do |key, value|
       mapped_attr = process(key, value)
       this_key = mapped_attr.keys.first
       attrs[this_key] = mapped_attr.values.first if this_key
@@ -32,8 +57,42 @@ class MongoFieldMapper
     attrs
   end
 
+  # Mongo datetimes can be $date => '...' or $numberLong => '...'
+  # or even in some cases $date => { $numberLong => (value) } }
+  def self.unpack_datetime(value)
+    if value.is_a?(Hash)
+      # Recurse until you get something that isn't a Hash with one of these keys
+      unpack_datetime(value["$date"] || value["$numberLong"].to_i / 1000)
+    elsif !value
+      nil
+    elsif value.is_a?(Integer)
+      # e.g. -473385600000
+      Time.zone.at(value).iso8601
+    else
+      begin
+        # e.g. "2019-06-21T11:52:37+00:00"
+        Time.zone.parse(value).iso8601
+        value
+      rescue Date::Error
+        # we also have some content with dates in the form {"$numberLong" => "(value)"}
+        # in which case you can end up here with a value like "-473385600000" (quoted)
+        Time.zone.at(value.to_i).iso8601
+      end
+    end
+  end
+
+  # Return the given key with the unpacked date value if given,
+  # otherwise return empty hash, to avoid conflicting with
+  # the not-null constraint on Rails' timestamp keys
+  def self.rails_timestamp(key, value)
+    date = unpack_datetime(value)
+    date ? { key => date } : {}
+  end
+
+private
+
   def process(key, value)
-    if proc = MAPPINGS[@model_class][:process][key]
+    if (proc = MAPPINGS[@model_class][:process][key])
       proc.call(key, value)
     else
       processed_key = target_key(key)
@@ -46,6 +105,6 @@ class MongoFieldMapper
   end
 
   def target_key(key)
-    MAPPINGS[@model_class][:rename][key] || key
+    MAPPINGS[@model_class][:rename].try(:[], key) || key
   end
 end
