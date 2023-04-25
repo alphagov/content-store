@@ -29,7 +29,7 @@ private
     log("parsing...")
     obj = JSON.parse(line)
     log(obj["_id"], " checking existence")
-    if ContentItem.where(base_path: obj["_id"]).exists?
+    if exists?(obj["_id"])
       log(obj["_id"], " exists, skipping")
     else
       log(obj["_id"], "assigning attributes to #{@model_class}...")
@@ -37,6 +37,18 @@ private
       log(obj["_id"], "saving...")
       model.save!(touch: false)
       log(obj["_id"], "saved")
+    end
+  end
+
+  def exists?(id)
+    if @model_class == ContentItem
+      ContentItem.where(base_path: obj["_id"]).exists?
+    else
+      if id.is_a?(Hash)
+        @model_class.where(id: id["$oid"]).exists?
+      else
+        @model_class.where(id: id).exists?
+      end
     end
   end
 
