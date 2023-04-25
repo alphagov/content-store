@@ -22,23 +22,23 @@ class MongoFieldMapper
         "publish_time" => ->(key, value) { { key => unpack_datetime(value) } },
         "created_at" => ->(key, value) { rails_timestamp(key, value) },
         "updated_at" => ->(key, value) { rails_timestamp(key, value) },
-        
-      }
+
+      },
     },
     ScheduledPublishingLogEntry => {
       process: {
-        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
+        "_id" => ->(_key, value) { { "mongo_id" => value["$oid"] } },
         "scheduled_publication_time" => ->(key, value) { { key => unpack_datetime(value) } },
         "created_at" => ->(key, value) { rails_timestamp(key, value) },
-      }
+      },
     },
     User => {
       process: {
-        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
+        "_id" => ->(_key, value) { { "mongo_id" => value["$oid"] } },
         "updated_at" => ->(key, value) { rails_timestamp(key, value) },
         "created_at" => ->(key, value) { rails_timestamp(key, value) },
-      }
-    }
+      },
+    },
   }.freeze
 
   def initialize(model_class)
