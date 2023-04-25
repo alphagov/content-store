@@ -14,6 +14,31 @@ class MongoFieldMapper
         "publishing_scheduled_at" => ->(key, value) { { key => unpack_datetime(value) } },
       },
     },
+    PublishIntent => {
+      rename: {
+        "_id" => "base_path",
+      },
+      process: {
+        "publish_time" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        
+      }
+    },
+    ScheduledPublishingLogEntry => {
+      process: {
+        "_id" => ->(key, value) { { "id" => value["$oid"] } },
+        "scheduled_publication_time" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+      }
+    },
+    User => {
+      process: {
+        "_id" => ->(key, value) { { "id" => value["$oid"] } },
+        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+      }
+    }
   }.freeze
 
   def initialize(model_class)
@@ -60,9 +85,7 @@ private
 
   def process(key, value)
     if (proc = MAPPINGS[@model_class][:process][key])
-
       proc.call(key, value)
-
     else
       processed_key = target_key(key)
       keep_this_key?(processed_key) ? { processed_key => value } : {}
@@ -74,6 +97,6 @@ private
   end
 
   def target_key(key)
-    MAPPINGS[@model_class][:rename][key] || key
+    MAPPINGS[@model_class][:rename].try(:[], key) || key
   end
 end
