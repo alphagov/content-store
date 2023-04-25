@@ -28,35 +28,31 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
-    log(obj["_id"], " checking existence")
-    if exists?(obj["_id"])
-      log(obj["_id"], " exists, skipping")
+    id = id_value(obj)
+    log(id, " checking existence")
+    if exists?(id)
+      log(id, " exists, skipping")
     else
-      log(obj["_id"], "assigning attributes to #{@model_class}...")
-      model = process_attributes!(obj)
-      log(obj["_id"], "saving...")
-      model.save!(touch: false)
-      log(obj["_id"], "saved")
+      log(id, " saving ")
+      @model_class.insert(@mapper.active_record_attributes(obj))
+      log(id, "saved")
+    end
+  end
+
+  def id_value(obj)
+    if obj["_id"].is_a?(Hash)
+      obj["_id"]["$oid"]
+    else
+      obj["_id"]
     end
   end
 
   def exists?(id)
     if @model_class == ContentItem
-      ContentItem.where(base_path: obj["_id"]).exists?
+      ContentItem.where(base_path: id).exists?
     else
-      if id.is_a?(Hash)
-        @model_class.where(id: id["$oid"]).exists?
-      else
-        @model_class.where(id: id).exists?
-      end
+      @model_class.where(id: id).exists?
     end
-  end
-
-  def process_attributes!(obj)
-    model = @model_class.new
-    processed_attributes = @mapper.active_record_attributes(obj)
-    model.assign_attributes(processed_attributes)
-    model
   end
 
   def log(*args)
