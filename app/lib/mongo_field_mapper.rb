@@ -9,8 +9,8 @@ class MongoFieldMapper
       process: {
         "public_updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
         "first_published_at" => ->(key, value) { { key => unpack_datetime(value) } },
-        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
-        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
         "publishing_scheduled_at" => ->(key, value) { { key => unpack_datetime(value) } },
       },
     },
@@ -20,23 +20,23 @@ class MongoFieldMapper
       },
       process: {
         "publish_time" => ->(key, value) { { key => unpack_datetime(value) } },
-        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
-        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
         
       }
     },
     ScheduledPublishingLogEntry => {
       process: {
-        "_id" => ->(key, value) { { "id" => value["$oid"] } },
+        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
         "scheduled_publication_time" => ->(key, value) { { key => unpack_datetime(value) } },
-        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
       }
     },
     User => {
       process: {
-        "_id" => ->(key, value) { { "id" => value["$oid"] } },
-        "updated_at" => ->(key, value) { { key => unpack_datetime(value) } },
-        "created_at" => ->(key, value) { { key => unpack_datetime(value) } },
+        "_id" => ->(key, value) { { "mongo_id" => value["$oid"] } },
+        "updated_at" => ->(key, value) { rails_timestamp(key, value) },
+        "created_at" => ->(key, value) { rails_timestamp(key, value) },
       }
     }
   }.freeze
@@ -79,6 +79,14 @@ class MongoFieldMapper
         Time.zone.at(value.to_i).iso8601
       end
     end
+  end
+
+  # Return the given key with the unpacked date value if given,
+  # otherwise return empty hash, to avoid conflicting with
+  # the not-null constraint on Rails' timestamp keys
+  def self.rails_timestamp(key, value)
+    date = unpack_datetime(value)
+    date ? { key => date } : {}
   end
 
 private
