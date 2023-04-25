@@ -7,19 +7,27 @@
 # and so on
 
 class JsonImporter
-  def initialize(model_class:, file:)
+  def initialize(model_class:, file:, batch_size: 1)
     @model_class = model_class.constantize
     @mapper = MongoFieldMapper.new(@model_class)
     @file = file
+    @batch_size = batch_size
   end
 
   def call
     line_no = 0
+    lines = []
     IO.foreach(@file) do |line|
       log line_no, "Processing"
-      process_line(line)
+      lines << process_line(line)
       log line_no, "Completed"
       line_no += 1
+      if lines.size >= @batch_size
+        log(" saving batch of #{@batch_size}")
+        @model_class.insert_all(lines)
+        log(" saved")
+        lines = []
+      end
     end
   end
 
@@ -33,9 +41,7 @@ private
     if exists?(id)
       log(id, " exists, skipping")
     else
-      log(id, " saving ")
-      @model_class.insert(@mapper.active_record_attributes(obj))
-      log(id, "saved")
+      @mapper.active_record_attributes(obj)
     end
   end
 
