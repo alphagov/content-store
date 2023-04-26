@@ -57,7 +57,7 @@ private
     if @model_class == ContentItem
       ContentItem.where(base_path: id).exists?
     else
-      @model_class.where(id: id).exists?
+      @model_class.where(id:).exists?
     end
   end
 
