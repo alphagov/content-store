@@ -1,18 +1,22 @@
-class PublishIntent
-  include Mongoid::Document
-  include Mongoid::Timestamps
+class PublishIntent < ApplicationRecord
+  validates_each :routes do |record, attr, value|
+    # This wording replicates the original Mongoid error message - we don't know if any downstream
+    # consumers rely on parsing error messages at the moment
+    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
+  end
 
   def self.create_or_update(base_path, attributes)
     intent = PublishIntent.find_or_initialize_by(base_path:)
     result = intent.new_record? ? :created : :replaced
 
-    result = false unless intent.update(attributes)
+    intent.assign_attributes(attributes)
+    result = false unless intent.save!
     [result, intent]
-  rescue Mongoid::Errors::UnknownAttribute
-    extra_fields = attributes.keys - fields.keys
+  rescue ActiveRecord::UnknownAttributeError
+    extra_fields = attributes.keys - attribute_names
     intent.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, intent]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveRecord::RecordInvalid => e
     intent.errors.add(:base, e.message)
     [false, intent]
   end
@@ -23,15 +27,6 @@ class PublishIntent
 
   PUBLISH_TIME_LEEWAY = 5.minutes
 
-  field :_id, as: :base_path, type: String, overwrite: true
-  field :publish_time, type: DateTime
-  field :publishing_app, type: String
-  field :rendering_app, type: String
-  field :routes, type: Array, default: []
-
-  # We want to look up this model by route as well as the base_path
-  index("routes.path" => 1, "routes.type" => 1)
-
   validates :base_path, absolute_path: true
   validates :publish_time, presence: true
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/
@@ -40,7 +35,6 @@ class PublishIntent
 
   def as_json(options = nil)
     super(options).tap do |hash|
-      hash["base_path"] = hash.delete("_id")
       hash["errors"] = errors.as_json.stringify_keys if errors.any?
     end
   end

@@ -21,11 +21,34 @@ describe ContentItem, type: :model do
       expect(item.reload.created_at).to eq(@item.reload.created_at)
     end
 
+    context "when there is already an existing item with the same base_path" do
+      before do
+        @item.update!(
+          base_path: @item.base_path,
+          title: "existing title",
+          description: "existing description",
+          schema_name: "existing_schema",
+        )
+        ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
+      end
+
+      it "updates the given attributes" do
+        @item.reload
+        expect(@item.schema_name).to eq("publication")
+      end
+
+      it "does not retain values of any attributes which were not given" do
+        @item.reload
+        expect(@item.title).to be_nil
+        expect(@item.description).to eq("value" => nil)
+      end
+    end
+
     describe "exceptions" do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
 
-        it "handles Mongoid::Errors::UnknownAttribute" do
+        it "handles ActiveRecord::UnknownAttributeError" do
           result = item = nil
 
           expect {
@@ -40,7 +63,7 @@ describe ContentItem, type: :model do
       context "when assigning a value of incorrect type" do
         let(:attributes) { { "routes" => 12 } }
 
-        it "handles Mongoid::Errors::InvalidValue" do
+        it "handles ActiveModel::ValidationError" do
           result = item = nil
 
           expect {
@@ -49,8 +72,8 @@ describe ContentItem, type: :model do
           }.to_not raise_error
 
           expect(result).to be false
-          expected_error_message = Mongoid::Errors::InvalidValue.new(Array, 12.class).message
-          expect(item.errors[:base]).to include(expected_error_message)
+          expected_error_message = "Value of type Integer cannot be written to a field of type Array"
+          expect(item.errors[:base].find { |e| e.include?(expected_error_message) }).not_to be_nil
         end
       end
 
@@ -72,7 +95,7 @@ describe ContentItem, type: :model do
       context "with current attributes and no previous item" do
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -88,7 +111,7 @@ describe ContentItem, type: :model do
 
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -137,10 +160,10 @@ describe ContentItem, type: :model do
     it_behaves_like "find_by_path", :content_item
   end
 
-  it "should set updated_at on upsert" do
+  it "should set updated_at on save" do
     item = build(:content_item)
     Timecop.freeze do
-      item.upsert
+      item.save!
       item.reload
 
       expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
