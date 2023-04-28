@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          repository: alphagov/content-store
+          repository: alphagov/content-store-on-postgresql
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Setup Ruby
