@@ -8,7 +8,7 @@ class ResponseComparator
 
   def call
     File.open(@output_file, "w+") do |out|
-      out.write(headers.join("\t"))
+      out.write(headers.join("\t") + "\n")
       i = 0
       IO.foreach(@path_file) do |line|
         path = line.strip
