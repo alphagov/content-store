@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_25_074357) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -56,7 +56,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_074357) do
     t.index ["content_id"], name: "index_content_items_on_content_id"
     t.index ["created_at"], name: "index_content_items_on_created_at"
     t.index ["redirects"], name: "index_content_items_on_redirects", using: :gin
+    t.index ["redirects"], name: "ix_ci_redirects_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["routes"], name: "index_content_items_on_routes", using: :gin
+    t.index ["routes"], name: "ix_ci_routes_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["updated_at"], name: "index_content_items_on_updated_at"
   end
 
@@ -76,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_074357) do
     t.index ["created_at"], name: "index_publish_intents_on_created_at"
     t.index ["publish_time"], name: "index_publish_intents_on_publish_time"
     t.index ["routes"], name: "index_publish_intents_on_routes", using: :gin
+    t.index ["routes"], name: "ix_pi_routes_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["updated_at"], name: "index_publish_intents_on_updated_at"
   end
 
