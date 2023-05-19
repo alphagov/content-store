@@ -162,11 +162,12 @@ describe RouteSet, type: :model do
     end
 
     it "is a no-op with no routes or redirects" do
-      expect(Rails.application.router_api).not_to receive(:add_backend)
-      expect(Rails.application.router_api).not_to receive(:add_route)
-      expect(Rails.application.router_api).not_to receive(:commit_routes)
-
       route_set = RouteSet.new(base_path: "/path", rendering_app: "frontend")
+
+      expect(route_set.router_api).not_to receive(:add_backend)
+      expect(route_set.router_api).not_to receive(:add_route)
+      expect(route_set.router_api).not_to receive(:commit_routes)
+
       route_set.register!
     end
 
@@ -177,15 +178,23 @@ describe RouteSet, type: :model do
         end
       end
 
-      it "does not call router_api.add_backend" do
-        expect(Rails.application.router_api).not_to receive(:add_backend)
-        expect(Rails.application.router_api).to receive(:commit_routes)
+      let(:route_set) { RouteSet.new(base_path: "/path", rendering_app: "frontend") }
 
-        route_set = RouteSet.new(base_path: "/path", rendering_app: "frontend")
+      it "does not call router_api.add_backend" do
         route_set.routes = [
           { path: "/path", type: "exact" },
           { path: "/path/sub/path", type: "prefix" },
         ]
+        expect(route_set.router_api).not_to receive(:add_backend)
+        route_set.register!
+      end
+
+      it "does call commit_routes" do
+        route_set.routes = [
+          { path: "/path", type: "exact" },
+          { path: "/path/sub/path", type: "prefix" },
+        ]
+        expect(route_set).to receive(:commit_routes)
         route_set.register!
       end
     end
