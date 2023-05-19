@@ -3,33 +3,19 @@
 # This is to allow dual-running of both MongoDB and PostgreSQL Content Stores
 # for a transition period during the migration to PostgreSQL
 class MockRouterApi
-  def delete_route(*args)
-    log("delete_route", args)
+  # Whatever the application tries to send to router-api,
+  # just log it and do nothing else
+  def method_missing(method_name, *args, **kwargs, &_block)
+    log(method_name.to_s, args, kwargs)
   end
 
-  def add_backend(*args)
-    log "add_backend", args
-  end
-
-  def add_redirect_route(*args)
-    log "add_redirect_route", args
-  end
-
-  def add_gone_route(*args)
-    log "add_gone_route", args
-  end
-
-  def add_route(*args)
-    log "add_route", args
-  end
-
-  def commit_routes(*args)
-    log "commit_routes", args
+  def respond_to_missing?(method, *)
+    GdsApi.router.methods.include?(method) || super
   end
 
 private
 
-  def log(method, args)
-    logger.debug "Mocked call to router_api: #{method}(#{args})"
+  def log(method, *args, **kwargs)
+    logger.debug "Mocked call to router_api: #{method}(#{args}, #{kwargs})"
   end
 end
