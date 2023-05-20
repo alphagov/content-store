@@ -11,7 +11,7 @@ describe MockRouterApi do
 
     it "does not make any requests" do
       expect(a_request(:any, /.*/)).not_to have_been_made
-      subject.send(:an_arbitrary_method_name, 1, 2, 3)
+      subject.send(an_arbitrary_method_name, 1, 2, 3)
     end
   end
 end

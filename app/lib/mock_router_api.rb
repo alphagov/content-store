@@ -16,6 +16,6 @@ class MockRouterApi
 private
 
   def log(method, *args, **kwargs)
-    logger.debug "Mocked call to router_api: #{method}(#{args}, #{kwargs})"
+    Rails.logger.info "Mocked call to router_api: #{method}(#{args}, #{kwargs})"
   end
 end
