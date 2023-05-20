@@ -113,7 +113,7 @@ module ContentStore
     config.register_router_retries = 3
 
     def router_api
-      if ENV["DISABLE_ROUTER_API"].to_s == "true"
+      if ENV["DISABLE_ROUTER_API"] == "true"
         MockRouterApi.new
       else
         GdsApi.router
