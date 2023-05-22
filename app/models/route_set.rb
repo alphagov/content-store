@@ -137,7 +137,7 @@ private
   end
 
   def router_api
-    Rails.application.router_api
+    @router_api ||= Rails.application.router_api
   end
 
   def paths
