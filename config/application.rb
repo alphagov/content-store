@@ -113,10 +113,11 @@ module ContentStore
     config.register_router_retries = 3
 
     def router_api
-      @router_api ||= GdsApi::Router.new(
-        Plek.find("router-api"),
-        bearer_token: ENV["ROUTER_API_BEARER_TOKEN"] || "example",
-      )
+      if ENV["DISABLE_ROUTER_API"] == "true"
+        MockRouterApi.new
+      else
+        GdsApi.router
+      end
     end
   end
 end
