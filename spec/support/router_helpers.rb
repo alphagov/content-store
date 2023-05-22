@@ -7,38 +7,34 @@ module RouterHelpers
     # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     routes.each do |(path, type)|
-      route_signature, = stub_route_registration(path, type, rendering_app)
+      route_signature = stub_route_registration(path, type, rendering_app)
       assert_requested(route_signature, times: 1)
     end
-    assert_requested(stub_router_commit, times: 1)
   end
 
   def assert_gone_routes_registered(routes)
     # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     routes.each do |(path, type)|
-      route_signature, = stub_gone_route_registration(path, type)
+      route_signature = stub_gone_route_registration(path, type)
       assert_requested(route_signature, times: 1)
     end
-    assert_requested(stub_router_commit, times: 1)
   end
 
   def assert_redirect_routes_registered(redirects)
     # NOTE: WebMock stubs allow you to assert against already executed requests.
 
     redirects.each do |(path, type, destination, segments_mode)|
-      redirect_signature, = stub_redirect_registration(path, type, destination, "permanent", segments_mode)
+      redirect_signature = stub_redirect_registration(path, type, destination, "permanent", segments_mode)
       assert_requested(redirect_signature, times: 1)
     end
-    assert_requested(stub_router_commit, times: 1)
   end
 
   def refute_routes_registered(rendering_app, routes)
     routes.each do |(path, type)|
-      route_signature, = stub_route_registration(path, type, rendering_app)
+      route_signature = stub_route_registration(path, type, rendering_app)
       assert_not_requested(route_signature)
     end
-    assert_not_requested(stub_router_commit)
   end
 
   def assert_no_routes_registered_for_path(path)
