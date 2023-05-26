@@ -67,15 +67,6 @@ class RouteSet < OpenStruct
         register_gone_route(route)
       end
     else
-      # TODO: clean up NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH after
-      # Replatforming MVP launch (i.e. once GOV.UK is running on Kubernetes in
-      # production). This could be done by removing the flag (i.e. kicking the
-      # can down the road) or by removing the concept of dynamically
-      # configuring Router backends entirely (probably better), or perhaps even
-      # something else.
-      truthy_env_values = /^[1ty]/i
-      register_rendering_app unless truthy_env_values.match?(ENV["NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH"])
-
       routes.each do |route|
         register_route(route, rendering_app)
       end
@@ -102,10 +93,6 @@ class RouteSet < OpenStruct
   end
 
 private
-
-  def register_rendering_app
-    router_api.add_backend(rendering_app, "#{Plek.find(rendering_app)}/")
-  end
 
   def register_redirect(route)
     router_api.add_redirect_route(

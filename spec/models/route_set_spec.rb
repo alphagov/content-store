@@ -136,7 +136,7 @@ describe RouteSet, type: :model do
         ]
       end
 
-      it "registers and commits all registerable routes" do
+      it "registers all registerable routes" do
         route_set.register!
         assert_routes_registered(
           "frontend",
@@ -147,7 +147,7 @@ describe RouteSet, type: :model do
         )
       end
 
-      it "registers and commits all registerable routes and redirects" do
+      it "registers all registerable routes and redirects" do
         route_set.redirects = [
           { path: "/path.json", type: "exact", destination: "/api/content/path" },
         ]
@@ -166,42 +166,12 @@ describe RouteSet, type: :model do
     it "is a no-op with no routes or redirects" do
       route_set = RouteSet.new(base_path: "/path", rendering_app: "frontend")
 
-      expect_any_instance_of(GdsApi::Router).not_to receive(:add_backend)
       expect_any_instance_of(GdsApi::Router).not_to receive(:add_route)
-      expect_any_instance_of(GdsApi::Router).not_to receive(:commit_routes)
 
       route_set.register!
     end
 
-    describe "when NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH=1" do
-      around do |t|
-        ClimateControl.modify NO_SET_ROUTER_BACKEND_ADDRESS_ON_PUBLISH: "1" do
-          t.run
-        end
-      end
-
-      let(:route_set) { RouteSet.new(base_path: "/path", rendering_app: "frontend") }
-
-      it "does not call router_api.add_backend" do
-        route_set.routes = [
-          { path: "/path", type: "exact" },
-          { path: "/path/sub/path", type: "prefix" },
-        ]
-        expect_any_instance_of(GdsApi::Router).not_to receive(:add_backend)
-        route_set.register!
-      end
-
-      it "does call commit_routes" do
-        route_set.routes = [
-          { path: "/path", type: "exact" },
-          { path: "/path/sub/path", type: "prefix" },
-        ]
-        expect(route_set).to receive(:commit_routes)
-        route_set.register!
-      end
-    end
-
-    it "registers and commits all registerable redirects for a redirect item" do
+    it "registers all registerable redirects for a redirect item" do
       redirects = [
         { path: "/path", type: "exact", destination: "/new-path" },
         { path: "/path/sub/path", type: "prefix", destination: "/somewhere-else" },
@@ -217,7 +187,7 @@ describe RouteSet, type: :model do
       assert_redirect_routes_registered([["/path", "exact", "/new-path"], ["/path/sub/path", "prefix", "/somewhere-else"], ["/path/longer/sub/path", "prefix", "/somewhere-else-2", "ignore"]])
     end
 
-    it "registers and commits all registerable gone routes for a gone item" do
+    it "registers all registerable gone routes for a gone item" do
       route_set = RouteSet.new(base_path: "/path", rendering_app: "frontend", is_gone: true)
       route_set.gone_routes = [
         { path: "/path", type: "exact" },
