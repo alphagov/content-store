@@ -75,8 +75,6 @@ class RouteSet < OpenStruct
         register_redirect(route)
       end
     end
-
-    commit_routes
   end
 
   def delete!
@@ -88,8 +86,6 @@ class RouteSet < OpenStruct
       # Ignore this, as this path could have already been deleted
       next
     end
-
-    commit_routes
   end
 
 private
@@ -117,10 +113,6 @@ private
       route.fetch(:type),
       rendering_app,
     )
-  end
-
-  def commit_routes
-    router_api.commit_routes
   end
 
   def router_api

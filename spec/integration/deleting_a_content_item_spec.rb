@@ -36,7 +36,6 @@ RSpec.describe "Deleting a content item", type: :request do
       delete "/content/vat-rates"
 
       @delete_stubs.each { |stub| assert_requested(stub, times: 1) }
-      assert_requested(stub_router_commit, times: 1)
     end
 
     it "returns a 200" do

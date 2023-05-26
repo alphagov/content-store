@@ -272,7 +272,7 @@ describe "content item write API", type: :request do
 
     context "when the router-api is unavailable" do
       let!(:stub) do
-        stub_http_request(:post, "#{GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT}/routes/commit")
+        stub_http_request(:any, /^#{Regexp.escape(GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT)}\//)
           .to_return(status: 500)
       end
 
