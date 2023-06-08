@@ -8,7 +8,7 @@ namespace :performance do
       path_file: args[:path_file],
       host_1: args[:host_1],
       host_2: args[:host_2],
-      output_file: args[:output_file]
+      output_file: args[:output_file],
     ).call
   end
 end
