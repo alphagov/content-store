@@ -14,7 +14,7 @@ RUN bootsnap precompile --gemfile .
 
 FROM $base_image
 
-RUN apt install -y postgresql-client
+RUN install_packages postgresql-client
 
 ENV GOVUK_APP_NAME=content-store
 
