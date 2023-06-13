@@ -14,10 +14,7 @@ RUN bootsnap precompile --gemfile .
 
 FROM $base_image
 
-RUN apt install -y postgresql-client
 
-# Need psql for importing from Mongo exports
-RUN apt install -y postgresql-client
 RUN install_packages postgresql-client
 
 # Install `mongodb-database-tools` for 'mongoexport'
@@ -28,7 +25,7 @@ WORKDIR /tmp
 RUN curl -LSsf "${mongo_package_repo}/${mongo_package}" --output "${mongo_package}" && \
     apt-get install -y --no-install-recommends "./${mongo_package}" && \
     rm -fr /tmp/*
-
+    
 # Need psql for importing from Mongo exports
 RUN apt install -y postgresql-client
 RUN install_packages postgresql-client
