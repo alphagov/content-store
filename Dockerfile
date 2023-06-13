@@ -28,6 +28,7 @@ RUN curl -LSsf "${mongo_package_repo}/${mongo_package}" --output "${mongo_packag
 
 # Need psql for importing from Mongo exports
 RUN apt install -y postgresql-client
+RUN install_packages postgresql-client
 
 ENV GOVUK_APP_NAME=content-store
 
