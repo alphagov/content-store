@@ -7,7 +7,7 @@ class MongoExporter
     FileUtils.mkdir_p(path)
     execute(
       "mongoexport",
-      "--uri=$MONGODB_URI",
+      "--uri=#{ENV['MONGODB_URI']}",
       "--collection=#{collection}",
       "--out=#{File.join(path, [collection, 'json'].join('.'))}",
       "--type=json",
@@ -21,6 +21,6 @@ class MongoExporter
   end
 
   def self.execute(cmd, *args)
-    system cmd, args
+    system cmd, *args
   end
 end

@@ -32,7 +32,7 @@ describe MongoExporter do
     it "passes the correct mongoexport arguments" do
       expect(described_class).to receive(:execute).with(
         anything,
-        "--uri=$MONGODB_URI",
+        "--uri=#{ENV['MONGODB_URI']}",
         "--collection=my_collection",
         "--out=/my/path/my_collection.json",
         "--type=json",
