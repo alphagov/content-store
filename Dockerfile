@@ -14,6 +14,8 @@ RUN bootsnap precompile --gemfile .
 
 FROM $base_image
 
+RUN install_packages mongodb-clients
+
 ENV GOVUK_APP_NAME=content-store
 
 WORKDIR $APP_HOME
