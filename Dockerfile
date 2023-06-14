@@ -15,6 +15,10 @@ RUN bootsnap precompile --gemfile .
 FROM $base_image
 
 RUN install_packages postgresql-client
+# Install `mongodb-database-tools` for 'mongoexport'
+RUN wget -P /tmp/ https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1604-x86_64-100.7.2.deb && \
+    apt-get install -y /tmp/mongodb-database-tools-ubuntu1604-x86_64-100.7.2.deb && \
+    rm /tmp/mongodb-database-tools-ubuntu1604-x86_64-100.7.2.deb
 
 ENV GOVUK_APP_NAME=content-store
 
