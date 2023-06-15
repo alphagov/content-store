@@ -14,6 +14,14 @@ RUN bootsnap precompile --gemfile .
 
 FROM $base_image
 
+# TODO: remove this temporary MongoDB package once we no longer need mongoexport (once the migration to Postgres is done).
+ARG mongo_package=mongodb-database-tools-ubuntu2204-x86_64-100.7.2.tgz
+ARG mongo_package_repo=https://fastdl.mongodb.org/tools/db
+WORKDIR /tmp
+RUN wget --progress=mega "${mongo_package}/${mongo_package_repo}" && \
+    apt-get install -y --no-install-recommends "${mongo_package}" && \
+    rm -fr /tmp/*
+
 ENV GOVUK_APP_NAME=content-store
 
 WORKDIR $APP_HOME
