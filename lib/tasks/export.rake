@@ -1,3 +1,4 @@
+# TODO: after migration is complete, delete this
 namespace :mongo do
   namespace :export do
     desc "export all collections to JSON files in the given path"
