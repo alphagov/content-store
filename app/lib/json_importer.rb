@@ -7,8 +7,10 @@
 # and so on
 
 class JsonImporter
-  def initialize(model_class:, file:, batch_size: 1)
-    @model_class = model_class.constantize
+  def initialize(file:, model_class: nil, batch_size: 1)
+    @model_class = model_class || infer_model_class(file)
+    raise ArgumentError, "Could not infer class from #{file}" unless @model_class
+
     @mapper = MongoFieldMapper.new(@model_class)
     @file = file
     @batch_size = batch_size
@@ -17,6 +19,8 @@ class JsonImporter
   def call
     line_no = 0
     lines = []
+    log "Importing file #{@file}"
+
     IO.foreach(@file) do |line|
       log line_no, "Processing"
       lines << process_line(line)
@@ -31,7 +35,33 @@ class JsonImporter
     end
   end
 
+  def self.import_all_in(path)
+    files = Dir.glob("*.json", base: path)
+    files.each do |file|
+      import_file(File.join(path, file))
+    end
+  end
+
+  def self.import_file(path)
+    new(file: path).call
+  end
+
 private
+
+  def infer_model_class(file)
+    klass = to_class(File.basename(file))
+    klass && is_an_application_model?(klass) ? klass : nil
+  end
+
+  # Take a given file name like 'content-items.json' and convert it to
+  # either a Class (if possible) or nil (if not)
+  def to_class(file)
+    file.split(".").first.underscore.classify.safe_constantize
+  end
+
+  def is_an_application_model?(klass)
+    klass.ancestors.include?(ApplicationRecord)
+  end
 
   def process_line(line)
     log("parsing...")
