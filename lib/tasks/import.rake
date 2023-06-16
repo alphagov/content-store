@@ -5,4 +5,11 @@ namespace :import do
   task json: :environment do |_t, args|
     JsonImporter.new(model_class: args.extras[0], file: args.extras[1]).call
   end
+
+  desc "
+    Import all .json files in the given path
+  "
+  task all_json: :environment do |_t, args|
+    JsonImporter.import_all_in(args.extras[0])
+  end
 end
