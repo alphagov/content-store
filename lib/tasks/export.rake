@@ -2,8 +2,8 @@
 namespace :mongo do
   namespace :export do
     desc "export all collections to JSON files in the given path"
-    task :all, %i[path] => :environment do
-      MongoExporter.export_all(path:)
+    task :all, %i[path] => :environment do |_, args|
+      MongoExporter.export_all(path: args[:path])
     end
 
     desc "export the given collection to JSON file in the given path"
