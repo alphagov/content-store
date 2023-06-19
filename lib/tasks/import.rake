@@ -9,7 +9,7 @@ namespace :import do
   desc "
     Import all .json files in the given path
   "
-  task all_json: :environment do |_t, args|
+  task all: :environment do |_t, args|
     JsonImporter.import_all_in(args.extras[0])
   end
 end
