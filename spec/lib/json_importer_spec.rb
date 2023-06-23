@@ -250,8 +250,8 @@ describe JsonImporter do
       allow(model_class).to receive(:primary_key).and_return(:model_primary_key)
     end
 
-    it "inserts the lines into the offline table, unique by the primary key" do
-      expect(offline_table_class).to receive(:insert_all).with(%w[line1 line2], unique_by: [:model_primary_key])
+    it "inserts the lines into the offline table, unique by the primary key and without touching timestamps" do
+      expect(offline_table_class).to receive(:insert_all).with(%w[line1 line2], unique_by: [:model_primary_key], record_timestamps: false)
       subject.send(:insert_lines, %w[line1 line2])
     end
   end

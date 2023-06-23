@@ -59,7 +59,7 @@ class JsonImporter
 private
 
   def insert_lines(lines)
-    @offline_table_class.insert_all(lines, unique_by: [@model_class.primary_key.to_sym])
+    @offline_table_class.insert_all(lines, unique_by: [@model_class.primary_key.to_sym], record_timestamps: false)
   end
 
   def update_model_table_from_offline_table

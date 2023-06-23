@@ -75,7 +75,7 @@ class ContentItem < ApplicationRecord
   # We want to force the JSON representation to use "base_path"
   # and prevent "id" being exposed outside of the model.
   def as_json(options = nil)
-    super(options).except("id")
+    super(options).except("id", "_id")
   end
 
   # We store the description in a hash because Publishing API can send through
