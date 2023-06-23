@@ -82,9 +82,9 @@ class ContentItem
 
   field :schema_name, type: String
   field :locale, type: String, default: I18n.default_locale.to_s
-  field :first_published_at, type: DateTime
-  field :public_updated_at, type: DateTime
-  field :publishing_scheduled_at, type: DateTime
+  field :first_published_at, type: ::ActiveSupport::TimeWithZone
+  field :public_updated_at, type: ::ActiveSupport::TimeWithZone
+  field :publishing_scheduled_at, type: ::ActiveSupport::TimeWithZone
   field :scheduled_publishing_delay_seconds, type: Integer
   field :details, type: Hash, default: {}
   field :publishing_app, type: String
