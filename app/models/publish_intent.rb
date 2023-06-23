@@ -24,7 +24,7 @@ class PublishIntent
   PUBLISH_TIME_LEEWAY = 5.minutes
 
   field :_id, as: :base_path, type: String, overwrite: true
-  field :publish_time, type: DateTime
+  field :publish_time, type: ::ActiveSupport::TimeWithZone
   field :publishing_app, type: String
   field :rendering_app, type: String
   field :routes, type: Array, default: []

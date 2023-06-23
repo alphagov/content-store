@@ -3,7 +3,7 @@ class ScheduledPublishingLogEntry
   include Mongoid::Timestamps::Created
   field :base_path, type: String
   field :document_type, type: String
-  field :scheduled_publication_time, type: DateTime
+  field :scheduled_publication_time, type: ::ActiveSupport::TimeWithZone
   field :delay_in_milliseconds
 
   index(base_path: 1)
