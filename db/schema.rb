@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_23_082107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -49,8 +49,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
     t.integer "payload_version"
     t.jsonb "withdrawn_notice", default: {}
     t.string "publishing_request_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "_id"
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
@@ -60,10 +60,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
     t.index ["routes"], name: "index_content_items_on_routes", using: :gin
     t.index ["routes"], name: "ix_ci_routes_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["updated_at"], name: "index_content_items_on_updated_at"
-  end
-
-  create_table "content_items_import", id: false, force: :cascade do |t|
-    t.jsonb "data"
   end
 
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
