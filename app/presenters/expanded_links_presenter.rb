@@ -6,15 +6,16 @@ class ExpandedLinksPresenter
   end
 
   def present
-    expanded_links.each_with_object({}) do |(type, links), memo|
+    HashSorter.sort(expanded_links).each_with_object({}) do |(type, links), memo|
       links = Array.wrap(links)
       memo[type] = links.map do |link|
-        link.dup.except(secret_fields).merge(
+        hash = link.dup.except(secret_fields).merge(
           api_path: api_path(link),
           api_url: api_url(link),
           web_url: web_url(link),
           links: link[:links].present? ? self.class.new(link[:links]).present : {},
-        ).compact
+        ).compact.deep_symbolize_keys # deep_sort errors if the keys are not all syms or all strings
+        HashSorter.sort(hash)
       end
     end
   end
