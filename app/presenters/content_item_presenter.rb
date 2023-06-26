@@ -32,13 +32,14 @@ class ContentItemPresenter
   end
 
   def as_json(options = nil)
-    item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
+    item_hash = item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
       "links" => RESOLVER.resolve(links),
       "description" => RESOLVER.resolve(item.description),
       "details" => RESOLVER.resolve(item.details),
     ).tap do |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
     end
+    HashSorter.sort(item_hash)
   end
 
 private
