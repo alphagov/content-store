@@ -3,7 +3,6 @@ source "https://rubygems.org"
 gem "rails", "7.0.5"
 
 gem "bootsnap", require: false
-gem "deepsort"
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
