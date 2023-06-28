@@ -192,4 +192,20 @@ RSpec.describe ExpandedLinksPresenter do
       it { is_expected.to match expected_links }
     end
   end
+
+  # PR #1096 caused the second-level links to disappear, but the tests all passed (incident 2023-06-27)
+  # This test added to catch that problem in future, using the JSON from the actual content_item
+  # on which the problem was identified
+  context "when the links has role_appointments and the role_appointments have links" do
+    let(:links_json) { File.read(Rails.root.join("spec/fixtures/content_item_links_with_role_appointments.json")) }
+    let(:links) { JSON.parse(links_json) }
+
+    describe "the result" do
+      let(:result) { described_class.new(links).present }
+
+      it "has the expected links-within-links" do
+        expect(result[:role_appointments].any? { |ra| ra[:links].empty? }).to eq(false)
+      end
+    end
+  end
 end
