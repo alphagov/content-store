@@ -6,7 +6,7 @@ class ExpandedLinksPresenter
   end
 
   def present
-    expanded_links.each_with_object({}) do |(type, links), memo|
+    expanded_links.deep_symbolize_keys.each_with_object({}) do |(type, links), memo|
       links = Array.wrap(links)
       memo[type] = links.map do |link|
         link.dup.except(secret_fields).merge(
