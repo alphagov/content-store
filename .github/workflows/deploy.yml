@@ -19,7 +19,8 @@ on:
         - staging
         - production
         default: 'integration'
-      ecrRepositoryName: 'ECR repo name to push image to'
+      ecrRepositoryName:
+        description: 'ECR repo name to push image to'
         required: true
         type: choice
         options:
