@@ -26,6 +26,13 @@ class ContentItemPresenter
     publishing_request_id
   ].freeze
 
+  DATETIME_ATTRIBUTES = %w[
+    updated_at
+    public_updated_at
+    first_published_at
+    publishing_scheduled_at
+  ].freeze
+
   def initialize(item, api_url_method)
     @item = item
     @api_url_method = api_url_method
@@ -38,6 +45,7 @@ class ContentItemPresenter
       "details" => RESOLVER.resolve(item.details),
     ).tap { |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
+      render_timestamps_as_iso8601(item, i)
     }.deep_stringify_keys
     HashSorter.sort(hash)
   end
@@ -48,5 +56,11 @@ private
 
   def links
     ExpandedLinksPresenter.new(item.expanded_links).present
+  end
+
+  def render_timestamps_as_iso8601(item, hash)
+    DATETIME_ATTRIBUTES.each do |attr|
+      hash[attr] = item[attr].iso8601 if item[attr].respond_to?(:iso8601)
+    end
   end
 end
