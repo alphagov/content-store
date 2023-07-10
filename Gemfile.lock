@@ -639,6 +639,7 @@ DEPENDENCIES
   ci_reporter_rspec
   climate_control
   database_cleaner-active_record
+  deepsort
   factory_bot
   gds-api-adapters
   gds-sso
