@@ -114,4 +114,22 @@ describe ContentItemPresenter do
       expect(presented.to_json).to be_valid_against_frontend_schema("generic")
     end
   end
+
+  it "renders timestamps in iso8601 format" do
+    content_item = create(:content_item, first_published_at: Time.zone.now, publishing_scheduled_at: Time.zone.now)
+    presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+    %w[updated_at public_updated_at first_published_at publishing_scheduled_at].each do |key|
+      expect(presented[key]).to eq(content_item[key].iso8601)
+    end
+  end
+
+  context "when some timestamps are nil" do
+    it "renders them as nil" do
+      content_item = build(:content_item, public_updated_at: nil, first_published_at: nil, publishing_scheduled_at: nil)
+      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      %w[public_updated_at first_published_at publishing_scheduled_at].each do |key|
+        expect(presented[key]).to be_nil
+      end
+    end
+  end
 end
