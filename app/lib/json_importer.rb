@@ -117,7 +117,7 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
-    log("id", id_value(obj))
+    id = id_value(obj)
     log(id, " checking existence")
     if exists?(id)
       log(id, " exists, skipping")
