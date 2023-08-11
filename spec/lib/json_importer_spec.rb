@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe JsonImporter do
-  subject { JsonImporter.new(model_class:, file: "content-items.json", batch_size:) }
+  subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class: model_class, batch_size:) }
   let(:model_class) { ContentItem }
   let(:batch_size) { 1 }
 
@@ -221,8 +221,8 @@ describe JsonImporter do
           allow(subject).to receive(:process_line).with("line2").and_return("line2")
         end
 
-        it "calls insert_all on the model_class" do
-          expect(ContentItem).to receive(:insert_all).once.with(%w[line1 line2])
+        it "calls insert_all on the model_class, not recording timestamps and unique by id" do
+          expect(ContentItem).to receive(:insert_all).once.with(%w[line1 line2], { record_timestamps: false, unique_by: [:id] })
           subject.call
         end
       end
