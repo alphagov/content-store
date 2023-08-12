@@ -117,13 +117,8 @@ private
   def process_line(line)
     log("parsing...")
     obj = JSON.parse(line)
-    id = id_value(obj)
-    log(id, " checking existence")
-    if exists?(id)
-      log(id, " exists, skipping")
-    else
-      @mapper.active_record_attributes(obj)
-    end
+    log("id", id_value(obj))
+    @mapper.active_record_attributes(obj)
   end
 
   def id_value(obj)
