@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe JsonImporter do
-  subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class: model_class, batch_size:) }
+  subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class:, batch_size:) }
   let(:model_class) { ContentItem }
   let(:batch_size) { 1 }
   let(:mock_connection) { double(ActiveRecord::Base.connection) }
@@ -250,7 +250,7 @@ describe JsonImporter do
     end
 
     it "inserts the lines into the offline table, unique by the primary key" do
-      expect(offline_table_class).to receive(:insert_all).with(%w[line1 line2], unique_by: [:model_primary_key])
+      expect(offline_table_class).to receive(:insert_all).with(%w[line1 line2], unique_by: [:model_primary_key], record_timestamps: false)
       subject.send(:insert_lines, %w[line1 line2])
     end
   end
