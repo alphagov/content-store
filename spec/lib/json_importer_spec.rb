@@ -4,6 +4,12 @@ describe JsonImporter do
   subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class: model_class, batch_size:) }
   let(:model_class) { ContentItem }
   let(:batch_size) { 1 }
+  let(:mock_connection) { double(ActiveRecord::Base.connection) }
+  let(:offline_table_class) { double(ContentItem, connection: mock_connection, table_name: "offline_table") }
+
+  before do
+    allow(mock_connection).to receive(:execute)
+  end
 
   describe "#exists?" do
     subject { JsonImporter.new(model_class:, file: "") }
@@ -52,6 +58,9 @@ describe JsonImporter do
   describe "#log" do
     context "when given some arguments" do
       let(:args) { ["string to log", %w[an array]] }
+      before do
+        allow(Rails.logger).to receive(:info)
+      end
 
       it "logs a tab-separated line of the arguments, with the timestamp at the start" do
         Timecop.freeze do
@@ -202,10 +211,16 @@ describe JsonImporter do
   end
 
   describe "#call" do
+    before do
+      allow(subject).to receive(:insert_lines)
+      allow(subject).to receive(:update_model_table_from_offline_table)
+      allow(offline_table_class).to receive(:insert_all)
+    end
+
     context "for each line in the file" do
       before do
         allow(IO).to receive(:foreach).and_yield("line1").and_yield("line2")
-        allow(ContentItem).to receive(:insert_all)
+        allow(offline_table_class).to receive(:insert_all)
       end
 
       it "processes the line" do
@@ -221,11 +236,93 @@ describe JsonImporter do
           allow(subject).to receive(:process_line).with("line2").and_return("line2")
         end
 
-        it "calls insert_all on the model_class, not recording timestamps and unique by id" do
-          expect(ContentItem).to receive(:insert_all).once.with(%w[line1 line2], { record_timestamps: false, unique_by: [:id] })
+        it "inserts the lines" do
+          expect(subject).to receive(:insert_lines).once.with(%w[line1 line2])
           subject.call
         end
       end
+    end
+  end
+
+  describe "#insert_lines" do
+    before do
+      allow(model_class).to receive(:primary_key).and_return(:model_primary_key)
+    end
+
+    it "inserts the lines into the offline table, unique by the primary key" do
+      expect(offline_table_class).to receive(:insert_all).with(%w[line1 line2], unique_by: [:model_primary_key])
+      subject.send(:insert_lines, %w[line1 line2])
+    end
+  end
+
+  describe "#update_model_table_from_offline_table" do
+    before do
+      allow(model_class.connection).to receive(:execute)
+      allow(model_class.connection).to receive(:truncate)
+      allow(subject).to receive(:insert_select_statement).and_return("insert-select statement")
+    end
+    it "truncates the model_class table" do
+      expect(model_class.connection).to receive(:truncate).with(model_class.table_name)
+      subject.send(:update_model_table_from_offline_table)
+    end
+
+    it "executes the insert_select_statement" do
+      expect(model_class.connection).to receive(:execute).with("insert-select statement")
+      subject.send(:update_model_table_from_offline_table)
+    end
+  end
+
+  describe "#insert_select_statement" do
+    let(:return_value) { subject.send(:insert_select_statement) }
+
+    it "inserts into the model_class table from the offline_class table" do
+      expect(return_value).to match(/\s*INSERT INTO\s+#{model_class.table_name}.+SELECT.*FROM\s+#{offline_table_class.table_name}.*/im)
+    end
+
+    it "includes all the columns in the same order, except primary_key" do
+      allow(model_class).to receive(:column_names).and_return(%w[column1 column2])
+      allow(model_class).to receive(:primary_key).and_return("primary_key")
+      expect(return_value).to match(/INSERT .*(column1,column2).*SELECT.*column1,column2.* FROM.*/im)
+    end
+  end
+
+  describe "#drop_offline_table" do
+    it "drops the offline table" do
+      expect(mock_connection).to receive(:execute).with("DROP TABLE #{offline_table_class.table_name}")
+      subject.send(:drop_offline_table)
+    end
+  end
+
+  describe "#create_offline_table_class" do
+    describe "the return value" do
+      let(:return_value) { subject.send(:create_offline_table_class) }
+
+      it "is a class" do
+        expect(return_value).to be_a(Class)
+      end
+
+      it "is a subclass of model_class" do
+        expect(return_value.ancestors).to include(model_class)
+      end
+
+      describe "the table_name" do
+        it "has a prefix of offline_import_" do
+          expect(return_value.table_name).to start_with("offline_import_")
+        end
+
+        it "includes the model_class table_name" do
+          expect(return_value.table_name).to match(/.*_#{model_class.table_name}_.*/)
+        end
+
+        it "ends in an 8-char hex string" do
+          expect(return_value.table_name).to match(/.*_[a-f0-9]{8}/)
+        end
+      end
+    end
+
+    it "creates the offline table" do
+      expect(subject).to receive(:create_offline_table)
+      subject.send(:create_offline_table_class)
     end
   end
 end
