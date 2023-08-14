@@ -81,7 +81,8 @@ class ContentItem < ApplicationRecord
   # We store the description in a hash because Publishing API can send through
   # multiple content types.
   def description=(value)
-    super("value" => value)
+    # ...but only wrap the given value in a Hash if it's not already a Hash
+    value.is_a?(Hash) ? super : super("value" => value)
   end
 
   def description
