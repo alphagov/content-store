@@ -40,7 +40,7 @@ describe ContentItem, type: :model do
       it "does not retain values of any attributes which were not given" do
         @item.reload
         expect(@item.title).to be_nil
-        expect(@item.description).to eq("value" => nil)
+        expect(@item["description"]).to eq("value" => nil)
       end
     end
 
@@ -434,11 +434,26 @@ describe ContentItem, type: :model do
   end
 
   describe "description" do
-    it "wraps the description as a hash" do
-      content_item = FactoryBot.create(:content_item, description: "foo")
+    context "when given a simple-valued description" do
+      let(:description) { "foo" }
 
-      expect(content_item.description).to eq("foo")
-      expect(content_item["description"]).to eq("value" => "foo")
+      it "wraps the description as a hash" do
+        content_item = FactoryBot.create(:content_item, description:)
+
+        expect(content_item.description).to eq("foo")
+        expect(content_item["description"]).to eq("value" => "foo")
+      end
+    end
+
+    context "when given a description that is already a Hash" do
+      let(:description) { { "value" => "foo" } }
+
+      it "does not wrap the description hash in another hash" do
+        content_item = FactoryBot.create(:content_item, description:)
+
+        expect(content_item.description).to eq("foo")
+        expect(content_item["description"]).to eq("value" => "foo")
+      end
     end
   end
 
