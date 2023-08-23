@@ -23,20 +23,24 @@ private
   def parse_json_request
     # FIXME: base_path in the request body is deprecated and will be considered
     # an error once all clients have been updated.
-    @request_data = JSON.parse(request.body.read).except("base_path")
+    body = request.body.read
+    @request_data = JSON.parse(body).except("base_path")
   rescue JSON::ParserError
+    Rails.logger.warn "error parsing JSON from request body '#{body}'"
     head :bad_request
   end
 
   def encoded_request_path
     Addressable::URI.encode(request_path)
   rescue Addressable::URI::InvalidURIError
+    Rails.logger.warn "Can't encode request_path '#{request_path}'"
     raise InvalidRequest
   end
 
   def encoded_base_path
     Addressable::URI.encode(base_path)
   rescue Addressable::URI::InvalidURIError
+    Rails.logger.warn "Can't encode base_path '#{request_path}'"
     raise InvalidRequest
   end
 
