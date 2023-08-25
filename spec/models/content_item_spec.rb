@@ -21,6 +21,11 @@ describe ContentItem, type: :model do
       expect(item.reload.created_at).to eq(@item.reload.created_at)
     end
 
+    it "does not overwrite default attribute values if called with nil attributes" do
+      _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "redirect", redirects: nil }, nil)
+      expect(item.redirects).to eq([])
+    end
+
     describe "exceptions" do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
