@@ -25,7 +25,8 @@ class ContentItem
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
-        .merge(created_at:),
+        .merge(created_at:)
+        .compact,
     )
 
     if item.upsert
