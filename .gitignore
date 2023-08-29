@@ -9,8 +9,7 @@
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
-
-# Ignore any db dumps
+# Ignore mongo DB dumps
 /db/mongo-dumps
 
 # Ignore all logfiles and tempfiles.
