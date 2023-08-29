@@ -1,9 +1,8 @@
 require "rails_helper"
 
 describe JsonImporter do
-  subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class:, batch_size:) }
+  subject { JsonImporter.new(model_class:, file: "content-items.json", offline_table_class:) }
   let(:model_class) { ContentItem }
-  let(:batch_size) { 1 }
   let(:mock_connection) { double(ActiveRecord::Base.connection) }
   let(:offline_table_class) { double(ContentItem, connection: mock_connection, table_name: "offline_table") }
 
@@ -25,7 +24,7 @@ describe JsonImporter do
         end
       end
 
-      context "and the  given id does exist in the DB as a base_path" do
+      context "and the given id does exist in the DB as a base_path" do
         let(:id) { create(:content_item).base_path }
 
         it "returns true" do
@@ -198,8 +197,8 @@ describe JsonImporter do
       allow(described_class).to receive(:import_file)
     end
 
-    it "globs the given directory for json files" do
-      expect(Dir).to receive(:glob).with("*.json", base: "/my/path").and_return(%w[file1 file2])
+    it "globs the given directory for .json.gz files" do
+      expect(Dir).to receive(:glob).with("*.json.gz", base: "/my/path").and_return(%w[file1 file2])
       described_class.import_all_in(path)
     end
 
@@ -211,15 +210,18 @@ describe JsonImporter do
   end
 
   describe "#call" do
+    let(:mock_stream) { instance_double(IO) }
     before do
       allow(subject).to receive(:insert_lines)
+      allow(subject).to receive(:process_line).and_return("line1", "line2")
       allow(subject).to receive(:update_model_table_from_offline_table)
       allow(offline_table_class).to receive(:insert_all)
     end
 
     context "for each line in the file" do
       before do
-        allow(IO).to receive(:foreach).and_yield("line1").and_yield("line2")
+        allow(IO).to receive(:popen).and_yield(mock_stream)
+        allow(mock_stream).to receive(:gets).and_return("line1", "line2", nil)
         allow(offline_table_class).to receive(:insert_all)
       end
 
@@ -229,17 +231,10 @@ describe JsonImporter do
         subject.call
       end
 
-      context "when it has processed batch_size lines" do
-        let(:batch_size) { 2 }
-        before do
-          allow(subject).to receive(:process_line).with("line1").and_return("line1")
-          allow(subject).to receive(:process_line).with("line2").and_return("line2")
-        end
-
-        it "inserts the lines" do
-          expect(subject).to receive(:insert_lines).once.with(%w[line1 line2])
-          subject.call
-        end
+      it "inserts the lines" do
+        expect(subject).to receive(:insert_lines).with(%w[line1]).ordered
+        expect(subject).to receive(:insert_lines).with(%w[line2]).ordered
+        subject.call
       end
     end
   end
