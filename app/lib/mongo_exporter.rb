@@ -5,12 +5,13 @@ class MongoExporter
 
   def self.export(collection:, path:)
     FileUtils.mkdir_p(path)
+    zipped_file_path = File.join(path, [collection, "json", "gz"].join("."))
     execute(
       "mongoexport",
       "--uri=#{ENV['MONGODB_URI']}",
       "--collection=#{collection}",
-      "--out=#{File.join(path, [collection, 'json'].join('.'))}",
       "--type=json",
+      " | gzip > #{zipped_file_path}",
     )
   end
 
