@@ -7,7 +7,7 @@
 # and so on
 
 class JsonImporter
-  def initialize(file:, model_class: nil, batch_size: 1, offline_table_class: nil)
+  def initialize(file:, model_class: nil, offline_table_class: nil)
     @model_class = model_class || infer_model_class(file)
     raise ArgumentError, "Could not infer class from #{file}" unless @model_class
 
@@ -15,25 +15,25 @@ class JsonImporter
 
     @mapper = MongoFieldMapper.new(@model_class)
     @file = file
-    @batch_size = batch_size
   end
 
   def call
     line_no = 0
-    lines = []
     log "Importing file #{@file}"
 
     begin
-      IO.foreach(@file) do |line|
-        log line_no, "Processing"
-        lines << process_line(line)
-        log line_no, "Completed"
-        line_no += 1
-        if lines.size >= @batch_size
-          log(" saving batch of #{@batch_size}")
-          insert_lines(lines)
-          log(" saved")
-          lines = []
+      # `gunzip -c` writes the gunzip output to STDOUT, `IO.popen` then
+      # uses pipes to make that an IO stream in Ruby
+      # see https://stackoverflow.com/a/31857743
+      # Net result - we decompress and process a gzipped file line by line
+      IO.popen({}, "gunzip -c #{@file}", "rb") do |io|
+        while (line = io.gets)
+          log line_no, "Processing"
+          processed_line = process_line(line)
+          log line_no, "Completed, saving..."
+          insert_lines([processed_line])
+          log line_no, "Saved"
+          line_no += 1
         end
       end
 
@@ -46,7 +46,7 @@ class JsonImporter
   end
 
   def self.import_all_in(path)
-    files = Dir.glob("*.json", base: path)
+    files = Dir.glob("*.json.gz", base: path)
     files.each do |file|
       import_file(File.join(path, file))
     end
