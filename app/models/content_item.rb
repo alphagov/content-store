@@ -30,10 +30,7 @@ class ContentItem < ApplicationRecord
       .merge(scheduled_publication_details(log_entry)),
     )
 
-    if previous_item
-      previous_item.assign_attributes(
-        item.attributes.except("id", "created_at", "updated_at"),
-      )
+    if previous_itemcont 
       item = previous_item
     end
 
