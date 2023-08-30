@@ -34,8 +34,8 @@ describe MongoExporter do
         anything,
         "--uri=#{ENV['MONGODB_URI']}",
         "--collection=my_collection",
-        "--out=/my/path/my_collection.json",
         "--type=json",
+        " | gzip > /my/path/my_collection.json.gz",
       )
       described_class.export(collection: "my_collection", path: "/my/path")
     end
