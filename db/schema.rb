@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_30_093643) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -49,8 +49,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
     t.integer "payload_version"
     t.jsonb "withdrawn_notice", default: {}
     t.string "publishing_request_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "_id"
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
@@ -62,18 +62,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
     t.index ["updated_at"], name: "index_content_items_on_updated_at"
   end
 
-  create_table "content_items_import", id: false, force: :cascade do |t|
-    t.jsonb "data"
-  end
-
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base_path"
     t.datetime "publish_time"
     t.string "publishing_app"
     t.string "rendering_app"
     t.jsonb "routes", default: []
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["base_path"], name: "index_publish_intents_on_base_path", unique: true
     t.index ["created_at"], name: "index_publish_intents_on_created_at"
     t.index ["publish_time"], name: "index_publish_intents_on_publish_time"
@@ -87,8 +83,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_144838) do
     t.string "document_type"
     t.datetime "scheduled_publication_time"
     t.bigint "delay_in_milliseconds"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "mongo_id"
     t.index ["base_path"], name: "ix_scheduled_pub_log_base_path"
     t.index ["created_at"], name: "ix_scheduled_pub_log_created"
