@@ -21,7 +21,7 @@ class MongoExporter
     end
   end
 
-  def self.execute(cmd, *args)
-    system cmd, *args
+  def self.execute(*args)
+    `#{args.join(" ")}`
   end
 end
