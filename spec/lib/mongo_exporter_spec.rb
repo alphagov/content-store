@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe MongoExporter do
   before do
-    allow(MongoExporter).to receive(:execute).and_return(true)
+    allow(MongoExporter).to receive(:execute_piped).and_return(true)
     allow(FileUtils).to receive(:mkdir_p)
   end
 
@@ -24,18 +24,21 @@ describe MongoExporter do
       described_class.export(collection: "my_collection", path: "/my/path")
     end
 
-    it "executes mongoexport" do
-      expect(described_class).to receive(:execute).with("mongoexport", any_args)
+    it "executes mongoexport with the correct arguments" do
+      expect(described_class).to receive(:execute_piped).with(
+        ["mongoexport",
+         "--uri=#{ENV['MONGODB_URI']}",
+         "--collection=my_collection",
+         "--type=json"],
+        anything,
+      )
       described_class.export(collection: "my_collection", path: "/my/path")
     end
 
-    it "passes the correct mongoexport arguments" do
-      expect(described_class).to receive(:execute).with(
+    it "pipes the mongoexport output to gzip" do
+      expect(described_class).to receive(:execute_piped).with(
         anything,
-        "--uri=#{ENV['MONGODB_URI']}",
-        "--collection=my_collection",
-        "--type=json",
-        " | gzip > /my/path/my_collection.json.gz",
+        ["gzip > /my/path/my_collection.json.gz"],
       )
       described_class.export(collection: "my_collection", path: "/my/path")
     end
