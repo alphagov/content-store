@@ -28,11 +28,6 @@ The following routes would be created:
     /foo/subpath (prefix) => frontend
     /foo/other/path (exact) => frontend
 
-### Placeholder items
-
-Items with a schema_name starting with "placeholder" will not have the routes
-registered with the router.
-
 ### Redirects for subpaths
 
 The content store can also create redirects for paths under the base_path.  This is intended to support

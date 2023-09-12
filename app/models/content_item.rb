@@ -219,12 +219,8 @@ class ContentItem
 private
 
   def should_register_routes?(previous_item: nil)
-    return false if schema_name.start_with?("placeholder")
+    return previous_item.route_set != route_set if previous_item
 
-    if previous_item
-      return previous_item.schema_name == "placeholder" ||
-          previous_item.route_set != route_set
-    end
     true
   end
 
