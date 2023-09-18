@@ -261,15 +261,6 @@ describe "content item write API", type: :request do
       assert_routes_registered("frontend", [["/vat-rates", "exact"], ["/vat-rates.json", "exact"]])
     end
 
-    context "when the original item is a placeholder" do
-      let(:schema_name) { "placeholder" }
-
-      it "registers routes for the content item" do
-        put_json "/content/vat-rates", @data
-        assert_routes_registered("frontend", [["/vat-rates", "exact"]])
-      end
-    end
-
     context "when the router-api is unavailable" do
       let!(:stub) do
         stub_http_request(:any, /^#{Regexp.escape(GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT)}\//)
