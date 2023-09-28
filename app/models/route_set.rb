@@ -27,7 +27,7 @@ class RouteSet < OpenStruct
       routes = item.routes.map(&:to_h).map(&:deep_symbolize_keys)
     end
 
-    redirects = item.redirects.map(&:to_h).map(&:deep_symbolize_keys)
+    redirects = Array(item.redirects).map(&:to_h).map(&:deep_symbolize_keys)
 
     new(
       routes:,
