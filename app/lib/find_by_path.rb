@@ -17,7 +17,10 @@ class FindByPath
     return exact_match if exact_match
 
     matches = find_route_matches(path)
-    matches.any? ? best_route_match(matches, path) : nil
+
+    if matches.count.positive?
+      best_route_match(matches, path)
+    end
   end
 
 private
