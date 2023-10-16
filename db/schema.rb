@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_30_093643) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_16_112610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -35,7 +35,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_093643) do
     t.datetime "first_published_at"
     t.datetime "public_updated_at"
     t.datetime "publishing_scheduled_at"
-    t.integer "scheduled_publishing_delay_seconds"
     t.jsonb "details", default: {}
     t.string "publishing_app"
     t.string "rendering_app"
@@ -52,6 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_093643) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "_id"
+    t.bigint "scheduled_publishing_delay_seconds"
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
     t.index ["created_at"], name: "index_content_items_on_created_at"
