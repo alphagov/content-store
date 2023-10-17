@@ -7,20 +7,19 @@ class ChangeScheduledPublishingDelaySecondsToBigint < ActiveRecord::Migration[7.
 
     # populate temporary column in small batches, non-transactionally, to minimise locks
     done = false
-    rows_updated = 0
     until done == true
       rows_updated = ContentItem.connection.update <<-SQL
-        UPDATE content_items SET scheduled_publishing_delay_seconds_bigint = scheduled_publishing_delay_seconds 
+        UPDATE content_items SET scheduled_publishing_delay_seconds_bigint = scheduled_publishing_delay_seconds
         WHERE id IN (
-          SELECT id FROM content_items ci2 
-          WHERE ci2.scheduled_publishing_delay_seconds IS NOT NULL 
+          SELECT id FROM content_items ci2
+          WHERE ci2.scheduled_publishing_delay_seconds IS NOT NULL
             AND ci2.scheduled_publishing_delay_seconds_bigint IS NULL
           LIMIT 5000
         );
       SQL
       remaining = ContentItem.where("scheduled_publishing_delay_seconds IS NOT NULL AND scheduled_publishing_delay_seconds_bigint IS NULL").count
-      puts "#{rows_updated} rows updated, #{remaining} remaining"
-      done = (remaining == 0)
+      Rails.logger.debug "#{rows_updated} rows updated, #{remaining} remaining"
+      done = remaining.zero?
     end
 
     ContentItem.transaction do
@@ -35,20 +34,19 @@ class ChangeScheduledPublishingDelaySecondsToBigint < ActiveRecord::Migration[7.
 
     # populate temporary column in small batches, non-transactionally, to minimise locks
     done = false
-    rows_updated = 0
     until done == true
       rows_updated = ContentItem.connection.update <<-SQL
-        UPDATE content_items SET scheduled_publishing_delay_seconds_int = scheduled_publishing_delay_seconds 
+        UPDATE content_items SET scheduled_publishing_delay_seconds_int = scheduled_publishing_delay_seconds
         WHERE id IN (
-          SELECT id FROM content_items ci2 
+          SELECT id FROM content_items ci2
           WHERE ci2.scheduled_publishing_delay_seconds IS NOT NULL
             AND ci2.scheduled_publishing_delay_seconds_int IS NULL
           LIMIT 5000
         );
       SQL
       remaining = ContentItem.where("scheduled_publishing_delay_seconds IS NOT NULL AND scheduled_publishing_delay_seconds_int IS NULL").count
-      puts "#{rows_updated} rows updated, #{remaining} remaining"
-      done = (remaining == 0)
+      Rails.logger.debug "#{rows_updated} rows updated, #{remaining} remaining"
+      done = remaining.zero?
     end
 
     ContentItem.transaction do
