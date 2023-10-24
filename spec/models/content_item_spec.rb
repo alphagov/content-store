@@ -436,6 +436,22 @@ describe ContentItem, type: :model do
         expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
       end
     end
+
+    context "when auth_bypass_ids is nil" do
+      let(:content_item) { build(:content_item, auth_bypass_ids: nil) }
+
+      context "given an auth_bypass_id" do
+        let(:auth_bypass_id) { SecureRandom.uuid }
+
+        it "does not raise an error" do
+          expect { content_item.valid_auth_bypass_id?(auth_bypass_id) }.not_to raise_error
+        end
+
+        it "returns false" do
+          expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to eq(false)
+        end
+      end
+    end
   end
 
   describe "description" do
