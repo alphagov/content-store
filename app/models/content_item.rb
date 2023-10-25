@@ -129,7 +129,7 @@ class ContentItem < ApplicationRecord
 
   def valid_auth_bypass_id?(auth_bypass_id)
     return false unless auth_bypass_id
-    return true if auth_bypass_ids.include?(auth_bypass_id)
+    return true if auth_bypass_ids&.include?(auth_bypass_id)
     return false if access_limited?
 
     # check for linked auth_bypass_id in top level expanded links
