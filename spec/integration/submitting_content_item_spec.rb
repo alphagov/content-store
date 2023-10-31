@@ -1,5 +1,4 @@
 require "rails_helper"
-require "update_lock"
 
 describe "content item write API", type: :request do
   before :each do
