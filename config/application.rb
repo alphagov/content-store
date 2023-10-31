@@ -13,6 +13,7 @@ require "action_controller/railtie"
 # require "action_view/railtie"
 # require "action_cable/engine"
 # require "rails/test_unit/railtie"
+require "active_support/core_ext/integer/time"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -24,7 +25,17 @@ require "gds_api/router"
 module ContentStore
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 7.1
+
+    # Once this application is fully deployed to Rails 7.1 and you have no plans to rollback
+    # replace the line below with config.active_support.cache_format_version = 7.1
+    # This will mean that we can revert back to rails 7.0 if there is an issue
+    config.active_support.cache_format_version = 7.0
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -33,6 +44,9 @@ module ContentStore
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Don't generate system test files.
+    config.generators.system_tests = nil
 
     config.i18n.enforce_available_locales = true
     config.i18n.available_locales = %i[
