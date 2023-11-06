@@ -14,7 +14,7 @@ node {
       ),
       stringParam(
         name: "PACT_BROKER_BASE_URL",
-        defaultValue: "https://pact-broker.cloudapps.digital",
+        defaultValue: "https://govuk-pact-broker-6991351eca05.herokuapp.com",
         description: "The Pact Broker to run Pact tests against"
       ),
     ],
