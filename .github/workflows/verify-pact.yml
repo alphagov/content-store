@@ -17,7 +17,7 @@ on:
       pact_consumer_version:
         required: false
         type: string
-        default: branch-deployed-to-production
+        default: branch-main
 
 jobs:
   pact_verify:
