@@ -18,7 +18,7 @@ You can use the [GOV.UK Docker environment](https://github.com/alphagov/govuk-do
 ### Example API output
 
 Example API requests and corresponding responses can be found in the
-[content store pact-broker documentation](https://pact-broker.cloudapps.digital/pacts/provider/Content%20Store/consumer/Publishing%20API/latest).
+[content store pact-broker documentation](https://govuk-pact-broker-6991351eca05.herokuapp.com/pacts/provider/Content%20Store/consumer/Publishing%20API/latest).
 
 ## Further documentation
 
