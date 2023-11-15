@@ -3,6 +3,11 @@ require "webmock"
 require "pact/provider/rspec"
 require "rails_helper"
 
+puts "ENV['DATABASE_URL']=#{ENV['DATABASE_URL']}"
+puts "ENV['TEST_DATABASE_URL']=#{ENV['TEST_DATABASE_URL']}"
+
+puts "ActiveRecord::Base.connection_db_config = #{ActiveRecord::Base.connection_db_config.inspect}"
+
 WebMock.disable!
 
 Pact.configure do |config|
