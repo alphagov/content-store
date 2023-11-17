@@ -1,5 +1,4 @@
 require "rails_helper"
-require "update_lock"
 
 describe ContentItem, type: :model do
   describe ".create_or_replace" do
