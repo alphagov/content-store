@@ -9,11 +9,12 @@ For most of 2023, Publishing Platform team have been working on migrating Conten
 
 * The `main` branch is currently _not in use by any deployed application_
 * The `content-store` and `draft-content-store` applications in all environments are using a container name of `content-store`, but that must be manually built from the `port-to-postgresql` branch
+* There is no automatic build promotion - deployments must be manually done for each environment.
 
 If you need to deploy Content Store, make sure that you:
 * base any pull requests off the `port-to-postgresql` branch (see PR #1085)
 * merge any pull requests into the `port-to-postgresql` branch
-* deploy by running the [Deploy workflow](https://github.com/alphagov/content-store/actions/workflows/deploy.yml)
+* deploy to each environment by running the [Deploy workflow](https://github.com/alphagov/content-store/actions/workflows/deploy.yml)
 * specify `port-to-postgresql` as the "Commit, tag or branch name to deploy"
 * specify `content-store` as the "ECR repo name to push image to"
 
