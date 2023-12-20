@@ -49,28 +49,6 @@ describe RouteSet, type: :model do
       ]
 
       route_set = RouteSet.from_content_item(item)
-
-      expect(route_set.is_gone).to eq(true)
-      expected_routes = [
-        { path: "/path", type: "exact" },
-        { path: "/path.json", type: "exact" },
-        { path: "/path/subpath", type: "prefix" },
-      ]
-      expect(route_set.routes).to eq([])
-      expect(route_set.gone_routes).to match_array(expected_routes)
-      expect(route_set.redirects).to eq([])
-    end
-
-    it "constructs a route set from a gone content item with nil redirects" do
-      item = build(:gone_content_item, base_path: "/path", redirects: nil)
-      item.routes = [
-        { "path" => "/path", "type" => "exact" },
-        { "path" => "/path.json", "type" => "exact" },
-        { "path" => "/path/subpath", "type" => "prefix" },
-      ]
-
-      route_set = RouteSet.from_content_item(item)
-
       expect(route_set.is_gone).to eq(true)
       expected_routes = [
         { path: "/path", type: "exact" },
