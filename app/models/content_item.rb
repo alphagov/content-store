@@ -27,9 +27,7 @@ class ContentItem < ApplicationRecord
     item = ContentItem.new(base_path:)
     item.assign_attributes(
       attributes
-        .merge(scheduled_publication_details(log_entry))
-        .merge(created_at:)
-        .compact,
+      .merge(scheduled_publication_details(log_entry)),
     )
 
     if previous_item
