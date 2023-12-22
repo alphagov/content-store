@@ -21,6 +21,10 @@ class ContentItem < ApplicationRecord
 
     result = previous_item ? :replaced : :created
 
+    # This doesn't seem to get set correctly on an upsert so this is to
+    # maintain it
+    created_at = previous_item ? previous_item.created_at : Time.zone.now.utc
+
     # This awkward construction is necessary to maintain the required behaviour -
     # a content item sent to Content Store is a complete entity (as defined in a schema)
     # and no-remnants of the item it replaces should remain.
