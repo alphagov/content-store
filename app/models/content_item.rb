@@ -155,8 +155,8 @@ class ContentItem < ApplicationRecord
     access_limited_user_ids.any? || access_limited_organisation_ids.any?
   end
 
-  def register_routes
-    return unless should_register_routes?
+  def register_routes(previous_item: nil)
+    return unless should_register_routes?(previous_item:)
 
     tries = Rails.application.config.register_router_retries
     begin
@@ -183,13 +183,8 @@ class ContentItem < ApplicationRecord
 
 private
 
-  def should_register_routes?
-    return false if schema_name.to_s.start_with?("placeholder")
-
-    if previous_item
-      return previous_item.schema_name == "placeholder" ||
-          previous_item.route_set != route_set
-    end
+  def should_register_routes?(previous_item: nil)
+    return previous_item.route_set != route_set if previous_item
 
     true
   end
