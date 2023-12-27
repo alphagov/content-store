@@ -19,3 +19,5 @@
 
 /coverage
 /spec/reports
+
+.byebug_history
