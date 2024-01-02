@@ -116,7 +116,7 @@ private
   end
 
   def router_api
-    @router_api ||= Rails.application.router_api
+    @router_api ||= GdsApi.router
   end
 
   def paths
