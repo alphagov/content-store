@@ -1,5 +1,4 @@
 require "rails_helper"
-require "update_lock"
 
 describe "content item write API", type: :request do
   before :each do
@@ -363,8 +362,8 @@ describe "content item write API", type: :request do
 
     it "includes an error message" do
       data = JSON.parse(response.body)
-      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, @data["routes"].class).message
-      expect(data["errors"]).to eq("base" => [expected_error_message])
+      expected_error_message = "Value of type Integer cannot be written to a field of type Array"
+      expect(data["errors"].find { |_attr, err| err.include?(expected_error_message) }).not_to be_nil
     end
   end
 

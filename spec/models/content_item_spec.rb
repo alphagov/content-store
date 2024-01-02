@@ -1,5 +1,4 @@
 require "rails_helper"
-require "update_lock"
 
 describe ContentItem, type: :model do
   describe ".create_or_replace" do
@@ -21,6 +20,29 @@ describe ContentItem, type: :model do
       expect(item.reload.created_at).to eq(@item.reload.created_at)
     end
 
+    context "when there is already an existing item with the same base_path" do
+      before do
+        @item.update!(
+          base_path: @item.base_path,
+          title: "existing title",
+          description: "existing description",
+          schema_name: "existing_schema",
+        )
+        ContentItem.create_or_replace(@item.base_path, { schema_name: "publication" }, nil)
+      end
+
+      it "updates the given attributes" do
+        @item.reload
+        expect(@item.schema_name).to eq("publication")
+      end
+
+      it "does not retain values of any attributes which were not given" do
+        @item.reload
+        expect(@item.title).to be_nil
+        expect(@item["description"]).to eq("value" => nil)
+      end
+    end
+
     it "does not overwrite default attribute values if called with nil attributes" do
       _, item = ContentItem.create_or_replace(@item.base_path, { schema_name: "redirect", redirects: nil }, nil)
       expect(item.redirects).to eq([])
@@ -30,7 +52,7 @@ describe ContentItem, type: :model do
       context "when unknown attributes are provided" do
         let(:attributes) { { "foo" => "foo", "bar" => "bar" } }
 
-        it "handles Mongoid::Errors::UnknownAttribute" do
+        it "handles ActiveRecord::UnknownAttributeError" do
           result = item = nil
 
           expect {
@@ -45,7 +67,7 @@ describe ContentItem, type: :model do
       context "when assigning a value of incorrect type" do
         let(:attributes) { { "routes" => 12 } }
 
-        it "handles Mongoid::Errors::InvalidValue" do
+        it "handles ActiveModel::ValidationError" do
           result = item = nil
 
           expect {
@@ -54,8 +76,8 @@ describe ContentItem, type: :model do
           }.to_not raise_error
 
           expect(result).to be false
-          expected_error_message = Mongoid::Errors::InvalidValue.new(Array, 12.class).message
-          expect(item.errors[:base]).to include(expected_error_message)
+          expected_error_message = "Value of type Integer cannot be written to a field of type Array"
+          expect(item.errors[:base].find { |e| e.include?(expected_error_message) }).not_to be_nil
         end
       end
 
@@ -77,7 +99,7 @@ describe ContentItem, type: :model do
       context "with current attributes and no previous item" do
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -93,7 +115,7 @@ describe ContentItem, type: :model do
 
         let(:attributes) { @item.attributes }
 
-        it "upserts the item" do
+        it "saves the item" do
           result = item = nil
           expect {
             result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
@@ -142,10 +164,10 @@ describe ContentItem, type: :model do
     it_behaves_like "find_by_path", :content_item
   end
 
-  it "should set updated_at on upsert" do
+  it "should set updated_at on save" do
     item = build(:content_item)
     Timecop.freeze do
-      item.upsert
+      item.save!
       item.reload
 
       expect(item.updated_at.to_s).to eq(Time.zone.now.to_s)
@@ -413,14 +435,45 @@ describe ContentItem, type: :model do
         expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to be(false)
       end
     end
+
+    context "when auth_bypass_ids is nil" do
+      let(:content_item) { build(:content_item, auth_bypass_ids: nil) }
+
+      context "given an auth_bypass_id" do
+        let(:auth_bypass_id) { SecureRandom.uuid }
+
+        it "does not raise an error" do
+          expect { content_item.valid_auth_bypass_id?(auth_bypass_id) }.not_to raise_error
+        end
+
+        it "returns false" do
+          expect(content_item.valid_auth_bypass_id?(auth_bypass_id)).to eq(false)
+        end
+      end
+    end
   end
 
   describe "description" do
-    it "wraps the description as a hash" do
-      content_item = FactoryBot.create(:content_item, description: "foo")
+    context "when given a simple-valued description" do
+      let(:description) { "foo" }
 
-      expect(content_item.description).to eq("foo")
-      expect(content_item["description"]).to eq("value" => "foo")
+      it "wraps the description as a hash" do
+        content_item = FactoryBot.create(:content_item, description:)
+
+        expect(content_item.description).to eq("foo")
+        expect(content_item["description"]).to eq("value" => "foo")
+      end
+    end
+
+    context "when given a description that is already a Hash" do
+      let(:description) { { "value" => "foo" } }
+
+      it "does not wrap the description hash in another hash" do
+        content_item = FactoryBot.create(:content_item, description:)
+
+        expect(content_item.description).to eq("foo")
+        expect(content_item["description"]).to eq("value" => "foo")
+      end
     end
   end
 

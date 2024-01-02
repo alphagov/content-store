@@ -1,14 +1,19 @@
-class ContentItem
-  include Mongoid::Document
-  include Mongoid::Timestamps
+class ContentItem < ApplicationRecord
+  validates_each :routes, :redirects do |record, attr, value|
+    # This wording replicates the original Mongoid error message - we don't know if any downstream
+    # consumers rely on parsing error messages at the moment
+    record.errors.add attr, "Value of type #{value.class} cannot be written to a field of type Array" unless value.nil? || value.respond_to?(:each)
+  end
 
   def self.revert(previous_item:, item:)
-    item.remove unless previous_item
-    previous_item&.upsert
+    item.destroy! unless previous_item
+    previous_item&.save!
   end
 
   def self.create_or_replace(base_path, attributes, log_entry)
     previous_item = ContentItem.where(base_path:).first
+    item_state_before_change = previous_item.dup
+
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
@@ -16,12 +21,14 @@ class ContentItem
 
     result = previous_item ? :replaced : :created
 
-    item = ContentItem.new(base_path:)
-
     # This doesn't seem to get set correctly on an upsert so this is to
     # maintain it
     created_at = previous_item ? previous_item.created_at : Time.zone.now.utc
 
+    # This awkward construction is necessary to maintain the required behaviour -
+    # a content item sent to Content Store is a complete entity (as defined in a schema)
+    # and no-remnants of the item it replaces should remain.
+    item = ContentItem.new(base_path:)
     item.assign_attributes(
       attributes
         .merge(scheduled_publication_details(log_entry))
@@ -29,23 +36,29 @@ class ContentItem
         .compact,
     )
 
-    if item.upsert
-      begin
-        item.register_routes(previous_item:)
-      rescue StandardError
-        revert(previous_item:, item:)
-        raise
+    if previous_item
+      previous_item.assign_attributes(
+        item.attributes.except("id", "created_at", "updated_at"),
+      )
+      item = previous_item
+    end
+
+    begin
+      transaction do
+        item.save!
+        item.register_routes(previous_item: item_state_before_change)
       end
-    else
+    rescue StandardError
       result = false
+      raise
     end
 
     [result, item]
-  rescue Mongoid::Errors::UnknownAttribute
-    extra_fields = attributes.keys - fields.keys
+  rescue ActiveRecord::UnknownAttributeError
+    extra_fields = attributes.keys - new.attributes.keys
     item.errors.add(:base, "unrecognised field(s) #{extra_fields.join(', ')} in input")
     [false, item]
-  rescue Mongoid::Errors::InvalidValue => e
+  rescue ActiveRecord::RecordInvalid => e
     item.errors.add(:base, e.message)
     [false, item]
   rescue OutOfOrderTransmissionError => e
@@ -65,65 +78,18 @@ class ContentItem
     ::FindByPath.new(self).find(path)
   end
 
-  field :_id, as: :base_path, type: String, overwrite: true
-  field :content_id, type: String
-  field :title, type: String
-  field :description, type: Hash, default: { "value" => nil }
-  field :document_type, type: String
-
-  # Supertypes are deprecated, but are still sent by the publishing-api.
-  field :content_purpose_document_supertype, type: String, default: ""
-  field :content_purpose_subgroup, type: String, default: ""
-  field :content_purpose_supergroup, type: String, default: ""
-  field :email_document_supertype, type: String, default: ""
-  field :government_document_supertype, type: String, default: ""
-  field :navigation_document_supertype, type: String, default: ""
-  field :search_user_need_document_supertype, type: String, default: ""
-  field :user_journey_document_supertype, type: String, default: ""
-
-  field :schema_name, type: String
-  field :locale, type: String, default: I18n.default_locale.to_s
-  field :first_published_at, type: ::ActiveSupport::TimeWithZone
-  field :public_updated_at, type: ::ActiveSupport::TimeWithZone
-  field :publishing_scheduled_at, type: ::ActiveSupport::TimeWithZone
-  field :scheduled_publishing_delay_seconds, type: Integer
-  field :details, type: Hash, default: {}
-  field :publishing_app, type: String
-  field :rendering_app, type: String
-  field :routes, type: Array, default: []
-  field :redirects, type: Array, default: []
-  field :expanded_links, type: Hash, default: {}
-  field :access_limited, type: Hash, default: {}
-  field :auth_bypass_ids, type: Array, default: []
-  field :phase, type: String, default: "live"
-  field :analytics_identifier, type: String
-  field :payload_version, type: Integer
-  field :withdrawn_notice, type: Hash, default: {}
-  field :publishing_request_id, type: String, default: nil
-
-  # The updated_at field isn't set on upsert - https://jira.mongodb.org/browse/MONGOID-3716
-  before_upsert :set_updated_at
-
-  # We want to look up content items by whether they match a route and the type
-  # of route.
-  index("routes.path" => 1, "routes.type" => 1)
-
-  # We want to look up content items by whether they match a redirect and the
-  # type of redirect.
-  index("redirects.path" => 1, "redirects.type" => 1)
-
-  # We want to force the JSON representation to use "base_path" instead of
-  # "_id" to prevent "_id" being exposed outside of the model.
+  # Prevent "id" being exposed outside of the model - it's synthetic and
+  # only of internal use. Other applications should use `content_id` or
+  # `base_path` as their unique identifiers.
   def as_json(options = nil)
-    super(options).tap do |hash|
-      hash["base_path"] = hash.delete("_id")
-    end
+    super(options).except("id")
   end
 
   # We store the description in a hash because Publishing API can send through
   # multiple content types.
   def description=(value)
-    super("value" => value)
+    # ...but only wrap the given value in a Hash if it's not already a Hash
+    value.is_a?(Hash) ? super : super("value" => value)
   end
 
   def description
@@ -170,7 +136,7 @@ class ContentItem
 
   def valid_auth_bypass_id?(auth_bypass_id)
     return false unless auth_bypass_id
-    return true if auth_bypass_ids.include?(auth_bypass_id)
+    return true if auth_bypass_ids&.include?(auth_bypass_id)
     return false if access_limited?
 
     # check for linked auth_bypass_id in top level expanded links

@@ -1,14 +1,13 @@
 source "https://rubygems.org"
 
-gem "rails", "7.0.8"
+gem "rails", "7.1.2"
 
 gem "bootsnap", require: false
 gem "deepsort"
 gem "gds-api-adapters"
 gem "gds-sso"
 gem "govuk_app_config"
-gem "mongo", "2.15.0" # Later releases require Mongo >= 3.6
-gem "mongoid"
+gem "pg"
 gem "plek"
 gem "rack-cache"
 gem "uuidtools"
@@ -17,7 +16,7 @@ gem "whenever", require: false
 group :development, :test do
   gem "ci_reporter_rspec"
   gem "climate_control"
-  gem "database_cleaner-mongoid"
+  gem "database_cleaner-active_record"
   gem "factory_bot"
   gem "govuk_schemas"
   gem "govuk_test"

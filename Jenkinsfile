@@ -2,7 +2,9 @@
 
 library("govuk")
 
-node("mongodb-2.4") {
+node {
+  govuk.setEnvar("TEST_DATABASE_URL", "postgresql://postgres@127.0.0.1:54313/content_store_test")
+
   govuk.buildProject(
     extraParameters: [
       stringParam(

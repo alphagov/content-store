@@ -118,7 +118,7 @@ describe "CRUD of publish intents", type: :request do
       expect(response.status).to eq(422)
 
       data = JSON.parse(response.body)
-      expect(data["errors"]).to eq("publish_time" => ["can't be blank"])
+      expect(data["errors"]["publish_time"]).to include("can't be blank")
 
       expect(PublishIntent.where(base_path: "/vat-rates").first).not_to be
     end
@@ -136,8 +136,8 @@ describe "CRUD of publish intents", type: :request do
 
       expect(response.status).to eq(422)
       data = JSON.parse(response.body)
-      expected_error_message = Mongoid::Errors::InvalidValue.new(Array, String).message
-      expect(data["errors"]).to eq("base" => [expected_error_message])
+      expected_error_message = "Value of type String cannot be written to a field of type Array"
+      expect(data["errors"]["base"].find { |e| e.include?(expected_error_message) }).not_to be_nil
     end
 
     it "returns a 400 with bad json" do
