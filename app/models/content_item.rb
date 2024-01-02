@@ -78,8 +78,9 @@ class ContentItem < ApplicationRecord
     ::FindByPath.new(self).find(path)
   end
 
-  # We want to force the JSON representation to use "base_path"
-  # and prevent "id" being exposed outside of the model.
+  # Prevent "id" being exposed outside of the model - it's synthetic and
+  # only of internal use. Other applications should use `content_id` or
+  # `base_path` as their unique identifiers.
   def as_json(options = nil)
     super(options).except("id")
   end
