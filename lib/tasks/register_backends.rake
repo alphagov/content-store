@@ -3,7 +3,7 @@ desc "
   database.
 "
 task register_backends: :environment do
-  router_api = Rails.application.router_api
+  router_api = GdsApi.router
 
   ContentItem.distinct(:rendering_app).compact.each do |rendering_app|
     backend = "#{Plek.find(rendering_app)}/"
