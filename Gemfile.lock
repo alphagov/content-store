@@ -621,8 +621,6 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
-    simplecov-rcov (0.3.7)
-      simplecov (>= 0.4.1)
     simplecov_json_formatter (0.1.4)
     snaky_hash (2.0.1)
       hashie
@@ -690,7 +688,6 @@ DEPENDENCIES
   rspec-rails
   rubocop-govuk
   simplecov
-  simplecov-rcov
   timecop
   uuidtools
   webmock
