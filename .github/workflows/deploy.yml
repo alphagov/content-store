@@ -32,6 +32,7 @@ jobs:
       gitRef: ${{ inputs.gitRef || github.ref_name }}
     permissions:
       id-token: write
+      contents: read
   trigger-deploy:
     name: Trigger deploy to ${{ inputs.environment || 'integration' }}
     needs: build-and-publish-image
