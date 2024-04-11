@@ -165,8 +165,8 @@ GEM
       sentry-rails (~> 5.3)
       sentry-ruby (~> 5.3)
       statsd-ruby (~> 1.5)
-    govuk_schemas (4.7.0)
-      json-schema (>= 2.8, < 4.2)
+    govuk_schemas (5.0.0)
+      json-schema (>= 2.8, < 4.4)
     govuk_test (4.0.2)
       brakeman (>= 5.0.2)
       capybara (>= 3.36)
@@ -184,7 +184,7 @@ GEM
       rdoc
       reline (>= 0.4.2)
     json (2.7.1)
-    json-schema (4.1.1)
+    json-schema (4.3.0)
       addressable (>= 2.8)
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
@@ -494,7 +494,7 @@ GEM
       pry (>= 0.13, < 0.15)
     psych (5.1.2)
       stringio
-    public_suffix (5.0.4)
+    public_suffix (5.0.5)
     puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.7.3)
