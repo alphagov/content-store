@@ -27,7 +27,6 @@ Example API requests and corresponding responses can be found in the
 - [Access-limited content items](./docs/access-limited-content-items.md)
 - [Gone items](./docs/gone_item.md)
 - [Redirect items](./docs/redirect_item.md)
-- [Placeholder items](./docs/placeholder_item.md)
 
 ## Licence
 
