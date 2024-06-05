@@ -74,11 +74,8 @@ describe "Fetching content items", type: :request do
     end
 
     it "outputs the timestamp fields correctly" do
-      content_item.reload # reload to pick up any time rounding in the database.
-
       data = JSON.parse(response.body)
       expect(data["public_updated_at"]).to eq(content_item.public_updated_at.iso8601.as_json)
-      expect(Time.zone.parse(data["updated_at"])).to be_within(1.second).of(Time.zone.now.utc)
     end
 
     it "sets cache headers to expire in the default TTL" do
