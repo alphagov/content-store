@@ -62,6 +62,12 @@ class ContentItem < ApplicationRecord
     item.errors.add(:base, e.message)
     [false, item]
   rescue OutOfOrderTransmissionError => e
+    GovukError.notify(
+      e,
+      level: "error",
+      extra: { error_message: e.message },
+    )
+
     [
       :conflict,
       OpenStruct.new(

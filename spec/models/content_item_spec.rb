@@ -88,7 +88,15 @@ describe ContentItem, type: :model do
             .and_raise(OutOfOrderTransmissionError, "Booyah")
         end
 
-        it "returns a result of :conflict" do
+        it "sends an alert to GovukError and returns a result of :conflict" do
+          expect(GovukError)
+            .to receive(:notify)
+            .with(
+              an_instance_of(OutOfOrderTransmissionError),
+              level: "error",
+              extra: { error_message: "Booyah" },
+            )
+
           result, item = ContentItem.create_or_replace(@item.base_path, {}, nil)
 
           expect(result).to eq(:conflict)
