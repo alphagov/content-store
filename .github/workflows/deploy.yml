@@ -1,6 +1,6 @@
 name: Deploy
 
-run-name: Deploy ${{ inputs.gitRef || github.ref_name  }} to ${{ inputs.environment || 'integration' }}
+run-name: Deploy ${{ inputs.gitRef || github.event.release.tag_name  }} to ${{ inputs.environment || 'integration' }}
 
 on:
   workflow_dispatch:
@@ -9,7 +9,6 @@ on:
         description: 'Commit, tag or branch name to deploy'
         required: true
         type: string
-        default: 'main'
       environment:
         description: 'Environment to deploy to'
         required: true
@@ -24,15 +23,15 @@ on:
 
 jobs:
   build-and-publish-image:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref_name, 'v')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
     name: Build and publish image
     uses: alphagov/govuk-infrastructure/.github/workflows/build-and-push-multiarch-image.yml@main
     with:
-      ecrRepositoryName: content-store
-      gitRef: ${{ inputs.gitRef || github.ref_name }}
+      gitRef: ${{ inputs.gitRef || github.event.release.tag_name }}
     permissions:
       id-token: write
       contents: read
+      packages: write
   trigger-deploy:
     name: Trigger deploy to ${{ inputs.environment || 'integration' }}
     needs: build-and-publish-image
