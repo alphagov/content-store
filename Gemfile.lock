@@ -465,7 +465,7 @@ GEM
       opentelemetry-semantic_conventions
     opentelemetry-semantic_conventions (1.10.0)
       opentelemetry-api (~> 1.0)
-    pact (1.64.0)
+    pact (1.65.0)
       pact-mock_service (~> 3.0, >= 3.3.1)
       pact-support (~> 1.16, >= 1.16.9)
       rack-test (>= 0.6.3, < 3.0.0)
@@ -648,12 +648,13 @@ GEM
     stringio (3.1.1)
     strscan (3.1.0)
     sync (0.5.0)
-    term-ansicolor (1.7.1)
+    term-ansicolor (1.11.2)
       tins (~> 1.0)
     thor (1.3.1)
     timecop (0.9.10)
     timeout (0.4.1)
-    tins (1.32.1)
+    tins (1.33.0)
+      bigdecimal
       sync
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
