@@ -1,9 +1,20 @@
+require "plek"
+
 class ContentItemsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:show]
   before_action :parse_json_request, only: [:update]
   before_action :set_cors_headers, only: [:show]
 
   def show
+    # TODO: make sure we don't intercept requests for Content Publisher items
+    if encoded_request_path.start_with?("/government/news")
+      client = WhitehallApi.new(Plek.find("whitehall-admin"))
+      res = client.content_item(encoded_request_path)
+      return error_404 unless res
+
+      return render json: res.to_h
+    end
+
     item = GovukStatsd.time("show.find_content_item") do
       ContentItem.find_by_path(encoded_request_path)
     end
