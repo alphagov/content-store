@@ -6,8 +6,10 @@ class ContentItemsController < ApplicationController
   before_action :set_cors_headers, only: [:show]
 
   def show
+    whitehall_paths = %w[/government/news /government/ministers]
+
     # TODO: make sure we don't intercept requests for Content Publisher items
-    if encoded_request_path.start_with?("/government/news")
+    if whitehall_paths.any? { |path| encoded_request_path.start_with?(path) } && params[:passthru] != "false"
       client = WhitehallApi.new(Plek.find("whitehall-admin"))
       res = client.content_item(encoded_request_path)
       return error_404 unless res
