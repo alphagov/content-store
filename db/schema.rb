@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_05_153742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -52,6 +52,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
     t.datetime "updated_at"
     t.string "_id"
     t.bigint "scheduled_publishing_delay_seconds"
+    t.index "((redirects ->> 'path'::text))", name: "idx_content_items_redirects_path"
+    t.index "((redirects ->> 'type'::text))", name: "idx_content_items_redirects_type"
+    t.index "((routes ->> 'path'::text))", name: "idx_content_items_routes_path"
+    t.index "((routes ->> 'type'::text))", name: "idx_content_items_routes_type"
     t.index ["base_path"], name: "index_content_items_on_base_path", unique: true
     t.index ["content_id"], name: "index_content_items_on_content_id"
     t.index ["created_at"], name: "index_content_items_on_created_at"
@@ -60,6 +64,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
     t.index ["routes"], name: "index_content_items_on_routes", using: :gin
     t.index ["routes"], name: "ix_ci_routes_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["updated_at"], name: "index_content_items_on_updated_at"
+  end
+
+  create_table "content_items_import", id: false, force: :cascade do |t|
+    t.jsonb "data"
   end
 
   create_table "publish_intents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -76,6 +84,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
     t.index ["routes"], name: "index_publish_intents_on_routes", using: :gin
     t.index ["routes"], name: "ix_pi_routes_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
     t.index ["updated_at"], name: "index_publish_intents_on_updated_at"
+  end
+
+  create_table "routes", force: :cascade do |t|
+    t.text "path"
+    t.text "match_type"
+    t.text "destination"
+    t.text "segments_mode"
+    t.uuid "content_item_id"
+    t.uuid "publish_intent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["content_item_id"], name: "index_routes_on_content_item_id"
+    t.index ["match_type"], name: "index_routes_on_match_type"
+    t.index ["path"], name: "index_routes_on_path"
+    t.index ["publish_intent_id"], name: "index_routes_on_publish_intent_id"
   end
 
   create_table "scheduled_publishing_log_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -115,4 +138,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
     t.index ["updated_at"], name: "index_users_on_updated_at"
   end
 
+  add_foreign_key "routes", "content_items"
+  add_foreign_key "routes", "publish_intents"
 end
