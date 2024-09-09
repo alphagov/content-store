@@ -1,4 +1,6 @@
 class ContentItem < ApplicationRecord
+  has_many :routes_and_redirects, dependent: :destroy, class_name: "::Route"
+
   validates_each :routes, :redirects do |record, attr, value|
     # This wording replicates the original Mongoid error message - we don't know if any downstream
     # consumers rely on parsing error messages at the moment
