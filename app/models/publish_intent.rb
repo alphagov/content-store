@@ -1,4 +1,6 @@
 class PublishIntent < ApplicationRecord
+  has_many :routes_and_redirects, dependent: :destroy, class_name: "::Route"
+
   validates_each :routes do |record, attr, value|
     # This wording replicates the original Mongoid error message - we don't know if any downstream
     # consumers rely on parsing error messages at the moment
@@ -11,6 +13,14 @@ class PublishIntent < ApplicationRecord
 
     intent.assign_attributes(attributes)
     result = false unless intent.save!
+
+    intent.routes_and_redirects.destroy_all
+    routes = attributes.fetch("routes", [])
+    routes.each do |route|
+      route["match_type"] = route.delete("type")
+      intent.routes_and_redirects.create!(route) unless content_item_route?(route)
+    end
+
     [result, intent]
   rescue ActiveRecord::UnknownAttributeError
     extra_fields = attributes.keys - attribute_names
@@ -52,6 +62,10 @@ class PublishIntent < ApplicationRecord
   end
 
 private
+
+  def self.content_item_route?(route)
+    Route.where(path: route["path"], match_type: route["match_type"]).where.not(content_item: nil).exists?
+  end
 
   def route_set
     @route_set ||= RouteSet.from_publish_intent(self)

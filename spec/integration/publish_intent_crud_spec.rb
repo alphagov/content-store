@@ -34,6 +34,9 @@ describe "CRUD of publish intents", type: :request do
         intent = PublishIntent.where(base_path: "/vat-rates").first
         expect(intent).to be
         expect(intent.publish_time).to match_datetime(publish_time)
+        expect(intent.routes_and_redirects).to match_array(
+          [have_attributes(path: "/vat-rates", match_type: "exact")]
+        )
       end
 
       it "responds with a created status and an empty JSON document" do
@@ -52,6 +55,9 @@ describe "CRUD of publish intents", type: :request do
 
         intent.reload
         expect(intent.publish_time).to match_datetime(publish_time)
+        expect(intent.routes_and_redirects).to match_array(
+          [have_attributes(path: "/vat-rates", match_type: "exact")]
+        )
       end
 
       it "responds with an ok status" do
@@ -71,18 +77,22 @@ describe "CRUD of publish intents", type: :request do
 
       context "with a corresponding content-item" do
         before :each do
-          create(
+          content_item = create(
             :content_item,
             base_path: "/vat-rates",
             rendering_app: "frontend",
             routes: [{ "path" => "/vat-rates", "type" => "exact" }],
           )
+          create(:route, path: "/vat-rates", match_type: "exact", content_item: content_item)
           WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
         end
 
         it "does not register routes if the content item already has the routes" do
           put_json "/publish-intent/vat-rates", data
           refute_routes_registered("frontend", [["/vat-rates", "exact"]])
+
+          routes = PublishIntent.find_by_path("/vat-rates").routes_and_redirects
+          expect(routes).to match_array([])
         end
 
         it "registers routes that don't already exist on the content item" do
@@ -90,6 +100,11 @@ describe "CRUD of publish intents", type: :request do
           put_json "/publish-intent/vat-rates", data
           assert_routes_registered("frontend", [["/vat-rates.json", "exact"]])
           assert_no_routes_registered_for_path("/vat-rates")
+
+          routes = PublishIntent.find_by_path("/vat-rates").routes_and_redirects
+          expect(routes).to match_array([
+            have_attributes(path: "/vat-rates.json", match_type: "exact")
+          ])
         end
 
         it "handles the intent having a different rendering app from the content item" do
@@ -98,6 +113,11 @@ describe "CRUD of publish intents", type: :request do
           put_json "/publish-intent/vat-rates", data
           assert_routes_registered("other-frontend", [["/vat-rates.json", "exact"]])
           assert_no_routes_registered_for_path("/vat-rates")
+
+          routes = PublishIntent.find_by_path("/vat-rates").routes_and_redirects
+          expect(routes).to match_array([
+            have_attributes(path: "/vat-rates.json", match_type: "exact")
+          ])
         end
       end
     end
