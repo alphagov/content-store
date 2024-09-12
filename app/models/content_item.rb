@@ -49,6 +49,12 @@ class ContentItem < ApplicationRecord
       transaction do
         item.save!
         item.register_routes(previous_item: item_state_before_change)
+
+        # Save these routes to the routes table
+        item.routes_and_redirects.destroy_all
+        routes_and_redirects = Array(attributes["routes"]) + Array(attributes["redirects"])
+        routes_and_redirects.each { |route| route["match_type"] = route.delete("type") }
+        item.routes_and_redirects.create!(routes_and_redirects)
       end
     rescue StandardError
       result = false

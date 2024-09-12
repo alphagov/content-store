@@ -40,6 +40,7 @@ describe ContentItem, type: :model do
         @item.reload
         expect(@item.title).to be_nil
         expect(@item["description"]).to eq("value" => nil)
+        expect(@item.routes_and_redirects).to eq([])
       end
     end
 

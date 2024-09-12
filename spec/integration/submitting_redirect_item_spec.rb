@@ -31,6 +31,10 @@ describe "submitting redirect items to the content store", type: :request do
       expect(item.schema_name).to eq("redirect")
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
+      expect(item.routes_and_redirects).to match_array([
+        have_attributes(path: "/crb-checks", match_type: "prefix", destination: "/dbs-checks"),
+        have_attributes(path: "/crb-checks.json", match_type: "exact", destination: "/api/content/dbs-checks"),
+      ])
     end
 
     it "registers redirect routes for the item" do
@@ -45,6 +49,7 @@ describe "submitting redirect items to the content store", type: :request do
         base_path: "/crb-checks",
         public_updated_at: Time.zone.parse("2014-03-12T14:53:54Z"),
         details: { "foo" => "bar" },
+        routes: [{ "path" => "/crb-checks", "type" => "exact" }],
       )
       WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
       put_json "/content/crb-checks", @data
@@ -61,6 +66,10 @@ describe "submitting redirect items to the content store", type: :request do
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq({})
+      expect(@item.routes_and_redirects).to match_array([
+        have_attributes(path: "/crb-checks", match_type: "prefix", destination: "/dbs-checks"),
+        have_attributes(path: "/crb-checks.json", match_type: "exact", destination: "/api/content/dbs-checks"),
+      ])
     end
 
     it "updates routes for the content item" do
