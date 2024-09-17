@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     get "/publish-intent(/*path_without_root)" => "publish_intents#show", :as => :publish_intent
     put "/publish-intent(/*base_path_without_root)" => "publish_intents#update"
     delete "/publish-intent(/*base_path_without_root)" => "publish_intents#destroy"
+
+    get "/routes" => "routes#find_route", :as => :routes
   end
 
   get "/healthcheck/live", to: proc { [200, {}, %w[OK]] }
