@@ -53,7 +53,15 @@ class ContentItem < ApplicationRecord
         # Save these routes to the routes table
         item.routes_and_redirects.destroy_all
         routes_and_redirects = Array(attributes["routes"]) + Array(attributes["redirects"])
-        routes_and_redirects.each { |route| route["match_type"] = route.delete("type") }
+        # Renamed "type" to "match_type" as is a reserved word in Rails
+        # Add default segments_mode for redirects, previously set by router-api
+        routes_and_redirects.each do |route|
+          route["match_type"] = route.delete("type")
+
+          if route["segments_mode"].nil? && item.redirect?
+            route["segments_mode"] = route["match_type"] == "prefix" ? "preserve" : "ignore"
+          end
+        end
         item.routes_and_redirects.create!(routes_and_redirects)
       end
     rescue StandardError

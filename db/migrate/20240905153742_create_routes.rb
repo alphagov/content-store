@@ -1,8 +1,8 @@
 class CreateRoutes < ActiveRecord::Migration[7.2]
   def change
     create_table :routes do |t|
-      t.text :path
-      t.text :match_type
+      t.text :path, null: false
+      t.text :match_type, null: false
       t.text :destination
       t.text :segments_mode
       t.references :content_item, foreign_key: true, type: :uuid, null: true
@@ -24,7 +24,11 @@ class CreateRoutes < ActiveRecord::Migration[7.2]
               route->>'path',
               route->>'type',
               route->>'destination',
-              route->>'segments_mode',
+              CASE
+                WHEN (route->>'segments_mode') IS NULL AND (route->>'type') = 'prefix' AND c.schema_name = 'redirect' THEN 'preserve'
+                WHEN (route->>'segments_mode') IS NULL AND (route->>'type') != 'prefix' AND c.schema_name = 'redirect' THEN 'ignore'
+                ELSE route->>'segments_mode'
+              END,
               c.created_at,
               c.updated_at
           FROM

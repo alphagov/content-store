@@ -87,8 +87,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_05_153742) do
   end
 
   create_table "routes", force: :cascade do |t|
-    t.text "path"
-    t.text "match_type"
+    t.text "path", null: false
+    t.text "match_type", null: false
     t.text "destination"
     t.text "segments_mode"
     t.uuid "content_item_id"
