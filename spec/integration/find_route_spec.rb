@@ -28,11 +28,14 @@ describe "find a route", type: :request do
   context "when route is not found" do
     before do
       allow(Route).to receive(:find_matching_route).and_return(nil)
-      get "/routes", params: { path: "non-existent-path" }
+      get "/routes", params: { path: "/non-existent-path" }
     end
 
     it "returns a not found response" do
       expect(response).to have_http_status(:not_found)
+
+      expected_response = { error: "Route not found" }.to_json
+      expect(response.body).to eq(expected_response)
     end
   end
 end

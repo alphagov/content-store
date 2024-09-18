@@ -5,7 +5,7 @@ class RoutesController < ApplicationController
     if route
       render json: route_json(route)
     else
-      head :not_found
+      render json: { error: "Route not found" }, status: :not_found
     end
   end
 
