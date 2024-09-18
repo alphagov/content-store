@@ -2,6 +2,8 @@ class Route < ApplicationRecord
   belongs_to :content_item, optional: true
   belongs_to :publish_intent, optional: true
 
+  validate :content_item_or_publish_intent_present
+
   def self.find_matching_route(path)
     sql = <<-SQL
     SELECT
@@ -37,6 +39,14 @@ class Route < ApplicationRecord
       end
     elsif publish_intent
       publish_intent.rendering_app
+    end
+  end
+
+private
+
+  def content_item_or_publish_intent_present
+    unless content_item.present? || publish_intent.present?
+      errors.add(:base, "A route must have either a content_item or a publish_intent")
     end
   end
 end
