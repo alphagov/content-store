@@ -86,5 +86,26 @@ describe Route, type: :model do
       expect(route).not_to be_valid
       expect(route.errors[:base]).to include("A route must have either a content_item or a publish_intent")
     end
+
+    it "is invalid if segments_mode is not 'preserve' or 'ignore' for redirect routes" do
+      route = build(:route, :redirect, segments_mode: "invalid_mode")
+      expect(route).not_to be_valid
+      expect(route.errors[:segments_mode]).to include("must be either 'preserve' or 'ignore' for redirect routes")
+    end
+
+    it "is valid if segments_mode is 'preserve' for redirect routes" do
+      route = build(:route, :redirect, segments_mode: "preserve")
+      expect(route).to be_valid
+    end
+
+    it "is valid if segments_mode is 'ignore' for redirect routes" do
+      route = build(:route, :redirect, segments_mode: "ignore")
+      expect(route).to be_valid
+    end
+
+    it "is valid if segments_mode is nil for non-redirect routes" do
+      route = build(:route, segments_mode: nil)
+      expect(route).to be_valid
+    end
   end
 end
