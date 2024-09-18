@@ -4,6 +4,7 @@ class Route < ApplicationRecord
 
   validate :content_item_or_publish_intent_present
   validate :redirect_segments_mode_valid
+  validate :redirect_destination_present
 
   def self.find_matching_route(path)
     sql = <<-SQL
@@ -54,6 +55,12 @@ private
   def redirect_segments_mode_valid
     if content_item&.redirect? && !%w[preserve ignore].include?(segments_mode)
       errors.add(:segments_mode, "must be either 'preserve' or 'ignore' for redirect routes")
+    end
+  end
+
+  def redirect_destination_present
+    if content_item&.redirect? && destination.blank?
+      errors.add(:destination, "Redirect routes must have a destination")
     end
   end
 end

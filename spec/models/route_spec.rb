@@ -107,5 +107,16 @@ describe Route, type: :model do
       route = build(:route, segments_mode: nil)
       expect(route).to be_valid
     end
+
+    it "is invalid if redirect route does not have a redirect destination" do
+      route = build(:route, :redirect, destination: nil)
+      expect(route).not_to be_valid
+      expect(route.errors[:destination]).to include("Redirect routes must have a destination")
+    end
+
+    it "is valid if redirect route has a redirect destination" do
+      route = build(:route, :redirect)
+      expect(route).to be_valid
+    end
   end
 end
