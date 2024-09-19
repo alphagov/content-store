@@ -35,7 +35,7 @@ describe "CRUD of publish intents", type: :request do
         expect(intent).to be
         expect(intent.publish_time).to match_datetime(publish_time)
         expect(intent.routes_and_redirects).to match_array(
-          [have_attributes(path: "/vat-rates", match_type: "exact")]
+          [have_attributes(path: "/vat-rates", match_type: "exact")],
         )
       end
 
@@ -56,7 +56,7 @@ describe "CRUD of publish intents", type: :request do
         intent.reload
         expect(intent.publish_time).to match_datetime(publish_time)
         expect(intent.routes_and_redirects).to match_array(
-          [have_attributes(path: "/vat-rates", match_type: "exact")]
+          [have_attributes(path: "/vat-rates", match_type: "exact")],
         )
       end
 
@@ -83,7 +83,7 @@ describe "CRUD of publish intents", type: :request do
             rendering_app: "frontend",
             routes: [{ "path" => "/vat-rates", "type" => "exact" }],
           )
-          create(:route, path: "/vat-rates", match_type: "exact", content_item: content_item)
+          create(:route, path: "/vat-rates", match_type: "exact", content_item:)
           WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
         end
 
@@ -103,7 +103,7 @@ describe "CRUD of publish intents", type: :request do
 
           routes = PublishIntent.find_by_path("/vat-rates").routes_and_redirects
           expect(routes).to match_array([
-            have_attributes(path: "/vat-rates.json", match_type: "exact")
+            have_attributes(path: "/vat-rates.json", match_type: "exact"),
           ])
         end
 
@@ -116,7 +116,7 @@ describe "CRUD of publish intents", type: :request do
 
           routes = PublishIntent.find_by_path("/vat-rates").routes_and_redirects
           expect(routes).to match_array([
-            have_attributes(path: "/vat-rates.json", match_type: "exact")
+            have_attributes(path: "/vat-rates.json", match_type: "exact"),
           ])
         end
       end
