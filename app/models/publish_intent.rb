@@ -61,11 +61,11 @@ class PublishIntent < ApplicationRecord
     base_path&.sub(%r{^/}, "")
   end
 
-private
-
   def self.content_item_route?(route)
     Route.where(path: route["path"], match_type: route["match_type"]).where.not(content_item: nil).exists?
   end
+
+private
 
   def route_set
     @route_set ||= RouteSet.from_publish_intent(self)
