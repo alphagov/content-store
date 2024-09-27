@@ -26,6 +26,10 @@ describe "submitting gone items to the content store", type: :request do
       item = ContentItem.where(base_path: "/dodo-sanctuary").first
       expect(item).to be
       expect(item.schema_name).to eq("gone")
+      expect(item.routes_and_redirects).to match_array([
+        have_attributes(path: "/dodo-sanctuary", match_type: "prefix"),
+        have_attributes(path: "/dodo-sanctuary.json", match_type: "exact"),
+      ])
     end
 
     it "registers gone routes for the item" do

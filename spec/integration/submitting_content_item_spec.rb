@@ -55,6 +55,7 @@ describe "content item write API", type: :request do
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(item.details).to eq("body" => "<p>Some body text</p>\n")
       expect(item.publishing_request_id).to eq("test test test")
+      expect(item.routes_and_redirects).to match_array([have_attributes(path: "/vat-rates", match_type: "exact")])
     end
 
     it "responds with an empty JSON document in the body" do
@@ -216,6 +217,7 @@ describe "content item write API", type: :request do
       expect(item).to be
       expect(item.title).to eq("Taux de TVA")
       expect(item.locale).to eq("fr")
+      expect(item.routes_and_redirects).to match_array([have_attributes(path: "/vat-rates.fr", match_type: "exact")])
     end
   end
 
@@ -247,6 +249,7 @@ describe "content item write API", type: :request do
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq("body" => "<p>Some body text</p>\n")
+      expect(@item.routes_and_redirects).to match_array([have_attributes(path: "/vat-rates", match_type: "exact")])
     end
 
     it "does not register routes when they haven't changed" do
@@ -254,10 +257,24 @@ describe "content item write API", type: :request do
       refute_routes_registered("frontend", [["/vat-rates", "exact"]])
     end
 
+    it "does not remove routes when they are missing" do
+      put_json "/content/vat-rates", @data
+      @data["routes"] = []
+      put_json "/content/vat-rates", @data
+
+      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
+      expect(@item.routes_and_redirects).to match_array([have_attributes(path: "/vat-rates", match_type: "exact")])
+    end
+
     it "registers routes for the content item when they have changed" do
       @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [["/vat-rates", "exact"], ["/vat-rates.json", "exact"]])
+      @item.reload
+      expect(@item.routes_and_redirects).to match_array([
+        have_attributes(path: "/vat-rates", match_type: "exact"),
+        have_attributes(path: "/vat-rates.json", match_type: "exact"),
+      ])
     end
 
     context "when the router-api is unavailable" do
@@ -272,6 +289,7 @@ describe "content item write API", type: :request do
           .to raise_error(GdsApi::HTTPInternalServerError)
         @item.reload
         expect(@item.title).to eq("Original title")
+        expect(@item.routes_and_redirects).to match_array([])
         expect(WebMock::RequestRegistry.instance.times_executed(stub.request_pattern)).to eq(3)
       end
     end
@@ -288,6 +306,12 @@ describe "content item write API", type: :request do
       put_json "/content/vat-rates", @data
       assert_routes_registered("frontend", [["/vat-rates", "exact"]])
       assert_redirect_routes_registered([["/vat-rates.json", "exact", "/api/content/vat-rates"]])
+
+      item = ContentItem.where(base_path: "/vat-rates").first
+      expect(item.routes_and_redirects).to match_array([
+        have_attributes(path: "/vat-rates", match_type: "exact"),
+        have_attributes(path: "/vat-rates.json", match_type: "exact", destination: "/api/content/vat-rates"),
+      ])
     end
   end
 
