@@ -95,7 +95,6 @@ private
       route.fetch(:path),
       route.fetch(:type),
       route.fetch(:destination),
-      route.fetch(:redirect_type, "permanent"),
       segments_mode: route[:segments_mode],
     )
   end
