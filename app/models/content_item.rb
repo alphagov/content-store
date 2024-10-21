@@ -1,4 +1,6 @@
 class ContentItem < ApplicationRecord
+  has_many :routes_and_redirects, dependent: :destroy, class_name: "::Route"
+
   validates_each :routes, :redirects do |record, attr, value|
     # This wording replicates the original Mongoid error message - we don't know if any downstream
     # consumers rely on parsing error messages at the moment
@@ -47,6 +49,20 @@ class ContentItem < ApplicationRecord
       transaction do
         item.save!
         item.register_routes(previous_item: item_state_before_change)
+
+        # Save these routes to the routes table
+        item.routes_and_redirects.destroy_all
+        routes_and_redirects = Array(attributes["routes"]) + Array(attributes["redirects"])
+        # Renamed "type" to "match_type" as is a reserved word in Rails
+        # Add default segments_mode for redirects, previously set by router-api
+        routes_and_redirects.each do |route|
+          route["match_type"] = route.delete("type")
+
+          if route["segments_mode"].nil? && item.redirect?
+            route["segments_mode"] = route["match_type"] == "prefix" ? "preserve" : "ignore"
+          end
+        end
+        item.routes_and_redirects.create!(routes_and_redirects)
       end
     rescue StandardError
       result = false
