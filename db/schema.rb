@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_05_135438) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -114,5 +114,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132747) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
     t.index ["updated_at"], name: "index_users_on_updated_at"
   end
-
 end
