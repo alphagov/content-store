@@ -11,7 +11,6 @@ gem "pg"
 gem "plek"
 gem "rack-cache"
 gem "uuidtools"
-gem "whenever", require: false
 
 group :development, :test do
   gem "ci_reporter_rspec"
