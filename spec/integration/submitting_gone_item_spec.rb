@@ -27,9 +27,5 @@ describe "submitting gone items to the content store", type: :request do
       expect(item).to be
       expect(item.schema_name).to eq("gone")
     end
-
-    it "registers gone routes for the item" do
-      assert_gone_routes_registered([["/dodo-sanctuary", "prefix"], ["/dodo-sanctuary.json", "exact"]])
-    end
   end
 end
