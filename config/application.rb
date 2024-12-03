@@ -121,7 +121,5 @@ module ContentStore
     config.minimum_ttl = [config.default_ttl, 5.seconds].min
 
     config.paths["log"] = ENV["LOG_PATH"] if ENV["LOG_PATH"]
-
-    config.register_router_retries = 3
   end
 end

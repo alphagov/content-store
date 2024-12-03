@@ -12,7 +12,6 @@ class ContentItem < ApplicationRecord
 
   def self.create_or_replace(base_path, attributes, log_entry)
     previous_item = ContentItem.where(base_path:).first
-    item_state_before_change = previous_item.dup
 
     lock = UpdateLock.new(previous_item)
 
@@ -46,7 +45,6 @@ class ContentItem < ApplicationRecord
     begin
       transaction do
         item.save!
-        item.register_routes(previous_item: item_state_before_change)
       end
     rescue StandardError
       result = false
@@ -105,10 +103,6 @@ class ContentItem < ApplicationRecord
     end
   end
 
-  def redirect?
-    schema_name == "redirect"
-  end
-
   def gone?
     # we've overloaded gone a bit by adding explanation and alternative
     # url to the schema to support Whitehall unpublishing. We need to consider
@@ -117,21 +111,6 @@ class ContentItem < ApplicationRecord
     # alternative type of unpublishing through the stack as it is causing issues
     # in production
     schema_name == "gone" && details_is_empty?
-  end
-
-  def router_rendering_app
-    # This is an extension of the hack in `gone?` method.
-    #
-    # For items that are registered in the content store which are not redirects
-    # or gones we need to have a rendering_app. This is fine for all but the
-    # "gone but not gone" exception defined in `gone?` where rendering_app is
-    # not part of the schema for a gone but is required to register the route.
-    #
-    # This rather nastily fallsback to government frontend for gones that are
-    # not gone and lack a rendering_app
-    return rendering_app if schema_name != "gone" || gone?
-
-    rendering_app || "government-frontend"
   end
 
   def valid_auth_bypass_id?(auth_bypass_id)
@@ -156,39 +135,11 @@ class ContentItem < ApplicationRecord
     access_limited_user_ids.any? || access_limited_organisation_ids.any?
   end
 
-  def register_routes(previous_item: nil)
-    return unless should_register_routes?(previous_item:)
-
-    tries = Rails.application.config.register_router_retries
-    begin
-      route_set.register!
-    rescue GdsApi::BaseError
-      tries -= 1
-      tries.positive? ? retry : raise
-    end
-  end
-
-  def delete_routes
-    return unless should_register_routes?
-
-    route_set.delete!
-  end
-
   def base_path_without_root
     base_path&.sub(%r{^/}, "")
   end
 
-  def route_set
-    @route_set ||= RouteSet.from_content_item(self)
-  end
-
 private
-
-  def should_register_routes?(previous_item: nil)
-    return previous_item.route_set != route_set if previous_item
-
-    true
-  end
 
   def access_limited_user_ids
     access_limited.fetch("users", [])
