@@ -52,7 +52,6 @@ class ContentItemsController < ApplicationController
   def destroy
     content_item = ContentItem.find_by!(base_path: encoded_base_path)
 
-    content_item.delete_routes
     content_item.destroy!
 
     render status: :ok

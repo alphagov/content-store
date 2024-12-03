@@ -32,10 +32,6 @@ describe "submitting redirect items to the content store", type: :request do
       expect(item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(item.updated_at).to be_within(10.seconds).of(Time.zone.now)
     end
-
-    it "registers redirect routes for the item" do
-      assert_redirect_routes_registered([["/crb-checks", "prefix", "/dbs-checks"], ["/crb-checks.json", "exact", "/api/content/dbs-checks"]])
-    end
   end
 
   context "replacing an existing item with a redirect" do
@@ -61,10 +57,6 @@ describe "submitting redirect items to the content store", type: :request do
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq({})
-    end
-
-    it "updates routes for the content item" do
-      assert_redirect_routes_registered([["/crb-checks", "prefix", "/dbs-checks"], ["/crb-checks.json", "exact", "/api/content/dbs-checks"]])
     end
   end
 end
