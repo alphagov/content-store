@@ -52,8 +52,32 @@ CREATE FUNCTION public.notify_route_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
       BEGIN
-        PERFORM pg_notify('route_changes', '');
-        RETURN OLD;
+          -- Trigger on INSERT or DELETE
+          IF (TG_OP = 'INSERT' OR TG_OP = 'DELETE') THEN
+              PERFORM pg_notify('route_changes', '');
+              RETURN COALESCE(NEW, OLD);
+          END IF;
+
+          -- Trigger on UPDATE for specific columns
+          IF (TG_OP = 'UPDATE') THEN
+              IF TG_TABLE_NAME = 'content_items' THEN
+                -- Specific column checks for the content_items table
+                IF (NEW.routes IS DISTINCT FROM OLD.routes OR
+                  NEW.redirects IS DISTINCT FROM OLD.redirects OR
+                  NEW.schema_name IS DISTINCT FROM OLD.schema_name OR
+                  NEW.rendering_app IS DISTINCT FROM OLD.rendering_app) THEN
+                  PERFORM pg_notify('route_changes', '');
+                END IF;
+              ELSIF TG_TABLE_NAME = 'publish_intents' THEN
+                -- Specific column checks for publish_intents table
+                IF (NEW.routes IS DISTINCT FROM OLD.routes OR
+                    NEW.rendering_app IS DISTINCT FROM OLD.rendering_app) THEN
+                    PERFORM pg_notify('route_changes', '');
+                END IF;
+              END IF;
+          END IF;
+
+          RETURN COALESCE(NEW, OLD);
       END;
       $$;
 
@@ -437,6 +461,7 @@ CREATE TRIGGER publish_intent_change_trigger AFTER INSERT OR DELETE OR UPDATE ON
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241209132444'),
 ('20241105135438'),
 ('20240312132747'),
 ('20240220151333'),

@@ -35,13 +35,53 @@ describe "Postgres trigger", type: :request, skip_db_cleaner: true do
     expect(listener.pop).to eq("route_changes")
   end
 
-  it "sends a notification when content item updated" do
+  it "sends a notification when content item's routes are updated" do
     content_item = create(:content_item)
 
     listener = postgres_listener("route_changes")
-    content_item.update!(base_path: "/foo")
+    content_item.update!(
+      routes: [{ "path" => content_item.base_path, "type" => "prefix" }],
+    )
 
     expect(listener.pop).to eq("route_changes")
+  end
+
+  it "sends a notification when content item's redirects are updated" do
+    content_item = create(:content_item)
+
+    listener = postgres_listener("route_changes")
+    content_item.update!(
+      redirects: [{ "path" => content_item.base_path, "type" => "exact", "destination" => "/new" }],
+    )
+
+    expect(listener.pop).to eq("route_changes")
+  end
+
+  it "sends a notification when content item's schema name is updated" do
+    content_item = create(:content_item)
+
+    listener = postgres_listener("route_changes")
+    content_item.update!(schema_name: "gone")
+
+    expect(listener.pop).to eq("route_changes")
+  end
+
+  it "sends a notification when content item's rendering_app is updated" do
+    content_item = create(:content_item)
+
+    listener = postgres_listener("route_changes")
+    content_item.update!(rendering_app: "new-frontend")
+
+    expect(listener.pop).to eq("route_changes")
+  end
+
+  it "does not send a notification when content item's details are updated" do
+    content_item = create(:content_item)
+
+    listener = postgres_listener("route_changes")
+    content_item.update!(details: { "body" => "change" })
+
+    expect(listener).to be_empty
   end
 
   it "sends a notification when content item destroyed" do
@@ -62,7 +102,7 @@ describe "Postgres trigger", type: :request, skip_db_cleaner: true do
   it "sends a notification when publish intent updated" do
     publish_intent = create(:publish_intent)
     listener = postgres_listener("route_changes")
-    publish_intent.update!(publish_time: 10.minutes.from_now)
+    publish_intent.update!(rendering_app: "updated")
 
     expect(listener.pop).to eq("route_changes")
   end
