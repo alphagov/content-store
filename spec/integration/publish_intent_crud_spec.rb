@@ -61,47 +61,6 @@ describe "CRUD of publish intents", type: :request do
       end
     end
 
-    describe "registering routes for the intent" do
-      context "with no corresponding content-item" do
-        it "registers routes for the publish intent" do
-          put_json "/publish-intent/vat-rates", data
-          assert_routes_registered("frontend", [["/vat-rates", "exact"]])
-        end
-      end
-
-      context "with a corresponding content-item" do
-        before :each do
-          create(
-            :content_item,
-            base_path: "/vat-rates",
-            rendering_app: "frontend",
-            routes: [{ "path" => "/vat-rates", "type" => "exact" }],
-          )
-          WebMock::RequestRegistry.instance.reset! # Clear out any requests made by factory creation.
-        end
-
-        it "does not register routes if the content item already has the routes" do
-          put_json "/publish-intent/vat-rates", data
-          refute_routes_registered("frontend", [["/vat-rates", "exact"]])
-        end
-
-        it "registers routes that don't already exist on the content item" do
-          data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
-          put_json "/publish-intent/vat-rates", data
-          assert_routes_registered("frontend", [["/vat-rates.json", "exact"]])
-          assert_no_routes_registered_for_path("/vat-rates")
-        end
-
-        it "handles the intent having a different rendering app from the content item" do
-          data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
-          data["rendering_app"] = "other-frontend"
-          put_json "/publish-intent/vat-rates", data
-          assert_routes_registered("other-frontend", [["/vat-rates.json", "exact"]])
-          assert_no_routes_registered_for_path("/vat-rates")
-        end
-      end
-    end
-
     it "handles non-ascii paths" do
       # URI.escape("/news/בוט לאינד")
       path = "/news/%D7%91%D7%95%D7%98%20%D7%9C%D7%90%D7%99%D7%A0%D7%93"

@@ -1,9 +1,8 @@
-## Registering routes with the router.
+## How router loads routes
 
-After saving an item, the content store will register routes with the router.
-All items listed in the routes array will be created as routes pointing at the
-`rendering_app`. The routes for a content item must contain a route for the
-`base_path`.
+Router will query the content store database to load routes. All items listed
+in the routes array will be created as routes pointing at the `rendering_app`.
+The routes for a content item must contain a route for the `base_path`.
 
 All entries in the routes array must be under the `base_path` (ie either a
 subpath of the `base_path`, or the `base_path` with an extension)

@@ -130,32 +130,6 @@ describe PublishIntent, type: :model do
     end
   end
 
-  describe "registering routes" do
-    let(:routes) do
-      [
-        { "path" => "/a-path", "type" => "exact" },
-        { "path" => "/a-path.json", "type" => "exact" },
-        { "path" => "/a-path/subpath", "type" => "prefix" },
-      ]
-    end
-
-    let(:intent) do
-      build(:publish_intent, base_path: "/a-path", rendering_app: "an-app", routes:)
-    end
-
-    it "registers the assigned routes when created" do
-      intent.save!
-      assert_routes_registered(
-        "an-app",
-        [
-          ["/a-path", "exact"],
-          ["/a-path.json", "exact"],
-          ["/a-path/subpath", "prefix"],
-        ],
-      )
-    end
-  end
-
   describe ".cleanup_expired" do
     before :each do
       create(:publish_intent, publish_time: 3.days.ago)

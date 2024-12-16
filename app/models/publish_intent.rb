@@ -31,8 +31,6 @@ class PublishIntent < ApplicationRecord
   validates :publish_time, presence: true
   validates :rendering_app, presence: true, format: /\A[a-z0-9-]*\z/
 
-  after_save :register_routes
-
   def as_json(options = nil)
     super(options).tap do |hash|
       hash["errors"] = errors.as_json.stringify_keys if errors.any?
@@ -54,15 +52,5 @@ class PublishIntent < ApplicationRecord
 
   def base_path_without_root
     base_path&.sub(%r{^/}, "")
-  end
-
-private
-
-  def route_set
-    @route_set ||= RouteSet.from_publish_intent(self)
-  end
-
-  def register_routes
-    route_set.register!
   end
 end

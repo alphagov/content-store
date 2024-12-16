@@ -62,11 +62,6 @@ describe "content item write API", type: :request do
       expect(response.body).to eq("{}")
     end
 
-    it "registers routes for the content item" do
-      put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [["/vat-rates", "exact"]])
-    end
-
     context "with no content ID" do
       before :each do
         @data.delete "content_id"
@@ -247,47 +242,6 @@ describe "content item write API", type: :request do
       expect(@item.public_updated_at).to eq(Time.zone.parse("2014-05-14T13:00:06Z"))
       expect(@item.updated_at).to be_within(10.seconds).of(Time.zone.now)
       expect(@item.details).to eq("body" => "<p>Some body text</p>\n")
-    end
-
-    it "does not register routes when they haven't changed" do
-      put_json "/content/vat-rates", @data
-      refute_routes_registered("frontend", [["/vat-rates", "exact"]])
-    end
-
-    it "registers routes for the content item when they have changed" do
-      @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
-      put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [["/vat-rates", "exact"], ["/vat-rates.json", "exact"]])
-    end
-
-    context "when the router-api is unavailable" do
-      let!(:stub) do
-        stub_http_request(:any, /^#{Regexp.escape(GdsApi::TestHelpers::Router::ROUTER_API_ENDPOINT)}\//)
-          .to_return(status: 500)
-      end
-
-      it "fails to update content item" do
-        @data["routes"] << { "path" => "/vat-rates.json", "type" => "exact" }
-        expect { put_json "/content/vat-rates", @data }
-          .to raise_error(GdsApi::HTTPInternalServerError)
-        @item.reload
-        expect(@item.title).to eq("Original title")
-        expect(WebMock::RequestRegistry.instance.times_executed(stub.request_pattern)).to eq(3)
-      end
-    end
-  end
-
-  describe "creating a content item with both routes and redirects" do
-    before :each do
-      @data["redirects"] = [
-        { "path" => "/vat-rates.json", "type" => "exact", "destination" => "/api/content/vat-rates" },
-      ]
-    end
-
-    it "registeres the routes and the redirects" do
-      put_json "/content/vat-rates", @data
-      assert_routes_registered("frontend", [["/vat-rates", "exact"]])
-      assert_redirect_routes_registered([["/vat-rates.json", "exact", "/api/content/vat-rates"]])
     end
   end
 
