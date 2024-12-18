@@ -20,7 +20,6 @@ require "active_support/core_ext/integer/time"
 Bundler.require(*Rails.groups)
 
 require "plek"
-require "gds_api/router"
 
 module ContentStore
   class Application < Rails::Application
