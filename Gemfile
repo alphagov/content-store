@@ -19,7 +19,7 @@ group :development, :test do
   gem "factory_bot"
   gem "govuk_schemas"
   gem "govuk_test"
-  gem "openapi3_parser", "~> 0.9.0" # This should be the same version as used in the tech-docs-gem
+  gem "openapi3_parser", "~> 0.10.0"
   gem "pact"
   gem "pry-byebug"
   gem "rspec-rails"
