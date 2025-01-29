@@ -79,6 +79,7 @@ module ContentStore
       ka
       kk
       ko
+      ky
       lt
       lv
       ms
