@@ -20,9 +20,9 @@ Pact.tear_down do
   DatabaseCleaner.clean
 end
 
-delegate :url_encode, to: :'ERB::Util'
-
 Pact.service_provider "Content Store" do
+  include ERB::Util
+
   honours_pact_with "Publishing API" do
     if ENV["PACT_URI"]
       pact_uri(ENV["PACT_URI"])
