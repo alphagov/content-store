@@ -73,6 +73,11 @@ describe "Fetching content items", type: :request do
       )
     end
 
+    it "sets document_type and schema_type as prometheus labels" do
+      expect(request.env["govuk.prometheus_labels"][:document_type]).to eq(content_item.document_type)
+      expect(request.env["govuk.prometheus_labels"][:schema_name]).to eq(content_item.schema_name)
+    end
+
     it "outputs the timestamp fields correctly" do
       data = JSON.parse(response.body)
       expect(data["public_updated_at"]).to eq(content_item.public_updated_at.iso8601.as_json)
