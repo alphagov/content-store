@@ -18,6 +18,7 @@ class ContentItemsController < ApplicationController
     return redirect_canonical(item) if item.base_path != encoded_request_path
 
     if can_view?(item)
+      set_prometheus_labels(item)
       render json: ContentItemPresenter.new(item, api_url_method), status: http_status(item)
     else
       render json_forbidden_response
@@ -58,6 +59,15 @@ class ContentItemsController < ApplicationController
   end
 
 private
+
+  def set_prometheus_labels(item)
+    prometheus_labels = request.env.fetch("govuk.prometheus_labels", {})
+
+    request.env["govuk.prometheus_labels"] = prometheus_labels.merge(
+      document_type: item["document_type"],
+      schema_name: item["schema_name"],
+    )
+  end
 
   def redirect_canonical(content_item)
     route = api_url_method.call(content_item.base_path_without_root)
