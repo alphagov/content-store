@@ -18,10 +18,7 @@ describe ContentItemPresenter do
   let(:item) { build(:content_item, schema_name: "travel_advice", locale:, expanded_links:) }
   let(:locale) { "en" }
 
-  let(:api_url_method) do
-    ->(base_path) { "http://api.example.com/content/#{base_path}" }
-  end
-  let(:presenter) { ContentItemPresenter.new(item, api_url_method) }
+  let(:presenter) { ContentItemPresenter.new(item) }
 
   it "includes public attributes" do
     expected_fields = ContentItemPresenter::PUBLIC_ATTRIBUTES + %w[links description details]
@@ -77,7 +74,7 @@ describe ContentItemPresenter do
   it "validates against the schema" do
     content_item = create(:content_item, :with_content_id, schema_name: "generic", document_type: "answer")
 
-    presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+    presented = ContentItemPresenter.new(content_item).as_json
 
     expect(presented.to_json).to be_valid_against_frontend_schema("generic")
   end
@@ -85,7 +82,7 @@ describe ContentItemPresenter do
   context "when schema_name is not redirect" do
     it "doesn't include redirects field" do
       content_item = create(:content_item)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
       expect(presented.keys).to_not include("redirects")
     end
   end
@@ -93,7 +90,7 @@ describe ContentItemPresenter do
   context "when schema_name is redirect" do
     it "includes the redirects field" do
       content_item = create(:redirect_content_item)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
       expect(presented.keys).to include("redirects")
     end
   end
@@ -109,7 +106,7 @@ describe ContentItemPresenter do
         scheduled_publishing_delay_seconds: 130,
       )
 
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
 
       expect(presented.to_json).to be_valid_against_frontend_schema("generic")
     end
@@ -117,7 +114,7 @@ describe ContentItemPresenter do
 
   it "renders timestamps in iso8601 format" do
     content_item = create(:content_item, first_published_at: Time.zone.now, publishing_scheduled_at: Time.zone.now)
-    presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+    presented = ContentItemPresenter.new(content_item).as_json
     %w[updated_at public_updated_at first_published_at publishing_scheduled_at].each do |key|
       expect(presented[key]).to eq(content_item[key].iso8601)
     end
@@ -126,7 +123,7 @@ describe ContentItemPresenter do
   context "when some timestamps are nil" do
     it "renders them as nil" do
       content_item = build(:content_item, public_updated_at: nil, first_published_at: nil, publishing_scheduled_at: nil)
-      presented = ContentItemPresenter.new(content_item, api_url_method).as_json
+      presented = ContentItemPresenter.new(content_item).as_json
       %w[public_updated_at first_published_at publishing_scheduled_at].each do |key|
         expect(presented[key]).to be_nil
       end
