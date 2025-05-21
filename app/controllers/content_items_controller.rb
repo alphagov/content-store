@@ -1,9 +1,13 @@
 class ContentItemsController < ApplicationController
+  SUPPORTED_AST_VERSIONS = %[v1].freeze
+
   skip_before_action :authenticate_user!, only: [:show]
   before_action :parse_json_request, only: [:update]
   before_action :set_cors_headers, only: [:show]
 
   def show
+    return error_400 if unsupported_ast_version_requested?
+
     item = GovukStatsd.time("show.find_content_item") do
       ContentItem.find_by_path(encoded_request_path)
     end
@@ -59,6 +63,10 @@ class ContentItemsController < ApplicationController
   end
 
 private
+
+  def unsupported_ast_version_requested?
+    params[:ast].present? && !SUPPORTED_AST_VERSIONS.include?(params[:ast])
+  end
 
   def set_prometheus_labels(item)
     prometheus_labels = request.env.fetch("govuk.prometheus_labels", {})
