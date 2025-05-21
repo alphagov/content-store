@@ -4,8 +4,6 @@
 # include their title, base_path, api_url and web_url. See docs/output_examples
 # for an example of what this representation looks like.
 class ContentItemPresenter
-  RESOLVER = ContentTypeResolver.new("text/html")
-
   PUBLIC_ATTRIBUTES = %w[
     analytics_identifier
     base_path
@@ -33,15 +31,16 @@ class ContentItemPresenter
     publishing_scheduled_at
   ].freeze
 
-  def initialize(item)
+  def initialize(item, content_type)
     @item = item
+    @resolver = ContentTypeResolver.new(content_type)
   end
 
   def as_json(options = nil)
     hash = item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
-      "links" => RESOLVER.resolve(links),
-      "description" => RESOLVER.resolve(item.description),
-      "details" => RESOLVER.resolve(item.details),
+      "links" => resolver.resolve(links),
+      "description" => resolver.resolve(item.description),
+      "details" => resolver.resolve(item.details),
     ).tap { |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
       render_timestamps_as_iso8601(item, i)
@@ -51,7 +50,7 @@ class ContentItemPresenter
 
 private
 
-  attr_reader :item
+  attr_reader :item, :resolver
 
   def links
     ExpandedLinksPresenter.new(item.expanded_links).present

@@ -12,7 +12,7 @@ module RequestHelpers
   end
 
   def present(content_item)
-    ContentItemPresenter.new(content_item.reload).to_json
+    ContentItemPresenter.new(content_item.reload, "text/html").to_json
   end
 end
 
