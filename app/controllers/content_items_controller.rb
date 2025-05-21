@@ -23,7 +23,7 @@ class ContentItemsController < ApplicationController
 
     if can_view?(item)
       set_prometheus_labels(item)
-      render json: ContentItemPresenter.new(item, "text/html"), status: http_status(item)
+      render json: ContentItemPresenter.new(item, content_type_to_present), status: http_status(item)
     else
       render json_forbidden_response
     end
@@ -66,6 +66,14 @@ private
 
   def unsupported_ast_version_requested?
     params[:ast].present? && !SUPPORTED_AST_VERSIONS.include?(params[:ast])
+  end
+
+  def content_type_to_present
+    if params[:ast].present?
+      "application/prs.ast#{params[:ast]}+json"
+    else
+      "text/html"
+    end
   end
 
   def set_prometheus_labels(item)
