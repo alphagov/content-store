@@ -22,7 +22,9 @@ where `<base_path>` is the path on GOV.UK where the content lives (for example
 
 ## Reading content from the content store
 
-Content is retrieved from the content store via the [content store](https://content-store.publishing.service.gov.uk/), which takes a path and responds with a JSON representation of the content that should be displayed on that path. This API is used by front-end apps but is also exposed externally at `/api/content/<path>`, such as https://www.gov.uk/api/content/take-pet-abroad
+Content is retrieved from the content store via the [content store](https://content-store.publishing.service.gov.uk/), which takes a path and responds with a JSON representation of the content that should be displayed on that path.
+
+This API is used by front-end apps but is also exposed externally at `/api/content/<path>`, such as [https://www.gov.uk/api/content/take-pet-abroad](https://www.gov.uk/api/content/take-pet-abroad). When used by the public, this is known as 'Content API' and has [its own documentation](https://content-api.publishing.service.gov.uk/).
 
 To retrieve content from the content store, make a GET request:
 
