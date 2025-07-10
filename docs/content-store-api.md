@@ -2,8 +2,7 @@
 
 ## Content items
 
-`ContentItem` is the base unit of content in the content store. They have both a
-private and public-facing JSON representation.
+`ContentItem` is the base unit of content in the content store. They have both a private and public-facing JSON representation.
 
 ## Writing content items to the content store
 
@@ -17,8 +16,7 @@ curl https://content-store.publishing.service.gov.uk/content<base_path> -X PUT \
     -d '<content_item_json>'
 ```
 
-where `<base_path>` is the path on GOV.UK where the content lives (for example
-`/vat-rates`) and `<content_item_json>` is the JSON for the content item.
+where `<base_path>` is the path on GOV.UK where the content lives (for example `/vat-rates`) and `<content_item_json>` is the JSON for the content item.
 
 ## Reading content from the content store
 
@@ -32,8 +30,6 @@ To retrieve content from the Content Store, make a GET request:
   curl https://content-store.publishing.service.gov.uk/content<path>
 ```
 
-If the `path` matches a `base_path` content will be returned, whereas if the
-`path` matches a route a 303 redirect will be returned to the content at the
-`base_path`.
+If the `path` matches a `base_path` content will be returned, whereas if the `path` matches a route a 303 redirect will be returned to the content at the `base_path`.
 
 Not all content exists as a standalone page like the `/take-pet-abroad` example. Some content exists as a collection that references other pieces of content, and some content exists as meta content designed to describe a wider whole. We use [content-schemas defined in Publishing API](https://github.com/alphagov/publishing-api/tree/main/content_schemas) to describe all these different content types. The Content API itself is not prescriptive about this; it takes any JSON structure.
