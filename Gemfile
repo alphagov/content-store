@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gem "rails", "8.0.2"
 
 gem "bootsnap", require: false
+gem "csv"
 gem "deepsort"
 gem "gds-api-adapters"
 gem "gds-sso"
