@@ -113,6 +113,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.5)
     database_cleaner-active_record (2.2.1)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -743,6 +744,7 @@ DEPENDENCIES
   bootsnap
   ci_reporter_rspec
   climate_control
+  csv
   database_cleaner-active_record
   deepsort
   factory_bot
