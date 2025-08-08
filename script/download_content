@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.expand_path("../", File.dirname(__FILE__))
+
+require "config/environment"
+
+def usage_and_abort
+  abort("Usage:\n\t#{$PROGRAM_NAME} a_schema_name")
+end
+
+def validate_schema_name!(schema_name)
+  GovukSchemas::Schema.find(publisher_schema: schema_name)
+rescue Errno::ENOENT
+  usage_and_abort
+end
+
+schema_name = ARGV[0]
+
+validate_schema_name!(schema_name)
+
+destination = Rails.root.join("downloads/#{schema_name}")
+
+FileUtils.mkdir_p(destination)
+
+filename_errored = []
+skipped_count = 0
+created_count = 0
+
+puts("")
+ContentItem.where(schema_name:).find_each do |content_item|
+  filename = content_item.base_path.gsub(/[^0-9a-zA-Z]/, "-")
+  if filename.empty? || filename.chars.uniq == %w[-]
+    warn("Error: couldn't generate a decent filename for base_path '#{content_item.base_path}'")
+    filename_errored << content_item
+    next
+  end
+
+  # truncate path to avoid long base_paths causing ENAMETOOLONG (255 characters?)
+  path = "#{"#{destination}/#{filename}"[0..240]}.json"
+  if File.exist?(path)
+    print("s")
+    skipped_count += 1
+    next
+  end
+
+  File.open(path, "w") { _1.puts(ContentItemPresenter.new(content_item).to_json) }
+
+  print(".")
+  created_count += 1
+end
+puts("")
+
+puts(
+  <<~SUMMARY,
+    Created: #{created_count}
+    Skipped (file already existed): #{skipped_count}
+    Errored (couldn't generate filename): #{filename_errored.size}
+  SUMMARY
+)
+
+unless filename_errored.empty?
+  puts("Content items that errored: #{filename_errored.map(&:content_id).join(',')}")
+end
+
+puts("👍")
