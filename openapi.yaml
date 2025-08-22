@@ -32,9 +32,32 @@ paths:
         `https://www.gov.uk/api/content/foreign-travel-advice/thailand`.
 
         If the content is available at the requested path you will receive
-        a [`ContentItem`](#contentitem) containing the structured data for that
-        page.
+        a [`ContentItem`](#schema-contentitem) containing the structured data
+        for that page.
 
+        In the GOV.UK context, content schemas are structured rules that define
+        what a specific type of content can contain and how it's organised.
+        Think of them as a strict blueprint or a template for every piece of
+        information published on GOV.UK. These schemas ensure that all content
+        is consistent, predictable, and machine-readable.
+
+        Each schema is a formal definition, written in JSON Schema, that
+        specifies the underlying structure for a content type. For example, a
+        schema for a "News Article" would define all the possible fields for
+        that article, such as:
+
+        - title: A mandatory text field with a maximum character limit.
+        - summary: A mandatory short description.
+        - body: The main content of the article, which itself must conform
+          to the rules of Govspeak (GOV.UK's version of Markdown).
+        - publication_date: A mandatory field that must be in a valid date
+          format.
+        - image: An optional field that must contain specific sub-fields like
+          a URL and alt text.
+        - related_links: A list where each item must have a title and a URL.
+
+        By enforcing these rules, schemas guarantee that every news article
+        across GOV.UK has the same fundamental structure.
       tags:
         - Content
       parameters:
@@ -67,7 +90,6 @@ paths:
 
 components:
   schemas:
-
     ContentItem:
       description: |
         A resource that represents a piece of content on GOV.UK.
