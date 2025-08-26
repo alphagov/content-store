@@ -79,6 +79,7 @@ module ContentStore
       ka
       kk
       ko
+      ku
       ky
       lt
       lv
@@ -104,6 +105,7 @@ module ContentStore
       sw
       ta
       th
+      ti
       tk
       tr
       uk
