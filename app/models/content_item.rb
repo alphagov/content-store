@@ -16,7 +16,7 @@ class ContentItem < ApplicationRecord
     lock = UpdateLock.new(previous_item)
 
     payload_version = attributes["payload_version"]
-    lock.check_availability!(payload_version)
+    # lock.check_availability!(payload_version)
 
     result = previous_item ? :replaced : :created
 
