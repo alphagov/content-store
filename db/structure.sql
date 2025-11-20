@@ -461,6 +461,7 @@ CREATE TRIGGER publish_intent_change_trigger AFTER INSERT OR DELETE OR UPDATE ON
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251120155243'),
 ('20241209132444'),
 ('20241105135438'),
 ('20240312132747'),
