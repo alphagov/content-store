@@ -3,6 +3,9 @@
 # Any linked content items that exist in the content store are expanded out to
 # include their title, base_path, api_url and web_url. See docs/output_examples
 # for an example of what this representation looks like.
+
+require "deepsort"
+
 class ContentItemPresenter
   RESOLVER = ContentTypeResolver.new("text/html")
 
@@ -38,15 +41,14 @@ class ContentItemPresenter
   end
 
   def as_json(options = nil)
-    hash = item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
+    item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
       "links" => RESOLVER.resolve(links),
       "description" => RESOLVER.resolve(item.description),
       "details" => RESOLVER.resolve(item.details),
     ).tap { |i|
       i["redirects"] = item["redirects"] if i["schema_name"] == "redirect"
       render_timestamps_as_iso8601(item, i)
-    }.deep_stringify_keys
-    HashSorter.sort(hash)
+    }.deep_stringify_keys.deep_sort(array: false)
   end
 
 private
