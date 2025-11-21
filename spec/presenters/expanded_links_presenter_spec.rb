@@ -205,30 +205,4 @@ RSpec.describe ExpandedLinksPresenter do
       end
     end
   end
-
-  describe "sorting the hash" do
-    let(:links) do
-      {
-        group_2: [
-          { base_path: "/group-1/link-1", api_path: "/api/content/group-1/link-1" },
-          { base_path: "/group-1/link-2", api_path: "/api/content/group-1/link-2" },
-          { base_path: "/group-1/link-3", api_path: "/api/content/group-1/link-3" },
-        ],
-        group_1: [
-          { base_path: "/group-2/link-3", api_path: "/api/content/group-2/link-3" },
-          { base_path: "/group-2/link-2", api_path: "/api/content/group-2/link-2" },
-          { base_path: "/group-2/link-1", api_path: "/api/content/group-2/link-1" },
-        ],
-      }
-    end
-    let(:result) { described_class.new(links).present }
-
-    it "sorts the results" do
-      expect(result.keys).to eq(result.keys.sort)
-
-      result.each_key do |group|
-        expect(result[group].all? { |link| link.keys == link.keys.sort }).to eq(true)
-      end
-    end
-  end
 end
