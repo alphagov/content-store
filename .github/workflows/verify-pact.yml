@@ -55,7 +55,7 @@ jobs:
 
       - name: Download pact artifact
         if: inputs.pact_artifact != ''
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.pact_artifact }}
           path: tmp/pacts
