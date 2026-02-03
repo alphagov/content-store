@@ -181,7 +181,7 @@ GEM
       sentry-rails (>= 5.3, < 7.0)
       sentry-ruby (>= 5.3, < 7.0)
       statsd-ruby (~> 1.5)
-    govuk_schemas (6.2.1)
+    govuk_schemas (6.2.2)
       json-schema (>= 2.8, < 6.2)
     govuk_test (4.1.2)
       brakeman (>= 5.0.2)
