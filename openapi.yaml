@@ -309,7 +309,7 @@ components:
         phase: live
         public_updated_at: '2014-12-12T14:55:23.000+00:00'
         publishing_app: publisher
-        rendering_app: government-frontend
+        rendering_app: frontend
         schema_name: answer
         title: VAT rates
         updated_at: '2017-08-31T11:35:14.024Z'
