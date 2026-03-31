@@ -717,7 +717,7 @@ DEPENDENCIES
   govuk_test
   listen
   openapi3_parser (~> 0.10.1)
-  pact
+  pact (~> 1.67)
   pg
   plek
   pry-byebug
