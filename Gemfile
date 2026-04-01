@@ -21,7 +21,7 @@ group :development, :test do
   gem "govuk_schemas"
   gem "govuk_test"
   gem "openapi3_parser", "~> 0.10.1"
-  gem "pact"
+  gem "pact", "~> 1.67"
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rubocop-govuk"
