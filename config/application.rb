@@ -19,8 +19,6 @@ require "active_support/core_ext/integer/time"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require "plek"
-
 module ContentStore
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
