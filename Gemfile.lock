@@ -460,6 +460,7 @@ GEM
       opentelemetry-semantic_conventions
     opentelemetry-semantic_conventions (1.37.0)
       opentelemetry-api (~> 1.0)
+    ostruct (0.6.3)
     pact (1.67.5)
       pact-mock_service (~> 3.0, >= 3.3.1)
       pact-support (~> 1.21, >= 1.21.2)
@@ -722,6 +723,7 @@ DEPENDENCIES
   govuk_test
   listen
   openapi3_parser (~> 0.10.1)
+  ostruct
   pact (~> 1.67)
   pg
   plek
