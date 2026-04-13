@@ -29,6 +29,8 @@ jobs:
       - name: Setup Postgres
         id: setup-postgres
         uses: alphagov/govuk-infrastructure/.github/actions/setup-postgres@main
+        with:
+          POSTGRES_IMAGE_TAG: 17-alpine
 
       - name: Checkout repository
         uses: actions/checkout@v6
