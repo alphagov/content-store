@@ -11,6 +11,7 @@ updates:
         versions: [ ">=2.0.0" ]
     cooldown:
       default-days: 3
+    open-pull-requests-limit: 25
     groups:
       test:
         patterns:
@@ -35,6 +36,8 @@ updates:
       - dependency-name: ruby
     cooldown:
       default-days: 7
+    open-pull-requests-limit: 25
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -43,3 +46,4 @@ updates:
       time: "07:00"
     cooldown:
       default-days: 3
+    open-pull-requests-limit: 25
