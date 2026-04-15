@@ -9,6 +9,20 @@ updates:
         versions: [ ">=2.0.0" ]
     cooldown:
       default-days: 3
+    groups:
+      test:
+        patterns:
+          - "*rspec"
+          - "climate_control"
+          - "database_cleaner-*"
+          - "factory_bot*"
+          - "govuk_test"
+          - "pact"
+          - "rspec-*"
+          - "simplecov"
+          - "timecop"
+          - "webmock"
+
   - package-ecosystem: docker
     directory: /
     schedule:
