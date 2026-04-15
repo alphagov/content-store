@@ -7,13 +7,19 @@ updates:
     ignore:
       - dependency-name: pact
         versions: [ ">=2.0.0" ]
+    cooldown:
+      default-days: 3
   - package-ecosystem: docker
     directory: /
     schedule:
       interval: weekly
     ignore:
       - dependency-name: ruby
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
