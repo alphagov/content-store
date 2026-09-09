@@ -23,6 +23,7 @@ group :development, :test do
   gem "govuk_test"
   gem "openapi3_parser", "~> 0.10.1"
   gem "pact", "~> 1.67"
+  gem "pact-ffi", "~> 0.4.28"
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rubocop-govuk"
