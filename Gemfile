@@ -22,9 +22,9 @@ group :development, :test do
   gem "govuk_schemas"
   gem "govuk_test"
   gem "openapi3_parser", "~> 0.10.1"
-  gem "pact", "~> 1.67"
-  gem "pact-ffi", "~> 0.4.28"
+  gem "pact", "~> 2.0"
   gem "pry-byebug"
+  gem "rspec"
   gem "rspec-rails"
   gem "rubocop-govuk"
   gem "simplecov", require: false

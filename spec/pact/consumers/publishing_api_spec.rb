@@ -1,8 +1,8 @@
 require "rails_helper"
-require "pact/v2/rspec"
+require "pact/rspec"
 
-RSpec.describe "Verify consumers for Content Store", :pact_v2 do
-  Pact::V2.configure do |config|
+RSpec.describe "Verify consumers for Content Store", :pact do
+  Pact.configure do |config|
     config.before_provider_state_setup do
       DatabaseCleaner.strategy = :truncation
       DatabaseCleaner.clean

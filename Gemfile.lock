@@ -77,7 +77,6 @@ GEM
       uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    amazing_print (2.0.0)
     ast (2.4.3)
     auth-sanitizer (0.2.3)
       version_gem (~> 1.1, >= 1.1.14)
@@ -128,8 +127,6 @@ GEM
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
-    expgen (0.1.1)
-      parslet
     factory_bot (6.6.0)
       activesupport (>= 6.1.0)
     faraday (2.14.3)
@@ -141,7 +138,6 @@ GEM
     ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
-    find_a_port (1.0.1)
     gds-api-adapters (103.4.4)
       addressable
       link_header
@@ -209,8 +205,6 @@ GEM
     json-schema (6.2.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
-    jsonpath (1.1.5)
-      multi_json
     jwt (3.2.0)
       base64
     language_server-protocol (3.17.0.5)
@@ -245,7 +239,6 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.4)
-    multi_json (1.20.1)
     multi_xml (0.9.1)
       bigdecimal (>= 3.1, < 5)
     net-http (0.9.1)
@@ -463,15 +456,10 @@ GEM
     opentelemetry-semantic_conventions (1.44.0)
       opentelemetry-api (~> 1.0)
     ostruct (0.6.3)
-    pact (1.67.5)
-      pact-mock_service (~> 3.0, >= 3.3.1)
-      pact-support (~> 1.21, >= 1.21.2)
+    pact (2.0.2)
+      pact-ffi (~> 0.4.28)
       rack
       rack-proxy
-      rack-test (>= 0.6.3, < 3.0.0)
-      rainbow (~> 3.1)
-      rspec (~> 3.0)
-      thor (>= 0.20, < 2.0)
       webrick (~> 1.8)
       zeitwerk (~> 2.3)
     pact-ffi (0.4.28.0-aarch64-linux)
@@ -480,29 +468,10 @@ GEM
       ffi (~> 1.15)
     pact-ffi (0.4.28.0-x86_64-linux)
       ffi (~> 1.15)
-    pact-mock_service (3.12.4)
-      find_a_port (~> 1.0.1)
-      json
-      logger (< 2.0)
-      pact-support (~> 1.16, >= 1.16.4)
-      rack (>= 3.0, < 4.0)
-      rackup (~> 2.0)
-      rspec (>= 2.14)
-      thor (>= 0.19, < 2.0)
-      webrick (~> 1.8)
-    pact-support (1.21.7)
-      amazing_print (~> 2.0)
-      diff-lcs (~> 1.6)
-      expgen (~> 0.1)
-      jsonpath (~> 1.0)
-      logger (< 2.0)
-      rainbow (~> 3.1.1)
-      string_pattern (~> 2.0)
     parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
-    parslet (2.0.0)
     pg (1.6.3-aarch64-linux)
     pg (1.6.3-arm64-darwin)
     pg (1.6.3-x86_64-linux)
@@ -673,8 +642,6 @@ GEM
       hashie (>= 0.1.0, < 6)
       version_gem (~> 1.1, >= 1.1.14)
     statsd-ruby (1.5.0)
-    string_pattern (2.4.0)
-      regexp_parser (~> 2.5, >= 2.5.0)
     thor (1.5.0)
     timecop (0.9.11)
     timeout (0.6.1)
@@ -727,13 +694,13 @@ DEPENDENCIES
   listen
   openapi3_parser (~> 0.10.1)
   ostruct
-  pact (~> 1.67)
-  pact-ffi (~> 0.4.28)
+  pact (~> 2.0)
   pg
   plek
   pry-byebug
   rack-cache
   rails (= 8.1.3.1)
+  rspec
   rspec-rails
   rubocop-govuk
   simplecov
