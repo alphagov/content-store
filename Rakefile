@@ -1,10 +1,4 @@
 begin
-  require "pact/tasks"
-rescue LoadError
-  # Pact isn't available in all environments
-end
-
-begin
   require "rspec/core/rake_task"
 
   RSpec::Core::RakeTask.new(:pact_verify_v2) do |task|
@@ -32,4 +26,4 @@ rescue LoadError
 end
 
 Rake::Task[:default].clear if Rake::Task.task_defined?(:default)
-task default: %i[rubocop spec pact:verify]
+task default: %i[rubocop spec pact:verify_v2]
