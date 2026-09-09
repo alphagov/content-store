@@ -62,8 +62,7 @@ jobs:
 
       - name: Verify pact artifact
         if: inputs.pact_artifact != ''
-        run: |
-          # shellcheck disable=SC2102
-          bundle exec rake pact:verify:at[tmp/pacts/publishing_api-content_store.json]
+        run: bundle exec rake pact:verify
         env: 
+          PACT_URI: tmp/pacts/publishing_api-content_store.json
           TEST_DATABASE_URL: ${{ steps.setup-postgres.outputs.db-url }}
