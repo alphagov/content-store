@@ -123,7 +123,7 @@ GEM
     date (3.5.1)
     deepsort (0.5.0)
     diff-lcs (1.6.2)
-    domain_name (0.6.20260829)
+    domain_name (0.6.20260907)
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
@@ -138,7 +138,7 @@ GEM
     ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
-    gds-api-adapters (103.4.4)
+    gds-api-adapters (103.5.0)
       addressable
       link_header
       null_logger
@@ -233,7 +233,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0701)
+    mime-types-data (3.2026.0921)
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
