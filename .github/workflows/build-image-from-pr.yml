@@ -18,3 +18,27 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
+  # Lets govuk-preview-app preview any branch of content-store itself, not
+  # just releases - ImageResolver looks up ghcr.io/alphagov/govuk/content-
+  # store tagged with a branch's own HEAD commit SHA, and waits for it to
+  # appear. github.event.pull_request.head.sha is that same SHA (the PR
+  # branch's real tip, not GitHub's synthetic merge commit). A separate
+  # job, left to run alongside the build-check above rather than folded
+  # into it.
+  #
+  # (A dependency preview of content-store/draft-content-store is always
+  # built from main regardless - this is about previewing content-store's
+  # own branch standalone, which is the common case when someone opens a
+  # PR against it.)
+  push-image:
+    name: Push image from PR
+    if: github.event_name == 'pull_request'
+    needs: build-image-from-PR
+    uses: alphagov/govuk-infrastructure/.github/workflows/build-push-arm-image.yml@main
+    with:
+      gitRef: ${{ github.event.pull_request.head.sha }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
