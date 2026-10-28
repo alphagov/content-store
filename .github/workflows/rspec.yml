@@ -3,10 +3,6 @@ name: Run RSpec
 on:
   workflow_call:
     inputs:
-      ref:
-        description: 'The branch, tag or SHA to checkout'
-        required: false
-        type: string
       publishingApiRef:
         description: 'The branch, tag or SHA to checkout Publishing API'
         required: false
@@ -26,7 +22,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: alphagov/content-store
-          ref: ${{ inputs.ref || github.ref }}
 
       - name: Checkout Publishing API (for Content Schemas)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
