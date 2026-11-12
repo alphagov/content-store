@@ -81,6 +81,7 @@ module ContentStore
       ky
       lt
       lv
+      mfe
       ms
       mt
       ne
