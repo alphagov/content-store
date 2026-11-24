@@ -100,9 +100,9 @@ describe ContentItem, type: :model do
         let(:attributes) { @item.attributes }
 
         it "saves the item" do
-          result = item = nil
+          result = nil
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+            result, = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.to change(ContentItem, :count).by(1)
           expect(result).to eq(:created)
         end
@@ -116,9 +116,9 @@ describe ContentItem, type: :model do
         let(:attributes) { @item.attributes }
 
         it "saves the item" do
-          result = item = nil
+          result = nil
           expect {
-            result, item = ContentItem.create_or_replace(@item.base_path, attributes, nil)
+            result, = ContentItem.create_or_replace(@item.base_path, attributes, nil)
           }.not_to change(ContentItem, :count)
           expect(result).to eq(:replaced)
         end
